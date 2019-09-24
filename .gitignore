@@ -35,6 +35,7 @@
 
 # Executables
 *.exe
+!tools\genie.exe
 *.out
 *.app
 *.i*86
@@ -77,6 +78,8 @@ dkms.conf
 
 ### Executable ###
 *.bat
+!compile_vs2017.bat
+!compile_vs2019.bat
 *.cgi
 *.com
 *.gadget
