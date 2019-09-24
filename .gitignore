@@ -35,7 +35,7 @@
 
 # Executables
 *.exe
-!tools\genie.exe
+!genie.exe
 *.out
 *.app
 *.i*86
