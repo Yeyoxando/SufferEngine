@@ -4,7 +4,7 @@ solution ("SufferEngine" .. _ACTION)
 	language "C++"
 	location ("build")	
 	
-	projects = { "Core", "GLFW" }
+	projects = { "SufferCore" }
 
 	for i, prj in ipairs(projects) do 
 		project (prj)
@@ -34,7 +34,7 @@ solution ("SufferEngine" .. _ACTION)
 
 	end
 
-project "Core"
+project "SufferCore"
 
 	kind "ConsoleApp"
 	files {
@@ -42,54 +42,43 @@ project "Core"
 		"./src/*.cc",
 	}
 	includedirs{
-		"./deps/GLFW/include/GLFW/",
-		"./deps/GLFW/deps/glad/",
+		"./src/deps/GLFW/include/GLFW/",
+		"./src/deps/GLFW/deps/glad/",
 		"./include/",
 		"./deps/include/",
 	}
-	libdirs{
-		"./bin/"
-	}
-	links{
-		"GLFW_d"
-	}	
-		
-project "GLFW"
-kind "StaticLib"
+
 	--Common files
 	files{
-		"./deps/GLFW/src/context.c",
-		"./deps/GLFW/src/init.c",
-		"./deps/GLFW/src/input.c",
-		"./deps/GLFW/src/monitor.c",
-		"./deps/GLFW/src/vulkan.c",
-		"./deps/GLFW/src/window.c",
-		"./deps/GLFW/src/internal.h",
-		"./deps/GLFW/src/mappings.h",
-		"./deps/GLFW/include/GLFW/glfw3.h",
-		"./deps/GLFW/include/GLFW/glfw3native.h",
+		"./src/deps/GLFW/src/context.c",
+		"./src/deps/GLFW/src/init.c",
+		"./src/deps/GLFW/src/input.c",
+		"./src/deps/GLFW/src/monitor.c",
+		"./src/deps/GLFW/src/vulkan.c",
+		"./src/deps/GLFW/src/window.c",
+		"./src/deps/GLFW/src/internal.h",
+		"./src/deps/GLFW/src/mappings.h",
+		"./src/deps/GLFW/include/GLFW/glfw3.h",
+		"./src/deps/GLFW/include/GLFW/glfw3native.h",
 	}
-	includedirs{
-		"./deps/GLFW/include/GLFW/",
-		"./deps/GLFW/deps/",
-	}
+
 	--Windows files
 	configuration "vs*"
 		files {
-		"./deps/GLFW/src/win32_platform.h", 
-		"./deps/GLFW/src/win32_joystick.h", 
-		"./deps/GLFW/src/wgl_context.h", 
-		"./deps/GLFW/src/egl_context.h", 
-		"./deps/GLFW/src/osmesa_context.h",
-		"./deps/GLFW/src/win32_init.c", 			
-		"./deps/GLFW/src/win32_joystick.c",
-		"./deps/GLFW/src/win32_monitor.c",	
-		"./deps/GLFW/src/win32_time.c",
-		"./deps/GLFW/src/win32_thread.c",
-		"./deps/GLFW/src/win32_window.c",
-		"./deps/GLFW/src/wgl_context.c",
-		"./deps/GLFW/src/egl_context.c",
-		"./deps/GLFW/src/osmesa_context.c",
+		"./src/deps/GLFW/src/win32_platform.h", 
+		"./src/deps/GLFW/src/win32_joystick.h", 
+		"./src/deps/GLFW/src/wgl_context.h", 
+		"./src/deps/GLFW/src/egl_context.h", 
+		"./src/deps/GLFW/src/osmesa_context.h",
+		"./src/deps/GLFW/src/win32_init.c", 			
+		"./src/deps/GLFW/src/win32_joystick.c",
+		"./src/deps/GLFW/src/win32_monitor.c",	
+		"./src/deps/GLFW/src/win32_time.c",
+		"./src/deps/GLFW/src/win32_thread.c",
+		"./src/deps/GLFW/src/win32_window.c",
+		"./src/deps/GLFW/src/wgl_context.c",
+		"./src/deps/GLFW/src/egl_context.c",
+		"./src/deps/GLFW/src/osmesa_context.c",
 		}
 		defines { 	
 			"_GLFW_WIN32",
