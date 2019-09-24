@@ -7,8 +7,8 @@ int main(int argc, char *argv[]) {
 
 	wind.init(800, 600);
 
-	while(1){}
-	printf("JOZELUÍ HIDARGO");
+	while(1){
+	}
 
 	return 0;
 }
