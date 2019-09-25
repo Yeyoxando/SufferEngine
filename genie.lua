@@ -39,17 +39,22 @@ project "SufferCore"
 	kind "ConsoleApp"
 	files {
 		"./include/*.h",
+		"./deps/glm/*.h",
 		"./src/*.cc",
 	}
 	includedirs{
 		"./src/deps/GLFW/include/GLFW/",
+		"./src/deps/imgui/",
 		"./src/deps/GLFW/deps/glad/",
 		"./include/",
+		"./deps/glm/",
 		"./deps/include/",
 	}
 
 	--Common files
 	files{
+
+		--GLFW
 		"./src/deps/GLFW/src/context.c",
 		"./src/deps/GLFW/src/init.c",
 		"./src/deps/GLFW/src/input.c",
@@ -60,6 +65,21 @@ project "SufferCore"
 		"./src/deps/GLFW/src/mappings.h",
 		"./src/deps/GLFW/include/GLFW/glfw3.h",
 		"./src/deps/GLFW/include/GLFW/glfw3native.h",
+
+		--GLM
+		"./deps/glm/*.hpp",
+
+		--ImGui
+		"./src/deps/imgui/imgui.cpp",
+		"./src/deps/imgui/imgui.h",
+		"./src/deps/imgui/imgui_demo.cpp",
+		"./src/deps/imgui/imgui_draw.cpp",
+		"./src/deps/imgui/imgui_widgets.cpp",
+		"./src/deps/imgui/imgui_internal.h",
+		"./src/deps/imgui/imstb_rectpack.h",
+		"./src/deps/imgui/imstb_textedit.h",
+		"./src/deps/imgui/imstb_truetype.h",
+
 	}
 
 	--Windows files
