@@ -44,6 +44,7 @@ project "SufferCore"
 	}
 	includedirs{
 		"./src/deps/GLFW/include/GLFW/",
+		"./src/deps/imgui/",
 		"./src/deps/GLFW/deps/glad/",
 		"./include/",
 		"./deps/glm/",
@@ -67,6 +68,17 @@ project "SufferCore"
 
 		--GLM
 		"./deps/glm/*.hpp",
+
+		--ImGui
+		"./src/deps/imgui/imgui.cpp",
+		"./src/deps/imgui/imgui.h",
+		"./src/deps/imgui/imgui_demo.cpp",
+		"./src/deps/imgui/imgui_draw.cpp",
+		"./src/deps/imgui/imgui_widgets.cpp",
+		"./src/deps/imgui/imgui_internal.h",
+		"./src/deps/imgui/imstb_rectpack.h",
+		"./src/deps/imgui/imstb_textedit.h",
+		"./src/deps/imgui/imstb_truetype.h",
 
 	}
 

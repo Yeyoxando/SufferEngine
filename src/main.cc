@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <window.h>
 #include <glm.hpp>
+#include <imgui.h>
 
 // --------------------------------------------------------------//
 
@@ -14,6 +15,15 @@ void TestingGLM() {
 
 	glm::vec4 negative = { -1.0f, -1.0f, -1.0f, -1.0f };
 	negative += glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+}
+
+// --------------------------------------------------------------//
+
+void TestingImGui() {
+
+	ImGui::Begin("Testing");
+	ImGui::End();
 
 }
 
