@@ -39,17 +39,21 @@ project "SufferCore"
 	kind "ConsoleApp"
 	files {
 		"./include/*.h",
+		"./deps/glm/*.h",
 		"./src/*.cc",
 	}
 	includedirs{
 		"./src/deps/GLFW/include/GLFW/",
 		"./src/deps/GLFW/deps/glad/",
 		"./include/",
+		"./deps/glm/",
 		"./deps/include/",
 	}
 
 	--Common files
 	files{
+
+		--GLFW
 		"./src/deps/GLFW/src/context.c",
 		"./src/deps/GLFW/src/init.c",
 		"./src/deps/GLFW/src/input.c",
@@ -60,6 +64,10 @@ project "SufferCore"
 		"./src/deps/GLFW/src/mappings.h",
 		"./src/deps/GLFW/include/GLFW/glfw3.h",
 		"./src/deps/GLFW/include/GLFW/glfw3native.h",
+
+		--GLM
+		"./deps/glm/*.hpp",
+
 	}
 
 	--Windows files
