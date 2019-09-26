@@ -8,6 +8,7 @@ namespace Suffer {
 		~Window();
 		bool init(int width, int height);
 		bool processEvents();
+		void swapBuffers();
 		void finish();
 	private:
 

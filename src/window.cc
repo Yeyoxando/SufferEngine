@@ -29,6 +29,10 @@ bool Suffer::Window::processEvents(){
 	return true;
 }
 
+void Suffer::Window::swapBuffers(){
+	glfwSwapBuffers(glfwGetCurrentContext());
+}
+
 void Suffer::Window::finish(){
 
 }

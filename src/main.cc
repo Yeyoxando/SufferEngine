@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <GL/glew.h>
 #include <window.h>
 #include <glm.hpp>
 #include <imgui.h>
@@ -11,7 +12,7 @@ void TestingGLM() {
 	vector_1 *= glm::vec4(2, 2, 2, 2);
 	
 	float fModule = vector_1.length();
-	glm::normalize(vector_1);
+	vector_1 = glm::normalize(vector_1);
 
 	glm::vec4 negative = { -1.0f, -1.0f, -1.0f, -1.0f };
 	negative += glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -36,8 +37,15 @@ int main(int argc, char *argv[]) {
 	Suffer::Window wind;
 
 	wind.init(800, 600);
+	if (glewInit() != GLEW_OK) {
+		return 1;
+	}
+
+	glClearColor(1.0f, 0.0f, 1.0f, 0.0f);
 
 	while(1){
+		wind.swapBuffers();
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	return 0;
