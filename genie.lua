@@ -1,4 +1,4 @@
-solution ("SufferEngine" .. _ACTION)
+solution ("SufferEngine")
 	configurations { "Debug", "Release" }
 	platforms { "x32", "x64" }
 	language "C++"
@@ -14,9 +14,11 @@ solution ("SufferEngine" .. _ACTION)
 
 		location (prj_path .. "/" .. _ACTION)
 	
-	    defines { "_CRT_SECURE_NO_WARNINGS" }
         flags { "ExtraWarnings" }
 
+		defines { 	
+			"_CRT_SECURE_NO_WARNINGS",
+			}
 		configuration "vs2017"
 			windowstargetplatformversion "10.0.17134.0"
 
@@ -37,15 +39,12 @@ solution ("SufferEngine" .. _ACTION)
 project "SufferCore"
 
 	kind "ConsoleApp"
-	files {
-		"./include/*.h",
-		"./deps/glm/*.h",
-		"./src/*.cc",
-	}
+	
 	includedirs{
 		"./src/deps/GLFW/include/GLFW/",
-		"./src/deps/imgui/",
 		"./src/deps/GLFW/deps/glad/",
+		"./src/deps/glew/include/",
+		"./src/deps/imgui/",
 		"./include/",
 		"./deps/glm/",
 		"./deps/include/",
@@ -53,6 +52,9 @@ project "SufferCore"
 
 	--Common files
 	files{
+		--SufferEngine
+		"./include/*.h",
+		"./src/*.cc",
 
 		--GLFW
 		"./src/deps/GLFW/src/context.c",
@@ -65,8 +67,9 @@ project "SufferCore"
 		"./src/deps/GLFW/src/mappings.h",
 		"./src/deps/GLFW/include/GLFW/glfw3.h",
 		"./src/deps/GLFW/include/GLFW/glfw3native.h",
-
+		
 		--GLM
+		"./deps/glm/*.h",
 		"./deps/glm/*.hpp",
 
 		--ImGui
@@ -79,12 +82,18 @@ project "SufferCore"
 		"./src/deps/imgui/imstb_rectpack.h",
 		"./src/deps/imgui/imstb_textedit.h",
 		"./src/deps/imgui/imstb_truetype.h",
+		
+		--GLEW
+		"./src/deps/glew/include/GL/glew.h",
+		"./src/deps/glew/include/GL/wglew.h",
+		"./src/deps/glew/src/glew.c",
 
 	}
 
 	--Windows files
 	configuration "vs*"
 		files {
+		--GLFW
 		"./src/deps/GLFW/src/win32_platform.h", 
 		"./src/deps/GLFW/src/win32_joystick.h", 
 		"./src/deps/GLFW/src/wgl_context.h", 
@@ -101,9 +110,14 @@ project "SufferCore"
 		"./src/deps/GLFW/src/osmesa_context.c",
 		}
 		defines { 	
+			"GLEW_STATIC",
 			"_GLFW_WIN32",
 			"WIN32",
+			"_WIN32",
 			"_WINDOWS",
+		}
+		links{
+			"opengl32"
 		}
 	--Linux files
 	configuration "linux"
