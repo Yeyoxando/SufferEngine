@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{89AF369E-F58E-B539-FEA6-40106A051C9B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deps">
+      <UniqueIdentifier>{15105DD2-01DD-B7DD-2AF6-A5851622ED6B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deps\GLFW">
+      <UniqueIdentifier>{216FAC5E-8D2F-2895-566A-7112C2E96C71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deps\GLFW\src">
+      <UniqueIdentifier>{C582D5AF-3199-D345-7A10-5F67E665A4CD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deps\GLFW\include">
+      <UniqueIdentifier>{2193D5C5-8DFF-90C0-56F3-281EC21EB328}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deps\GLFW\include\GLFW">
+      <UniqueIdentifier>{ADB9ECEC-99C9-98BD-0283-FDDBEEB18756}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="deps">
+      <UniqueIdentifier>{F1A1957C-DDD8-960D-86C5-7C1072DB120F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="deps\glm">
+      <UniqueIdentifier>{CD69BB31-B936-163D-E24F-04E5CE7B4BCB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deps\imgui">
+      <UniqueIdentifier>{8C3DB436-780B-A83C-619F-18634D0C84A1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deps\glew">
+      <UniqueIdentifier>{8087BE5E-EC47-3A95-B582-831221027F71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deps\glew\include">
+      <UniqueIdentifier>{809AAD9C-EC06-6997-B5FA-00F521268BFF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deps\glew\include\GL">
+      <UniqueIdentifier>{4F1B474E-3B40-96CE-648B-7B5E500F95EC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deps\glew\src">
+      <UniqueIdentifier>{A4B2EA21-10C9-E8B7-5940-74D9C595B93F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\time.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\window.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\GLFW\src\internal.h">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\GLFW\src\mappings.h">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\GLFW\include\GLFW\glfw3.h">
+      <Filter>src\deps\GLFW\include\GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\GLFW\include\GLFW\glfw3native.h">
+      <Filter>src\deps\GLFW\include\GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\common.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\exponential.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\ext.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\fwd.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\geometric.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\glm.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\integer.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\mat2x2.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\mat2x3.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\mat2x4.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\mat3x2.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\mat3x3.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\mat3x4.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\mat4x2.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\mat4x3.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\mat4x4.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\matrix.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\packing.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\trigonometric.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\vec2.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\vec3.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\vec4.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\deps\glm\vector_relational.hpp">
+      <Filter>deps\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\imgui\imgui.h">
+      <Filter>src\deps\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\imgui\imgui_internal.h">
+      <Filter>src\deps\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\imgui\imstb_rectpack.h">
+      <Filter>src\deps\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\imgui\imstb_textedit.h">
+      <Filter>src\deps\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\imgui\imstb_truetype.h">
+      <Filter>src\deps\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\glew\include\GL\glew.h">
+      <Filter>src\deps\glew\include\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\glew\include\GL\wglew.h">
+      <Filter>src\deps\glew\include\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\GLFW\src\win32_platform.h">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\GLFW\src\win32_joystick.h">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\GLFW\src\wgl_context.h">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\GLFW\src\egl_context.h">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deps\GLFW\src\osmesa_context.h">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\main.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\time.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\window.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\GLFW\src\context.c">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\GLFW\src\init.c">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\GLFW\src\input.c">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\GLFW\src\monitor.c">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\GLFW\src\vulkan.c">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\GLFW\src\window.c">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\imgui\imgui.cpp">
+      <Filter>src\deps\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\imgui\imgui_demo.cpp">
+      <Filter>src\deps\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\imgui\imgui_draw.cpp">
+      <Filter>src\deps\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\imgui\imgui_widgets.cpp">
+      <Filter>src\deps\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\imgui\imgui_impl_glfw.cpp">
+      <Filter>src\deps\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\imgui\imgui_impl_opengl3.cpp">
+      <Filter>src\deps\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\glew\src\glew.c">
+      <Filter>src\deps\glew\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\GLFW\src\win32_init.c">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\GLFW\src\win32_joystick.c">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\GLFW\src\win32_monitor.c">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\GLFW\src\win32_time.c">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\GLFW\src\win32_thread.c">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\GLFW\src\win32_window.c">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\GLFW\src\wgl_context.c">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\GLFW\src\egl_context.c">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deps\GLFW\src\osmesa_context.c">
+      <Filter>src\deps\GLFW\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

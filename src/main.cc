@@ -1,7 +1,8 @@
 #include <stdio.h>
-#include <GL/glew.h>
+
 #include <window.h>
 #include <glm.hpp>
+#include <time.h>
 
 // This will be removed
 #include <imgui.h>
@@ -26,29 +27,9 @@ void TestingGLM() {
 
 // --------------------------------------------------------------//
 
-void InitImGui() {
-
-	ImGui::CreateContext();
-
-	ImGuiIO io = ImGui::GetIO(); (void)io;
-
-	// ImGui FLAGS
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-	io.ConfigViewportsNoAutoMerge = true;
-	io.ConfigViewportsNoTaskBarIcon = true;
-
-	io.Fonts->AddFontDefault();
-	io.Fonts->Build();
-	ImGui_ImplGlfw_InitForOpenGL(glfwGetCurrentContext(), true);
-	ImGui_ImplOpenGL3_Init("#version 130");
-
-}
-
-// --------------------------------------------------------------//
-
 void TestingImGui() {
+
+	double timer = Suffer::RawTime();
 
 	static bool show_demo_window = true;
 
@@ -68,7 +49,7 @@ void TestingImGui() {
 
 	ImGui::EndFrame();
 
-
+	double current = Suffer::RawTime() - timer;
 
 }
 
@@ -79,16 +60,6 @@ void Clear() {
 	glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-	// Update and Render additional Platform Windows
-	// (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
-	//  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
-	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-		GLFWwindow* backup_current_context = glfwGetCurrentContext();
-		ImGui::UpdatePlatformWindows();
-		ImGui::RenderPlatformWindowsDefault();
-		glfwMakeContextCurrent(backup_current_context);
-	}
 
 	glfwSwapBuffers(glfwGetCurrentContext());
 
@@ -103,16 +74,20 @@ int main(int argc, char *argv[]) {
 	Suffer::Window wind;
 
 	wind.init(800, 600);
-	if (glewInit() != GLEW_OK) {
-		return 1;
-	}
 
-	InitImGui();
+	double previous_time = 0.0f;
 
 	while(1){
-		glfwPollEvents();
+
+		double currentTime = Suffer::RawTime();
+
+		wind.processEvents();
 		TestingImGui();
 		Clear();
+
+		float deltaTime = (currentTime - previous_time) * 0.0001f;
+		previous_time = currentTime;
+
 	}
 
 	return 0;
