@@ -49,6 +49,7 @@ project "SufferCore"
 		"./include/",
 		"./deps/glm/",
 		"./deps/sokol/",
+		"./deps/pplux/",
 		"./deps/include/",
 	}
 
@@ -77,6 +78,8 @@ project "SufferCore"
 		--Sokol
 		"./deps/sokol/*.h",
 
+		--PpluX
+		"./deps/pplux/*.h",
 
 		--ImGui
 		"./src/deps/imgui/imgui.cpp",
