@@ -48,6 +48,7 @@ project "SufferCore"
 		"./src/deps/imgui/",
 		"./include/",
 		"./deps/glm/",
+		"./deps/sokol/",
 		"./deps/include/",
 	}
 
@@ -72,6 +73,10 @@ project "SufferCore"
 		--GLM
 		"./deps/glm/*.h",
 		"./deps/glm/*.hpp",
+
+		--Sokol
+		"./deps/sokol/*.h",
+
 
 		--ImGui
 		"./src/deps/imgui/imgui.cpp",
@@ -118,6 +123,7 @@ project "SufferCore"
 			"WIN32",
 			"_WIN32",
 			"_WINDOWS",
+			"SOKOL_IMPL",
 		}
 		links{
 			"opengl32"

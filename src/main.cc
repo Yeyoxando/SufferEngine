@@ -3,6 +3,7 @@
 #include <window.h>
 #include <glm.hpp>
 #include <time.h>
+#include <sokol_time.h>
 
 // This will be removed
 #include <imgui.h>
@@ -69,7 +70,12 @@ void Clear() {
 
 int main(int argc, char *argv[]) {
 
+	stm_setup();
+
+	uint64_t start = stm_now();
 	TestingGLM();
+	uint64_t end = stm_now();
+	uint64_t elapsed = stm_diff(end, start);
 
 	Suffer::Window wind;
 
