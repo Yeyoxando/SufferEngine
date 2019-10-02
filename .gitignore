@@ -97,6 +97,10 @@ dkms.conf
 # User-specific files
 *.rsuser
 *.suo
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.ini
 *.user
 *.userosscache
 *.sln.docstates
