@@ -3,7 +3,7 @@
 #include <window.h>
 #include <glm.hpp>
 #include <time.h>
-#include <sokol_time.h>
+#include <chrono.h>
 
 // This will be removed
 #include <imgui.h>
@@ -91,7 +91,8 @@ void Clear() {
 
 int main(int argc, char *argv[]) {
 
-	stm_setup();
+	Chrono chrono_;
+	chrono_.Init();
 	uint32_t number_iterations = 100;
 
 	//Warming processor
@@ -99,25 +100,25 @@ int main(int argc, char *argv[]) {
 		TestingGLMComplex();
 	}
 
-	uint64_t start = stm_now();
+	uint64_t start = chrono_.Now();
 	for (int i = 0; i < number_iterations; ++i) {
 		TestingGLMComplex();
 	}
-	uint64_t end = stm_now();
-	uint64_t elapsed = stm_diff(end, start);
-	double elapsed_2 = stm_ms(elapsed);
+	uint64_t end = chrono_.Now();
+	uint64_t elapsed = chrono_.Difference(end, start);
+	double elapsed_2 = chrono_.ToMilliseconds(elapsed);
 
 	px_sched::Scheduler scheduler;
 	scheduler.init();
 	px_sched::Sync sync;
-	start = stm_now();
+	start = chrono_.Now();
 	for (int i = 0; i < number_iterations; ++i) {
 		scheduler.run(TestingGLMComplex, &sync);
 	}
 	scheduler.waitFor(sync);
-	end = stm_now();
-	elapsed = stm_diff(end, start);
-	double elapsed_3 = stm_ms(elapsed);
+	end = chrono_.Now();
+	elapsed = chrono_.Difference(end, start);
+	double elapsed_3 = chrono_.ToMilliseconds(elapsed);
 
 
 	Suffer::Window wind;
