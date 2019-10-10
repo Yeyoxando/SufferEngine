@@ -8,7 +8,6 @@ public:
 	Chrono();
 	~Chrono();
 
-	void Init();
 	double Now();
 	double Difference(const double end, const double start);
 

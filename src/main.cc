@@ -10,7 +10,6 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include "glfw3.h"
-#define PX_SCHED_IMPLEMENTATION 1
 #include <px_sched.h>
 
 // --------------------------------------------------------------//
@@ -92,7 +91,6 @@ void Clear() {
 int main(int argc, char *argv[]) {
 
 	Chrono chrono_;
-	chrono_.Init();
 	uint32_t number_iterations = 100;
 
 	//Warming processor

@@ -127,6 +127,7 @@ project "SufferCore"
 			"_WIN32",
 			"_WINDOWS",
 			"SOKOL_IMPL",
+			"PX_SCHED_IMPLEMENTATION",
 		}
 		links{
 			"opengl32"
