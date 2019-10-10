@@ -57,6 +57,7 @@ project "SufferCore"
 	files{
 		--SufferEngine
 		"./include/*.h",
+		"./include/Memory_Management*.h",
 		"./src/*.cc",
 
 		--GLFW
