@@ -25,10 +25,11 @@ class Material /*: public Referenced*/ {
 // This constructor will be protected when we add the ref_ptr class
 public:
 	Material() {};
-	~Material() {};
+	virtual ~Material() {};
 
-public:
+private:
 	// Methods
+	Material(const Material&);
 };
 
 // --------------------------------------------------- //
@@ -38,7 +39,7 @@ class Geometry /*: public Referenced*/ {
 // This constructor will be protected when we add the ref_ptr class
 public:
 	Geometry() {};
-	~Geometry() {};
+	virtual ~Geometry() {};
 
 private:
 
@@ -47,7 +48,7 @@ private:
 	u16 indices_;
 
 	// Methods
-
+	Geometry(const Geometry&);
 };
 
 // --------------------------------------------------- //
