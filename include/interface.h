@@ -7,6 +7,14 @@
 #ifndef __INTERFACE_H__
 #define __INTERFACE_H__
 
+ // Forward declaration for the Engine LOG
+struct ExampleAppLog;
+
+// Information for the LOG
+#define _error_ "ERROR"
+#define _warning_ "WARNING"
+#define _information_ "INFO"
+
 class Interface {
 
 public:
@@ -21,8 +29,7 @@ public:
 	void Update();
 	void End();
 
-
-private:
+	private:
 
 	// Tools
 	void DrawMenuBar();
@@ -33,7 +40,7 @@ private:
 	
 	// Engine Interface Structure
 	void Hierarchy();
-	void Console();
+	void Log();
 	void Inspector();
 	void Project();
 	void Game();
@@ -52,6 +59,7 @@ private:
 
 	// Style Customization
 	InterfaceStyle style_;
+	static ExampleAppLog log;
 
 	const char* styles[4] = {
 		"Suffer Default",
