@@ -26,13 +26,15 @@ public:
 
 private:
 	void DrawMenuBar();
-	void DockSpace(bool* p_open);
+	void CreateDock(bool* p_open);
+	void ResetDock();
 	
 	// Engine Interface Structure
 	void Hierarchy();
 	void Console();
 	void Inspector();
 	void Project();
+	void Game();
 
 };
 

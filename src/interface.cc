@@ -43,7 +43,7 @@ void Interface::Update(){
 	// STUFF
 	static bool open = true;
 	DrawMenuBar();
-	DockSpace(&open);
+	CreateDock(&open);
 	static bool show_demo_window = true;
 	//ImGui::ShowDemoWindow(&show_demo_window);
 
@@ -71,7 +71,9 @@ void Interface::DrawMenuBar(){
 	ImGui::BeginMainMenuBar();
 
 	if (ImGui::BeginMenu("File")) {
-		if (ImGui::MenuItem("Close")) {}
+		if (ImGui::MenuItem("Close")) {
+			// Close the program
+		}
 		ImGui::EndMenu();
 	}
 
@@ -83,7 +85,7 @@ void Interface::DrawMenuBar(){
 
 // --------------------------------------------------- //
 
-void Interface::DockSpace(bool* p_open){
+void Interface::CreateDock(bool* p_open){
 
 	static bool opt_fullscreen_persistant = true;
 	bool opt_fullscreen = opt_fullscreen_persistant;
@@ -118,32 +120,45 @@ void Interface::DockSpace(bool* p_open){
 	// DockSpace
 	ImGuiID dockspace_id = ImGui::GetID("SufferDockSpace");
 	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-	ImGui::DockBuilderRemoveNode(dockspace_id); // Clear out existing layout
-	ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags); // Add empty node
-	ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->Size);
 
-	ImGuiID dock_main_id = dockspace_id; // This variable will track the document node, however we are not using it here as we aren't docking anything into it.
-	ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.20f, NULL, &dock_main_id);
-	ImGuiID dock_id_top = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Up, 0.20f, NULL, &dock_main_id);
-	ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.20f, NULL, &dock_main_id);
-	ImGuiID dock_id_bottom = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.20f, NULL, &dock_main_id);
+	static bool firstTime = true;
+	if (firstTime){
 
-	ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
-	ImGui::DockBuilderDockWindow("Project", dock_id_bottom);
-	ImGui::DockBuilderDockWindow("Console", dock_id_bottom);
-	ImGui::DockBuilderDockWindow("Inspector", dock_id_right);
+		firstTime = false;
 
-	Hierarchy();
-	
-	Project();
+		ImGui::DockBuilderRemoveNode(dockspace_id); // Clear out existing layout
+		ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags); // Add empty node
+		ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->Size);
 
-	Console();
+		ImGuiID dock_main_id = dockspace_id; // This variable will track the document node, however we are not using it here as we aren't docking anything into it.
+		ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.15f, NULL, &dock_main_id);
+		ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.20f, NULL, &dock_main_id);
+		ImGuiID dock_id_top = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Up, 0.80f, NULL, &dock_main_id);
+		ImGuiID dock_id_bottom = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.20f, NULL, &dock_main_id);
+
+		ImGui::DockBuilderDockWindow("Inspector", dock_id_right);
+		ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
+		ImGui::DockBuilderDockWindow("Project", dock_id_bottom);
+		ImGui::DockBuilderDockWindow("Console", dock_id_bottom);
+		ImGui::DockBuilderDockWindow("Game", dock_id_top);
+		ImGui::DockBuilderFinish(dockspace_id);
+
+	}
 
 	Inspector();
+	Hierarchy();
+	Project();
+	Console();
+	Game();
 	
 
-
 	ImGui::End();
+
+}
+
+// --------------------------------------------------- //
+
+void Interface::ResetDock(){
 
 }
 
@@ -152,10 +167,6 @@ void Interface::DockSpace(bool* p_open){
 void Interface::Hierarchy(){
 	ImGui::Begin("Hierarchy");
 	ImGui::Text("I'm the Hierarchy!");
-	if (ImGui::BeginMenu("File")) {
-		if (ImGui::MenuItem("Close")) {}
-		ImGui::EndMenu();
-	}
 	ImGui::End();
 }
 
@@ -163,7 +174,7 @@ void Interface::Hierarchy(){
 
 void Interface::Console(){
 	ImGui::Begin("Console");
-	ImGui::Text("I'm a console!");
+	ImGui::Text("I'm the console!");
 	ImGui::End();
 }
 
@@ -180,6 +191,14 @@ void Interface::Inspector(){
 void Interface::Project(){
 	ImGui::Begin("Project");
 	ImGui::Text("I'm the project structure!");
+	ImGui::End();
+}
+
+// --------------------------------------------------- //
+
+void Interface::Game(){
+	ImGui::Begin("Game");
+	ImGui::Text("I'm the Game!");
 	ImGui::End();
 }
 
