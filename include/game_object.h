@@ -58,15 +58,16 @@ class GameObject /*: public Referenced*/ {
 public:
 
 	GameObject();
+	GameObject(const GameObject& go);
 	~GameObject();
 
+	Transform transform_;
 private:
 	// Attributes
 	// TODO: This attributes will be a ref_ptr Template (constructor protected)
 	Material material_;
 	Geometry geometry_;
 
-	Transform transform_;
 
 
 	// Methods
