@@ -9,6 +9,9 @@
 
 #include <glm.hpp>
 #include <data_types.h>
+#include <referenced.h>
+
+using namespace Suffer;
 
 // --------------------------------------------------- //
 
@@ -20,7 +23,7 @@ struct Transform {
 
 // --------------------------------------------------- //
 
-class Material /*: public Referenced*/ {
+class Material : public Referenced {
 
 // This constructor will be protected when we add the ref_ptr class
 public:
@@ -34,7 +37,7 @@ private:
 
 // --------------------------------------------------- //
 
-class Geometry /*: public Referenced*/ {
+class Geometry : public Referenced {
 
 // This constructor will be protected when we add the ref_ptr class
 public:
@@ -49,11 +52,12 @@ private:
 
 	// Methods
 	Geometry(const Geometry&);
+
 };
 
 // --------------------------------------------------- //
 
-class GameObject /*: public Referenced*/ {
+class GameObject : public Referenced {
 
 public:
 

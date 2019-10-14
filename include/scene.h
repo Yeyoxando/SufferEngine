@@ -1,10 +1,19 @@
+/*
+ * Author: Pablo Bano Benito <banyobe@esat-alumni.com>
+ * Date: 10-14-2019
+ * Scene Header : Referenced
+ */
+
 #ifndef __SCENE_H__
 #define __SCENE_H__
 
 #include <vector>
 #include <game_object.h>
+#include <referenced.h>
 
-class Scene /*: public Referenced*/ {
+using namespace Suffer;
+
+class Scene : public Referenced {
 
 public:
 
