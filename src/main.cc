@@ -9,6 +9,7 @@
 #include <imgui.h>
 #include <scene.h>
 #include <game_object.h>
+#include <input.h>
 #include <interface.h>
 #include <vector>
 #include <imgui_impl_opengl3.h>
@@ -109,10 +110,11 @@ int main(int argc, char *argv[]) {
 	Suffer::Window wind;
 
 	wind.init(800, 600);
+	Suffer::InitInput();
 
 	double previous_time = 0.0f;
 
-	while(1){
+	while(!Suffer::IsKeyDown(k_Escape)){
 
 		double currentTime = Suffer::RawTime();
 		wind.processEvents();
