@@ -7,14 +7,18 @@
 
 // This will be removed
 #include <imgui.h>
-#include <imgui_impl_glfw.h>
+#include <scene.h>
+#include <game_object.h>
+#include <input.h>
+#include <interface.h>
+#include <vector>
 #include <imgui_impl_opengl3.h>
 #include "glfw3.h"
 #include <px_sched.h>
 
 // --------------------------------------------------------------//
 
-void TestingGLMComplex() {
+void TestingGLMComplex(int x) {
 
 	glm::mat4x4 first_mat;
 	glm::mat4x4 second_mat;
@@ -52,24 +56,6 @@ void TestingImGui() {
 
 	double timer = Suffer::RawTime();
 
-	static bool show_demo_window = true;
-
-    ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
-
-	ImGui::ShowDemoWindow(&show_demo_window);
-
-	// Rendering
-	ImGui::Render();
-
-	int display_w, display_h;
-	glfwGetFramebufferSize(glfwGetCurrentContext(), &display_w, &display_h);
-
-	glViewport(0, 0, display_w, display_h);
-
-	ImGui::EndFrame();
-
 	double current = Suffer::RawTime() - timer;
 
 }
@@ -92,45 +78,47 @@ int main(int argc, char *argv[]) {
 
 	Chrono chrono_;
 	uint32_t number_iterations = 100;
+	Scene sc;
+	Interface interface_;
 
-	//Warming processor
-	for (int i = 0; i < 10; ++i) {
-		TestingGLMComplex();
-	}
-
-	uint64_t start = chrono_.Now();
-	for (int i = 0; i < number_iterations; ++i) {
-		TestingGLMComplex();
-	}
-	uint64_t end = chrono_.Now();
-	uint64_t elapsed = chrono_.Difference(end, start);
-	double elapsed_2 = chrono_.ToMilliseconds(elapsed);
-
-	px_sched::Scheduler scheduler;
-	scheduler.init();
-	px_sched::Sync sync;
-	start = chrono_.Now();
-	for (int i = 0; i < number_iterations; ++i) {
-		scheduler.run(TestingGLMComplex, &sync);
-	}
-	scheduler.waitFor(sync);
-	end = chrono_.Now();
-	elapsed = chrono_.Difference(end, start);
-	double elapsed_3 = chrono_.ToMilliseconds(elapsed);
+	////Warming processor
+	//for (int i = 0; i < 10; ++i) {
+	//	TestingGLMComplex(1);
+	//}
+	//
+	//uint64_t start = chrono_.Now();
+	//for (int i = 0; i < number_iterations; ++i) {
+	//	TestingGLMComplex(1);
+	//}
+	//uint64_t end = chrono_.Now();
+	//uint64_t elapsed = chrono_.Difference(end, start);
+	//double elapsed_2 = chrono_.ToMilliseconds(elapsed);
+	//
+	//px_sched::Scheduler scheduler;
+	//scheduler.init();
+	//px_sched::Sync sync;
+	//start = chrono_.Now();
+	//for (int i = 0; i < number_iterations; ++i) {
+	//	scheduler.run([i] {TestingGLMComplex(i); }, &sync);
+	//}
+	//scheduler.waitFor(sync);
+	//end = chrono_.Now();
+	//elapsed = chrono_.Difference(end, start);
+	//double elapsed_3 = chrono_.ToMilliseconds(elapsed);
 
 
 	Suffer::Window wind;
 
 	wind.init(800, 600);
+	Suffer::InitInput();
 
 	double previous_time = 0.0f;
 
-	while(1){
+	while(!Suffer::IsKeyDown(k_Escape)){
 
 		double currentTime = Suffer::RawTime();
-
 		wind.processEvents();
-		TestingImGui();
+		interface_.Update();
 		Clear();
 
 		float deltaTime = (currentTime - previous_time) * 0.0001f;

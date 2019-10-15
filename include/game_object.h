@@ -1,16 +1,85 @@
+/*
+ * Author: Pablo Bano Benito <banyobe@esat-alumni.com>
+ * Date: 10-12-2019
+ * GameObject Header (Material, Transform, Geometry)
+ */
+
 #ifndef __GAME_OBJECT_H__
 #define __GAME_OBJECT_H__
 
-class GameObject /*: public Referenced*/ {
+#include <glm.hpp>
+#include <data_types.h>
+#include <referenced.h>
+
+using namespace Suffer;
+
+// --------------------------------------------------- //
+
+struct Transform {
+	glm::vec3 scale;
+	glm::vec3 position;
+	glm::vec3 rotation;
+};
+
+// --------------------------------------------------- //
+
+class Material : public Referenced {
+
+// This constructor will be protected when we add the ref_ptr class
+public:
+	Material() {};
+	virtual ~Material() {};
+
+private:
+	// Methods
+	Material(const Material&);
+};
+
+// --------------------------------------------------- //
+
+class Geometry : public Referenced {
+
+// This constructor will be protected when we add the ref_ptr class
+public:
+	Geometry() {};
+	virtual ~Geometry() {};
+
+private:
+
+	// Attributes
+	u16 number_elements_;
+	u16 indices_;
+
+	// Methods
+	Geometry(const Geometry&);
+
+};
+
+// --------------------------------------------------- //
+
+class GameObject : public Referenced {
 
 public:
 
 	GameObject();
+	GameObject(const GameObject& go);
 	~GameObject();
 
-	// 
+	Transform transform_;
+private:
+	// Attributes
+	// TODO: This attributes will be a ref_ptr Template (constructor protected)
+	Material material_;
+	Geometry geometry_;
+
+
+
+	// Methods
+	// TODO: Call to DISPLAY_LIST add
 	void Draw();
 
 };
+
+// --------------------------------------------------- //
 
 #endif // __GAME_OBJECT_H__
