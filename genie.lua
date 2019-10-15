@@ -47,6 +47,8 @@ project "SufferCore"
 		"./src/deps/glew/include/",
 		"./src/deps/imgui/",
 		"./include/",
+		"./include/Memory_Management/",
+		"./include/commands/",
 		"./deps/glm/",
 		"./deps/sokol/",
 		"./deps/pplux/",
@@ -57,8 +59,10 @@ project "SufferCore"
 	files{
 		--SufferEngine
 		"./include/*.h",
-		"./include/Memory_Management*.h",
+		"./include/commands/*.h",
+		"./include/Memory_Management/*.h",
 		"./src/*.cc",
+		"./src/commands/*.cc",
 
 		--GLFW
 		"./src/deps/GLFW/src/context.c",

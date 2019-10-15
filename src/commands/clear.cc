@@ -1,20 +1,20 @@
-#include <drawable.h>
+#include <clear.h>
 
 // --------------------------------------------------- //
 
-Drawable::Drawable(){
+Clear::Clear(){
 
 }
 
 // --------------------------------------------------- //
 
-Drawable::~Drawable(){
+Clear::~Clear(){
 
 }
 
 // --------------------------------------------------- //
 
-void Drawable::Execute(){
+void Clear::Execute(){
 
 }
 
