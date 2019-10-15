@@ -9,10 +9,11 @@
 #include <imgui.h>
 #include <scene.h>
 #include <game_object.h>
+#include <suffermanager.h>
+#include <clear.h>
 #include <input.h>
 #include <interface.h>
 #include <vector>
-#include <imgui_impl_opengl3.h>
 #include "glfw3.h"
 #include <px_sched.h>
 
@@ -62,20 +63,24 @@ void TestingImGui() {
 
 // --------------------------------------------------------------//
 
-void Clear() {
+void PrepareDraw() {
+	EDK3::ref_ptr<Clear> clear_cmd;
 
-	glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
-	glClear(GL_COLOR_BUFFER_BIT);
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	clear_cmd.alloc();
 
-	glfwSwapBuffers(glfwGetCurrentContext());
+	//int rnd = rand()%10;
+	//float frnd = rnd / 10.0f;
+	//clear_cmd->SetClearColor(glm::vec4(frnd));
+	
+	clear_cmd->SetClearColor(glm::vec4(0.8f));
+
+	SufferManager::instance().AddCommand(clear_cmd.get());
 
 }
 
 // --------------------------------------------------------------//
 
 int main(int argc, char *argv[]) {
-
 	Chrono chrono_;
 	uint32_t number_iterations = 100;
 	Scene sc;
@@ -108,6 +113,7 @@ int main(int argc, char *argv[]) {
 
 
 	Suffer::Window wind;
+	SufferManager& suffer_manager = SufferManager::instance();
 
 	wind.init(800, 600);
 	Suffer::InitInput();
@@ -118,8 +124,10 @@ int main(int argc, char *argv[]) {
 
 		double currentTime = Suffer::RawTime();
 		wind.processEvents();
-		interface_.Update();
-		Clear();
+		//interface_.Update();
+		PrepareDraw();
+
+		suffer_manager.DrawDisplayList();
 
 		float deltaTime = (currentTime - previous_time) * 0.0001f;
 		previous_time = currentTime;

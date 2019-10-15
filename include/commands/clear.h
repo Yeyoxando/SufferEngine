@@ -8,6 +8,7 @@
 #define __CLEAR_H__
 
 #include <command.h>
+#include <glm.hpp>
 
 // --------------------------------------------------- //
 
@@ -17,9 +18,14 @@ public:
 	Clear();
 	~Clear();
 
+	void SetClearColor(glm::vec4 color) { color_ = color; }
+
 protected:
 	virtual void Execute() override;
 
+
+private:
+	glm::vec4 color_;
 };
 
 // --------------------------------------------------- //

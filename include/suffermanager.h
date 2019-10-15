@@ -7,8 +7,6 @@
 #include <ref_ptr.h>
 #include <command.h>
 
-#define VECTOR_SIZE 128
-
 class SufferManager {
 
 public:
@@ -16,6 +14,9 @@ public:
 
 	bool ResetDisplayList();
 	void AddCommand(EDK3::ref_ptr<Command> cmd);
+
+	//This is provisional until we move it to the correct place
+	void DrawDisplayList();
 
 protected:
 
