@@ -5,18 +5,23 @@
 
 #include <vector>
 #include <ref_ptr.h>
+
+//Hide from here
 #include <command.h>
+
+// --------------------------------------------------------------//
 
 class SufferManager {
 
 public:
 	static SufferManager& instance();
 
-	bool ResetDisplayList();
-	void AddCommand(EDK3::ref_ptr<Command> cmd);
+	bool Init();
+	bool Run();
+	bool Step(double time_step);
+	bool Finish();
 
-	//This is provisional until we move it to the correct place
-	void DrawDisplayList();
+	double DeltaTime();
 
 protected:
 
@@ -26,9 +31,16 @@ protected:
 private:
 	SufferManager(const SufferManager&);
 
-	std::vector<EDK3::ref_ptr<Command>> display_list_;
+	void PrepareDraw();
+	void DrawDisplayList();
+	bool ResetDisplayList();
+	void AddCommand(EDK3::ref_ptr<Command> cmd);
 
+	struct Data;
+	Data* data_ = nullptr;
 };
+
+// --------------------------------------------------------------//
 
 
 #endif // __SUFFER_MANAGER_H__

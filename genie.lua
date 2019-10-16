@@ -23,7 +23,7 @@ solution ("SufferEngine")
 			windowstargetplatformversion "10.0.17134.0"
 
 		configuration "Debug"
-			defines { "DEBUG" }
+			defines { "DEBUG", "ASSERT" }
 			targetdir ("./bin")
 			targetsuffix "_d"
 			objdir ("./build/Debug")
@@ -63,6 +63,7 @@ project "SufferCore"
 		"./include/Memory_Management/*.h",
 		"./src/*.cc",
 		"./src/commands/*.cc",
+		"./tests/*.cc",
 
 		--GLFW
 		"./src/deps/GLFW/src/context.c",
