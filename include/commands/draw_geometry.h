@@ -8,6 +8,8 @@
 #define __DRAW_GEOMETRY_H__
 
 #include <command.h>
+#include <game_object.h>
+#include <ref_ptr.h>
 
 // --------------------------------------------------- //
 
@@ -17,9 +19,16 @@ public:
 	DrawGeometry();
 	~DrawGeometry();
 
+	void SetData(EDK3::ref_ptr<GameObject> go);
+	void SetTransform(Transform t);
+	void SetGeometry(EDK3::ref_ptr<Geometry> geo);
+	void SetMaterial(EDK3::ref_ptr<Material> mat);
+
 protected:
 	virtual void Execute() override;
 
+	struct Data;
+	Data* data_;
 };
 
 // --------------------------------------------------- //
