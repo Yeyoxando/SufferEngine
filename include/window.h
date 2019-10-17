@@ -1,5 +1,5 @@
 #ifndef WINDOW_H
-#define WINDOW_H 1
+#define WINDOW_H
 
 namespace Suffer {
 	class Window {
@@ -15,4 +15,4 @@ namespace Suffer {
 	};
 };
 
-#endif
+#endif // WINDOW_H

@@ -176,7 +176,7 @@ void Suffer::InitInput(){
 bool Suffer::IsKeyDown(Key key){
 
 #ifdef ASSERT
-	assert(!init); // ¿Forget call Init() function?
+	assert(init); // ¿Forget call Init() function?
 #endif
 
 	if (inpKey == GetGLFWKey(key) && inpAction == GLFW_PRESS) {
