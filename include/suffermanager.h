@@ -22,6 +22,7 @@ public:
 	bool Finish();
 
 	double DeltaTime();
+	void AddCommand(EDK3::ref_ptr<Command> cmd);
 
 protected:
 
@@ -34,7 +35,6 @@ private:
 	void PrepareDraw();
 	void DrawDisplayList();
 	bool ResetDisplayList();
-	void AddCommand(EDK3::ref_ptr<Command> cmd);
 
 	struct Data;
 	Data* data_ = nullptr;
