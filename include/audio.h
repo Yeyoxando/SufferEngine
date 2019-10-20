@@ -56,11 +56,13 @@ public:
 	~Audio3D();
 
 	bool Load(const char* file);
-	bool Play3D(glm::vec3 position, glm::vec3 velocity);
+	bool Play3D(glm::vec3 position = glm::vec3(0, 0, 0), glm::vec3 velocity = glm::vec3(0, 0, 0));
 
+	void SetGain(const float newGain = 1.0f);
 	void SetPitch(const float newPitch = 1.0f);
 	void SetLooping(const bool looping = false);
 	void SetVelocity(const glm::vec3 newVelocity = glm::vec3(0, 0, 0));
+	void SetGlobalVolume(const float newVolume = 1.0f);
 
 	// Sound
 	void SetSoundParameters(glm::vec3 position, glm::vec3 velocity);
