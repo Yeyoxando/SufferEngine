@@ -14,6 +14,8 @@ struct ExampleAppLog;
 #define _error_ "ERROR"
 #define _warning_ "WARNING"
 #define _information_ "INFO"
+#define _engine_ "ENGINE"
+#define _audio_ "AUDIO"
 
 class Interface {
 
@@ -58,8 +60,12 @@ public:
 	};
 
 	// Style Customization
+
+public:
 	InterfaceStyle style_;
 	static ExampleAppLog log;
+
+private:
 
 	const char* styles[4] = {
 		"Suffer Default",

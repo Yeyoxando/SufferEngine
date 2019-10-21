@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
 	velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	listener_position = glm::vec3(0.0f, 0.0f, 0.0f);
 
-#if 0 // ONLY ONE RESOURCE AT LEFT
+#if 1 // ONLY ONE RESOURCE AT LEFT
 	
 	// 3D Source 1
 	audio_source_3d.Load("../../../resources/audio/fight_mono.ogg");

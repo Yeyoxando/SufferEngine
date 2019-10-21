@@ -5,8 +5,14 @@
 */
 
 #include <audio.h>
+#include <imgui.h>
+#include <interface.h>
 #include <soloud.h>
 #include <soloud_wav.h>
+
+struct ExampleAppLog {
+	void    AddLog(const char* fmt, ...) IM_FMTARGS(2);
+};
 
 using namespace Suffer;
 
@@ -66,6 +72,7 @@ bool Audio2D::Load(const char* file){
 bool Audio2D::Play(){
 
 	_ptr->handle_ = _ptr->sound_.play(_ptr->wave_);
+	Interface::log.AddLog("\n[" _information_ "] Reproducing a new 2D song: [%s]", file_);
 	if (_ptr->handle_ > 0) return true;
 	return false;
 
@@ -198,6 +205,8 @@ bool Audio3D::Play3D(glm::vec3 position /*= glm::vec3(0, 0, 0)*/,
 
 	_ptr->handle_ = _ptr->sound_.play3d(_ptr->wave_, position.x, position.y, position.z,
 										velocity.x, velocity.y, velocity.z);
+
+	Interface::log.AddLog("\n[" _audio_ "] Reproducing a new 3D song: [%s]", file_);
 
 	SetGain(gain_);
 	SetPitch(pitch_);
