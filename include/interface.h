@@ -70,6 +70,11 @@ public:
 
 	// Bools (for the windows)
 	bool options_window_;
+	bool is_log_opened_;
+	bool is_hierarchy_opened_;
+	bool is_inspector_opened_;
+	bool is_project_window_opened_;
+	bool is_game_window_opened_;
 
 };
 

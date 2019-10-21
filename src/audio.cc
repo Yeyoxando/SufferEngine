@@ -152,6 +152,11 @@ Audio3D::Audio3D(){
 	_ptr = new Data();
 	_ptr->sound_.init();
 
+	gain_ = 1.0f;
+	looping_ = false;
+	pitch_ = 1.0f;
+	hertz_ = 0;
+
 }
 
 // --------------------------------------------------------------//

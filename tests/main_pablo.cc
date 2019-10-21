@@ -29,23 +29,23 @@ int main(int argc, char* argv[]) {
 	velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	listener_position = glm::vec3(0.0f, 0.0f, 0.0f);
 
+#if 0 // ONLY ONE RESOURCE AT LEFT
+	
 	// 3D Source 1
 	audio_source_3d.Load("../../../resources/audio/fight_mono.ogg");
 	audio_source_3d.SetLooping(true);
 	audio_source_3d.SetPitch(1.0f);
-	audio_source_3d.SetGain(2.0f);
+	audio_source_3d.SetGain(0.5f);
 	audio_source_3d.Play3D(position, velocity);
 	audio_source_3d.SetListenerPosition(listener_position);	
 	
-#if 1 // ONLY ONE RESOURCE AT LEFT
+
+#endif
 
 	// 3D Source 2
 	position = glm::vec3(1.0f, 0.0f, 0.0f);
-	//audio_source_3d2.Load("../../../resources/audio/pressure.ogg");
-	audio_source_3d2 = audio_source_3d;
+	audio_source_3d2.Load("../../../resources/audio/pressure.ogg");
 	audio_source_3d2.Play3D(glm::vec3(-1.0f, 0.0f, 0.0f), velocity);
-
-#endif
 
 
 #else

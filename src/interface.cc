@@ -146,8 +146,13 @@ Interface::Interface(){
 	options_window_ = false;
 	style_ = kDefault;
 
-}
+	is_log_opened_ = true;
+	is_hierarchy_opened_ = true;
+	is_inspector_opened_ = true;
+	is_game_window_opened_ = true;
+	is_project_window_opened_ = true;
 
+}
 // --------------------------------------------------- //
 
 Interface::~Interface(){
@@ -171,9 +176,9 @@ void Interface::Update(){
 
 
 	// STUFF
-	static bool open = true;
+	static bool* open;
 	DrawMenuBar();
-	CreateDock(&open);
+	CreateDock(open);
 	OpenWindows();
 
 
@@ -211,6 +216,26 @@ void Interface::DrawMenuBar(){
 	if (ImGui::BeginMenu("Tools")) {
 		if (ImGui::MenuItem("Options")) {
 			options_window_ = !options_window_;
+		}
+		ImGui::EndMenu();
+	}
+
+	// WINDOWS
+	if (ImGui::BeginMenu("Windows")) {
+		if (ImGui::MenuItem("Hierarchy")) {
+			is_hierarchy_opened_ = !is_hierarchy_opened_;
+		}
+		if (ImGui::MenuItem("Inspector")) {
+			is_inspector_opened_ = !is_inspector_opened_;
+		}
+		if (ImGui::MenuItem("Project")) {
+			is_project_window_opened_ = !is_project_window_opened_;
+		}
+		if (ImGui::MenuItem("Game")) {
+			is_game_window_opened_ = !is_game_window_opened_;
+		}
+		if (ImGui::MenuItem("Log")) {
+			is_log_opened_ = !is_log_opened_;
 		}
 		ImGui::EndMenu();
 	}
@@ -283,11 +308,11 @@ void Interface::CreateDock(bool* p_open){
 		
 	}
 
-	Inspector();
-	Hierarchy();
-	Project();
-	Log();
-	Game();
+	if(is_inspector_opened_) Inspector();
+	if(is_hierarchy_opened_) Hierarchy();
+	if(is_project_window_opened_) Project();
+	if(is_log_opened_) Log();
+	if (is_game_window_opened_) Game();
 	
 
 	ImGui::End();
@@ -459,7 +484,7 @@ void Interface::ChangeEditorStyle(){
 // --------------------------------------------------- //
 
 void Interface::Hierarchy(){
-	ImGui::Begin("Hierarchy");
+	ImGui::Begin("Hierarchy", &is_hierarchy_opened_);
 	ImGui::Text("I'm the Hierarchy!");
 	
 	ImGui::End();
@@ -468,13 +493,13 @@ void Interface::Hierarchy(){
 // --------------------------------------------------- //
 
 void Interface::Log() {
-	log.Draw("Log", (bool*)true);
+	log.Draw("Log", &is_log_opened_);
 }
 
 // --------------------------------------------------- //
 
 void Interface::Inspector(){
-	ImGui::Begin("Inspector");
+	ImGui::Begin("Inspector", &is_inspector_opened_);
 	ImGui::Text("I'm the Inspector");
 	ImGui::End();
 }
@@ -482,7 +507,7 @@ void Interface::Inspector(){
 // --------------------------------------------------- //
 
 void Interface::Project(){
-	ImGui::Begin("Project");
+	ImGui::Begin("Project", &is_project_window_opened_);
 	ImGui::Text("I'm the project structure!");
 	ImGui::End();
 }
@@ -490,7 +515,7 @@ void Interface::Project(){
 // --------------------------------------------------- //
 
 void Interface::Game(){
-	ImGui::Begin("Game");
+	ImGui::Begin("Game", &is_game_window_opened_);
 	ImGui::Text("I'm the Game!");
 	ImGui::End();
 }
