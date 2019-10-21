@@ -8,6 +8,8 @@
 #include <soloud.h>
 #include <soloud_wav.h>
 
+using namespace Suffer;
+
 // --------------------------------------------------------------//
 
 /*
@@ -52,6 +54,7 @@ Audio2D::~Audio2D(){
 
 bool Audio2D::Load(const char* file){
 
+	file_ = file;
 	!_ptr->wave_.load(file);
 	if(_ptr->wave_.mData != nullptr) return true;
 	return false;
@@ -153,6 +156,18 @@ Audio3D::Audio3D(){
 
 // --------------------------------------------------------------//
 
+Audio3D::Audio3D(const Audio3D& copy){
+	
+	this->file_ = copy.file_;
+	this->gain_ = copy.gain_;
+	this->hertz_ = copy.hertz_;
+	this->pitch_ = copy.pitch_;
+	this->looping_ = copy.looping_;
+
+}
+
+// --------------------------------------------------------------//
+
 Audio3D::~Audio3D(){
 
 	_ptr->sound_.deinit();
@@ -164,7 +179,8 @@ Audio3D::~Audio3D(){
 
 bool Audio3D::Load(const char* file){
 
-	!_ptr->wave_.load(file);
+	file_ = file;
+	_ptr->wave_.load(file);
 	if (_ptr->wave_.mData != nullptr) return true;
 	return false;
 
@@ -177,8 +193,13 @@ bool Audio3D::Play3D(glm::vec3 position /*= glm::vec3(0, 0, 0)*/,
 
 	_ptr->handle_ = _ptr->sound_.play3d(_ptr->wave_, position.x, position.y, position.z,
 										velocity.x, velocity.y, velocity.z);
-	if (_ptr->handle_ > 0) return true;
-	return false;
+
+	SetGain(gain_);
+	SetPitch(pitch_);
+	SetLooping(looping_);
+
+	if (!_ptr->handle_) return false;
+	return true;
 
 }
 
@@ -186,8 +207,8 @@ bool Audio3D::Play3D(glm::vec3 position /*= glm::vec3(0, 0, 0)*/,
 
 void Audio3D::SetGain(const float newGain /*= 1.0f*/){
 
-	_ptr->wave_.setVolume(newGain);
 	gain_ = newGain;
+	_ptr->sound_.setVolume(_ptr->handle_, gain_);
 
 }
 
@@ -195,15 +216,15 @@ void Audio3D::SetGain(const float newGain /*= 1.0f*/){
 
 void Audio3D::SetPitch(const float newPitch /*= 1.0f*/){
 
-	_ptr->sound_.setRelativePlaySpeed(_ptr->handle_, newPitch);
 	pitch_ = newPitch;
+	_ptr->sound_.setRelativePlaySpeed(_ptr->handle_, pitch_);
 
 }
 
 // --------------------------------------------------------------//
 
 void Audio3D::SetLooping(const bool looping /*= false*/){
-	
+
 	looping_ = looping;
 	_ptr->sound_.setLooping(_ptr->handle_, looping_);
 
@@ -223,9 +244,161 @@ void Audio3D::SetGlobalVolume(const float newVolume /* = 1.0f */) {
 
 // --------------------------------------------------------------//
 
+void Audio3D::SetSoundParameters(glm::vec3 position, glm::vec3 velocity){
+
+	_ptr->sound_.set3dSourceParameters(_ptr->handle_, position.x, position.y, position.z,
+									   velocity.x, velocity.y, velocity.z);
+
+}
+
+// --------------------------------------------------------------//
+
+void Audio3D::SetSoundSpeed(glm::vec3 newSpeed){
+
+	_ptr->sound_.set3dSourceVelocity(_ptr->handle_, newSpeed.x, newSpeed.y, newSpeed.z);
+
+}
+
+// --------------------------------------------------------------//
+
+void Audio3D::SetSoundPosition(glm::vec3 newPosition){
+
+	_ptr->sound_.set3dSourcePosition(_ptr->handle_, newPosition.x, newPosition.y, newPosition.z);
+
+}
+
+// --------------------------------------------------------------//
+
+void Audio3D::SetSoundMinMaxDistance(float min, float max){
+
+	_ptr->sound_.set3dSourceMinMaxDistance(_ptr->handle_, min, max);
+
+}
+
+// --------------------------------------------------------------//
+
+void Audio3D::SetSoundAttenuation(u32 attenuation, float rollOffFactor){
+
+	_ptr->sound_.set3dSourceAttenuation(_ptr->handle_, attenuation, rollOffFactor);
+
+}
+
+// --------------------------------------------------------------//
+
+void Audio3D::SetSoundDopplerFactor(float newDopplerFactor){
+
+	_ptr->sound_.set3dSourceDopplerFactor(_ptr->handle_, newDopplerFactor);
+
+}
+
+void Audio3D::SetListenerParameters(glm::vec3 position, glm::vec3 at, glm::vec3 up, glm::vec3 velocity){
+	
+	_ptr->sound_.set3dListenerParameters(position.x, position.y, position.z, at.x, at.y, at.z,
+										 up.x, up.y, up.z, velocity.x, velocity.y, velocity.z);
+
+}
+
+// --------------------------------------------------------------//
+
 void Audio3D::SetListenerPosition(glm::vec3 newPosition){
 
 	_ptr->sound_.set3dListenerPosition(newPosition.x, newPosition.y, newPosition.z);
+
+}
+
+// --------------------------------------------------------------//
+
+void Audio3D::SetListenerAt(glm::vec3 newAt){
+
+	_ptr->sound_.set3dListenerAt(newAt.x, newAt.y, newAt.z);
+
+}
+
+// --------------------------------------------------------------//
+
+void Audio3D::SetListenerUp(glm::vec3 newUp){
+
+	_ptr->sound_.set3dListenerUp(newUp.x, newUp.y, newUp.z);
+
+}
+
+// --------------------------------------------------------------//
+
+void Audio3D::SetListenerVelocity(glm::vec3 newVelocity){
+
+	_ptr->sound_.set3dListenerVelocity(newVelocity.x, newVelocity.y, newVelocity.z);
+
+}
+
+// --------------------------------------------------------------//
+
+int Audio3D::GetHertz(){
+	return hertz_;
+}
+
+// --------------------------------------------------------------//
+
+double Audio3D::GetGain(){
+	return gain_;
+}
+
+// --------------------------------------------------------------//
+
+double Audio3D::GetPitch(){
+	return pitch_;
+}
+
+// --------------------------------------------------------------//
+
+bool Audio3D::GetLooping(){
+	return looping_;
+}
+
+// --------------------------------------------------------------//
+
+glm::vec3 Audio3D::GetSoundSpeed(){
+	return glm::vec3(0, 0, 0);
+}
+
+// --------------------------------------------------------------//
+
+bool Audio3D::operator!=(const Audio3D& a){
+
+	return (gain_ != a.gain_		||
+			hertz_ != a.hertz_		||
+			pitch_ != a.pitch_		||
+			looping_ != a.looping_	||
+			_ptr->handle_ != a._ptr->handle_);
+
+}
+
+// --------------------------------------------------------------//
+
+void Audio3D::operator=(const Audio3D& a){
+
+	this->Load(a.file_);
+
+	this->gain_    = a.gain_;
+	this->hertz_   = a.hertz_;
+	this->pitch_   = a.pitch_;
+	this->looping_ = a.looping_;
+
+}
+
+// --------------------------------------------------------------//
+
+Audio3D Audio3D::operator=(const Audio3D& a) const{
+
+	Audio3D newSource;
+
+	newSource.Load(a.file_);
+
+	newSource.gain_    = a.gain_;
+	newSource.hertz_   = a.hertz_;
+	newSource.pitch_   = a.pitch_;
+	newSource.looping_ = a.looping_;
+
+	return newSource;
 
 }
 
