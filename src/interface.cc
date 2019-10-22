@@ -104,15 +104,6 @@ struct ExampleAppLog
 		}
 		else
 		{
-			// The simplest and easy way to display the entire buffer:
-			//   ImGui::TextUnformatted(buf_begin, buf_end);
-			// And it'll just work. TextUnformatted() has specialization for large blob of text and will fast-forward to skip non-visible lines.
-			// Here we instead demonstrate using the clipper to only process lines that are within the visible area.
-			// If you have tens of thousands of items and their processing cost is non-negligible, coarse clipping them on your side is recommended.
-			// Using ImGuiListClipper requires A) random access into your data, and B) items all being the  same height,
-			// both of which we can handle since we an array pointing to the beginning of each line of text.
-			// When using the filter (in the block of code above) we don't have random access into the data to display anymore, which is why we don't use the clipper.
-			// Storing or skimming through the search result would make it possible (and would be recommended if you want to search through tens of thousands of entries)
 			ImGuiListClipper clipper;
 			clipper.Begin(LineOffsets.Size);
 			while (clipper.Step())
@@ -146,8 +137,13 @@ Interface::Interface(){
 	options_window_ = false;
 	style_ = kDefault;
 
-}
+	is_log_opened_ = true;
+	is_hierarchy_opened_ = true;
+	is_inspector_opened_ = true;
+	is_game_window_opened_ = true;
+	is_project_window_opened_ = true;
 
+}
 // --------------------------------------------------- //
 
 Interface::~Interface(){
@@ -171,9 +167,9 @@ void Interface::Update(){
 
 
 	// STUFF
-	static bool open = true;
+	static bool* open;
 	DrawMenuBar();
-	CreateDock(&open);
+	CreateDock(open);
 	OpenWindows();
 
 
@@ -211,6 +207,26 @@ void Interface::DrawMenuBar(){
 	if (ImGui::BeginMenu("Tools")) {
 		if (ImGui::MenuItem("Options")) {
 			options_window_ = !options_window_;
+		}
+		ImGui::EndMenu();
+	}
+
+	// WINDOWS
+	if (ImGui::BeginMenu("Windows")) {
+		if (ImGui::MenuItem("Hierarchy")) {
+			is_hierarchy_opened_ = !is_hierarchy_opened_;
+		}
+		if (ImGui::MenuItem("Inspector")) {
+			is_inspector_opened_ = !is_inspector_opened_;
+		}
+		if (ImGui::MenuItem("Project")) {
+			is_project_window_opened_ = !is_project_window_opened_;
+		}
+		if (ImGui::MenuItem("Game")) {
+			is_game_window_opened_ = !is_game_window_opened_;
+		}
+		if (ImGui::MenuItem("Log")) {
+			is_log_opened_ = !is_log_opened_;
 		}
 		ImGui::EndMenu();
 	}
@@ -283,11 +299,11 @@ void Interface::CreateDock(bool* p_open){
 		
 	}
 
-	Inspector();
-	Hierarchy();
-	Project();
-	Log();
-	Game();
+	if(is_inspector_opened_) Inspector();
+	if(is_hierarchy_opened_) Hierarchy();
+	if(is_project_window_opened_) Project();
+	if(is_log_opened_) Log();
+	if (is_game_window_opened_) Game();
 	
 
 	ImGui::End();
@@ -459,7 +475,7 @@ void Interface::ChangeEditorStyle(){
 // --------------------------------------------------- //
 
 void Interface::Hierarchy(){
-	ImGui::Begin("Hierarchy");
+	ImGui::Begin("Hierarchy", &is_hierarchy_opened_);
 	ImGui::Text("I'm the Hierarchy!");
 	
 	ImGui::End();
@@ -468,13 +484,13 @@ void Interface::Hierarchy(){
 // --------------------------------------------------- //
 
 void Interface::Log() {
-	log.Draw("Log", (bool*)true);
+	log.Draw("Log", &is_log_opened_);
 }
 
 // --------------------------------------------------- //
 
 void Interface::Inspector(){
-	ImGui::Begin("Inspector");
+	ImGui::Begin("Inspector", &is_inspector_opened_);
 	ImGui::Text("I'm the Inspector");
 	ImGui::End();
 }
@@ -482,7 +498,7 @@ void Interface::Inspector(){
 // --------------------------------------------------- //
 
 void Interface::Project(){
-	ImGui::Begin("Project");
+	ImGui::Begin("Project", &is_project_window_opened_);
 	ImGui::Text("I'm the project structure!");
 	ImGui::End();
 }
@@ -490,7 +506,7 @@ void Interface::Project(){
 // --------------------------------------------------- //
 
 void Interface::Game(){
-	ImGui::Begin("Game");
+	ImGui::Begin("Game", &is_game_window_opened_);
 	ImGui::Text("I'm the Game!");
 	ImGui::End();
 }

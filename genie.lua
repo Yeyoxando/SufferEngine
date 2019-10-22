@@ -52,7 +52,15 @@ project "SufferCore"
 		"./deps/glm/",
 		"./deps/sokol/",
 		"./deps/pplux/",
+		"./deps/soloud/",
 		"./deps/include/",
+		"./src/deps/soloud/audiosource/speech/",
+		"./src/deps/soloud/audiosource/tedsid/",
+		"./src/deps/soloud/audiosource/wav/",
+		"./src/deps/soloud/c_api/",
+		"./src/deps/soloud/core/",
+		"./src/deps/soloud/filter/",
+		"./deps/soloud/",
 	}
 
 	--Common files
@@ -105,6 +113,37 @@ project "SufferCore"
 		"./src/deps/glew/include/GL/wglew.h",
 		"./src/deps/glew/src/glew.c",
 
+		--SoLoud
+		"./src/deps/soloud/audiosource/monotone/*.cpp",
+		"./src/deps/soloud/audiosource/openmpt/*.cpp",
+		"./src/deps/soloud/audiosource/openmpt/*.c",
+		"./src/deps/soloud/audiosource/sfxr/*.cpp",
+		"./src/deps/soloud/audiosource/speech/*.cpp",
+		"./src/deps/soloud/audiosource/speech/*.h",
+		"./src/deps/soloud/audiosource/tedsid/*.cpp",
+		"./src/deps/soloud/audiosource/tedsid/*.h",
+		"./src/deps/soloud/audiosource/vic/*.cpp",
+		"./src/deps/soloud/audiosource/vizsn/*.cpp",
+		"./src/deps/soloud/audiosource/wav/*.cpp",
+		"./src/deps/soloud/audiosource/wav/*.c",
+		"./src/deps/soloud/audiosource/wav/*.h",
+		"./src/deps/soloud/backend/alsa/*.cpp",
+		"./src/deps/soloud/backend/coreaudio/*.cpp",
+		"./src/deps/soloud/backend/null/*.cpp",
+		"./src/deps/soloud/backend/opensles/*.cpp",
+		"./src/deps/soloud/backend/oss/*.cpp",
+		"./src/deps/soloud/backend/wasapi/*.cpp",
+		"./src/deps/soloud/backend/winmm/*.cpp",
+		"./src/deps/soloud/backend/xaudio2/*.cpp",
+		"./src/deps/soloud/c_api/*.cpp",
+		"./src/deps/soloud/c_api/*.h",
+		"./src/deps/soloud/core/*.cpp",
+		"./src/deps/soloud/core/*.h",
+		"./src/deps/soloud/filter/*.cpp",
+		"./src/deps/soloud/filter/*.h",
+		"./deps/soloud/*.h",
+
+
 	}
 
 	--Windows files
@@ -134,7 +173,9 @@ project "SufferCore"
 			"_WINDOWS",
 			"SOKOL_IMPL",
 			"PX_SCHED_IMPLEMENTATION",
-		}
+			"WITH_WINMM",
+			"WITH_WASAPI",
+		}	 
 		links{
 			"opengl32"
 		}
@@ -144,3 +185,4 @@ project "SufferCore"
 		
 		}
 	configuration {}
+

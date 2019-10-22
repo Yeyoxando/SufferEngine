@@ -1,3 +1,9 @@
+/*
+* Author: Pablo Bano Benito <banyobe@esat-alumni.com>
+* Date: 10-20-2019
+* Chrono Header
+*/
+
 #ifndef __CHRONO_H__
 #define __CHRONO_H__
 
