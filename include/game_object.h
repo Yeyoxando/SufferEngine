@@ -64,6 +64,11 @@ private:
 	u32 number_elements_;
 	u32 indices_;
 
+	/*
+	u32 indices_ID;
+	u32 vertices_ID;
+	*/
+
 	// Methods
 	Geometry(const Geometry&);
 

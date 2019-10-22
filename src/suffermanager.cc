@@ -7,6 +7,7 @@
 #include <interface.h>
 #include <clear.h>
 #include <time.h>
+#include <GL/glew.h>
 
 struct SufferManager::Data {
 
@@ -17,6 +18,13 @@ struct SufferManager::Data {
 	double current_time_;
 	double delta_time_;
 	Interface interface_;
+
+	// HELLO TRIANGLE STUFF
+	GLuint triangle_vertices_ID;
+	GLuint triangle_indices_ID;
+	GLuint vertex_shader_ID;
+	GLuint fragment_shader_ID;
+	GLuint program_ID;
 
 };
 
@@ -63,6 +71,68 @@ bool SufferManager::Init(){
 
 	data_->wind_.init(800, 600);
 	Suffer::InitInput();
+
+	// DEFAULT SHADERS
+	const GLchar* vertex_shader = R"VSHADER(
+	
+	#version 330
+	layout(location = 0) in vec3 a_position;
+
+	void main(){
+		gl_Position = vec4(a_position, 1.0f);
+	}
+
+	)VSHADER";
+
+	const GLchar* fragment_shader = R"FSHADER(
+
+	#version 330
+	in vec4 u_color;
+
+	void main(){
+		gl_FragColor = u_color;
+	}
+	
+	)FSHADER";
+
+	// HELLO TRIANGLE STUFF -> TODO: THIS WILL BE DELETED
+	data_->vertex_shader_ID = glCreateShader(GL_VERTEX_SHADER);
+	data_->fragment_shader_ID = glCreateShader(GL_FRAGMENT_SHADER);
+
+	const GLint vertex_size = strlen(vertex_shader);
+	const GLint fragment_size = strlen(fragment_shader);
+
+	glShaderSource(data_->vertex_shader_ID, 1, &vertex_shader, &vertex_size);
+	glShaderSource(data_->fragment_shader_ID, 1, &fragment_shader, &fragment_size);
+
+	glCompileShader(data_->vertex_shader_ID);
+	glCompileShader(data_->fragment_shader_ID);
+
+		// PROGRAM
+	data_->program_ID = glCreateProgram();
+	glAttachShader(data_->program_ID, data_->vertex_shader_ID);
+	glAttachShader(data_->program_ID, data_->fragment_shader_ID);
+
+	glLinkProgram(data_->program_ID);
+
+		// BUFFERS
+	float vertices[] = {
+		0.0f,  0.5f, -1.0f,
+		0.5f, -0.5f, -1.0f,
+		-0.5f, -0.5f, -1.0f
+	};
+
+	glGenBuffers(1, &data_->triangle_indices_ID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data_->triangle_indices_ID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	float indices[]{ 0, 2, 1 };
+
+	glGenBuffers(1, &data_->triangle_vertices_ID);
+	glBindBuffer(GL_ARRAY_BUFFER, data_->triangle_indices_ID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	
 
 	return true;
 }
