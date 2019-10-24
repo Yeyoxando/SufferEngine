@@ -19,12 +19,6 @@ struct SufferManager::Data {
 	double delta_time_;
 	Interface interface_;
 
-	// HELLO TRIANGLE STUFF
-	GLuint triangle_vertices_ID;
-	GLuint triangle_indices_ID;
-	GLuint vertex_shader_ID;
-	GLuint fragment_shader_ID;
-	GLuint program_ID;
 
 };
 
@@ -40,9 +34,11 @@ void SufferManager::PrepareDraw(){
 	EDK3::ref_ptr<Clear> clear_cmd;
 
 	clear_cmd.alloc();
-	clear_cmd->SetClearColor(glm::vec4(0.8f));
+	clear_cmd.get()->SetClearColor(glm::vec4(0.8f));
 
 	AddCommand(clear_cmd.get());
+
+	data_->scene_->PrepareDraw();
 
 }
 
@@ -87,33 +83,65 @@ bool SufferManager::Init(){
 	const GLchar* fragment_shader = R"FSHADER(
 
 	#version 330
-	in vec4 u_color;
 
 	void main(){
-		gl_FragColor = u_color;
+		gl_FragColor = vec4(0.0f);
 	}
 	
 	)FSHADER";
 
 	// HELLO TRIANGLE STUFF -> TODO: THIS WILL BE DELETED
-	data_->vertex_shader_ID = glCreateShader(GL_VERTEX_SHADER);
-	data_->fragment_shader_ID = glCreateShader(GL_FRAGMENT_SHADER);
+	GLenum error = glGetError();
+	 vertex_shader_ID = glCreateShader(GL_VERTEX_SHADER);
+	 error = glGetError();
+	 fragment_shader_ID = glCreateShader(GL_FRAGMENT_SHADER);
+	 error = glGetError();
 
 	const GLint vertex_size = strlen(vertex_shader);
 	const GLint fragment_size = strlen(fragment_shader);
 
-	glShaderSource(data_->vertex_shader_ID, 1, &vertex_shader, &vertex_size);
-	glShaderSource(data_->fragment_shader_ID, 1, &fragment_shader, &fragment_size);
+	glShaderSource( vertex_shader_ID, 1, &vertex_shader, &vertex_size);
+	 error = glGetError();
+	glShaderSource( fragment_shader_ID, 1, &fragment_shader, &fragment_size);
+	 error = glGetError();
 
-	glCompileShader(data_->vertex_shader_ID);
-	glCompileShader(data_->fragment_shader_ID);
+	glCompileShader( vertex_shader_ID);
+	 error = glGetError();
 
-		// PROGRAM
-	data_->program_ID = glCreateProgram();
-	glAttachShader(data_->program_ID, data_->vertex_shader_ID);
-	glAttachShader(data_->program_ID, data_->fragment_shader_ID);
+	GLint status = 0;
+	glGetShaderiv(vertex_shader_ID, GL_COMPILE_STATUS, &status);
+	GLint log_length = 0;
+	glGetShaderiv(vertex_shader_ID, GL_INFO_LOG_LENGTH, &log_length);
+	GLchar* info_log = new GLchar[log_length + 1];
+	glGetShaderInfoLog(vertex_shader_ID, log_length, &log_length, info_log);
+	info_log[log_length] = '\0';
+	delete info_log;
+	if (status == GL_FALSE)
+		printf("\nERROR: vertex shader not compiled");
 
-	glLinkProgram(data_->program_ID);
+	glCompileShader( fragment_shader_ID);
+	 error = glGetError();
+	status = 0;
+	glGetShaderiv(fragment_shader_ID, GL_COMPILE_STATUS, &status);
+	log_length = 0;
+	glGetShaderiv(fragment_shader_ID, GL_INFO_LOG_LENGTH, &log_length);
+	info_log = new GLchar[log_length + 1];
+	glGetShaderInfoLog(fragment_shader_ID, log_length, &log_length, info_log);
+	info_log[log_length] = '\0';
+	delete info_log;
+	if (status == GL_FALSE)
+		printf("\nERROR: fragment shader not compiled");
+
+	// PROGRAM
+	 program_ID = glCreateProgram();
+	 error = glGetError();
+	glAttachShader( program_ID,  vertex_shader_ID);
+	 error = glGetError();
+	glAttachShader( program_ID,  fragment_shader_ID);
+	 error = glGetError();
+
+	glLinkProgram( program_ID);
+	 error = glGetError();
 
 		// BUFFERS
 	float vertices[] = {
@@ -122,17 +150,23 @@ bool SufferManager::Init(){
 		-0.5f, -0.5f, -1.0f
 	};
 
-	glGenBuffers(1, &data_->triangle_indices_ID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data_->triangle_indices_ID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glGenBuffers(1, & triangle_vertices_ID);
+	 error = glGetError();
+	glBindBuffer(GL_ARRAY_BUFFER,  triangle_vertices_ID);
+	 error = glGetError();
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	error = glGetError();
 
-	float indices[]{ 0, 2, 1 };
+	unsigned char indices[]{ 0, 2, 1 };
 
-	glGenBuffers(1, &data_->triangle_vertices_ID);
-	glBindBuffer(GL_ARRAY_BUFFER, data_->triangle_indices_ID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glGenBuffers(1, &triangle_indices_ID);
+	error = glGetError();
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triangle_indices_ID);
+	error = glGetError();
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	error = glGetError();
 
-	
+	data_->scene_->Init();
 
 	return true;
 }
@@ -143,13 +177,13 @@ bool SufferManager::Run(){
 
 		data_->current_time_ = Suffer::RawTime();
 		data_->wind_.processEvents();
-		data_->interface_.Update();
+		//data_->interface_.Update();
 
 		Step(data_->delta_time_);
 		
 		DrawDisplayList();
 
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		data_->wind_.swapBuffers();
 
 		data_->delta_time_ = (data_->current_time_ - data_->previous_time_) * 0.0001f;

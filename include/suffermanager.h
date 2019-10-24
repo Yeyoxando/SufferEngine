@@ -7,6 +7,7 @@
 #include <ref_ptr.h>
 
 //Hide from here
+#include <GL/glew.h>
 #include <command.h>
 
 // --------------------------------------------------------------//
@@ -24,6 +25,13 @@ public:
 	double DeltaTime();
 	void AddCommand(EDK3::ref_ptr<Command> cmd);
 
+	// HELLO TRIANGLE STUFF
+	GLuint triangle_vertices_ID;
+	GLuint triangle_indices_ID;
+	GLuint vertex_shader_ID;
+	GLuint fragment_shader_ID;
+	GLuint program_ID;
+
 protected:
 
 	SufferManager();
@@ -37,7 +45,7 @@ private:
 	bool ResetDisplayList();
 
 	struct Data;
-	Data* data_ = nullptr;
+	Data* data_;
 };
 
 // --------------------------------------------------------------//

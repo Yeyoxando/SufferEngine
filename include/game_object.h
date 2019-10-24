@@ -92,6 +92,8 @@ public:
 	void SetMaterial(EDK3::ref_ptr<Material> newMaterial);
 	void SetGeometry(EDK3::ref_ptr<Geometry> newGeometry);
 
+	void Draw();
+
 protected:
 	virtual ~GameObject();
 
@@ -102,7 +104,6 @@ private:
 	EDK3::ref_ptr<Geometry> geometry_;
 
 	// Methods
-	void Draw();
 
 };
 

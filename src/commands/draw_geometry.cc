@@ -2,6 +2,7 @@
 #include <glm.hpp>
 #include <gl/glew.h>
 #include <data_types.h>
+#include "suffermanager.h"
 
 struct DrawGeometry::Data {
 	u16 number_elements_;
@@ -58,8 +59,22 @@ void DrawGeometry::SetMaterial(EDK3::ref_ptr<Material> mat){
 
 // --------------------------------------------------- //
 
-void DrawGeometry::Execute(){
-	
+void DrawGeometry::Execute() {
+	SufferManager& suffer = SufferManager::instance();
+	glUseProgram(suffer.program_ID);
+	GLenum error = glGetError();
+
+	glBindBuffer(GL_ARRAY_BUFFER, suffer.triangle_vertices_ID);
+	//error = glGetError();
+	glEnableVertexAttribArray(0);
+	//error = glGetError();
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+	//error = glGetError();
+	//
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.triangle_indices_ID);
+	//error = glGetError();
+	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, (GLvoid*)0);
 }
+
 
 // --------------------------------------------------- //
