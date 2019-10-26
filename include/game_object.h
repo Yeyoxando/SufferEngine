@@ -27,6 +27,15 @@ struct Transform {
 class Material : public virtual Referenced {
 
 public:
+	friend class SufferManager;
+	friend class DrawGeometry;
+
+	enum BasicMaterials {
+		kBasicMaterials_Default = 0,
+		kBasicMaterials_NONE = 20
+	};
+
+	void SetMaterial(BasicMaterials new_material);
 
 	// Getters
 	glm::vec4 GetColor();
@@ -34,14 +43,22 @@ public:
 	// Setters
 	void SetColor(glm::vec4 newColor);
 
-protected:
 	Material();
-	virtual ~Material() {};
+protected:
+	virtual ~Material();
 
 private:
+
+	struct Data;
+	Data* data_;
+
+	BasicMaterials material_;
+
+	void SetProgram(u16 program);
+	u16 GetProgramID();
+
 	// Methods
 	Material(const Material&);
-	glm::vec4 color_;
 };
 
 // --------------------------------------------------- //
@@ -49,29 +66,39 @@ private:
 class Geometry : public virtual Referenced {
 
 public:
+	friend class SufferManager;
+	friend class DrawGeometry;
 
-	// Getters
-	u32 NumberElements();
-	u32 Indices();
+	enum BasicShapes {
+		kBasicShapes_Triangle = 0,
+		kBasicShapes_Quad,
+		kBasicShapes_Cube,
+		kBasicShapes_NONE = 20
+	};
 
-protected:
+	void SetShape(BasicShapes new_shape);
+
 	Geometry();
+protected:
 	virtual ~Geometry();
 
 private:
 
-	// Attributes
-	u32 number_elements_;
-	u32 indices_;
+	struct Data;
+	Data* data_;
 
-	/*
-	u32 indices_ID;
-	u32 vertices_ID;
-	*/
+	BasicShapes shape_;
+	void SetIndicesID(u16 indices_ID);
+	void SetVerticesID(u16 vertices_ID);
+	void SetNumberElements(u32 number_elements);
+
+	u16 GetIndicesID();
+	u16 GetVerticesID();
+	u32 GetNumberElements();
+
 
 	// Methods
 	Geometry(const Geometry&);
-
 };
 
 // --------------------------------------------------- //

@@ -78,45 +78,136 @@ void GameObject::Draw() {
 
 // --------------------------------------------------- //
 
-u32 Geometry::NumberElements() {
-	return number_elements_;
-}
+// --------------------------------------------------- //
+
+struct Geometry::Data {
+	GLuint indices_ID;
+	GLuint vertices_ID;
+	u32 number_elements;
+};
 
 // --------------------------------------------------- //
 
-u32 Geometry::Indices() {
-	return indices_;
+void Geometry::SetShape(BasicShapes new_shape){
+
+	shape_ = new_shape;
+	SufferManager::instance().SetPredefiniedShape(this, shape_);
+
 }
 
 // --------------------------------------------------- //
 
 Geometry::Geometry() {
-	number_elements_ = 0;
-	indices_ = 0;
+	data_ = new Data();
+
+	data_->vertices_ID = 0;
+	data_->indices_ID = 0;
+
+	shape_ = kBasicShapes_NONE;
 }
 
 // --------------------------------------------------- //
 
 Geometry::~Geometry() {
+	if (!data_) return;
+	delete data_;
+	data_ = nullptr;
+}
+
+// --------------------------------------------------- //
+
+void Geometry::SetIndicesID(u16 indices_ID){
+	data_->indices_ID = indices_ID;
+}
+
+// --------------------------------------------------- //
+
+void Geometry::SetVerticesID(u16 vertices_ID){
+	data_->vertices_ID = vertices_ID;
+}
+
+// --------------------------------------------------- //
+
+void Geometry::SetNumberElements(u32 number_elements){
+	data_->number_elements = number_elements;
+}
+
+// --------------------------------------------------- //
+
+u16 Geometry::GetIndicesID(){
+	return data_->indices_ID;
+}
+
+// --------------------------------------------------- //
+
+u16 Geometry::GetVerticesID(){
+	return data_->vertices_ID;
+}
+
+// --------------------------------------------------- //
+
+u32 Geometry::GetNumberElements(){
+	return data_->number_elements;
+}
+
+// --------------------------------------------------- //
+
+// --------------------------------------------------- //
+
+struct Material::Data {
+	glm::vec4 color;
+	GLuint program_ID;
+};
+
+// --------------------------------------------------- //
+
+void Material::SetMaterial(BasicMaterials new_material) {
+
+	material_ = new_material;
+	SufferManager::instance().SetPredefiniedMaterial(this, new_material);
 
 }
 
 // --------------------------------------------------- //
 
 glm::vec4 Material::GetColor() {
-	return color_;
+	return data_->color;
 }
 
 // --------------------------------------------------- //
 
-void Material::SetColor(glm::vec4 newColor) {
-	color_ = newColor;
+u16 Material::GetProgramID(){
+	return data_->program_ID;
+}
+
+// --------------------------------------------------- //
+
+// --------------------------------------------------- //
+
+void Material::SetColor(glm::vec4 new_color) {
+	data_->color = new_color;
+}
+
+// --------------------------------------------------- //
+
+void Material::SetProgram(u16 program){
+	data_->program_ID = program;
 }
 
 // --------------------------------------------------- //
 
 Material::Material() {
-	color_ = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	data_ = new Data();
+
+	data_->color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+// --------------------------------------------------- //
+
+Material::~Material() {
+	if (!data_) return;
+	delete data_;
+	data_ = nullptr;
 }
 
 // --------------------------------------------------- //

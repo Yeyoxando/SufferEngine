@@ -4,6 +4,7 @@
 #define __SUFFER_MANAGER_H__
 
 #include <vector>
+#include <game_object.h>
 #include <ref_ptr.h>
 
 //Hide from here
@@ -24,6 +25,9 @@ public:
 
 	double DeltaTime();
 	void AddCommand(EDK3::ref_ptr<Command> cmd);
+
+	void SetPredefiniedShape(Geometry* geo, Geometry::BasicShapes shape);
+	void SetPredefiniedMaterial(Material* mat, Material::BasicMaterials basic_mat);
 
 	// HELLO TRIANGLE STUFF
 	GLuint triangle_vertices_ID;
