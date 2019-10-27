@@ -2,10 +2,16 @@
 #include <glm.hpp>
 #include <gl/glew.h>
 #include <data_types.h>
+#include "suffermanager.h"
 
 struct DrawGeometry::Data {
-	u16 number_elements_;
-	u16 indices_;
+	//Geometry
+	u32 number_elements_;
+	GLuint indices_ID;
+	GLuint vertices_ID;
+
+	//Material
+	GLuint program_ID;
 	glm::vec4 color_;
 	glm::vec3 position_;
 	glm::vec3 rotation_;
@@ -29,10 +35,10 @@ DrawGeometry::~DrawGeometry(){
 
 // --------------------------------------------------- //
 
-void DrawGeometry::SetData(EDK3::ref_ptr<GameObject> go){
-	//SetTransform(go.get()->GetTransform());
-	//SetGeometry(go.get()->GetGeometry());
-	//SetMaterial(go.get()->GetMaterial());
+void DrawGeometry::SetData(GameObject* go){
+	SetTransform(go->GetTransform());
+	SetGeometry(go->GetGeometry());
+	SetMaterial(go->GetMaterial());
 }
 
 // --------------------------------------------------- //
@@ -46,20 +52,31 @@ void DrawGeometry::SetTransform(Transform t){
 // --------------------------------------------------- //
 
 void DrawGeometry::SetGeometry(EDK3::ref_ptr<Geometry> geo){
-	//data_->number_elements_ = geo.get()->GetElements();
-	//data_->indices_ = geo.get()->GetIndices();
+	data_->number_elements_ = geo.get()->GetNumberElements();
+	data_->indices_ID = (GLint)geo.get()->GetIndicesID();
+	data_->vertices_ID = (GLint)geo.get()->GetVerticesID();
 }
 
 // --------------------------------------------------- //
 
 void DrawGeometry::SetMaterial(EDK3::ref_ptr<Material> mat){
-	//data_->color_ = mat.get()->GetColor();
+	data_->color_ = mat.get()->GetColor();
+	data_->program_ID = mat.get()->GetProgramID();
 }
 
 // --------------------------------------------------- //
 
-void DrawGeometry::Execute(){
-	
+void DrawGeometry::Execute() {
+
+	glUseProgram(data_->program_ID);
+
+	glBindBuffer(GL_ARRAY_BUFFER, data_->vertices_ID);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data_->indices_ID);
+	glDrawElements(GL_TRIANGLES, data_->number_elements_, GL_UNSIGNED_BYTE, (GLvoid*)0);
 }
+
 
 // --------------------------------------------------- //

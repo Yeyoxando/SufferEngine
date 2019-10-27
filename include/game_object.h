@@ -8,6 +8,8 @@
 #define __GAME_OBJECT_H__
 
 #include <glm.hpp>
+#include <geometry.h>
+#include <material.h>
 #include <data_types.h>
 #include <referenced.h>
 #include <ref_ptr.h>
@@ -20,53 +22,6 @@ struct Transform {
 	glm::vec3 scale;
 	glm::vec3 position;
 	glm::vec3 rotation;
-};
-
-// --------------------------------------------------- //
-
-class Material : public virtual Referenced {
-
-public:
-
-	// Getters
-	glm::vec4 GetColor();
-
-	// Setters
-	void SetColor(glm::vec4 newColor);
-
-protected:
-	Material();
-	virtual ~Material() {};
-
-private:
-	// Methods
-	Material(const Material&);
-	glm::vec4 color_;
-};
-
-// --------------------------------------------------- //
-
-class Geometry : public virtual Referenced {
-
-public:
-
-	// Getters
-	u32 NumberElements();
-	u32 Indices();
-
-protected:
-	Geometry();
-	virtual ~Geometry();
-
-private:
-
-	// Attributes
-	u32 number_elements_;
-	u32 indices_;
-
-	// Methods
-	Geometry(const Geometry&);
-
 };
 
 // --------------------------------------------------- //
@@ -84,8 +39,10 @@ public:
 	EDK3::ref_ptr<Geometry> GetGeometry();
 
 	// Setters
-	void SetMaterial(EDK3::ref_ptr<Material> newMaterial);
-	void SetGeometry(EDK3::ref_ptr<Geometry> newGeometry);
+	void SetMaterial(EDK3::ref_ptr<Material> new_material);
+	void SetGeometry(EDK3::ref_ptr<Geometry> new_geometry);
+
+	void Draw();
 
 protected:
 	virtual ~GameObject();
@@ -97,7 +54,6 @@ private:
 	EDK3::ref_ptr<Geometry> geometry_;
 
 	// Methods
-	void Draw();
 
 };
 

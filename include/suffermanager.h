@@ -4,6 +4,9 @@
 #define __SUFFER_MANAGER_H__
 
 #include <vector>
+#include <game_object.h>
+#include <geometry.h>
+#include <material.h>
 #include <ref_ptr.h>
 
 //Hide from here
@@ -24,6 +27,9 @@ public:
 	double DeltaTime();
 	void AddCommand(EDK3::ref_ptr<Command> cmd);
 
+	void SetPredefiniedShape(EDK3::ref_ptr <Geometry> geo, Geometry::BasicShapes shape);
+	void SetPredefiniedMaterial(EDK3::ref_ptr <Material> mat, Material::BasicMaterials basic_mat);
+
 protected:
 
 	SufferManager();
@@ -37,7 +43,7 @@ private:
 	bool ResetDisplayList();
 
 	struct Data;
-	Data* data_ = nullptr;
+	Data* data_;
 };
 
 // --------------------------------------------------------------//

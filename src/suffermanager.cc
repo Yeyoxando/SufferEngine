@@ -7,6 +7,9 @@
 #include <interface.h>
 #include <clear.h>
 #include <time.h>
+#include <GL/glew.h>
+
+// --------------------------------------------------------------//
 
 struct SufferManager::Data {
 
@@ -18,7 +21,177 @@ struct SufferManager::Data {
 	double delta_time_;
 	Interface interface_;
 
+	// Predefined geometries
+	struct InternalGeometry {
+		GLuint vertices_ID;
+		GLuint indices_ID;
+		u32 number_elements;
+	
+		void CreateGeometry(Geometry::BasicShapes shape);
+	};
+
+	InternalGeometry triangle_; 
+	InternalGeometry quad_; 
+	InternalGeometry cube_; 
+
+	void InitInternalGeometries();
+								  
+	// Predefined materials
+	struct InternalMaterial {
+		GLuint program_ID;
+		GLuint vertex_shader_ID;
+		GLuint fragment_shader_ID;
+
+		void CreateMaterial(Material::BasicMaterials material);
+	};
+
+	InternalMaterial default_material_;
+
+	void InitInternalMaterials();
+
 };
+
+// --------------------------------------------------------------//
+
+void SufferManager::Data::InitInternalGeometries() {
+	triangle_.CreateGeometry(Geometry::kBasicShapes_Triangle);
+	quad_.CreateGeometry(Geometry::kBasicShapes_Quad);
+	cube_.CreateGeometry(Geometry::kBasicShapes_Cube);
+}
+
+// --------------------------------------------------------------//
+
+void SufferManager::Data::InitInternalMaterials(){
+	default_material_.CreateMaterial(Material::kBasicMaterials_Default);
+}
+
+// --------------------------------------------------------------//
+
+void SufferManager::Data::InternalGeometry::CreateGeometry(Geometry::BasicShapes shape){
+	switch (shape) {
+	case Geometry::kBasicShapes_Triangle: {
+		// BUFFERS
+		float vertices[] = {
+			0.0f,  0.5f, -1.0f,
+			0.5f, -0.5f, -1.0f,
+			-0.5f, -0.5f, -1.0f
+		};
+
+		glGenBuffers(1, &vertices_ID);
+		glBindBuffer(GL_ARRAY_BUFFER, vertices_ID);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+		unsigned char indices[]{ 0, 2, 1 };
+
+		glGenBuffers(1, &indices_ID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_ID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+		number_elements = 3;
+
+		break;
+	}
+	case Geometry::kBasicShapes_Quad:
+		break;
+	case Geometry::kBasicShapes_Cube:
+		break;
+	case Geometry::kBasicShapes_NONE:
+		break;
+	default:
+		break;
+	}
+
+}
+
+// --------------------------------------------------------------//
+
+void SufferManager::Data::InternalMaterial::CreateMaterial(Material::BasicMaterials material) {
+	switch (material) {
+	case Material::kBasicMaterials_Default: {
+		// DEFAULT SHADERS
+		const GLchar* vertex_shader = R"VSHADER(
+	
+	#version 330
+	layout(location = 0) in vec3 a_position;
+
+	void main(){
+		gl_Position = vec4(a_position, 1.0f);
+	}
+
+	)VSHADER";
+
+		const GLchar* fragment_shader = R"FSHADER(
+
+	#version 330
+
+	void main(){
+		gl_FragColor = vec4(0.0f);
+	}
+	
+	)FSHADER";
+
+		// HELLO TRIANGLE STUFF -> TODO: THIS WILL BE DELETED
+		GLenum error = glGetError();
+		vertex_shader_ID = glCreateShader(GL_VERTEX_SHADER);
+		error = glGetError();
+		fragment_shader_ID = glCreateShader(GL_FRAGMENT_SHADER);
+		error = glGetError();
+
+		const GLint vertex_size = strlen(vertex_shader);
+		const GLint fragment_size = strlen(fragment_shader);
+
+		glShaderSource(vertex_shader_ID, 1, &vertex_shader, &vertex_size);
+		error = glGetError();
+		glShaderSource(fragment_shader_ID, 1, &fragment_shader, &fragment_size);
+		error = glGetError();
+
+		glCompileShader(vertex_shader_ID);
+		error = glGetError();
+
+		GLint status = 0;
+		glGetShaderiv(vertex_shader_ID, GL_COMPILE_STATUS, &status);
+		GLint log_length = 0;
+		glGetShaderiv(vertex_shader_ID, GL_INFO_LOG_LENGTH, &log_length);
+		GLchar* info_log = new GLchar[log_length + 1];
+		glGetShaderInfoLog(vertex_shader_ID, log_length, &log_length, info_log);
+		info_log[log_length] = '\0';
+		delete info_log;
+		if (status == GL_FALSE)
+			printf("\nERROR: vertex shader not compiled");
+
+		glCompileShader(fragment_shader_ID);
+		error = glGetError();
+		status = 0;
+		glGetShaderiv(fragment_shader_ID, GL_COMPILE_STATUS, &status);
+		log_length = 0;
+		glGetShaderiv(fragment_shader_ID, GL_INFO_LOG_LENGTH, &log_length);
+		info_log = new GLchar[log_length + 1];
+		glGetShaderInfoLog(fragment_shader_ID, log_length, &log_length, info_log);
+		info_log[log_length] = '\0';
+		delete info_log;
+		if (status == GL_FALSE)
+			printf("\nERROR: fragment shader not compiled");
+
+		// PROGRAM
+		program_ID = glCreateProgram();
+
+		glAttachShader(program_ID, vertex_shader_ID);
+		glAttachShader(program_ID, fragment_shader_ID);
+
+		glLinkProgram(program_ID);
+		
+		break;
+	}
+	case Material::kBasicMaterials_NONE: {
+		break;
+	}
+	default:
+		break;
+	}
+
+}
+
+// --------------------------------------------------------------//
 
 SufferManager::SufferManager(){
 	data_ = new Data();
@@ -27,16 +200,22 @@ SufferManager::SufferManager(){
 	data_->scene_.alloc();
 }
 
+// --------------------------------------------------------------//
+
 void SufferManager::PrepareDraw(){
 
 	EDK3::ref_ptr<Clear> clear_cmd;
 
 	clear_cmd.alloc();
-	clear_cmd->SetClearColor(glm::vec4(0.8f));
+	clear_cmd.get()->SetClearColor(glm::vec4(0.8f));
 
 	AddCommand(clear_cmd.get());
 
+	data_->scene_->PrepareDraw();
+
 }
+
+// --------------------------------------------------------------//
 
 SufferManager::~SufferManager(){
 	if (!data_) return;
@@ -44,9 +223,13 @@ SufferManager::~SufferManager(){
 	data_ = nullptr;
 }
 
+// --------------------------------------------------------------//
+
 SufferManager::SufferManager(const SufferManager&){
 
 }
+
+// --------------------------------------------------------------//
 
 SufferManager& SufferManager::instance() {
 
@@ -54,6 +237,8 @@ SufferManager& SufferManager::instance() {
 	return *instance;
 
 }
+
+// --------------------------------------------------------------//
 
 bool SufferManager::Init(){
 
@@ -64,8 +249,15 @@ bool SufferManager::Init(){
 	data_->wind_.init(800, 600);
 	Suffer::InitInput();
 
+	data_->InitInternalMaterials();
+	data_->InitInternalGeometries();
+
+	data_->scene_->Init();
+
 	return true;
 }
+
+// --------------------------------------------------------------//
 
 bool SufferManager::Run(){
 
@@ -73,23 +265,24 @@ bool SufferManager::Run(){
 
 		data_->current_time_ = Suffer::RawTime();
 		data_->wind_.processEvents();
-		data_->interface_.Update();
+		//data_->interface_.Update();
 
 		Step(data_->delta_time_);
 		
 		DrawDisplayList();
 
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		data_->wind_.swapBuffers();
 
 		data_->delta_time_ = (data_->current_time_ - data_->previous_time_) * 0.0001f;
 		data_->previous_time_ = data_->current_time_;
 
-	
 	}
 
 	return true;
 }
+
+// --------------------------------------------------------------//
 
 bool SufferManager::Step(double time_step){
 
@@ -98,9 +291,13 @@ bool SufferManager::Step(double time_step){
 	return true;
 }
 
+// --------------------------------------------------------------//
+
 bool SufferManager::Finish(){
 	return true;
 }
+
+// --------------------------------------------------------------//
 
 double SufferManager::DeltaTime(){
 #ifdef ASSERT
@@ -109,6 +306,8 @@ double SufferManager::DeltaTime(){
 	return data_->delta_time_;
 }
 
+// --------------------------------------------------------------//
+
 bool SufferManager::ResetDisplayList(){
 	if (data_->display_list_.empty()) return true;
 
@@ -116,11 +315,70 @@ bool SufferManager::ResetDisplayList(){
 	if (data_->display_list_.empty()) return true;
 }
 
+// --------------------------------------------------------------//
+
 void SufferManager::AddCommand(EDK3::ref_ptr<Command> cmd){
 	if (!cmd) return;
 
 	data_->display_list_.push_back(cmd);
 }
+
+// --------------------------------------------------------------//
+
+void SufferManager::SetPredefiniedShape(EDK3::ref_ptr <Geometry> geo, Geometry::BasicShapes shape) {
+#ifdef ASSERT
+	assert(geo.get()); // "geo was NULL"
+#endif
+	Data::InternalGeometry predefinied_shape;
+	
+	switch (shape) {
+	case Geometry::BasicShapes::kBasicShapes_Triangle: 
+		predefinied_shape = data_->triangle_;
+		break;
+	case Geometry::BasicShapes::kBasicShapes_Quad:
+		predefinied_shape = data_->quad_;
+		break;
+	case Geometry::BasicShapes::kBasicShapes_Cube:
+		predefinied_shape = data_->cube_;
+		break;
+	case Geometry::BasicShapes::kBasicShapes_NONE: 
+		break;
+	default:
+		break;
+	}
+
+	geo.get()->shape_ = shape;
+	geo.get()->SetIndicesID(predefinied_shape.indices_ID);
+	geo.get()->SetVerticesID(predefinied_shape.vertices_ID);
+	geo.get()->SetNumberElements(predefinied_shape.number_elements);
+}
+
+// --------------------------------------------------------------//
+
+void SufferManager::SetPredefiniedMaterial(EDK3::ref_ptr <Material> mat, Material::BasicMaterials basic_mat){
+#ifdef ASSERT
+	assert(mat.get()); // "mat was NULL"
+#endif
+	
+	Data::InternalMaterial predefinied_material;
+	
+	switch (basic_mat) {
+	case Material::BasicMaterials::kBasicMaterials_Default: {
+		predefinied_material = data_->default_material_;
+		break;
+	}
+	case Material::BasicMaterials::kBasicMaterials_NONE: {
+		break;
+	}
+	default:
+		break;
+	}
+
+	mat.get()->material_ = basic_mat;
+	mat.get()->SetProgram(predefinied_material.program_ID);
+}
+
+// --------------------------------------------------------------//
 
 void SufferManager::DrawDisplayList(){
 	for (int i = 0; i < data_->display_list_.size(); ++i){
@@ -130,3 +388,5 @@ void SufferManager::DrawDisplayList(){
 
 	ResetDisplayList();
 }
+
+// --------------------------------------------------------------//

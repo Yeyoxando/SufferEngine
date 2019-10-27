@@ -35,21 +35,21 @@ EDK3::ref_ptr<Geometry> GameObject::GetGeometry() {
 
 // --------------------------------------------------- //
 
-void GameObject::SetMaterial(EDK3::ref_ptr<Material> newMaterial) {
+void GameObject::SetMaterial(EDK3::ref_ptr<Material> new_material) {
 
 #ifdef ASSERT
-	assert(newMaterial); // "newMaterial was NULL"
+	assert(new_material); // "newMaterial was NULL"
 #endif
-	material_ = newMaterial;
+	material_ = new_material;
 }
 
 // --------------------------------------------------- //
 
-void GameObject::SetGeometry(EDK3::ref_ptr<Geometry> newGeometry) {
+void GameObject::SetGeometry(EDK3::ref_ptr<Geometry> new_geometry) {
 #ifdef ASSERT
-	assert(newGeometry); // "newGeometry was NULL"
+	assert(new_geometry); // "newGeometry was NULL"
 #endif
-	geometry_ = newGeometry;
+	geometry_ = new_geometry;
 }
 
 // --------------------------------------------------- //
@@ -74,49 +74,6 @@ void GameObject::Draw() {
 	draw_geometry.get()->SetData(this);
 	SufferManager::instance().AddCommand(draw_geometry.get());
 
-}
-
-// --------------------------------------------------- //
-
-u32 Geometry::NumberElements() {
-	return number_elements_;
-}
-
-// --------------------------------------------------- //
-
-u32 Geometry::Indices() {
-	return indices_;
-}
-
-// --------------------------------------------------- //
-
-Geometry::Geometry() {
-	number_elements_ = 0;
-	indices_ = 0;
-}
-
-// --------------------------------------------------- //
-
-Geometry::~Geometry() {
-
-}
-
-// --------------------------------------------------- //
-
-glm::vec4 Material::GetColor() {
-	return color_;
-}
-
-// --------------------------------------------------- //
-
-void Material::SetColor(glm::vec4 newColor) {
-	color_ = newColor;
-}
-
-// --------------------------------------------------- //
-
-Material::Material() {
-	color_ = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 // --------------------------------------------------- //

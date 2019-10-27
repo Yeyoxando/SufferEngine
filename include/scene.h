@@ -16,6 +16,9 @@ public:
 	Scene(const Scene&);
 	virtual ~Scene();
 
+	void Init();
+	void PrepareDraw();
+
 	// Methods
 
 	// Attributes

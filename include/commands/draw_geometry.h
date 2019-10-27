@@ -16,15 +16,17 @@
 class DrawGeometry : public Command {
 
 public:
-	DrawGeometry();
-	~DrawGeometry();
 
-	void SetData(EDK3::ref_ptr<GameObject> go);
+	void SetData(GameObject* go);
 	void SetTransform(Transform t);
 	void SetGeometry(EDK3::ref_ptr<Geometry> geo);
 	void SetMaterial(EDK3::ref_ptr<Material> mat);
 
+	DrawGeometry();
 protected:
+
+	virtual ~DrawGeometry();
+
 	virtual void Execute() override;
 
 	struct Data;
