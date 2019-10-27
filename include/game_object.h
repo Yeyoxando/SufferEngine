@@ -8,6 +8,8 @@
 #define __GAME_OBJECT_H__
 
 #include <glm.hpp>
+#include <geometry.h>
+#include <material.h>
 #include <data_types.h>
 #include <referenced.h>
 #include <ref_ptr.h>
@@ -20,85 +22,6 @@ struct Transform {
 	glm::vec3 scale;
 	glm::vec3 position;
 	glm::vec3 rotation;
-};
-
-// --------------------------------------------------- //
-
-class Material : public virtual Referenced {
-
-public:
-	friend class SufferManager;
-	friend class DrawGeometry;
-
-	enum BasicMaterials {
-		kBasicMaterials_Default = 0,
-		kBasicMaterials_NONE = 20
-	};
-
-	void SetMaterial(BasicMaterials new_material);
-
-	// Getters
-	glm::vec4 GetColor();
-
-	// Setters
-	void SetColor(glm::vec4 newColor);
-
-	Material();
-protected:
-	virtual ~Material();
-
-private:
-
-	struct Data;
-	Data* data_;
-
-	BasicMaterials material_;
-
-	void SetProgram(u16 program);
-	u16 GetProgramID();
-
-	// Methods
-	Material(const Material&);
-};
-
-// --------------------------------------------------- //
-
-class Geometry : public virtual Referenced {
-
-public:
-	friend class SufferManager;
-	friend class DrawGeometry;
-
-	enum BasicShapes {
-		kBasicShapes_Triangle = 0,
-		kBasicShapes_Quad,
-		kBasicShapes_Cube,
-		kBasicShapes_NONE = 20
-	};
-
-	void SetShape(BasicShapes new_shape);
-
-	Geometry();
-protected:
-	virtual ~Geometry();
-
-private:
-
-	struct Data;
-	Data* data_;
-
-	BasicShapes shape_;
-	void SetIndicesID(u16 indices_ID);
-	void SetVerticesID(u16 vertices_ID);
-	void SetNumberElements(u32 number_elements);
-
-	u16 GetIndicesID();
-	u16 GetVerticesID();
-	u32 GetNumberElements();
-
-
-	// Methods
-	Geometry(const Geometry&);
 };
 
 // --------------------------------------------------- //
@@ -116,8 +39,8 @@ public:
 	EDK3::ref_ptr<Geometry> GetGeometry();
 
 	// Setters
-	void SetMaterial(EDK3::ref_ptr<Material> newMaterial);
-	void SetGeometry(EDK3::ref_ptr<Geometry> newGeometry);
+	void SetMaterial(EDK3::ref_ptr<Material> new_material);
+	void SetGeometry(EDK3::ref_ptr<Geometry> new_geometry);
 
 	void Draw();
 

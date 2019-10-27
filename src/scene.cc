@@ -1,5 +1,6 @@
 #include <scene.h>
 #include <game_object.h>
+#include <suffermanager.h>
 
 // --------------------------------------------------- //
 
@@ -27,15 +28,13 @@ void Scene::Init() {
 
 	EDK3::ref_ptr<Geometry> geometry;
 	geometry.alloc();
-	geometry.get()->SetShape(Geometry::kBasicShapes_Triangle);
-
-	go->SetGeometry(geometry);
-
+	SufferManager::instance().SetPredefiniedShape(geometry, Geometry::kBasicShapes_Triangle);
 
 	EDK3::ref_ptr<Material> material;
 	material.alloc();
-	material->SetMaterial(Material::kBasicMaterials_Default);
+	SufferManager::instance().SetPredefiniedMaterial(material, Material::kBasicMaterials_Default);
 
+	go->SetGeometry(geometry);
 	go->SetMaterial(material);
 
 	go_.push_back(go);

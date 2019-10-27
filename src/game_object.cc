@@ -35,21 +35,21 @@ EDK3::ref_ptr<Geometry> GameObject::GetGeometry() {
 
 // --------------------------------------------------- //
 
-void GameObject::SetMaterial(EDK3::ref_ptr<Material> newMaterial) {
+void GameObject::SetMaterial(EDK3::ref_ptr<Material> new_material) {
 
 #ifdef ASSERT
-	assert(newMaterial); // "newMaterial was NULL"
+	assert(new_material); // "newMaterial was NULL"
 #endif
-	material_ = newMaterial;
+	material_ = new_material;
 }
 
 // --------------------------------------------------- //
 
-void GameObject::SetGeometry(EDK3::ref_ptr<Geometry> newGeometry) {
+void GameObject::SetGeometry(EDK3::ref_ptr<Geometry> new_geometry) {
 #ifdef ASSERT
-	assert(newGeometry); // "newGeometry was NULL"
+	assert(new_geometry); // "newGeometry was NULL"
 #endif
-	geometry_ = newGeometry;
+	geometry_ = new_geometry;
 }
 
 // --------------------------------------------------- //
@@ -74,140 +74,6 @@ void GameObject::Draw() {
 	draw_geometry.get()->SetData(this);
 	SufferManager::instance().AddCommand(draw_geometry.get());
 
-}
-
-// --------------------------------------------------- //
-
-// --------------------------------------------------- //
-
-struct Geometry::Data {
-	GLuint indices_ID;
-	GLuint vertices_ID;
-	u32 number_elements;
-};
-
-// --------------------------------------------------- //
-
-void Geometry::SetShape(BasicShapes new_shape){
-
-	shape_ = new_shape;
-	SufferManager::instance().SetPredefiniedShape(this, shape_);
-
-}
-
-// --------------------------------------------------- //
-
-Geometry::Geometry() {
-	data_ = new Data();
-
-	data_->vertices_ID = 0;
-	data_->indices_ID = 0;
-
-	shape_ = kBasicShapes_NONE;
-}
-
-// --------------------------------------------------- //
-
-Geometry::~Geometry() {
-	if (!data_) return;
-	delete data_;
-	data_ = nullptr;
-}
-
-// --------------------------------------------------- //
-
-void Geometry::SetIndicesID(u16 indices_ID){
-	data_->indices_ID = indices_ID;
-}
-
-// --------------------------------------------------- //
-
-void Geometry::SetVerticesID(u16 vertices_ID){
-	data_->vertices_ID = vertices_ID;
-}
-
-// --------------------------------------------------- //
-
-void Geometry::SetNumberElements(u32 number_elements){
-	data_->number_elements = number_elements;
-}
-
-// --------------------------------------------------- //
-
-u16 Geometry::GetIndicesID(){
-	return data_->indices_ID;
-}
-
-// --------------------------------------------------- //
-
-u16 Geometry::GetVerticesID(){
-	return data_->vertices_ID;
-}
-
-// --------------------------------------------------- //
-
-u32 Geometry::GetNumberElements(){
-	return data_->number_elements;
-}
-
-// --------------------------------------------------- //
-
-// --------------------------------------------------- //
-
-struct Material::Data {
-	glm::vec4 color;
-	GLuint program_ID;
-};
-
-// --------------------------------------------------- //
-
-void Material::SetMaterial(BasicMaterials new_material) {
-
-	material_ = new_material;
-	SufferManager::instance().SetPredefiniedMaterial(this, new_material);
-
-}
-
-// --------------------------------------------------- //
-
-glm::vec4 Material::GetColor() {
-	return data_->color;
-}
-
-// --------------------------------------------------- //
-
-u16 Material::GetProgramID(){
-	return data_->program_ID;
-}
-
-// --------------------------------------------------- //
-
-// --------------------------------------------------- //
-
-void Material::SetColor(glm::vec4 new_color) {
-	data_->color = new_color;
-}
-
-// --------------------------------------------------- //
-
-void Material::SetProgram(u16 program){
-	data_->program_ID = program;
-}
-
-// --------------------------------------------------- //
-
-Material::Material() {
-	data_ = new Data();
-
-	data_->color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-}
-
-// --------------------------------------------------- //
-
-Material::~Material() {
-	if (!data_) return;
-	delete data_;
-	data_ = nullptr;
 }
 
 // --------------------------------------------------- //

@@ -325,40 +325,46 @@ void SufferManager::AddCommand(EDK3::ref_ptr<Command> cmd){
 
 // --------------------------------------------------------------//
 
-void SufferManager::SetPredefiniedShape(Geometry* geo, Geometry::BasicShapes shape) {
+void SufferManager::SetPredefiniedShape(EDK3::ref_ptr <Geometry> geo, Geometry::BasicShapes shape) {
+#ifdef ASSERT
+	assert(geo.get()); // "geo was NULL"
+#endif
+	Data::InternalGeometry predefinied_shape;
+	
 	switch (shape) {
-	case Geometry::BasicShapes::kBasicShapes_Triangle: {
-		geo->SetIndicesID(data_->triangle_.indices_ID);
-		geo->SetVerticesID(data_->triangle_.vertices_ID);
-		geo->SetNumberElements(data_->triangle_.number_elements);
+	case Geometry::BasicShapes::kBasicShapes_Triangle: 
+		predefinied_shape = data_->triangle_;
 		break;
-	}
-	case Geometry::BasicShapes::kBasicShapes_Quad: {
-		geo->SetIndicesID(data_->quad_.indices_ID);
-		geo->SetVerticesID(data_->quad_.vertices_ID);
-		geo->SetNumberElements(data_->quad_.number_elements);
+	case Geometry::BasicShapes::kBasicShapes_Quad:
+		predefinied_shape = data_->quad_;
 		break;
-	}
-	case Geometry::BasicShapes::kBasicShapes_Cube: {
-		geo->SetIndicesID(data_->cube_.indices_ID);
-		geo->SetVerticesID(data_->cube_.vertices_ID);
-		geo->SetNumberElements(data_->cube_.number_elements);
+	case Geometry::BasicShapes::kBasicShapes_Cube:
+		predefinied_shape = data_->cube_;
 		break;
-	}
-	case Geometry::BasicShapes::kBasicShapes_NONE: {
+	case Geometry::BasicShapes::kBasicShapes_NONE: 
 		break;
-	}
 	default:
 		break;
 	}
+
+	geo.get()->shape_ = shape;
+	geo.get()->SetIndicesID(predefinied_shape.indices_ID);
+	geo.get()->SetVerticesID(predefinied_shape.vertices_ID);
+	geo.get()->SetNumberElements(predefinied_shape.number_elements);
 }
 
 // --------------------------------------------------------------//
 
-void SufferManager::SetPredefiniedMaterial(Material * mat, Material::BasicMaterials basic_mat){
+void SufferManager::SetPredefiniedMaterial(EDK3::ref_ptr <Material> mat, Material::BasicMaterials basic_mat){
+#ifdef ASSERT
+	assert(mat.get()); // "mat was NULL"
+#endif
+	
+	Data::InternalMaterial predefinied_material;
+	
 	switch (basic_mat) {
 	case Material::BasicMaterials::kBasicMaterials_Default: {
-		mat->SetProgram(data_->default_material_.program_ID);
+		predefinied_material = data_->default_material_;
 		break;
 	}
 	case Material::BasicMaterials::kBasicMaterials_NONE: {
@@ -367,6 +373,9 @@ void SufferManager::SetPredefiniedMaterial(Material * mat, Material::BasicMateri
 	default:
 		break;
 	}
+
+	mat.get()->material_ = basic_mat;
+	mat.get()->SetProgram(predefinied_material.program_ID);
 }
 
 // --------------------------------------------------------------//

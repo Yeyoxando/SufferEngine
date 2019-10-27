@@ -5,10 +5,11 @@
 
 #include <vector>
 #include <game_object.h>
+#include <geometry.h>
+#include <material.h>
 #include <ref_ptr.h>
 
 //Hide from here
-#include <GL/glew.h>
 #include <command.h>
 
 // --------------------------------------------------------------//
@@ -26,15 +27,8 @@ public:
 	double DeltaTime();
 	void AddCommand(EDK3::ref_ptr<Command> cmd);
 
-	void SetPredefiniedShape(Geometry* geo, Geometry::BasicShapes shape);
-	void SetPredefiniedMaterial(Material* mat, Material::BasicMaterials basic_mat);
-
-	// HELLO TRIANGLE STUFF
-	GLuint triangle_vertices_ID;
-	GLuint triangle_indices_ID;
-	GLuint vertex_shader_ID;
-	GLuint fragment_shader_ID;
-	GLuint program_ID;
+	void SetPredefiniedShape(EDK3::ref_ptr <Geometry> geo, Geometry::BasicShapes shape);
+	void SetPredefiniedMaterial(EDK3::ref_ptr <Material> mat, Material::BasicMaterials basic_mat);
 
 protected:
 
