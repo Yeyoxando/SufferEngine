@@ -183,6 +183,7 @@ Audio3D::Audio3D(const Audio3D& copy){
 Audio3D::~Audio3D(){
 
 	_ptr->sound_.deinit();
+	if (_ptr == nullptr) return;
 	delete _ptr;
 
 }
@@ -278,6 +279,7 @@ void Audio3D::SetSoundSpeed(glm::vec3 newSpeed){
 void Audio3D::SetSoundPosition(glm::vec3 newPosition){
 
 	_ptr->sound_.set3dSourcePosition(_ptr->handle_, newPosition.x, newPosition.y, newPosition.z);
+	_ptr->sound_.update3dAudio();
 
 }
 

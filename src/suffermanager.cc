@@ -91,10 +91,81 @@ void SufferManager::Data::InternalGeometry::CreateGeometry(Geometry::BasicShapes
 
 		break;
 	}
-	case Geometry::kBasicShapes_Quad:
+	case Geometry::kBasicShapes_Quad: {
+
+		// BUFFERS
+		float vertices[] = {
+			0.5f, -0.5f, -1.0f,
+			0.5f,  0.5f, -1.0f,
+		   -0.5f,  0.5f, -1.0f,
+		   -0.5f, -0.5f, -1.0f,
+		};
+
+		glGenBuffers(1, &vertices_ID);
+		glBindBuffer(GL_ARRAY_BUFFER, vertices_ID);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+		unsigned char indices[]{ 0, 2, 1, 
+								 2, 3, 0 };
+
+		glGenBuffers(1, &indices_ID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_ID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+		number_elements = 6;
+
 		break;
-	case Geometry::kBasicShapes_Cube:
+
+	}
+	case Geometry::kBasicShapes_Cube: {
+
+		// BUFFERS
+		float vertices[] = {
+			// front
+			-0.5, -0.5,  0.5,
+			 0.5, -0.5,  0.5,
+			 0.5,  0.5,  0.5,
+			-0.5,  0.5,  0.5,
+			// back
+			-0.5, -0.5, -0.5,
+			 0.5, -0.5, -0.5,
+			 0.5,  0.5, -0.5,
+			-0.5,  0.5, -0.5
+		};
+
+		glGenBuffers(1, &vertices_ID);
+		glBindBuffer(GL_ARRAY_BUFFER, vertices_ID);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+		unsigned char indices[]{ 		
+			// front
+			0, 1, 2,
+			2, 3, 0,
+			// right
+			1, 5, 6,
+			6, 2, 1,
+			// back
+			7, 6, 5,
+			5, 4, 7,
+			// left
+			4, 0, 3,
+			3, 7, 4,
+			// bottom
+			4, 5, 1,
+			1, 0, 4,
+			// top
+			3, 2, 6,
+			6, 7, 3 
+		};
+
+		glGenBuffers(1, &indices_ID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_ID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+		number_elements = 36;
+
 		break;
+	}
 	case Geometry::kBasicShapes_NONE:
 		break;
 	default:
@@ -125,7 +196,7 @@ void SufferManager::Data::InternalMaterial::CreateMaterial(Material::BasicMateri
 	#version 330
 
 	void main(){
-		gl_FragColor = vec4(0.0f);
+		gl_FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 	}
 	
 	)FSHADER";
@@ -248,6 +319,7 @@ bool SufferManager::Init(){
 
 	data_->wind_.init(800, 600);
 	Suffer::InitInput();
+	data_->interface_.Init();
 
 	data_->InitInternalMaterials();
 	data_->InitInternalGeometries();
@@ -265,13 +337,13 @@ bool SufferManager::Run(){
 
 		data_->current_time_ = Suffer::RawTime();
 		data_->wind_.processEvents();
-		//data_->interface_.Update();
+		data_->interface_.Update();
 
 		Step(data_->delta_time_);
 		
 		DrawDisplayList();
 
-		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		data_->wind_.swapBuffers();
 
 		data_->delta_time_ = (data_->current_time_ - data_->previous_time_) * 0.0001f;

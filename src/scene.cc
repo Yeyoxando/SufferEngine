@@ -28,7 +28,7 @@ void Scene::Init() {
 
 	EDK3::ref_ptr<Geometry> geometry;
 	geometry.alloc();
-	SufferManager::instance().SetPredefiniedShape(geometry, Geometry::kBasicShapes_Triangle);
+	SufferManager::instance().SetPredefiniedShape(geometry, Geometry::kBasicShapes_Cube);
 
 	EDK3::ref_ptr<Material> material;
 	material.alloc();

@@ -7,6 +7,8 @@
 #ifndef __INTERFACE_H__
 #define __INTERFACE_H__
 
+#include <data_types.h>
+
  // Forward declaration for the Engine LOG
 struct ExampleAppLog;
 
@@ -16,6 +18,7 @@ struct ExampleAppLog;
 #define _information_ "INFO"
 #define _engine_ "ENGINE"
 #define _audio_ "AUDIO"
+#define _debug_ "DEBUG"
 
 class Interface {
 
@@ -45,7 +48,7 @@ public:
 	void Log();
 	void Inspector();
 	void Project();
-	void Game();
+	void Game(s8 tex);
 
 	// Windows that can be opened
 	void Options();
@@ -53,6 +56,7 @@ public:
 	enum InterfaceStyle {
 		kDefault = 0,
 		kDark,
+		kRed,
 		kWhite,
 		kRayTeak,
 		kCommodore64,
@@ -67,12 +71,16 @@ public:
 
 private:
 
-	const char* styles[4] = {
+	const char* styles[5] = {
 		"Suffer Default",
 		"Dark",
+		"Red",
 		"White",
 		"RayTeak"
 	};
+
+	struct Data;
+	Data* _ptr;
 
 	// Bools (for the windows)
 	bool options_window_;

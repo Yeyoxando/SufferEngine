@@ -3,6 +3,7 @@
 #if defined _MAIN_PABLO_ && !defined _MAIN_DIEGO_
 
 #include <suffermanager.h>
+#include <glfw3.h>
 #include <audio.h>
 
 
@@ -11,6 +12,8 @@
 // --------------------------------------------------------------//
 
 int main(int argc, char* argv[]) {
+
+#if 0
 
 	Audio2D audio_source;
 	Audio2D audio_source2;
@@ -27,7 +30,7 @@ int main(int argc, char* argv[]) {
 	glm::vec3 position, velocity, listener_position;
 	position = glm::vec3(1.0f, 0.0f, 0.0f);
 	velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	listener_position = glm::vec3(0.0f, 0.0f, 0.0f);
+	listener_position = glm::vec3(0.0f, 0.0f, -0.5f);
 
 #if 1 // ONLY ONE RESOURCE AT LEFT
 	
@@ -35,17 +38,28 @@ int main(int argc, char* argv[]) {
 	audio_source_3d.Load("../../../resources/audio/fight_mono.ogg");
 	audio_source_3d.SetLooping(true);
 	audio_source_3d.SetPitch(1.0f);
-	audio_source_3d.SetGain(0.5f);
+	audio_source_3d.SetGain(1.0f);
 	audio_source_3d.Play3D(position, velocity);
 	audio_source_3d.SetListenerPosition(listener_position);	
-	
 
+	//position = glm::vec3(1.0f, 0.0f, 0.0f);
+	//audio_source_3d2.Load("../../../resources/audio/pressure.ogg");
+	//audio_source_3d2.Play3D(glm::vec3(-1.0f, 0.0f, 0.0f), velocity);
+
+
+	//float position2[3] = { 1.0f, 0.0f, 0.0f };
+	//while (1) {
+	//	position2[0] -= 0.0000005f;
+	//	audio_source_3d.SetSoundPosition(glm::vec3(position2[0], position2[1], position2[2]));
+	//	//audio_source_3d2.SetSoundPosition(glm::vec3(-position2[0], position2[1], position2[2]));
+	//	if (position2[0] < -1.0f) {
+	//		position2[0] = 1.0f;
+	//	}
+	//}
+	
 #endif
 
 	// 3D Source 2
-	position = glm::vec3(1.0f, 0.0f, 0.0f);
-	audio_source_3d2.Load("../../../resources/audio/pressure.ogg");
-	audio_source_3d2.Play3D(glm::vec3(-1.0f, 0.0f, 0.0f), velocity);
 
 
 #else
@@ -63,6 +77,9 @@ int main(int argc, char* argv[]) {
 	audio_source2.SetLooping();
 
 #endif
+
+#endif
+
 
 	suffer.Init();
 

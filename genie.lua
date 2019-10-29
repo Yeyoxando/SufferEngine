@@ -61,6 +61,7 @@ project "SufferCore"
 		"./src/deps/soloud/core/",
 		"./src/deps/soloud/filter/",
 		"./deps/soloud/",
+		"./deps/stb/",
 	}
 
 	--Common files
