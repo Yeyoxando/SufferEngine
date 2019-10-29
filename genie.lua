@@ -114,6 +114,9 @@ project "SufferCore"
 		"./src/deps/glew/include/GL/wglew.h",
 		"./src/deps/glew/src/glew.c",
 
+		--STB
+		"./deps/stb/stb_image.h",
+
 		--SoLoud
 		"./src/deps/soloud/audiosource/monotone/*.cpp",
 		"./src/deps/soloud/audiosource/openmpt/*.cpp",

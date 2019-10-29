@@ -4,10 +4,38 @@
 
 #include <suffermanager.h>
 #include <glfw3.h>
+#include <px_sched.h>
 #include <audio.h>
+
+px_sched::Scheduler schd;
+px_sched::Sync thread_logic, thread_render;
+bool first_frame = false;
 
 
 #define suffer SufferManager::instance()
+
+void Render();
+
+void Logic() {
+	for (size_t i = 0; i < 10; ++i) {
+			printf("Phase 1: Task %zu completed from %s\n",
+				i, px_sched::Scheduler::current_thread_name());
+	}
+	if (!first_frame) first_frame = true;
+	else {
+		schd.waitFor(thread_render);
+		schd.run(Render, &thread_render);
+	}
+
+}
+
+void Render() {
+	schd.run(Logic, &thread_logic);
+	for (size_t i = 0; i < 10; ++i) {
+			printf("Phase 2: Task %zu completed from %s\n",
+				i, px_sched::Scheduler::current_thread_name());
+	}
+}
 
 // --------------------------------------------------------------//
 
@@ -80,6 +108,25 @@ int main(int argc, char* argv[]) {
 
 #endif
 
+
+	schd.init();
+
+
+
+
+	// manually increment the sync object, to control any task that will be
+	// attached to it. Tasks are executed when sync objects reach zero.
+	//schd.incrementSync(&s1);
+
+	printf("\n");
+
+	schd.run(Logic, &thread_logic);
+	schd.runAfter(thread_logic, Render, &thread_render);
+
+
+	while (1) {
+	
+	}
 
 	suffer.Init();
 
