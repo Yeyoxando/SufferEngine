@@ -8,6 +8,10 @@
 #include <clear.h>
 #include <time.h>
 #include <GL/glew.h>
+#include <px_sched.h>
+
+// STD Headers
+#include <mutex>
 
 // --------------------------------------------------------------//
 
@@ -20,6 +24,15 @@ struct SufferManager::Data {
 	double current_time_;
 	double delta_time_;
 	Interface interface_;
+
+	// Audio STUFF
+	std::mutex audio_mutex;
+	std::vector<EDK3::ref_ptr<Command>> audio_dl_;
+
+	// Scheduler
+	px_sched::Scheduler scheduler_;
+	px_sched::Sync logic_thread_;
+	px_sched::Sync audio_thread_;
 
 	// Predefined geometries
 	struct InternalGeometry {
@@ -196,7 +209,7 @@ void SufferManager::Data::InternalMaterial::CreateMaterial(Material::BasicMateri
 	#version 330
 
 	void main(){
-		gl_FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		gl_FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);
 	}
 	
 	)FSHADER";
@@ -321,6 +334,9 @@ bool SufferManager::Init(){
 	Suffer::InitInput();
 	data_->interface_.Init();
 
+	// Scheduler init
+	data_->scheduler_.init();
+
 	data_->InitInternalMaterials();
 	data_->InitInternalGeometries();
 
@@ -331,20 +347,50 @@ bool SufferManager::Init(){
 
 // --------------------------------------------------------------//
 
+void SufferManager::Update() {
+
+	Step(data_->delta_time_);
+
+}
+
+// --------------------------------------------------------------//
+
+void Update_Thread() {
+
+	SufferManager::instance().Update();
+
+}
+
+// --------------------------------------------------------------//
+
+void SufferManager::Draw() {
+	
+	data_->scheduler_.run(Update_Thread, &data_->logic_thread_);
+
+	// DO SOMETHING HERE TO GAIN TIME
+	data_->scheduler_.waitFor(data_->logic_thread_); // TODO: THIS WILL BE DELETED
+
+	//data_->interface_.Update();
+	DrawDisplayList();
+
+	//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	data_->wind_.swapBuffers();
+
+}
+
+// --------------------------------------------------------------//
+
 bool SufferManager::Run(){
+
+	data_->scheduler_.run(Update_Thread, &data_->logic_thread_);
 
 	while (!Suffer::IsKeyDown(k_Escape)) {
 
 		data_->current_time_ = Suffer::RawTime();
 		data_->wind_.processEvents();
-		data_->interface_.Update();
 
-		Step(data_->delta_time_);
-		
-		DrawDisplayList();
-
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		data_->wind_.swapBuffers();
+		//Update_Thread();
+		Draw();
 
 		data_->delta_time_ = (data_->current_time_ - data_->previous_time_) * 0.0001f;
 		data_->previous_time_ = data_->current_time_;
@@ -352,6 +398,52 @@ bool SufferManager::Run(){
 	}
 
 	return true;
+
+}
+
+// --------------------------------------------------------------//
+
+void SufferManager::Audio() {
+
+	data_->audio_mutex.lock();
+
+	int display_list_size = data_->audio_dl_.size();
+
+	for (int i = 0; i < display_list_size; ++i) {
+		Command* audio_command = data_->audio_dl_[i].get();
+#ifdef ASSERT
+		assert(audio_command && "NULL Audio Command");
+#endif
+		audio_command->Execute();
+	}
+
+	data_->audio_mutex.unlock();
+
+}
+
+// --------------------------------------------------------------//
+
+void Audio_Thread() {
+
+	SufferManager::instance().Audio();
+
+}
+
+// --------------------------------------------------------------//
+
+void SufferManager::PrepareAudio() {
+
+	// IF SOMETHING HAPPENS IN AUDIO, THEN...
+	data_->audio_mutex.lock();
+
+	if (!data_->audio_dl_.empty()) {
+		data_->audio_mutex.unlock();
+		data_->scheduler_.run(Audio_Thread, &data_->audio_thread_);
+		return;
+	}
+
+	data_->audio_mutex.unlock();
+
 }
 
 // --------------------------------------------------------------//
@@ -359,6 +451,10 @@ bool SufferManager::Run(){
 bool SufferManager::Step(double time_step){
 
 	PrepareDraw();
+
+
+	// This will be the last function in UPDATE
+	PrepareAudio();
 
 	return true;
 }
@@ -453,12 +549,17 @@ void SufferManager::SetPredefiniedMaterial(EDK3::ref_ptr <Material> mat, Materia
 // --------------------------------------------------------------//
 
 void SufferManager::DrawDisplayList(){
+
+	render_mutex.lock();
+
 	for (int i = 0; i < data_->display_list_.size(); ++i){
 		Command* cmd = data_->display_list_[i].get();
 		cmd->Execute();
 	}
 
 	ResetDisplayList();
+
+	render_mutex.unlock();
 }
 
 // --------------------------------------------------------------//

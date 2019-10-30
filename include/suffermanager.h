@@ -8,9 +8,13 @@
 #include <geometry.h>
 #include <material.h>
 #include <ref_ptr.h>
+#include <scene.h>
+#include <mutex>
 
 //Hide from here
 #include <command.h>
+
+// SCHEDULER
 
 // --------------------------------------------------------------//
 
@@ -18,6 +22,9 @@ class SufferManager {
 
 public:
 	static SufferManager& instance();
+
+	friend class Audio3D;
+	friend class Audio2D;
 
 	bool Init();
 	bool Run();
@@ -30,12 +37,22 @@ public:
 	void SetPredefiniedShape(EDK3::ref_ptr <Geometry> geo, Geometry::BasicShapes shape);
 	void SetPredefiniedMaterial(EDK3::ref_ptr <Material> mat, Material::BasicMaterials basic_mat);
 
+
+	void Draw();
+	void Logic();
+	void Input();
+	void Update();
+	void Audio();
+
+	std::mutex render_mutex;
+
 protected:
 
 	SufferManager();
 	virtual ~SufferManager();
 
 private:
+
 	SufferManager(const SufferManager&);
 
 	void PrepareDraw();
@@ -44,6 +61,11 @@ private:
 
 	struct Data;
 	Data* data_;
+
+	// DisplayLists Stuff
+	void PrepareAudio();
+
+
 };
 
 // --------------------------------------------------------------//

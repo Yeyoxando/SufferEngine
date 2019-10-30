@@ -227,9 +227,9 @@ void Interface::Update(){
 
 
 	// STUFF
-	static bool* open;
+	static bool open = true;
 	DrawMenuBar();
-	CreateDock(open);
+	CreateDock(&open);
 	OpenWindows();
 
 

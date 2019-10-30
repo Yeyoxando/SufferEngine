@@ -9,6 +9,7 @@
 #include <interface.h>
 #include <soloud.h>
 #include <soloud_wav.h>
+#include <suffermanager.h>
 
 struct ExampleAppLog {
 	void    AddLog(const char* fmt, ...) IM_FMTARGS(2);
@@ -401,21 +402,34 @@ void Audio3D::operator=(const Audio3D& a){
 
 }
 
-// --------------------------------------------------------------//
 
-Audio3D Audio3D::operator=(const Audio3D& a) const{
+// MockupMockupMockupMockupMockupMockupMockupMockupMockupMockupMockupMockup
 
-	Audio3D newSource;
-
-	newSource.Load(a.file_);
-
-	newSource.gain_    = a.gain_;
-	newSource.hertz_   = a.hertz_;
-	newSource.pitch_   = a.pitch_;
-	newSource.looping_ = a.looping_;
-
-	return newSource;
+void Suffer::Audio3D::Execute(){
 
 }
+
+void Suffer::Audio3D::Reproduce(){
+
+}
+
+// MockupMockupMockupMockupMockupMockupMockupMockupMockupMockupMockupMockup
+
+// --------------------------------------------------------------//
+
+//Audio3D Audio3D::operator=(const Audio3D& a) const{
+//
+//	Audio3D newSource;
+//
+//	newSource.Load(a.file_);
+//
+//	newSource.gain_    = a.gain_;
+//	newSource.hertz_   = a.hertz_;
+//	newSource.pitch_   = a.pitch_;
+//	newSource.looping_ = a.looping_;
+//
+//	return newSource;
+//
+//}
 
 // --------------------------------------------------------------//

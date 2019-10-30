@@ -5,6 +5,7 @@
 */
 
 #include <glm.hpp>
+#include <command.h>
 #include <data_types.h>
 
 #ifndef __AUDIO_H__
@@ -14,7 +15,7 @@ namespace Suffer {
 
 	// ---------------------------------------------------------------------- //
 
-	class Audio2D {
+	class Audio2D : public Command {
 
 	public:
 
@@ -51,7 +52,7 @@ namespace Suffer {
 
 	// ---------------------------------------------------------------------- //
 
-	class Audio3D {
+	class Audio3D : public Command {
 
 	public:
 
@@ -93,9 +94,13 @@ namespace Suffer {
 
 		// Operand overload
 		void operator=(const Audio3D& a);
-		Audio3D operator=(const Audio3D& a) const;
+		//Audio3D operator=(const Audio3D& a) const;
 
 		bool operator!=(const Audio3D& a);
+
+		// Commands Stuff -- Mockup
+		virtual void Execute() override;
+		virtual void Reproduce();
 
 	private:
 

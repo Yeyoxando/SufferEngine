@@ -14,6 +14,7 @@
 #include <referenced.h>
 #include <ref_ptr.h>
 
+
 using namespace Suffer;
 
 // --------------------------------------------------- //
