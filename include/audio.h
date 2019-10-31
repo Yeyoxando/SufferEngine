@@ -60,7 +60,7 @@ namespace Suffer {
 		~Audio3D();
 		Audio3D(const Audio3D& copy);
 
-		bool Load(const char* file);
+		bool Load(char* file);
 		bool Play3D(glm::vec3 position = glm::vec3(0, 0, 0), glm::vec3 velocity = glm::vec3(0, 0, 0));
 
 		void SetGain(const float newGain = 1.0f);
@@ -102,13 +102,14 @@ namespace Suffer {
 		virtual void Execute() override;
 		virtual void Reproduce();
 
+
 	private:
 
 		int    hertz_;
 		bool   looping_;
 		double pitch_;
 		double gain_;
-		const char* file_;
+		char* file_;
 
 		struct Data;
 		Data* _ptr = nullptr;

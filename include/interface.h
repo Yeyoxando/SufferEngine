@@ -48,6 +48,7 @@ public:
 	void Log();
 	void Inspector();
 	void Project();
+	void Audio();
 	void Game(s8 tex);
 
 	// Windows that can be opened
@@ -89,6 +90,7 @@ private:
 	bool is_inspector_opened_;
 	bool is_project_window_opened_;
 	bool is_game_window_opened_;
+	bool is_audio_window_opened_;
 
 };
 

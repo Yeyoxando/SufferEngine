@@ -386,7 +386,7 @@ void SufferManager::Draw() {
 bool SufferManager::Run(){
 
 	data_->scheduler_.run(Update_Thread, &data_->logic_thread_);
-	newSong.get()->Load("../../../resources/audio/fight_mono.ogg");
+	//newSong.get()->Load(newSong.get()->file_);
 
 	while (!Suffer::IsKeyDown(k_Escape)) {
 
@@ -394,7 +394,7 @@ bool SufferManager::Run(){
 		data_->wind_.processEvents();
 
 		// TEST WITH AUDIO
-		if (Suffer::IsKeyDown(k_A)) {
+		if (Suffer::IsKeyDown(k_F1)) {
 			data_->audio_dl_.push_back(newSong.get());
 		}
 

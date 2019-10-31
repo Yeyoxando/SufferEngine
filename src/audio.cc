@@ -191,11 +191,13 @@ Audio3D::~Audio3D(){
 
 // --------------------------------------------------------------//
 
-bool Audio3D::Load(const char* file){
+bool Audio3D::Load(char* file){
 
 	file_ = file;
 	_ptr->wave_.load(file);
 	if (_ptr->wave_.mData != nullptr) return true;
+
+	Interface::log.AddLog("\n[" _error_ "] File not found!: [%s]", file_);
 	return false;
 
 }
@@ -211,6 +213,7 @@ bool Audio3D::Play3D(glm::vec3 position /*= glm::vec3(0, 0, 0)*/,
 	_ptr->handle_ = _ptr->sound_.play3d(_ptr->wave_, position.x, position.y, position.z,
 										velocity.x, velocity.y, velocity.z);
 
+	if (_ptr->wave_.mData == nullptr) return false;
 	Interface::log.AddLog("\n[" _audio_ "] Reproducing a new 3D song: [%s]", file_);
 
 	SetGain(gain_);

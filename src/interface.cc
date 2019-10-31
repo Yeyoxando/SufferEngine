@@ -183,6 +183,7 @@ Interface::Interface(){
 	is_inspector_opened_ = true;
 	is_game_window_opened_ = true;
 	is_project_window_opened_ = true;
+	is_audio_window_opened_ = true;
 
 	_ptr = new Data();
 
@@ -288,10 +289,11 @@ void Interface::DrawMenuBar(){
 		if (ImGui::MenuItem("Log")) {
 			is_log_opened_ = !is_log_opened_;
 		}
+		if (ImGui::MenuItem("Audio")) {
+			is_audio_window_opened_ = !is_audio_window_opened_;
+		}
 		ImGui::EndMenu();
 	}
-
-	
 
 	ImGui::EndMainMenuBar();
 
@@ -352,6 +354,7 @@ void Interface::CreateDock(bool* p_open){
 		ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
 		ImGui::DockBuilderDockWindow("Project", dock_id_bottom);
 		ImGui::DockBuilderDockWindow("Log", dock_id_bottom);
+		ImGui::DockBuilderDockWindow("Audio", dock_id_bottom);
 		ImGui::DockBuilderDockWindow("Game", dock_id_top);
 		ImGui::DockBuilderFinish(dockspace_id);
 		
@@ -363,6 +366,7 @@ void Interface::CreateDock(bool* p_open){
 	if(is_hierarchy_opened_) Hierarchy();
 	if(is_project_window_opened_) Project();
 	if(is_log_opened_) Log();
+	if(is_audio_window_opened_) Audio();
 	if (is_game_window_opened_) Game(0);
 	
 
@@ -659,6 +663,29 @@ void Interface::Project(){
 
 // --------------------------------------------------- //
 
+void Interface::Audio(){
+
+	static char buffer[255] = "\0";
+	static char pre_buffer_[255] = "../../../resources/audio/";
+	static char aux_buffer[255] = "../../../resources/audio/";
+
+	ImGui::Begin("Audio");
+
+	ImGui::InputText("Song", buffer, sizeof(buffer));
+	ImGui::SameLine();
+	if (ImGui::Button("Load")) {
+		strcat(pre_buffer_, buffer);
+		SufferManager::instance().newSong->Load(pre_buffer_);
+		for (int i = 0; i < sizeof(buffer); ++i) buffer[i] = '\0';
+		strcpy(pre_buffer_, aux_buffer);
+	}
+
+	ImGui::End();
+
+}
+
+// --------------------------------------------------- //
+
 void Interface::Game(s8 tex){
 
 #ifdef ASSERT
@@ -694,6 +721,7 @@ void Interface::Options(){
 	}
 
 	ImGui::End();
+
 }
 
 // --------------------------------------------------- //
