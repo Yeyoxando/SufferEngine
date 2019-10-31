@@ -38,14 +38,7 @@ public:
 	void SetPredefiniedMaterial(EDK3::ref_ptr <Material> mat, Material::BasicMaterials basic_mat);
 
 
-	void Draw();
-	void Logic();
-	void Input();
-	void Update();
-	void Audio();
-
 	EDK3::ref_ptr<Audio3D> newSong;
-
 	std::mutex render_mutex;
 
 protected:
@@ -64,7 +57,12 @@ private:
 	struct Data;
 	Data* data_;
 
+	void Input();
+	void Update();
+	void Draw();
+
 	// DisplayLists Stuff
+	void Audio();
 	void PrepareAudio();
 
 

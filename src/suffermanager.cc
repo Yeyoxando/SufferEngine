@@ -8,6 +8,7 @@
 #include <clear.h>
 #include <time.h>
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <px_sched.h>
 
 
@@ -30,11 +31,15 @@ struct SufferManager::Data {
 	std::mutex audio_mutex;
 	std::vector<EDK3::ref_ptr<Command>> audio_dl_;
 
+	// Running
+	bool window_should_close_;
+
 	// Scheduler
 	px_sched::Scheduler scheduler_;
 	px_sched::Sync logic_thread_;
 	px_sched::Sync audio_thread_;
-
+	px_sched::Sync input_thread_;
+		
 	// Predefined geometries
 	struct InternalGeometry {
 		GLuint vertices_ID;
@@ -279,11 +284,13 @@ void SufferManager::Data::InternalMaterial::CreateMaterial(Material::BasicMateri
 // --------------------------------------------------------------//
 
 SufferManager::SufferManager(){
+
 	data_ = new Data();
 
 	data_->display_list_ = std::vector<EDK3::ref_ptr<Command>>(0);
 	data_->audio_dl_ = std::vector<EDK3::ref_ptr<Command>>(0);
 	data_->scene_.alloc();
+
 }
 
 // --------------------------------------------------------------//
@@ -342,6 +349,8 @@ bool SufferManager::Init(){
 	data_->InitInternalMaterials();
 	data_->InitInternalGeometries();
 
+	data_->window_should_close_ = false;
+
 	data_->scene_->Init();
 	newSong.alloc();
 
@@ -352,32 +361,58 @@ bool SufferManager::Init(){
 
 void SufferManager::Update() {
 
+	static int update_counts_ = 0;
+	++update_counts_;
+	printf("UPDATE: %d\n\n", update_counts_);
 	Step(data_->delta_time_);
 
 }
 
 // --------------------------------------------------------------//
 
-void Update_Thread() {
+void SufferManager::Draw() {
 
-	SufferManager::instance().Update();
+	auto update_thread = [] {
+		SufferManager::instance().Update();
+	};
+
+	static int draw_counts_ = 0;
+	draw_counts_++;
+	printf("DRAW: %d\n\n", draw_counts_);
+	
+	data_->scheduler_.run(update_thread, &data_->logic_thread_);
+
+	// DO SOMETHING HERE TO GAIN TIME
+	data_->scheduler_.waitFor(data_->logic_thread_); // TODO: THIS WILL BE DELETED
+
+	//data_->interface_.Update();
+	DrawDisplayList();
+
+	//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	data_->wind_.swapBuffers();
 
 }
 
 // --------------------------------------------------------------//
 
-void SufferManager::Draw() {
-	
-	data_->scheduler_.run(Update_Thread, &data_->logic_thread_);
+void SufferManager::Input() {
 
-	// DO SOMETHING HERE TO GAIN TIME
-	data_->scheduler_.waitFor(data_->logic_thread_); // TODO: THIS WILL BE DELETED
+	static int input_counts_ = 0;
+	input_counts_++;
+	printf("INPUT: %d\n\n", input_counts_);
 
-	data_->interface_.Update();
-	DrawDisplayList();
 
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	data_->wind_.swapBuffers();
+
+	// TEST WITH AUDIO
+	if (Suffer::IsKeyDown(k_F1)) {
+		data_->audio_dl_.push_back(newSong.get());
+	}
+
+	// Window Should Close
+	if (Suffer::IsKeyDown(k_Escape) /*|| 
+		glfwWindowShouldClose(glfwGetCurrentContext())*/) {
+		data_->window_should_close_ = true;
+	}
 
 }
 
@@ -385,20 +420,16 @@ void SufferManager::Draw() {
 
 bool SufferManager::Run(){
 
-	data_->scheduler_.run(Update_Thread, &data_->logic_thread_);
-	//newSong.get()->Load(newSong.get()->file_);
+	// Threading Jobs
+	auto input_thread = [] { SufferManager::instance().Input(); };
 
-	while (!Suffer::IsKeyDown(k_Escape)) {
+	while (!data_->window_should_close_) {
 
 		data_->current_time_ = Suffer::RawTime();
 		data_->wind_.processEvents();
-
-		// TEST WITH AUDIO
-		if (Suffer::IsKeyDown(k_F1)) {
-			data_->audio_dl_.push_back(newSong.get());
-		}
-
-		//Update_Thread();
+		
+		data_->scheduler_.run(input_thread, &data_->input_thread_);
+		
 		Draw();
 
 		data_->delta_time_ = (data_->current_time_ - data_->previous_time_) * 0.0001f;
@@ -434,14 +465,6 @@ void SufferManager::Audio() {
 
 // --------------------------------------------------------------//
 
-void Audio_Thread() {
-
-	SufferManager::instance().Audio();
-
-}
-
-// --------------------------------------------------------------//
-
 void SufferManager::PrepareAudio() {
 
 	// IF SOMETHING HAPPENS IN AUDIO (e.g the user wants to reproduce a song
@@ -451,7 +474,8 @@ void SufferManager::PrepareAudio() {
 
 	if (!data_->audio_dl_.empty()) {
 		data_->audio_mutex.unlock();
-		data_->scheduler_.run(Audio_Thread, &data_->audio_thread_);
+		auto audio_thread = [] { SufferManager::instance().Audio(); };
+		data_->scheduler_.run(audio_thread, &data_->audio_thread_);
 		return;
 	}
 
