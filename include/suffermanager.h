@@ -13,6 +13,7 @@
 #include <audio.h>
 //Hide from here
 #include <command.h>
+#include <thread.h>
 
 // SCHEDULER
 
@@ -39,7 +40,6 @@ public:
 
 
 	EDK3::ref_ptr<Audio3D> newSong;
-	std::mutex render_mutex;
 
 protected:
 
@@ -60,6 +60,12 @@ private:
 	void Input();
 	void Update();
 	void Draw();
+
+	// Threads
+	EDK3::ref_ptr<Thread> logic_;
+	EDK3::ref_ptr<Thread> render_;
+	EDK3::ref_ptr<Thread> input_;
+	EDK3::ref_ptr<Thread> audio_;
 
 	// DisplayLists Stuff
 	void Audio();

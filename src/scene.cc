@@ -44,13 +44,13 @@ void Scene::Init() {
 
 void Scene::PrepareDraw(){
 
-	SufferManager::instance().render_mutex.lock();
+	//SufferManager::instance().render_mutex.lock();
 
 	for (int i = 0; i < go_.size(); ++i) {
 		go_.at(i).get()->Draw();
 	}
 
-	SufferManager::instance().render_mutex.unlock();
+	//SufferManager::instance().render_mutex.unlock();
 
 }
 

@@ -9,8 +9,8 @@
 #include <time.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <px_sched.h>
-
+//#include <px_sched.h>
+#include <thread.h>
 
 // STD Headers
 #include <mutex>
@@ -27,19 +27,16 @@ struct SufferManager::Data {
 	double delta_time_;
 	Interface interface_;
 
-	// Audio STUFF
+	// Mutexes
 	std::mutex audio_mutex;
+	std::mutex render_mutex;
+	
+	// Audio STUFF
 	std::vector<EDK3::ref_ptr<Command>> audio_dl_;
 
 	// Running
 	bool window_should_close_;
 
-	// Scheduler
-	px_sched::Scheduler scheduler_;
-	px_sched::Sync logic_thread_;
-	px_sched::Sync audio_thread_;
-	px_sched::Sync input_thread_;
-		
 	// Predefined geometries
 	struct InternalGeometry {
 		GLuint vertices_ID;
@@ -343,8 +340,12 @@ bool SufferManager::Init(){
 	Suffer::InitInput();
 	data_->interface_.Init();
 
-	// Scheduler init
-	data_->scheduler_.init();
+	// Threads Allocation
+	logic_.alloc();
+	render_.alloc();
+	input_.alloc();
+	audio_.alloc();
+	//data_->scheduler_.init();
 
 	data_->InitInternalMaterials();
 	data_->InitInternalGeometries();
@@ -361,9 +362,6 @@ bool SufferManager::Init(){
 
 void SufferManager::Update() {
 
-	static int update_counts_ = 0;
-	++update_counts_;
-	printf("UPDATE: %d\n\n", update_counts_);
 	Step(data_->delta_time_);
 
 }
@@ -376,19 +374,14 @@ void SufferManager::Draw() {
 		SufferManager::instance().Update();
 	};
 
-	static int draw_counts_ = 0;
-	draw_counts_++;
-	printf("DRAW: %d\n\n", draw_counts_);
-	
-	data_->scheduler_.run(update_thread, &data_->logic_thread_);
+	logic_.get()->NewTask(update_thread);
 
-	// DO SOMETHING HERE TO GAIN TIME
-	data_->scheduler_.waitFor(data_->logic_thread_); // TODO: THIS WILL BE DELETED
+	logic_.get()->WaitFor(logic_.get()); // This will be deleted
 
-	//data_->interface_.Update();
+	data_->interface_.Update();
 	DrawDisplayList();
 
-	//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	data_->wind_.swapBuffers();
 
 }
@@ -397,20 +390,13 @@ void SufferManager::Draw() {
 
 void SufferManager::Input() {
 
-	static int input_counts_ = 0;
-	input_counts_++;
-	printf("INPUT: %d\n\n", input_counts_);
-
-
-
 	// TEST WITH AUDIO
 	if (Suffer::IsKeyDown(k_F1)) {
 		data_->audio_dl_.push_back(newSong.get());
 	}
 
 	// Window Should Close
-	if (Suffer::IsKeyDown(k_Escape) /*|| 
-		glfwWindowShouldClose(glfwGetCurrentContext())*/) {
+	if (Suffer::IsKeyDown(k_Escape)) {
 		data_->window_should_close_ = true;
 	}
 
@@ -420,7 +406,6 @@ void SufferManager::Input() {
 
 bool SufferManager::Run(){
 
-	// Threading Jobs
 	auto input_thread = [] { SufferManager::instance().Input(); };
 
 	while (!data_->window_should_close_) {
@@ -428,7 +413,8 @@ bool SufferManager::Run(){
 		data_->current_time_ = Suffer::RawTime();
 		data_->wind_.processEvents();
 		
-		data_->scheduler_.run(input_thread, &data_->input_thread_);
+		// Launching INPUT Thread
+		input_.get()->NewTask(input_thread);
 		
 		Draw();
 
@@ -445,7 +431,12 @@ bool SufferManager::Run(){
 
 void SufferManager::Audio() {
 
-	data_->audio_mutex.lock();
+	if (!data_->audio_mutex.try_lock()) {
+#ifdef DEBUG
+		printf("\nError trying to lock the audio_mutex: [%s]\n", __FUNCTION__);
+#endif
+		return;
+	}
 
 	int display_list_size = data_->audio_dl_.size();
 
@@ -470,12 +461,17 @@ void SufferManager::PrepareAudio() {
 	// IF SOMETHING HAPPENS IN AUDIO (e.g the user wants to reproduce a song
 	// or pause other that is reproducing), THEN...
 
-	data_->audio_mutex.lock();
-
+	if (!data_->audio_mutex.try_lock()) {
+#ifdef DEBUG
+		printf("\nError trying to lock the audio_mutex: [%s]\n", __FUNCTION__);
+#endif
+		return;
+	}
+	
 	if (!data_->audio_dl_.empty()) {
 		data_->audio_mutex.unlock();
 		auto audio_thread = [] { SufferManager::instance().Audio(); };
-		data_->scheduler_.run(audio_thread, &data_->audio_thread_);
+		audio_.get()->NewTask(audio_thread);
 		return;
 	}
 
@@ -505,10 +501,12 @@ bool SufferManager::Finish(){
 // --------------------------------------------------------------//
 
 double SufferManager::DeltaTime(){
+
 #ifdef ASSERT
 	assert(data_ && "\n Data is null.");
 #endif // ASSERT
 	return data_->delta_time_;
+
 }
 
 // --------------------------------------------------------------//
@@ -561,6 +559,7 @@ void SufferManager::SetPredefiniedShape(EDK3::ref_ptr <Geometry> geo, Geometry::
 // --------------------------------------------------------------//
 
 void SufferManager::SetPredefiniedMaterial(EDK3::ref_ptr <Material> mat, Material::BasicMaterials basic_mat){
+
 #ifdef ASSERT
 	assert(mat.get()); // "mat was NULL"
 #endif
@@ -587,7 +586,12 @@ void SufferManager::SetPredefiniedMaterial(EDK3::ref_ptr <Material> mat, Materia
 
 void SufferManager::DrawDisplayList(){
 
-	render_mutex.lock();
+	if (!data_->render_mutex.try_lock()) {
+#ifdef DEBUG
+		printf("\nError trying to lock the render_mutex: [%s]\n", __FUNCTION__);
+#endif
+		return;
+	}
 
 	for (int i = 0; i < data_->display_list_.size(); ++i){
 		Command* cmd = data_->display_list_[i].get();
@@ -596,7 +600,7 @@ void SufferManager::DrawDisplayList(){
 
 	ResetDisplayList();
 
-	render_mutex.unlock();
+	data_->render_mutex.unlock();
 }
 
 // --------------------------------------------------------------//

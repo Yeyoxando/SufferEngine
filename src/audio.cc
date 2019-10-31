@@ -165,6 +165,9 @@ Audio3D::Audio3D(){
 	pitch_ = 1.0f;
 	hertz_ = 0;
 
+	current_position_ = glm::vec3(0, 0, 0);
+	current_velocity_ = glm::vec3(0, 0, 0);
+
 }
 
 // --------------------------------------------------------------//
@@ -204,13 +207,15 @@ bool Audio3D::Load(char* file){
 
 // --------------------------------------------------------------//
 
-bool Audio3D::Play3D(glm::vec3 position /*= glm::vec3(0, 0, 0)*/, 
-					 glm::vec3 velocity /*= glm::vec3(0, 0, 0)*/){
+bool Audio3D::Play3D(glm::vec3 velocity /*= glm::vec3(0, 0, 0)*/){
 
 	if (_ptr->handle_ != 0) {
 		_ptr->sound_.stop(_ptr->handle_);
 	}
-	_ptr->handle_ = _ptr->sound_.play3d(_ptr->wave_, position.x, position.y, position.z,
+
+	glm::vec3 current_position = GetSoundPosition();
+
+	_ptr->handle_ = _ptr->sound_.play3d(_ptr->wave_, current_position.x, current_position.y, current_position.z,
 										velocity.x, velocity.y, velocity.z);
 
 	if (_ptr->wave_.mData == nullptr) return false;
@@ -256,6 +261,10 @@ void Audio3D::SetLooping(const bool looping /*= false*/){
 
 void Audio3D::SetVelocity(const glm::vec3 newVelocity /*= glm::vec3(0, 0, 0)*/){
 
+	_ptr->sound_.set3dSourceVelocity(_ptr->handle_, newVelocity.x, newVelocity.y, newVelocity.z);
+	_ptr->sound_.update3dAudio();
+	current_velocity_ = newVelocity;
+
 }
 
 // --------------------------------------------------------------//
@@ -270,6 +279,9 @@ void Audio3D::SetSoundParameters(glm::vec3 position, glm::vec3 velocity){
 
 	_ptr->sound_.set3dSourceParameters(_ptr->handle_, position.x, position.y, position.z,
 									   velocity.x, velocity.y, velocity.z);
+
+	current_position_ = position;
+	current_velocity_ = velocity;
 
 }
 
@@ -287,6 +299,7 @@ void Audio3D::SetSoundPosition(glm::vec3 newPosition){
 
 	_ptr->sound_.set3dSourcePosition(_ptr->handle_, newPosition.x, newPosition.y, newPosition.z);
 	_ptr->sound_.update3dAudio();
+	current_position_ = newPosition;
 
 }
 
@@ -408,6 +421,10 @@ void Audio3D::operator=(const Audio3D& a){
 
 }
 
+
+glm::vec3 Suffer::Audio3D::GetSoundPosition(){
+	return current_position_;
+}
 
 // MockupMockupMockupMockupMockupMockupMockupMockupMockupMockupMockupMockup
 

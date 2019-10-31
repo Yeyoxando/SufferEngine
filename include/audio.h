@@ -61,7 +61,7 @@ namespace Suffer {
 		Audio3D(const Audio3D& copy);
 
 		bool Load(char* file);
-		bool Play3D(glm::vec3 position = glm::vec3(0, 0, 0), glm::vec3 velocity = glm::vec3(0, 0, 0));
+		bool Play3D(glm::vec3 velocity = glm::vec3(0, 0, 0));
 
 		void SetGain(const float newGain = 1.0f);
 		void SetPitch(const float newPitch = 1.0f);
@@ -76,6 +76,8 @@ namespace Suffer {
 		void SetSoundMinMaxDistance(float min, float max);
 		void SetSoundAttenuation(u32 attenuation, float rollOffFactor);
 		void SetSoundDopplerFactor(float newDopplerFactor);
+
+		glm::vec3 GetSoundPosition();
 
 		// Listener
 		void SetListenerParameters(glm::vec3 position, glm::vec3 at, glm::vec3 up, glm::vec3 velocity);
@@ -110,6 +112,9 @@ namespace Suffer {
 		double pitch_;
 		double gain_;
 		char* file_;
+
+		glm::vec3 current_position_;
+		glm::vec3 current_velocity_;
 
 		struct Data;
 		Data* _ptr = nullptr;

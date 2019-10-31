@@ -49,6 +49,7 @@ project "SufferCore"
 		"./include/",
 		"./include/Memory_Management/",
 		"./include/commands/",
+		"./include/Engine/",
 		"./deps/glm/",
 		"./deps/sokol/",
 		"./deps/pplux/",
@@ -69,9 +70,11 @@ project "SufferCore"
 		--SufferEngine
 		"./include/*.h",
 		"./include/commands/*.h",
+		"./include/Engine/*.h",
 		"./include/Memory_Management/*.h",
 		"./src/*.cc",
 		"./src/commands/*.cc",
+		"./src/Engine/*.cc",
 		"./tests/*.cc",
 
 		--GLFW
