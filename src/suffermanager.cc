@@ -10,6 +10,7 @@
 #include <GL/glew.h>
 #include <px_sched.h>
 
+
 // STD Headers
 #include <mutex>
 
@@ -281,6 +282,7 @@ SufferManager::SufferManager(){
 	data_ = new Data();
 
 	data_->display_list_ = std::vector<EDK3::ref_ptr<Command>>(0);
+	data_->audio_dl_ = std::vector<EDK3::ref_ptr<Command>>(0);
 	data_->scene_.alloc();
 }
 
@@ -341,6 +343,7 @@ bool SufferManager::Init(){
 	data_->InitInternalGeometries();
 
 	data_->scene_->Init();
+	newSong.alloc();
 
 	return true;
 }
@@ -370,10 +373,10 @@ void SufferManager::Draw() {
 	// DO SOMETHING HERE TO GAIN TIME
 	data_->scheduler_.waitFor(data_->logic_thread_); // TODO: THIS WILL BE DELETED
 
-	//data_->interface_.Update();
+	data_->interface_.Update();
 	DrawDisplayList();
 
-	//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	data_->wind_.swapBuffers();
 
 }
@@ -383,11 +386,17 @@ void SufferManager::Draw() {
 bool SufferManager::Run(){
 
 	data_->scheduler_.run(Update_Thread, &data_->logic_thread_);
+	newSong.get()->Load("../../../resources/audio/fight_mono.ogg");
 
 	while (!Suffer::IsKeyDown(k_Escape)) {
 
 		data_->current_time_ = Suffer::RawTime();
 		data_->wind_.processEvents();
+
+		// TEST WITH AUDIO
+		if (Suffer::IsKeyDown(k_A)) {
+			data_->audio_dl_.push_back(newSong.get());
+		}
 
 		//Update_Thread();
 		Draw();
@@ -416,6 +425,8 @@ void SufferManager::Audio() {
 #endif
 		audio_command->Execute();
 	}
+	
+	data_->audio_dl_.clear();
 
 	data_->audio_mutex.unlock();
 
@@ -433,7 +444,9 @@ void Audio_Thread() {
 
 void SufferManager::PrepareAudio() {
 
-	// IF SOMETHING HAPPENS IN AUDIO, THEN...
+	// IF SOMETHING HAPPENS IN AUDIO (e.g the user wants to reproduce a song
+	// or pause other that is reproducing), THEN...
+
 	data_->audio_mutex.lock();
 
 	if (!data_->audio_dl_.empty()) {

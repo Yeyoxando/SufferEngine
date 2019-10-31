@@ -205,6 +205,9 @@ bool Audio3D::Load(const char* file){
 bool Audio3D::Play3D(glm::vec3 position /*= glm::vec3(0, 0, 0)*/, 
 					 glm::vec3 velocity /*= glm::vec3(0, 0, 0)*/){
 
+	if (_ptr->handle_ != 0) {
+		_ptr->sound_.stop(_ptr->handle_);
+	}
 	_ptr->handle_ = _ptr->sound_.play3d(_ptr->wave_, position.x, position.y, position.z,
 										velocity.x, velocity.y, velocity.z);
 
@@ -406,7 +409,7 @@ void Audio3D::operator=(const Audio3D& a){
 // MockupMockupMockupMockupMockupMockupMockupMockupMockupMockupMockupMockup
 
 void Suffer::Audio3D::Execute(){
-
+	Play3D();
 }
 
 void Suffer::Audio3D::Reproduce(){

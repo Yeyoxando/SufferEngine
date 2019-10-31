@@ -10,7 +10,7 @@
 #include <ref_ptr.h>
 #include <scene.h>
 #include <mutex>
-
+#include <audio.h>
 //Hide from here
 #include <command.h>
 
@@ -43,6 +43,8 @@ public:
 	void Input();
 	void Update();
 	void Audio();
+
+	EDK3::ref_ptr<Audio3D> newSong;
 
 	std::mutex render_mutex;
 
