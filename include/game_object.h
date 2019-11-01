@@ -8,6 +8,7 @@
 #define __GAME_OBJECT_H__
 
 #include <glm.hpp>
+#include <gtc/quaternion.hpp>
 #include <geometry.h>
 #include <material.h>
 #include <data_types.h>
@@ -20,9 +21,21 @@ using namespace Suffer;
 // --------------------------------------------------- //
 
 struct Transform {
+
+public:
 	glm::vec3 scale;
 	glm::vec3 position;
 	glm::vec3 rotation;
+
+	glm::quat quat_rotation_;
+
+	glm::mat4 ModelMatrix() {
+		return glm::mat4(1.0f);
+	}
+
+private:
+	glm::mat4 model_;
+
 };
 
 // --------------------------------------------------- //

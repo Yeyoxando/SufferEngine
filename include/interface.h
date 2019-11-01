@@ -8,6 +8,7 @@
 #define __INTERFACE_H__
 
 #include <data_types.h>
+#include <audio.h>
 
  // Forward declaration for the Engine LOG
 struct ExampleAppLog;
@@ -48,7 +49,7 @@ public:
 	void Log();
 	void Inspector();
 	void Project();
-	void Audio();
+	void Audio(Audio3D* sound);
 	void Game(s8 tex);
 
 	// Windows that can be opened

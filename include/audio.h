@@ -1,7 +1,7 @@
 /*
 * Author: Pablo Bano Benito <banyobe@esat-alumni.com>
 * Date: 10-20-2019
-* Audio2D Header
+* Audio Header
 */
 
 #include <glm.hpp>
@@ -36,6 +36,10 @@ namespace Suffer {
 		double Gain();
 		double Pitch();
 		bool   Looping();
+		float* Wave();
+		float* FFT();
+
+		virtual void Execute() override;
 
 	private:
 
@@ -63,6 +67,7 @@ namespace Suffer {
 		bool Load(char* file);
 		bool Play3D(glm::vec3 velocity = glm::vec3(0, 0, 0));
 
+		void SetPaused(const bool paused);
 		void SetGain(const float newGain = 1.0f);
 		void SetPitch(const float newPitch = 1.0f);
 		void SetLooping(const bool looping = false);
@@ -76,8 +81,8 @@ namespace Suffer {
 		void SetSoundMinMaxDistance(float min, float max);
 		void SetSoundAttenuation(u32 attenuation, float rollOffFactor);
 		void SetSoundDopplerFactor(float newDopplerFactor);
+		void SetMonotoneParams(int channels, int wave_form);
 
-		glm::vec3 GetSoundPosition();
 
 		// Listener
 		void SetListenerParameters(glm::vec3 position, glm::vec3 at, glm::vec3 up, glm::vec3 velocity);
@@ -87,11 +92,15 @@ namespace Suffer {
 		void SetListenerVelocity(glm::vec3 newVelocity);
 
 		// Getters
+		bool isPaused();
 		int GetHertz();
 		double GetGain();
 		double GetPitch();
 		bool GetLooping();
+		float* Wave();
+		float* FFT();
 
+		glm::vec3 GetSoundPosition();
 		glm::vec3 GetSoundSpeed();
 
 		// Operand overload
@@ -104,7 +113,6 @@ namespace Suffer {
 		virtual void Execute() override;
 		virtual void Reproduce();
 
-
 	private:
 
 		int    hertz_;
@@ -112,6 +120,7 @@ namespace Suffer {
 		double pitch_;
 		double gain_;
 		char* file_;
+		bool paused_;
 
 		glm::vec3 current_position_;
 		glm::vec3 current_velocity_;

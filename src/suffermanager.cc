@@ -14,6 +14,7 @@
 
 // STD Headers
 #include <mutex>
+#include <atomic>
 
 // --------------------------------------------------------------//
 
@@ -345,7 +346,6 @@ bool SufferManager::Init(){
 	render_.alloc();
 	input_.alloc();
 	audio_.alloc();
-	//data_->scheduler_.init();
 
 	data_->InitInternalMaterials();
 	data_->InitInternalGeometries();
@@ -407,6 +407,9 @@ void SufferManager::Input() {
 bool SufferManager::Run(){
 
 	auto input_thread = [] { SufferManager::instance().Input(); };
+	newSong->Load("../../../resources/audio/plonk_dry.ogg");
+	newSong->Play3D();
+	newSong->SetLooping(true);
 
 	while (!data_->window_should_close_) {
 
@@ -421,6 +424,7 @@ bool SufferManager::Run(){
 		data_->delta_time_ = (data_->current_time_ - data_->previous_time_) * 0.0001f;
 		data_->previous_time_ = data_->current_time_;
 
+		printf("DELTA: %f\n", data_->delta_time_);
 	}
 
 	return true;

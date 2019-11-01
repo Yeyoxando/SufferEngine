@@ -207,7 +207,7 @@ void Interface::Init(){
 	log.AddLog("\nGraphics Information");
 	log.AddLog("\n\t[" _debug_ "] Vendor: [%s]", glGetString(GL_VENDOR));
 	log.AddLog("\n\t[" _debug_ "] Renderer: [%s]", glGetString(GL_RENDERER));
-	log.AddLog("\n\t[" _debug_ "] Version: [%s]", glGetString(GL_VERSION));
+	log.AddLog("\n\t[" _debug_ "] Version: [%s]\n", glGetString(GL_VERSION));
 
 #endif
 
@@ -232,6 +232,8 @@ void Interface::Update(){
 	DrawMenuBar();
 	CreateDock(&open);
 	OpenWindows();
+	//ImGui::ShowDemoWindow(&open);
+	//ImGui::ShowMetricsWindow(&open);
 
 
 	// Rendering
@@ -366,7 +368,7 @@ void Interface::CreateDock(bool* p_open){
 	if(is_hierarchy_opened_) Hierarchy();
 	if(is_project_window_opened_) Project();
 	if(is_log_opened_) Log();
-	if(is_audio_window_opened_) Audio();
+	if(is_audio_window_opened_) Audio(SufferManager::instance().newSong.get());
 	if (is_game_window_opened_) Game(0);
 	
 
@@ -525,9 +527,9 @@ void Interface::ChangeEditorStyle(){
 			colors[ImGuiCol_TabUnfocusedActive] = COL(192.0f, 38.0f, 38.0f);
 			colors[ImGuiCol_DockingPreview] = ImVec4(0.38f, 0.48f, 0.60f, 1.00f);
 			colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
-			colors[ImGuiCol_PlotLines] = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
+			colors[ImGuiCol_PlotLines] = COL(204.0f, 82.0f, 122.0f);
 			colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.68f, 0.68f, 0.68f, 1.00f);
-			colors[ImGuiCol_PlotHistogram] = ImVec4(0.90f, 0.77f, 0.33f, 1.00f);
+			colors[ImGuiCol_PlotHistogram] = COL(232.0f, 23.0f, 92.0f);
 			colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.87f, 0.55f, 0.08f, 1.00f);
 			colors[ImGuiCol_TextSelectedBg] = ImVec4(0.47f, 0.60f, 0.76f, 0.47f);
 			colors[ImGuiCol_DragDropTarget] = ImVec4(0.58f, 0.58f, 0.58f, 0.90f);
@@ -594,9 +596,9 @@ void Interface::ChangeEditorStyle(){
 			colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 			colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
 			colors[ImGuiCol_ResizeGripActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
-			colors[ImGuiCol_PlotLines] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
+			colors[ImGuiCol_PlotLines] = COL(204.0f, 82.0f, 122.0f);
 			colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
-			colors[ImGuiCol_PlotHistogram] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
+			colors[ImGuiCol_PlotHistogram] = COL(232.0f, 23.0f, 92.0f);
 			colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
 			colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
 			colors[ImGuiCol_ModalWindowDarkening] = ImVec4(1.00f, 0.98f, 0.95f, 0.73f);
@@ -663,7 +665,7 @@ void Interface::Project(){
 
 // --------------------------------------------------- //
 
-void Interface::Audio(){
+void Interface::Audio(Audio3D* sound){
 
 	static char buffer[255] = "\0";
 	static char pre_buffer_[255] = "../../../resources/audio/";
@@ -675,10 +677,49 @@ void Interface::Audio(){
 	ImGui::SameLine();
 	if (ImGui::Button("Load")) {
 		strcat(pre_buffer_, buffer);
-		SufferManager::instance().newSong->Load(pre_buffer_);
+		sound->Load(pre_buffer_);
 		for (int i = 0; i < sizeof(buffer); ++i) buffer[i] = '\0';
 		strcpy(pre_buffer_, aux_buffer);
 	}
+
+	ImGui::Spacing();
+	float* buf = sound->Wave();
+	float* fft = sound->FFT();
+
+	// Diagrams
+	ImGui::PlotLines("##Wave", buf, 256, 0, "Wave", -1, 1, ImVec2(264, 80));
+	ImGui::SameLine();
+	ImGui::PlotHistogram("##Fast Fourier Transform (FFT)", fft, 256 / 2, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
+	ImGui::Separator();
+
+	static float song_volume = sound->GetGain();
+	static glm::vec3 song_position = sound->GetSoundPosition();
+	static bool looping = sound->GetLooping();
+	bool paused = sound->isPaused();
+
+	// Attributes
+	ImGui::TextColored(ImVec4(1.0, 0.0, 0.0, 1.0), "Sound Attributes");
+		if (ImGui::SliderFloat("Volume", &song_volume, 0.0f, 2.0f)) {
+			sound->SetGain(song_volume);
+		}
+		if (ImGui::InputFloat3("Sound Position", &song_position[0], 0.1f)) {
+			sound->SetSoundPosition(song_position);
+		}
+		if (paused) {
+			if (ImGui::Button("Play")) {
+				sound->SetPaused(false);
+			}
+		}
+		else {
+			if (ImGui::Button("Pause")) {
+				sound->SetPaused(true);
+			}
+		}
+		ImGui::SameLine();
+		if (ImGui::Checkbox("Looping", &looping)){
+			sound->SetLooping(looping);
+		}
+
 
 	ImGui::End();
 

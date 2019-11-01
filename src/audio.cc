@@ -8,6 +8,7 @@
 #include <imgui.h>
 #include <interface.h>
 #include <soloud.h>
+#include <soloud_monotone.h>
 #include <soloud_wav.h>
 #include <suffermanager.h>
 
@@ -36,6 +37,7 @@ struct Audio2D::Data {
 	SoLoud::Soloud sound_;
 	SoLoud::Wav wave_;
 	SoLoud::handle handle_;
+	SoLoud::Monotone wave_form_;
 
 };
 
@@ -44,7 +46,8 @@ struct Audio2D::Data {
 Audio2D::Audio2D(){
 
 	_ptr = new Data();
-	_ptr->sound_.init();
+	_ptr->sound_.init(SoLoud::Soloud::CLIP_ROUNDOFF |
+		SoLoud::Soloud::ENABLE_VISUALIZATION);
 
 }
 
@@ -131,6 +134,22 @@ double Audio2D::Gain(){
 	return gain_;
 }
 
+float* Suffer::Audio2D::Wave(){
+	return _ptr->sound_.getWave();
+}
+
+float* Suffer::Audio2D::FFT()
+{
+	return _ptr->sound_.calcFFT();
+
+}
+
+// --------------------------------------------------------------//
+
+void Suffer::Audio2D::Execute(){
+	Play();
+}
+
 // --------------------------------------------------------------//
 
 /*
@@ -150,6 +169,7 @@ struct Audio3D::Data {
 	SoLoud::Soloud sound_;
 	SoLoud::Wav wave_;
 	SoLoud::handle handle_;
+	SoLoud::Monotone wave_form_;
 
 };
 
@@ -158,12 +178,13 @@ struct Audio3D::Data {
 Audio3D::Audio3D(){
 
 	_ptr = new Data();
-	_ptr->sound_.init();
+	_ptr->sound_.init(SoLoud::Soloud::ENABLE_VISUALIZATION);
 
 	gain_ = 1.0f;
 	looping_ = false;
 	pitch_ = 1.0f;
 	hertz_ = 0;
+	paused_ = false;
 
 	current_position_ = glm::vec3(0, 0, 0);
 	current_velocity_ = glm::vec3(0, 0, 0);
@@ -339,6 +360,7 @@ void Audio3D::SetListenerParameters(glm::vec3 position, glm::vec3 at, glm::vec3 
 void Audio3D::SetListenerPosition(glm::vec3 newPosition){
 
 	_ptr->sound_.set3dListenerPosition(newPosition.x, newPosition.y, newPosition.z);
+	_ptr->sound_.update3dAudio();
 
 }
 
@@ -421,6 +443,41 @@ void Audio3D::operator=(const Audio3D& a){
 
 }
 
+// --------------------------------------------------------------//
+
+void Suffer::Audio3D::SetPaused(const bool paused){
+	paused_ = paused;
+	_ptr->sound_.setPause(_ptr->handle_, paused_);
+}
+
+// --------------------------------------------------------------//
+
+void Suffer::Audio3D::SetMonotoneParams(int channels, int wave_form){
+	_ptr->wave_form_.setParams(channels, wave_form);
+}
+
+// --------------------------------------------------------------//
+
+bool Suffer::Audio3D::isPaused(){
+	return paused_;
+}
+
+// --------------------------------------------------------------//
+
+float* Suffer::Audio3D::Wave(){
+	float* wave = _ptr->sound_.getWave();
+	_ptr->sound_.update3dAudio();
+	return wave;
+}
+
+// --------------------------------------------------------------//
+
+float* Suffer::Audio3D::FFT(){
+	_ptr->sound_.update3dAudio();
+	return _ptr->sound_.calcFFT();
+}
+
+// --------------------------------------------------------------//
 
 glm::vec3 Suffer::Audio3D::GetSoundPosition(){
 	return current_position_;

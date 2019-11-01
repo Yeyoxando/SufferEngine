@@ -7,7 +7,6 @@
 #include <input.h>
 #include <glfw3.h>
 
-// TODO: Take a look about this globals
 int inpKey;
 int inpAction;
 bool init = false;
