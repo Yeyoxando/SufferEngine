@@ -11,7 +11,9 @@
 #include <scene.h>
 #include <mutex>
 #include <audio.h>
+
 //Hide from here
+#include <display_list.h>
 #include <command.h>
 #include <thread.h>
 
@@ -26,6 +28,7 @@ public:
 
 	friend class Audio3D;
 	friend class Audio2D;
+	friend class Interface;
 
 	bool Init();
 	bool Run();
@@ -34,6 +37,8 @@ public:
 
 	double DeltaTime();
 	void AddCommand(EDK3::ref_ptr<Command> cmd);
+	void AddCommand(std::vector<EDK3::ref_ptr<Command>> *displayList,
+					EDK3::ref_ptr<Command> cmd);
 
 	void SetPredefiniedShape(EDK3::ref_ptr <Geometry> geo, Geometry::BasicShapes shape);
 	void SetPredefiniedMaterial(EDK3::ref_ptr <Material> mat, Material::BasicMaterials basic_mat);
@@ -66,6 +71,9 @@ private:
 	EDK3::ref_ptr<Thread> render_;
 	EDK3::ref_ptr<Thread> input_;
 	EDK3::ref_ptr<Thread> audio_;
+
+	// Audio STUFF
+	std::vector<EDK3::ref_ptr<Command>> audio_dl_;
 
 	// DisplayLists Stuff
 	void Audio();

@@ -15,6 +15,9 @@
 #include <glfw3.h>
 #include <window.h>
 #include <stb_image.h>
+#include <common_definitions.h>
+#include <display_list.h>
+#include <audio_commands.h>
 
 struct ExampleAppLog
 {
@@ -232,7 +235,7 @@ void Interface::Update(){
 	DrawMenuBar();
 	CreateDock(&open);
 	OpenWindows();
-	//ImGui::ShowDemoWindow(&open);
+	ImGui::ShowDemoWindow(&open);
 	//ImGui::ShowMetricsWindow(&open);
 
 
@@ -355,8 +358,8 @@ void Interface::CreateDock(bool* p_open){
 		ImGui::DockBuilderDockWindow("Inspector", dock_id_right);
 		ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
 		ImGui::DockBuilderDockWindow("Project", dock_id_bottom);
-		ImGui::DockBuilderDockWindow("Log", dock_id_bottom);
 		ImGui::DockBuilderDockWindow("Audio", dock_id_bottom);
+		ImGui::DockBuilderDockWindow("Log", dock_id_bottom);
 		ImGui::DockBuilderDockWindow("Game", dock_id_top);
 		ImGui::DockBuilderFinish(dockspace_id);
 		
@@ -670,6 +673,9 @@ void Interface::Audio(Audio3D* sound){
 	static char buffer[255] = "\0";
 	static char pre_buffer_[255] = "../../../resources/audio/";
 	static char aux_buffer[255] = "../../../resources/audio/";
+	static bool swiped = false;
+
+	static int max_value = 256;
 
 	ImGui::Begin("Audio");
 
@@ -687,9 +693,19 @@ void Interface::Audio(Audio3D* sound){
 	float* fft = sound->FFT();
 
 	// Diagrams
-	ImGui::PlotLines("##Wave", buf, 256, 0, "Wave", -1, 1, ImVec2(264, 80));
+	if (ImGui::Button("Swipe")) swiped = !swiped;
 	ImGui::SameLine();
-	ImGui::PlotHistogram("##Fast Fourier Transform (FFT)", fft, 256 / 2, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
+	ImGui::SliderInt("Graphic values", &max_value, 0, 256);
+	if (!swiped) {
+		ImGui::PlotHistogram("##Wave", buf, max_value, 0, "Wave", -1, 1, ImVec2(264, 80));
+		ImGui::SameLine();
+		ImGui::PlotHistogram("##Fast Fourier Transform (FFT)", fft, 256 * 0.5f, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
+	}
+	else {
+		ImGui::PlotLines("##Wave", buf, max_value, 0, "Wave", -1, 1, ImVec2(264, 80));
+		ImGui::SameLine();
+		ImGui::PlotLines("##Fast Fourier Transform (FFT)", fft, 256 * 0.5f, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
+	}
 	ImGui::Separator();
 
 	static float song_volume = sound->GetGain();
@@ -700,26 +716,38 @@ void Interface::Audio(Audio3D* sound){
 	// Attributes
 	ImGui::TextColored(ImVec4(1.0, 0.0, 0.0, 1.0), "Sound Attributes");
 		if (ImGui::SliderFloat("Volume", &song_volume, 0.0f, 2.0f)) {
-			sound->SetGain(song_volume);
+			EDK3::ref_ptr<AudioCommands::SetGain> set_gain_command;
+			set_gain_command.alloc();
+			set_gain_command->audio_3d_ = sound;
+			set_gain_command->gain_ = song_volume;
+			suffer.AddCommand(&suffer.audio_dl_, set_gain_command.get());
+			set_gain_command.release();
 		}
 		if (ImGui::InputFloat3("Sound Position", &song_position[0], 0.1f)) {
 			sound->SetSoundPosition(song_position);
 		}
 		if (paused) {
 			if (ImGui::Button("Play")) {
-				sound->SetPaused(false);
+				EDK3::ref_ptr<AudioCommands::Play> play_command_;
+				play_command_.alloc();
+				play_command_->audio_3d_ = sound;
+				suffer.AddCommand(&suffer.audio_dl_, play_command_.get());
+				play_command_.release();
 			}
 		}
 		else {
 			if (ImGui::Button("Pause")) {
-				sound->SetPaused(true);
+				EDK3::ref_ptr<AudioCommands::Pause> pause_command_;
+				pause_command_.alloc();
+				pause_command_->audio_3d_ = sound;
+				suffer.AddCommand(&suffer.audio_dl_, pause_command_.get());
+				pause_command_.release();
 			}
 		}
 		ImGui::SameLine();
 		if (ImGui::Checkbox("Looping", &looping)){
 			sound->SetLooping(looping);
 		}
-
 
 	ImGui::End();
 

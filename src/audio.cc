@@ -134,14 +134,16 @@ double Audio2D::Gain(){
 	return gain_;
 }
 
+// --------------------------------------------------------------//
+
 float* Suffer::Audio2D::Wave(){
 	return _ptr->sound_.getWave();
 }
 
-float* Suffer::Audio2D::FFT()
-{
-	return _ptr->sound_.calcFFT();
+// --------------------------------------------------------------//
 
+float* Suffer::Audio2D::FFT(){
+	return _ptr->sound_.calcFFT();
 }
 
 // --------------------------------------------------------------//
@@ -246,6 +248,8 @@ bool Audio3D::Play3D(glm::vec3 velocity /*= glm::vec3(0, 0, 0)*/){
 	SetPitch(pitch_);
 	SetLooping(looping_);
 
+	SetPaused(false);
+
 	if (!_ptr->handle_) return false;
 	return true;
 
@@ -255,6 +259,9 @@ bool Audio3D::Play3D(glm::vec3 velocity /*= glm::vec3(0, 0, 0)*/){
 
 void Audio3D::SetGain(const float newGain /*= 1.0f*/){
 
+#ifdef ASSERT
+	assert(newGain >= 0 && "¡Volume cannot set under 0!");
+#endif
 	gain_ = newGain;
 	_ptr->sound_.setVolume(_ptr->handle_, gain_);
 
@@ -465,15 +472,15 @@ bool Suffer::Audio3D::isPaused(){
 // --------------------------------------------------------------//
 
 float* Suffer::Audio3D::Wave(){
+
 	float* wave = _ptr->sound_.getWave();
-	_ptr->sound_.update3dAudio();
 	return wave;
+
 }
 
 // --------------------------------------------------------------//
 
 float* Suffer::Audio3D::FFT(){
-	_ptr->sound_.update3dAudio();
 	return _ptr->sound_.calcFFT();
 }
 

@@ -32,8 +32,7 @@ struct SufferManager::Data {
 	std::mutex audio_mutex;
 	std::mutex render_mutex;
 	
-	// Audio STUFF
-	std::vector<EDK3::ref_ptr<Command>> audio_dl_;
+
 
 	// Running
 	bool window_should_close_;
@@ -286,7 +285,7 @@ SufferManager::SufferManager(){
 	data_ = new Data();
 
 	data_->display_list_ = std::vector<EDK3::ref_ptr<Command>>(0);
-	data_->audio_dl_ = std::vector<EDK3::ref_ptr<Command>>(0);
+	audio_dl_ = std::vector<EDK3::ref_ptr<Command>>(0);
 	data_->scene_.alloc();
 
 }
@@ -392,7 +391,7 @@ void SufferManager::Input() {
 
 	// TEST WITH AUDIO
 	if (Suffer::IsKeyDown(k_F1)) {
-		data_->audio_dl_.push_back(newSong.get());
+		audio_dl_.push_back(newSong.get());
 	}
 
 	// Window Should Close
@@ -407,7 +406,7 @@ void SufferManager::Input() {
 bool SufferManager::Run(){
 
 	auto input_thread = [] { SufferManager::instance().Input(); };
-	newSong->Load("../../../resources/audio/plonk_dry.ogg");
+	newSong->Load("../../../resources/audio/plonk_wet.ogg");
 	newSong->Play3D();
 	newSong->SetLooping(true);
 
@@ -424,7 +423,6 @@ bool SufferManager::Run(){
 		data_->delta_time_ = (data_->current_time_ - data_->previous_time_) * 0.0001f;
 		data_->previous_time_ = data_->current_time_;
 
-		printf("DELTA: %f\n", data_->delta_time_);
 	}
 
 	return true;
@@ -442,17 +440,17 @@ void SufferManager::Audio() {
 		return;
 	}
 
-	int display_list_size = data_->audio_dl_.size();
+	int display_list_size = audio_dl_.size();
 
 	for (int i = 0; i < display_list_size; ++i) {
-		Command* audio_command = data_->audio_dl_[i].get();
+		Command* audio_command = audio_dl_[i].get();
 #ifdef ASSERT
 		assert(audio_command && "NULL Audio Command");
 #endif
 		audio_command->Execute();
 	}
 	
-	data_->audio_dl_.clear();
+	audio_dl_.clear();
 
 	data_->audio_mutex.unlock();
 
@@ -472,7 +470,7 @@ void SufferManager::PrepareAudio() {
 		return;
 	}
 	
-	if (!data_->audio_dl_.empty()) {
+	if (!audio_dl_.empty()) {
 		data_->audio_mutex.unlock();
 		auto audio_thread = [] { SufferManager::instance().Audio(); };
 		audio_.get()->NewTask(audio_thread);
@@ -528,6 +526,13 @@ void SufferManager::AddCommand(EDK3::ref_ptr<Command> cmd){
 	if (!cmd) return;
 
 	data_->display_list_.push_back(cmd);
+}
+
+void SufferManager::AddCommand(std::vector<EDK3::ref_ptr<Command>> *displayList, EDK3::ref_ptr<Command> cmd){
+	
+	if (!cmd) return;
+	displayList->push_back(cmd);
+
 }
 
 // --------------------------------------------------------------//
