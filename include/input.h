@@ -80,8 +80,9 @@ namespace Suffer {
 
 // --------------------------------- KEYBOARD ----------------------------------- //
 
-	bool IsKeyDown(Key key);
 	bool IsKeyUp(Key key);
+	bool IsKeyDown(Key key);
+	bool IsKeyPressed(Key key);
 
 // ----------------------------------- MOUSE ------------------------------------ //
 

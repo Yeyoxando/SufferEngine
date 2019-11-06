@@ -202,6 +202,23 @@ bool Suffer::IsKeyUp(Key key){
 
 // --------------------------------------------------- //
 
+bool Suffer::IsKeyPressed(Key key){
+
+	static bool is_key_down = false;
+
+	if (IsKeyDown(key) || is_key_down) {
+		is_key_down = true;
+		if (IsKeyUp(key)) {
+			is_key_down = false;
+			return false;
+		}
+		return true;
+	}
+
+}
+
+// --------------------------------------------------- //
+
 bool Suffer::MouseButtonDown(int id){
 
 	int state = -1;

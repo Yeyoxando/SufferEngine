@@ -83,7 +83,6 @@ namespace Suffer {
 		void SetSoundDopplerFactor(float newDopplerFactor);
 		void SetMonotoneParams(int channels, int wave_form);
 
-
 		// Listener
 		void SetListenerParameters(glm::vec3 position, glm::vec3 at, glm::vec3 up, glm::vec3 velocity);
 		void SetListenerPosition(glm::vec3 newPosition);
@@ -98,7 +97,7 @@ namespace Suffer {
 		double GetPitch();
 		bool GetLooping();
 		float* Wave();
-		float* FFT();
+		float* FFT(); // FFT: Fast Fourier Transform
 
 		glm::vec3 GetSoundPosition();
 		glm::vec3 GetSoundSpeed();

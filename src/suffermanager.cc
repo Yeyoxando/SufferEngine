@@ -346,6 +346,17 @@ bool SufferManager::Init(){
 	input_.alloc();
 	audio_.alloc();
 
+	// Threads Function Assignment
+	auto audio_thread = [] { SufferManager::instance().Audio(); };
+	audio_.get()->NewTask(audio_thread);
+
+	auto update_thread = [] { SufferManager::instance().Update(); };
+	logic_.get()->NewTask(update_thread);
+
+	auto input_thread = [] { SufferManager::instance().Input(); };
+	input_.get()->NewTask(input_thread);
+
+
 	data_->InitInternalMaterials();
 	data_->InitInternalGeometries();
 
@@ -361,7 +372,10 @@ bool SufferManager::Init(){
 
 void SufferManager::Update() {
 
-	Step(data_->delta_time_);
+	while(1){
+		logic_->Sleep();
+		Step(data_->delta_time_);
+	}
 
 }
 
@@ -369,15 +383,13 @@ void SufferManager::Update() {
 
 void SufferManager::Draw() {
 
-	auto update_thread = [] {
-		SufferManager::instance().Update();
-	};
+	logic_->Awake();
+	//logic_.get()->WaitFor(logic_.get()); // This will be deleted
 
-	logic_.get()->NewTask(update_thread);
-
-	logic_.get()->WaitFor(logic_.get()); // This will be deleted
-
+	
 	data_->interface_.Update();
+	data_->interface_.Render();
+
 	DrawDisplayList();
 
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -389,14 +401,18 @@ void SufferManager::Draw() {
 
 void SufferManager::Input() {
 
-	// TEST WITH AUDIO
-	if (Suffer::IsKeyDown(k_F1)) {
-		audio_dl_.push_back(newSong.get());
-	}
+	while (1) {
+		input_->Sleep();
 
-	// Window Should Close
-	if (Suffer::IsKeyDown(k_Escape)) {
-		data_->window_should_close_ = true;
+		// TEST WITH AUDIO
+		if (Suffer::IsKeyDown(k_F1)) {
+			audio_dl_.push_back(newSong.get());
+		}
+
+		// Window Should Close
+		if (Suffer::IsKeyDown(k_Escape)) {
+			data_->window_should_close_ = true;
+		}
 	}
 
 }
@@ -405,7 +421,7 @@ void SufferManager::Input() {
 
 bool SufferManager::Run(){
 
-	auto input_thread = [] { SufferManager::instance().Input(); };
+
 	newSong->Load("../../../resources/audio/plonk_wet.ogg");
 	newSong->Play3D();
 	newSong->SetLooping(true);
@@ -415,8 +431,7 @@ bool SufferManager::Run(){
 		data_->current_time_ = Suffer::RawTime();
 		data_->wind_.processEvents();
 		
-		// Launching INPUT Thread
-		input_.get()->NewTask(input_thread);
+		input_->Awake();
 		
 		Draw();
 
@@ -433,51 +448,41 @@ bool SufferManager::Run(){
 
 void SufferManager::Audio() {
 
-	if (!data_->audio_mutex.try_lock()) {
-#ifdef DEBUG
-		printf("\nError trying to lock the audio_mutex: [%s]\n", __FUNCTION__);
-#endif
-		return;
-	}
+	while (1) {
 
-	int display_list_size = audio_dl_.size();
+		audio_->Sleep();
 
-	for (int i = 0; i < display_list_size; ++i) {
-		Command* audio_command = audio_dl_[i].get();
-#ifdef ASSERT
-		assert(audio_command && "NULL Audio Command");
-#endif
-		audio_command->Execute();
-	}
+		if (!data_->audio_mutex.try_lock()) {
+	#ifdef DEBUG
+			printf("\nError trying to lock the audio_mutex: [%s]\n", __FUNCTION__);
+	#endif
+			return;
+		}
+
+		int display_list_size = audio_dl_.size();
+
+		for (int i = 0; i < display_list_size; ++i) {
+			Command* audio_command = audio_dl_[i].get();
+	#ifdef ASSERT
+			assert(audio_command && "NULL Audio Command");
+	#endif
+			audio_command->Execute();
+		}
 	
-	audio_dl_.clear();
+		audio_dl_.clear();
 
-	data_->audio_mutex.unlock();
+		data_->audio_mutex.unlock();
 
+	}
 }
 
 // --------------------------------------------------------------//
 
 void SufferManager::PrepareAudio() {
-
-	// IF SOMETHING HAPPENS IN AUDIO (e.g the user wants to reproduce a song
-	// or pause other that is reproducing), THEN...
-
-	if (!data_->audio_mutex.try_lock()) {
-#ifdef DEBUG
-		printf("\nError trying to lock the audio_mutex: [%s]\n", __FUNCTION__);
-#endif
-		return;
-	}
 	
 	if (!audio_dl_.empty()) {
-		data_->audio_mutex.unlock();
-		auto audio_thread = [] { SufferManager::instance().Audio(); };
-		audio_.get()->NewTask(audio_thread);
-		return;
+		audio_->Awake();
 	}
-
-	data_->audio_mutex.unlock();
 
 }
 
@@ -486,7 +491,6 @@ void SufferManager::PrepareAudio() {
 bool SufferManager::Step(double time_step){
 
 	PrepareDraw();
-
 
 	// This will be the last function in UPDATE
 	PrepareAudio();

@@ -236,8 +236,11 @@ void Interface::Update(){
 	CreateDock(&open);
 	OpenWindows();
 	ImGui::ShowDemoWindow(&open);
-	//ImGui::ShowMetricsWindow(&open);
+	ImGui::ShowMetricsWindow(&open);
 
+}
+
+void Interface::Render(){
 
 	// Rendering
 	ImGui::Render();
@@ -699,12 +702,12 @@ void Interface::Audio(Audio3D* sound){
 	if (!swiped) {
 		ImGui::PlotHistogram("##Wave", buf, max_value, 0, "Wave", -1, 1, ImVec2(264, 80));
 		ImGui::SameLine();
-		ImGui::PlotHistogram("##Fast Fourier Transform (FFT)", fft, 256 * 0.5f, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
+		ImGui::PlotHistogram("##Fast Fourier Transform (FFT)", fft, max_value * 0.5f, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
 	}
 	else {
 		ImGui::PlotLines("##Wave", buf, max_value, 0, "Wave", -1, 1, ImVec2(264, 80));
 		ImGui::SameLine();
-		ImGui::PlotLines("##Fast Fourier Transform (FFT)", fft, 256 * 0.5f, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
+		ImGui::PlotLines("##Fast Fourier Transform (FFT)", fft, max_value * 0.5f, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
 	}
 	ImGui::Separator();
 

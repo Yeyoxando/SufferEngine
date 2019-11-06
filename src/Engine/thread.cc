@@ -7,10 +7,12 @@
 
 #include <thread.h>
 #include <px_sched.h>
+#include <thread>
+#include <chrono>
 
 struct Thread::ThreadData {
 
-	// PpluX Stuff
+	// PpluX Scheduler Stuff
 	px_sched::Scheduler scheduler_;
 	px_sched::Sync thread_;
 
@@ -21,6 +23,7 @@ Thread::Thread(){
 	data_ = new ThreadData();
 
 	Init();
+	im_done_ = false;
 
 }
 
@@ -44,17 +47,29 @@ void Thread::NewTask(Task t){
 
 }
 
-//void Thread::NewTask(void(*function)()){
-//
-//	// Making LAMBDA
-//	auto function_thread = [&] { function;  };
-//	data_->scheduler_.run(function_thread);
-//
-//}
-
 void Thread::WaitFor(Thread* thread){
 
 	data_->scheduler_.waitFor(thread->data_->thread_);
 
+}
+
+void Thread::Sleep() {
+
+	UniqueLock lock_(mutex_);
+
+	im_done_ = true;
+	current_state_condition_.wait_until(lock_, 0);
+
+}
+
+void Thread::Awake(){
+
+	im_done_ = false;
+	current_state_condition_.notify_one();
+
+}
+
+bool Thread::Finished(){
+	return im_done_;
 }
 
