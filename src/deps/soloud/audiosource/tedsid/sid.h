@@ -110,7 +110,7 @@ private:
 	static const unsigned int RateCountPeriod[16]; // Factors for A/D/S/R Timing
 	static const unsigned char envGenDRdivisors[256]; // For exponential approximation of D/R
 	/*static*/ unsigned int masterVolume;
-	// voice array for the 3 channels
+	// voice Array for the 3 channels
 	SIDVoice voice[3];
 	// filter stuff
 	unsigned char	filterType; // filter type

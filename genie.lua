@@ -49,6 +49,7 @@ project "SufferCore"
 		"./include/",
 		"./include/Memory_Management/",
 		"./include/commands/",
+		"./include/Engine/",
 		"./deps/glm/",
 		"./deps/sokol/",
 		"./deps/pplux/",
@@ -61,6 +62,7 @@ project "SufferCore"
 		"./src/deps/soloud/core/",
 		"./src/deps/soloud/filter/",
 		"./deps/soloud/",
+		"./deps/stb/",
 	}
 
 	--Common files
@@ -68,9 +70,11 @@ project "SufferCore"
 		--SufferEngine
 		"./include/*.h",
 		"./include/commands/*.h",
+		"./include/Engine/*.h",
 		"./include/Memory_Management/*.h",
 		"./src/*.cc",
 		"./src/commands/*.cc",
+		"./src/Engine/*.cc",
 		"./tests/*.cc",
 
 		--GLFW
@@ -112,6 +116,9 @@ project "SufferCore"
 		"./src/deps/glew/include/GL/glew.h",
 		"./src/deps/glew/include/GL/wglew.h",
 		"./src/deps/glew/src/glew.c",
+
+		--STB
+		"./deps/stb/stb_image.h",
 
 		--SoLoud
 		"./src/deps/soloud/audiosource/monotone/*.cpp",

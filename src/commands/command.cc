@@ -14,7 +14,7 @@ Command::~Command(){
 
 // --------------------------------------------------- //
 
-void Command::Execute(){
+void Command::Execute() const{
 
 }
 

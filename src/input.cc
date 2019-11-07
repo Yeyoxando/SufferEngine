@@ -7,7 +7,6 @@
 #include <input.h>
 #include <glfw3.h>
 
-// TODO: Take a look about this globals
 int inpKey;
 int inpAction;
 bool init = false;
@@ -198,6 +197,23 @@ bool Suffer::IsKeyUp(Key key){
 	}
 
 	return false;
+
+}
+
+// --------------------------------------------------- //
+
+bool Suffer::IsKeyPressed(Key key){
+
+	static bool is_key_down = false;
+
+	if (IsKeyDown(key) || is_key_down) {
+		is_key_down = true;
+		if (IsKeyUp(key)) {
+			is_key_down = false;
+			return false;
+		}
+		return true;
+	}
 
 }
 

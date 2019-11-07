@@ -1434,7 +1434,7 @@ static DRFLAC_INLINE drflac_uint16 drflac_crc16(drflac_uint16 crc, drflac_cache_
 // This uses a 32- or 64-bit bit-shifted cache - as bits are read, the cache is shifted such that the first valid bit is sitting
 // on the most significant bit. It uses the notion of an L1 and L2 cache (borrowed from CPU architecture), where the L1 cache
 // is a 32- or 64-bit unsigned integer (depending on whether or not a 32- or 64-bit build is being compiled) and the L2 is an
-// array of "cache lines", with each cache line being the same size as the L1. The L2 is a buffer of about 4KB and is where data
+// Array of "cache lines", with each cache line being the same size as the L1. The L2 is a buffer of about 4KB and is where data
 // from onRead() is read into.
 #define DRFLAC_CACHE_L1_SIZE_BYTES(bs)                      (sizeof((bs)->cache))
 #define DRFLAC_CACHE_L1_SIZE_BITS(bs)                       (sizeof((bs)->cache)*8)
@@ -3242,7 +3242,7 @@ static drflac_bool32 drflac__decode_samples_with_residual__rice__scalar(drflac_b
     if (bitsPerSample >= 24) {
         while (pSamplesOut < pSamplesOutEnd) {
             // Rice extraction. It's faster to do this one at a time against local variables than it is to use the x4 version
-            // against an array. Not sure why, but perhaps it's making more efficient use of registers?
+            // against an Array. Not sure why, but perhaps it's making more efficient use of registers?
             if (!drflac__read_rice_parts_x1(bs, riceParam, &zeroCountPart0, &riceParamPart0) ||
                 !drflac__read_rice_parts_x1(bs, riceParam, &zeroCountPart1, &riceParamPart1) ||
                 !drflac__read_rice_parts_x1(bs, riceParam, &zeroCountPart2, &riceParamPart2) ||

@@ -23,19 +23,19 @@ GameObject::GameObject(const GameObject& go) {
 
 // --------------------------------------------------- //
 
-EDK3::ref_ptr<Material> GameObject::GetMaterial() {
+ref_ptr<Material> GameObject::GetMaterial() {
 	return material_;
 }
 
 // --------------------------------------------------- //
 
-EDK3::ref_ptr<Geometry> GameObject::GetGeometry() {
+ref_ptr<Geometry> GameObject::GetGeometry() {
 	return geometry_;
 }
 
 // --------------------------------------------------- //
 
-void GameObject::SetMaterial(EDK3::ref_ptr<Material> new_material) {
+void GameObject::SetMaterial(ref_ptr<Material> new_material) {
 
 #ifdef ASSERT
 	assert(new_material); // "newMaterial was NULL"
@@ -45,11 +45,20 @@ void GameObject::SetMaterial(EDK3::ref_ptr<Material> new_material) {
 
 // --------------------------------------------------- //
 
-void GameObject::SetGeometry(EDK3::ref_ptr<Geometry> new_geometry) {
+void GameObject::SetGeometry(ref_ptr<Geometry> new_geometry) {
 #ifdef ASSERT
 	assert(new_geometry); // "newGeometry was NULL"
 #endif
 	geometry_ = new_geometry;
+}
+
+const ref_ptr<Command> GameObject::GetDrawCommand(){
+	ref_ptr<DrawGeometry> draw_geometry;
+
+	draw_geometry.alloc();
+	draw_geometry.get()->SetData(this);
+	
+	return draw_geometry.get();
 }
 
 // --------------------------------------------------- //
@@ -61,18 +70,6 @@ Transform GameObject::GetTransform() {
 // --------------------------------------------------- //
 
 GameObject::~GameObject() {
-
-}
-
-// --------------------------------------------------- //
-
-void GameObject::Draw() {
-
-	EDK3::ref_ptr<DrawGeometry> draw_geometry;
-
-	draw_geometry.alloc();
-	draw_geometry.get()->SetData(this);
-	SufferManager::instance().AddCommand(draw_geometry.get());
 
 }
 

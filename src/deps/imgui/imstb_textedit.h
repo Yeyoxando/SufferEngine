@@ -108,11 +108,11 @@
 //   static functions.
 //
 //   The basic concept is that you provide a "string" object which
-//   behaves like an array of characters. stb_textedit uses indices to
+//   behaves like an Array of characters. stb_textedit uses indices to
 //   refer to positions in the string, implicitly representing positions
 //   in the displayed textedit. This is true for both plain text and
 //   rich text; even with rich text stb_truetype interacts with your
-//   code as if there was an array of all the displayed characters.
+//   code as if there was an Array of all the displayed characters.
 //
 // Symbols that must be the same in header-file and implementation mode:
 //

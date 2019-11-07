@@ -907,9 +907,9 @@ static void ShowDemoWindowWidgets()
         static int item_current_2 = 0;
         ImGui::Combo("combo 2 (one-liner)", &item_current_2, "aaaa\0bbbb\0cccc\0dddd\0eeee\0\0");
 
-        // Simplified one-liner Combo() using an array of const char*
+        // Simplified one-liner Combo() using an Array of const char*
         static int item_current_3 = -1; // If the selection isn't within 0..count, Combo won't display a preview
-        ImGui::Combo("combo 3 (array)", &item_current_3, items, IM_ARRAYSIZE(items));
+        ImGui::Combo("combo 3 (Array)", &item_current_3, items, IM_ARRAYSIZE(items));
 
         // Simplified one-liner Combo() using an accessor function
         struct FuncHolder { static bool ItemGetter(void* data, int idx, const char** out_str) { *out_str = ((const char**)data)[idx]; return true; } };
@@ -1128,7 +1128,7 @@ static void ShowDemoWindowWidgets()
         static float arr[] = { 0.6f, 0.1f, 1.0f, 0.5f, 0.92f, 0.1f, 0.2f };
         ImGui::PlotLines("Frame Times", arr, IM_ARRAYSIZE(arr));
 
-        // Create a dummy array of contiguous float values to plot
+        // Create a dummy Array of contiguous float values to plot
         // Tip: If your float aren't contiguous but part of a structure, you can pass a pointer to your first float and the sizeof() of your structure in the Stride parameter.
         static float values[90] = { 0 };
         static int values_offset = 0;
@@ -3775,7 +3775,7 @@ struct ExampleAppConsole
         //     while (clipper.Step())
         //         for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
         // However, note that you can not use this code as is if a filter is active because it breaks the 'cheap random-access' property. We would need random-access on the post-filtered list.
-        // A typical application wanting coarse clipping and filtering may want to pre-compute an array of indices that passed the filtering test, recomputing this array when user changes the filter,
+        // A typical application wanting coarse clipping and filtering may want to pre-compute an Array of indices that passed the filtering test, recomputing this Array when user changes the filter,
         // and appending newly elements as they are inserted. This is left as a task to the user until we can manage to improve this example code!
         // If your items are of variable size you may want to implement code similar to what ImGuiListClipper does. Or split your data into fixed height items to allow random-seeking into your list.
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4,1)); // Tighten spacing
@@ -3787,7 +3787,7 @@ struct ExampleAppConsole
             if (!Filter.PassFilter(item))
                 continue;
 
-            // Normally you would store more information in your item (e.g. make Items[] an array of structure, store color/type etc.)
+            // Normally you would store more information in your item (e.g. make Items[] an Array of structure, store color/type etc.)
             bool pop_color = false;
             if (strstr(item, "[error]"))            { ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.4f, 0.4f, 1.0f)); pop_color = true; }
             else if (strncmp(item, "# ", 2) == 0)   { ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.8f, 0.6f, 1.0f)); pop_color = true; }
@@ -4078,7 +4078,7 @@ struct ExampleAppLog
             // Here we instead demonstrate using the clipper to only process lines that are within the visible area.
             // If you have tens of thousands of items and their processing cost is non-negligible, coarse clipping them on your side is recommended.
             // Using ImGuiListClipper requires A) random access into your data, and B) items all being the  same height,
-            // both of which we can handle since we an array pointing to the beginning of each line of text.
+            // both of which we can handle since we an Array pointing to the beginning of each line of text.
             // When using the filter (in the block of code above) we don't have random access into the data to display anymore, which is why we don't use the clipper.
             // Storing or skimming through the search result would make it possible (and would be recommended if you want to search through tens of thousands of entries)
             ImGuiListClipper clipper;
@@ -4716,7 +4716,7 @@ void ShowExampleAppDockSpace(bool* p_open)
 struct MyDocument
 {
     const char* Name;           // Document title
-    bool        Open;           // Set when the document is open (in this demo, we keep an array of all available documents to simplify the demo)
+    bool        Open;           // Set when the document is open (in this demo, we keep an Array of all available documents to simplify the demo)
     bool        OpenPrev;       // Copy of Open from last update.
     bool        Dirty;          // Set when the document has been modified
     bool        WantClose;      // Set when the document

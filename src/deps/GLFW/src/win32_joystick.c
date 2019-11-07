@@ -79,7 +79,7 @@ static const GUID _glfw_GUID_POV =
 #define GUID_Slider _glfw_GUID_Slider
 #define GUID_POV _glfw_GUID_POV
 
-// Object data array for our clone of c_dfDIJoystick
+// Object data Array for our clone of c_dfDIJoystick
 // Generated with https://github.com/elmindreda/c_dfDIJoystick2
 //
 static DIOBJECTDATAFORMAT _glfwObjectDataFormats[] =

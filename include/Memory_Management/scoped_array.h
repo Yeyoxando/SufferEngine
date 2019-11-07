@@ -2,22 +2,20 @@
 // Copyright (C) 2014 Jose L. Hidalgo 
 // Scoped_array, original code from boost.
 // ----------------------------------------------------------------------------
-#ifndef INCLUDE_EDK3_SCOPED_ARRAY_H_
-#define INCLUDE_EDK3_SCOPED_ARRAY_H_
+#ifndef __ARRAY_H__
+#define __ARRAY_H__
 
 #include <cassert>
 #include <algorithm>
 
-namespace EDK3 {
-
-  template<class T, class T_index = unsigned int> class scoped_array {  // noncopyable
+  template<class T, class T_index = unsigned int> class Array {  // noncopyable
   public:
 
-    typedef T element_type;
+	  typedef T element_type;
 
-    scoped_array(): px_(NULL), elements_(0) {}
+    Array(): px_(NULL), elements_(0) {}
 
-    ~scoped_array() {
+    ~Array() {
         delete[] px_;
     }
 
@@ -40,7 +38,7 @@ namespace EDK3 {
       }
     }
 
-    void copy(const scoped_array<T> &other) {
+    void copy(const Array<T> &other) {
       if (other.px_) {
         copy(&other[0], &other[0]+other.size());
       } else {
@@ -49,7 +47,7 @@ namespace EDK3 {
     }
 
     T & operator[](const T_index i) const {
-        assert( px_ != 0     && "Invalid array, not allocated yet");
+        assert( px_ != 0     && "Invalid Array, not allocated yet");
         assert( i >= 0       && "Invalid index (underflow)" );
 		    assert(i < elements_ && "Invalid index (overflow)");
         return px_[i];
@@ -68,7 +66,7 @@ namespace EDK3 {
         return px_ != 0;
     }
 
-    void swap(scoped_array &b) {
+    void swap(Array &b) {
         T *tmp = b.px_;
         b.px_ = px_;
         px_ = tmp;
@@ -102,20 +100,19 @@ namespace EDK3 {
       this_type(p, num_elements).swap(*this);
     }
 
-    scoped_array(T *p, const T_index num_elements)
+    Array(T *p, const T_index num_elements)
       : px_(p), elements_(num_elements) {}
 
-    typedef scoped_array<T,T_index> this_type;
+    typedef Array<T,T_index> this_type;
 
-    explicit scoped_array(scoped_array const &);
-    scoped_array & operator=(scoped_array const &);
-    void operator==(scoped_array const&) const;
-    void operator!=(scoped_array const&) const;
+    explicit Array(Array const &);
+    Array & operator=(Array const &);
+    void operator==(Array const&) const;
+    void operator!=(Array const&) const;
   };
 
-  template<class T> inline void swap(scoped_array<T> &a, scoped_array<T> &b) {
+  template<class T> inline void swap(Array<T> &a, Array<T> &b) {
       a.swap(b);
   }
 
-}
-#endif  // INCLUDE_EDK3_SCOPED_PTR_H_
+#endif  // __ARRAY_H__

@@ -21,7 +21,7 @@ public:
 	void SetClearColor(glm::vec4 color) { color_ = color; }
 
 protected:
-	virtual void Execute() override;
+	virtual void Execute() const override;
 
 
 private:

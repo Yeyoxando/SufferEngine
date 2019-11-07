@@ -70,8 +70,8 @@ namespace SoLoud
 			PoolTask *getWork();
 		public:
 			int mThreadCount; // number of threads
-			ThreadHandle *mThread; // array of thread handles
-			void *mWorkMutex; // mutex to protect task array/maxtask
+			ThreadHandle *mThread; // Array of thread handles
+			void *mWorkMutex; // mutex to protect task Array/maxtask
 			PoolTask *mTaskArray[MAX_THREADPOOL_TASKS]; // pointers to tasks
 			int mMaxTask; // how many tasks are pending
 			int mRobin; // cyclic counter, used to pick jobs for threads

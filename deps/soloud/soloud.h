@@ -490,7 +490,7 @@ namespace SoLoud
 		void updateVoiceVolume(unsigned int aVoice);
 		// Update overall relative play speed from set and 3d speeds
 		void updateVoiceRelativePlaySpeed(unsigned int aVoice);
-		// Perform 3d audio calculation for array of voices
+		// Perform 3d audio calculation for Array of voices
 		void update3dVoices(unsigned int *aVoiceList, unsigned int aVoiceCount);
 		// Clip the samples in the buffer
 		void clip(AlignedFloatBuffer &aBuffer, AlignedFloatBuffer &aDestBuffer, unsigned int aSamples, float aVolume0, float aVolume1);
@@ -533,7 +533,7 @@ namespace SoLoud
 
 		// Remove all non-active voices from group
 		void trimVoiceGroup(handle aVoiceGroupHandle);
-		// Get pointer to the zero-terminated array of voice handles in a voice group
+		// Get pointer to the zero-terminated Array of voice handles in a voice group
 		handle * voiceGroupHandleToArray(handle aVoiceGroupHandle) const;
 
 		// Lock audio thread mutex.

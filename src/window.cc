@@ -37,10 +37,10 @@ bool Suffer::Window::init(int width, int height){
 	
 	// ImGui init
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); /*(void)io;*/
-
-	io.Fonts->AddFontDefault();
+	ImGuiIO& io = ImGui::GetIO();
+	io.Fonts->AddFontFromFileTTF("../../../resources/fonts/comf_light.ttf", 13.0f);
 	io.Fonts->Build();
+
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 	ImGui_ImplGlfw_InitForOpenGL(glfwGetCurrentContext(), true);

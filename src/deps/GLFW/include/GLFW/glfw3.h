@@ -1574,16 +1574,16 @@ typedef struct GLFWvidmode
  */
 typedef struct GLFWgammaramp
 {
-    /*! An array of value describing the response of the red channel.
+    /*! An Array of value describing the response of the red channel.
      */
     unsigned short* red;
-    /*! An array of value describing the response of the green channel.
+    /*! An Array of value describing the response of the green channel.
      */
     unsigned short* green;
-    /*! An array of value describing the response of the blue channel.
+    /*! An Array of value describing the response of the blue channel.
      */
     unsigned short* blue;
-    /*! The number of elements in each array.
+    /*! The number of elements in each Array.
      */
     unsigned int size;
 } GLFWgammaramp;
@@ -1870,18 +1870,18 @@ GLFWAPI GLFWerrorfun glfwSetErrorCallback(GLFWerrorfun cbfun);
 
 /*! @brief Returns the currently connected monitors.
  *
- *  This function returns an array of handles for all currently connected
- *  monitors.  The primary monitor is always first in the returned array.  If no
+ *  This function returns an Array of handles for all currently connected
+ *  monitors.  The primary monitor is always first in the returned Array.  If no
  *  monitors were found, this function returns `NULL`.
  *
  *  @param[out] count Where to store the number of monitors in the returned
- *  array.  This is set to zero if an error occurred.
- *  @return An array of monitor handles, or `NULL` if no monitors were found or
+ *  Array.  This is set to zero if an error occurred.
+ *  @return An Array of monitor handles, or `NULL` if no monitors were found or
  *  if an [error](@ref error_handling) occurred.
  *
  *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED.
  *
- *  @pointer_lifetime The returned array is allocated and freed by GLFW.  You
+ *  @pointer_lifetime The returned Array is allocated and freed by GLFW.  You
  *  should not free it yourself.  It is guaranteed to be valid only until the
  *  monitor configuration changes or the library is terminated.
  *
@@ -1909,7 +1909,7 @@ GLFWAPI GLFWmonitor** glfwGetMonitors(int* count);
  *
  *  @thread_safety This function must only be called from the main thread.
  *
- *  @remark The primary monitor is always first in the array returned by @ref
+ *  @remark The primary monitor is always first in the Array returned by @ref
  *  glfwGetMonitors.
  *
  *  @sa @ref monitor_monitors
@@ -2144,21 +2144,21 @@ GLFWAPI GLFWmonitorfun glfwSetMonitorCallback(GLFWmonitorfun cbfun);
 
 /*! @brief Returns the available video modes for the specified monitor.
  *
- *  This function returns an array of all video modes supported by the specified
- *  monitor.  The returned array is sorted in ascending order, first by color
+ *  This function returns an Array of all video modes supported by the specified
+ *  monitor.  The returned Array is sorted in ascending order, first by color
  *  bit depth (the sum of all channel depths) and then by resolution area (the
  *  product of width and height).
  *
  *  @param[in] monitor The monitor to query.
  *  @param[out] count Where to store the number of video modes in the returned
- *  array.  This is set to zero if an error occurred.
- *  @return An array of video modes, or `NULL` if an
+ *  Array.  This is set to zero if an error occurred.
+ *  @return An Array of video modes, or `NULL` if an
  *  [error](@ref error_handling) occurred.
  *
  *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED and @ref
  *  GLFW_PLATFORM_ERROR.
  *
- *  @pointer_lifetime The returned array is allocated and freed by GLFW.  You
+ *  @pointer_lifetime The returned Array is allocated and freed by GLFW.  You
  *  should not free it yourself.  It is valid until the specified monitor is
  *  disconnected, this function is called again for that monitor or the library
  *  is terminated.
@@ -2169,7 +2169,7 @@ GLFWAPI GLFWmonitorfun glfwSetMonitorCallback(GLFWmonitorfun cbfun);
  *  @sa @ref glfwGetVideoMode
  *
  *  @since Added in version 1.0.
- *  @glfw3 Changed to return an array of modes for a specific monitor.
+ *  @glfw3 Changed to return an Array of modes for a specific monitor.
  *
  *  @ingroup monitor
  */
@@ -2188,7 +2188,7 @@ GLFWAPI const GLFWvidmode* glfwGetVideoModes(GLFWmonitor* monitor, int* count);
  *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED and @ref
  *  GLFW_PLATFORM_ERROR.
  *
- *  @pointer_lifetime The returned array is allocated and freed by GLFW.  You
+ *  @pointer_lifetime The returned Array is allocated and freed by GLFW.  You
  *  should not free it yourself.  It is valid until the specified monitor is
  *  disconnected or the library is terminated.
  *
@@ -2651,7 +2651,7 @@ GLFWAPI void glfwSetWindowTitle(GLFWwindow* window, const char* title);
 
 /*! @brief Sets the icon for the specified window.
  *
- *  This function sets the icon of the specified window.  If passed an array of
+ *  This function sets the icon of the specified window.  If passed an Array of
  *  candidate images, those of or closest to the sizes desired by the system are
  *  selected.  If no images are specified, the window reverts to its default
  *  icon.
@@ -2665,7 +2665,7 @@ GLFWAPI void glfwSetWindowTitle(GLFWwindow* window, const char* title);
  *  32x32 and 48x48.
  *
  *  @param[in] window The window whose icon to set.
- *  @param[in] count The number of images in the specified array, or zero to
+ *  @param[in] count The number of images in the specified Array, or zero to
  *  revert to the default window icon.
  *  @param[in] images The images to create the icon from.  This is ignored if
  *  count is zero.
@@ -4553,7 +4553,7 @@ GLFWAPI GLFWscrollfun glfwSetScrollCallback(GLFWwindow* window, GLFWscrollfun cb
  *  This function sets the file drop callback of the specified window, which is
  *  called when one or more dragged files are dropped on the window.
  *
- *  Because the path array and its strings may have been generated specifically
+ *  Because the path Array and its strings may have been generated specifically
  *  for that event, they are not guaranteed to be valid after the callback has
  *  returned.  If you wish to use them after the callback returns, you need to
  *  make a deep copy.
@@ -4605,7 +4605,7 @@ GLFWAPI int glfwJoystickPresent(int jid);
 /*! @brief Returns the values of all axes of the specified joystick.
  *
  *  This function returns the values of all axes of the specified joystick.
- *  Each element in the array is a value between -1.0 and 1.0.
+ *  Each element in the Array is a value between -1.0 and 1.0.
  *
  *  If the specified joystick is not present this function will return `NULL`
  *  but will not generate an error.  This can be used instead of first calling
@@ -4613,15 +4613,15 @@ GLFWAPI int glfwJoystickPresent(int jid);
  *
  *  @param[in] jid The [joystick](@ref joysticks) to query.
  *  @param[out] count Where to store the number of axis values in the returned
- *  array.  This is set to zero if the joystick is not present or an error
+ *  Array.  This is set to zero if the joystick is not present or an error
  *  occurred.
- *  @return An array of axis values, or `NULL` if the joystick is not present or
+ *  @return An Array of axis values, or `NULL` if the joystick is not present or
  *  an [error](@ref error_handling) occurred.
  *
  *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED, @ref
  *  GLFW_INVALID_ENUM and @ref GLFW_PLATFORM_ERROR.
  *
- *  @pointer_lifetime The returned array is allocated and freed by GLFW.  You
+ *  @pointer_lifetime The returned Array is allocated and freed by GLFW.  You
  *  should not free it yourself.  It is valid until the specified joystick is
  *  disconnected or the library is terminated.
  *
@@ -4638,10 +4638,10 @@ GLFWAPI const float* glfwGetJoystickAxes(int jid, int* count);
 /*! @brief Returns the state of all buttons of the specified joystick.
  *
  *  This function returns the state of all buttons of the specified joystick.
- *  Each element in the array is either `GLFW_PRESS` or `GLFW_RELEASE`.
+ *  Each element in the Array is either `GLFW_PRESS` or `GLFW_RELEASE`.
  *
  *  For backward compatibility with earlier versions that did not have @ref
- *  glfwGetJoystickHats, the button array also includes all hats, each
+ *  glfwGetJoystickHats, the button Array also includes all hats, each
  *  represented as four buttons.  The hats are in the same order as returned by
  *  __glfwGetJoystickHats__ and are in the order _up_, _right_, _down_ and
  *  _left_.  To disable these extra buttons, set the @ref
@@ -4653,15 +4653,15 @@ GLFWAPI const float* glfwGetJoystickAxes(int jid, int* count);
  *
  *  @param[in] jid The [joystick](@ref joysticks) to query.
  *  @param[out] count Where to store the number of button states in the returned
- *  array.  This is set to zero if the joystick is not present or an error
+ *  Array.  This is set to zero if the joystick is not present or an error
  *  occurred.
- *  @return An array of button states, or `NULL` if the joystick is not present
+ *  @return An Array of button states, or `NULL` if the joystick is not present
  *  or an [error](@ref error_handling) occurred.
  *
  *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED, @ref
  *  GLFW_INVALID_ENUM and @ref GLFW_PLATFORM_ERROR.
  *
- *  @pointer_lifetime The returned array is allocated and freed by GLFW.  You
+ *  @pointer_lifetime The returned Array is allocated and freed by GLFW.  You
  *  should not free it yourself.  It is valid until the specified joystick is
  *  disconnected or the library is terminated.
  *
@@ -4670,7 +4670,7 @@ GLFWAPI const float* glfwGetJoystickAxes(int jid, int* count);
  *  @sa @ref joystick_button
  *
  *  @since Added in version 2.2.
- *  @glfw3 Changed to return a dynamic array.
+ *  @glfw3 Changed to return a dynamic Array.
  *
  *  @ingroup input
  */
@@ -4679,7 +4679,7 @@ GLFWAPI const unsigned char* glfwGetJoystickButtons(int jid, int* count);
 /*! @brief Returns the state of all hats of the specified joystick.
  *
  *  This function returns the state of all hats of the specified joystick.
- *  Each element in the array is one of the following values:
+ *  Each element in the Array is one of the following values:
  *
  *  Name                  | Value
  *  ----                  | -----
@@ -4710,15 +4710,15 @@ GLFWAPI const unsigned char* glfwGetJoystickButtons(int jid, int* count);
  *
  *  @param[in] jid The [joystick](@ref joysticks) to query.
  *  @param[out] count Where to store the number of hat states in the returned
- *  array.  This is set to zero if the joystick is not present or an error
+ *  Array.  This is set to zero if the joystick is not present or an error
  *  occurred.
- *  @return An array of hat states, or `NULL` if the joystick is not present
+ *  @return An Array of hat states, or `NULL` if the joystick is not present
  *  or an [error](@ref error_handling) occurred.
  *
  *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED, @ref
  *  GLFW_INVALID_ENUM and @ref GLFW_PLATFORM_ERROR.
  *
- *  @pointer_lifetime The returned array is allocated and freed by GLFW.  You
+ *  @pointer_lifetime The returned Array is allocated and freed by GLFW.  You
  *  should not free it yourself.  It is valid until the specified joystick is
  *  disconnected, this function is called again for that joystick or the library
  *  is terminated.
@@ -5414,7 +5414,7 @@ GLFWAPI int glfwVulkanSupported(void);
 
 /*! @brief Returns the Vulkan instance extensions required by GLFW.
  *
- *  This function returns an array of names of Vulkan instance extensions required
+ *  This function returns an Array of names of Vulkan instance extensions required
  *  by GLFW for creating Vulkan surfaces for GLFW windows.  If successful, the
  *  list will always contains `VK_KHR_surface`, so if you don't require any
  *  additional extensions you can pass this list directly to the
@@ -5429,8 +5429,8 @@ GLFWAPI int glfwVulkanSupported(void);
  *  for off-screen rendering and compute work.
  *
  *  @param[out] count Where to store the number of extensions in the returned
- *  array.  This is set to zero if an error occurred.
- *  @return An array of ASCII encoded extension names, or `NULL` if an
+ *  Array.  This is set to zero if an error occurred.
+ *  @return An Array of ASCII encoded extension names, or `NULL` if an
  *  [error](@ref error_handling) occurred.
  *
  *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED and @ref
@@ -5438,13 +5438,13 @@ GLFWAPI int glfwVulkanSupported(void);
  *
  *  @remark Additional extensions may be required by future versions of GLFW.
  *  You should check if any extensions you wish to enable are already in the
- *  returned array, as it is an error to specify an extension more than once in
+ *  returned Array, as it is an error to specify an extension more than once in
  *  the `VkInstanceCreateInfo` struct.
  *
  *  @remark @macos This function currently only supports the
  *  `VK_MVK_macos_surface` extension from MoltenVK.
  *
- *  @pointer_lifetime The returned array is allocated and freed by GLFW.  You
+ *  @pointer_lifetime The returned Array is allocated and freed by GLFW.  You
  *  should not free it yourself.  It is guaranteed to be valid only until the
  *  library is terminated.
  *

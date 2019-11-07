@@ -8,9 +8,17 @@
 #include <geometry.h>
 #include <material.h>
 #include <ref_ptr.h>
+#include <scene.h>
+#include <mutex>
+#include <audio.h>
+#include <render_manager.h>
 
 //Hide from here
+#include <display_list.h>
 #include <command.h>
+#include <thread.h>
+
+// SCHEDULER
 
 // --------------------------------------------------------------//
 
@@ -19,16 +27,25 @@ class SufferManager {
 public:
 	static SufferManager& instance();
 
+	friend class Audio3D;
+	friend class Audio2D;
+	friend class Interface;
+
 	bool Init();
 	bool Run();
 	bool Step(double time_step);
 	bool Finish();
 
 	double DeltaTime();
-	void AddCommand(EDK3::ref_ptr<Command> cmd);
 
-	void SetPredefiniedShape(EDK3::ref_ptr <Geometry> geo, Geometry::BasicShapes shape);
-	void SetPredefiniedMaterial(EDK3::ref_ptr <Material> mat, Material::BasicMaterials basic_mat);
+	void SetPredefiniedShape(ref_ptr <Geometry> geo, Geometry::BasicShapes shape);
+	void SetPredefiniedMaterial(ref_ptr <Material> mat, Material::BasicMaterials basic_mat);
+
+
+	Audio3D newSong;
+
+	// Subsystems
+	RenderManager render_manager_;
 
 protected:
 
@@ -36,14 +53,29 @@ protected:
 	virtual ~SufferManager();
 
 private:
-	SufferManager(const SufferManager&);
 
-	void PrepareDraw();
-	void DrawDisplayList();
-	bool ResetDisplayList();
+	SufferManager(const SufferManager&);
 
 	struct Data;
 	Data* data_;
+
+	void Input();
+	void Update();
+	void Draw();
+
+	// Threads
+	ref_ptr<Thread> logic_;
+	ref_ptr<Thread> input_;
+	ref_ptr<Thread> audio_;
+
+	// Audio STUFF
+	std::vector<ref_ptr<Command>> audio_dl_;
+
+	// DisplayLists Stuff
+	void Audio();
+	void PrepareAudio();
+
+
 };
 
 // --------------------------------------------------------------//
