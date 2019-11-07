@@ -320,6 +320,7 @@ bool SufferManager::Init(){
 
 	//Subsystems init
 	render_manager_.StartUp();
+  resource_manager_.StartUp();
 
 
 	// Threads Allocation
@@ -473,6 +474,8 @@ bool SufferManager::Step(double time_step){
 // --------------------------------------------------------------//
 
 bool SufferManager::Finish(){
+
+	resource_manager_.ShutDown();
 	render_manager_.ShutDown();
 
 	return true;

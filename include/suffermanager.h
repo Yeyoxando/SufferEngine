@@ -10,6 +10,7 @@
 #include <scene.h>
 #include <audio.h>
 #include <render_manager.h>
+#include <resource_manager.h>
 
 //Hide from here
 #include <display_list.h>
@@ -42,6 +43,7 @@ public:
 
 	// Subsystems
 	RenderManager render_manager_;
+  ResourceManager resource_manager_;
 
 protected:
 

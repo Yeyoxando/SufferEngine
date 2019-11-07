@@ -235,8 +235,8 @@ void Interface::Update(){
 	DrawMenuBar();
 	CreateDock(&open);
 	OpenWindows();
-	ImGui::ShowDemoWindow(&open);
-	ImGui::ShowMetricsWindow(&open);
+	//ImGui::ShowDemoWindow(&open);
+	//ImGui::ShowMetricsWindow(&open);
 
 }
 
