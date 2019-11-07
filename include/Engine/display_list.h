@@ -10,12 +10,21 @@
 
 #include <referenced.h>
 #include <audio.h>
+#include <ref_ptr.h>
+#include <command.h>
+#include <vector>
 
 namespace Suffer {
 
 class DisplayList : public Referenced {
+	friend class RenderManager;
 
 public:
+	enum DisplayListType {
+		kDisplayListType_Render = 0,
+		kDisplayListType_Audio = 1,
+		kDisplayListType_NONE = 20 // MAX for enum.
+	};
 
 	// Constructors
 	DisplayList();
@@ -23,42 +32,27 @@ public:
 	
 	// Copy-Constructors
 	DisplayList(const DisplayList&) = delete;
-	DisplayList(DisplayList&& d);
-
-	struct ClearCommands {
-		ClearCommands() {};
-		void Clear();
-	};
-
-	struct AudioCommands {
-		AudioCommands() {};
-		void Play(Audio3D* source);
-		void Load(Audio3D* source, char* file);
-		void SetGain(Audio3D* source, const float newGain);
-	};
-
-	AudioCommands& audioCommand();
-	ClearCommands& clearCommand();
-
+	DisplayList(DisplayList&& d)
+		: dl_commands_(d.dl_commands_) {
+		d.dl_commands_.clear();
+		d.dl_type_ = kDisplayListType_NONE;
+	}
+	DisplayList& operator=(DisplayList&& d);
+	
 	// DL Functions
 	void reset();
+	void clear();
+	u32 size();
 
-	DisplayList clone() const;
-	bool clone(DisplayList& out);
+	void SetDisplayListType(DisplayListType dl_type);
+	DisplayListType GetDisplayListType();
 
-	void addCommand(const AudioCommands &command) { audioCommand() = command; }
-	void addCommand(const ClearCommands &command) { clearCommand() = command; }
-
-	enum CommandType {
-		kClear = 0,
-		kAudio = 1,
-		kNONE = 20 // MAX for enum.
-	};
+	void addCommand(const ref_ptr<Command> cmd);
 
 
-	struct Command;
-	struct Data;
-	Data* data_ = nullptr;
+private:
+	DisplayListType dl_type_;
+	std::vector<ref_ptr<Command>> dl_commands_;
 
 };
 

@@ -20,8 +20,8 @@
 
 struct SufferManager::Data {
 
-	std::vector<EDK3::ref_ptr<Command>> display_list_;
-	EDK3::ref_ptr<Scene> scene_;
+	//std::vector<ref_ptr<Command>> display_list_;
+	ref_ptr<Scene> scene_;
 	Suffer::Window wind_;
 	double previous_time_;
 	double current_time_;
@@ -284,24 +284,9 @@ SufferManager::SufferManager(){
 
 	data_ = new Data();
 
-	data_->display_list_ = std::vector<EDK3::ref_ptr<Command>>(0);
-	audio_dl_ = std::vector<EDK3::ref_ptr<Command>>(0);
+	//data_->display_list_ = std::vector<ref_ptr<Command>>(0);
+	audio_dl_ = std::vector<ref_ptr<Command>>(0);
 	data_->scene_.alloc();
-
-}
-
-// --------------------------------------------------------------//
-
-void SufferManager::PrepareDraw(){
-
-	EDK3::ref_ptr<Clear> clear_cmd;
-
-	clear_cmd.alloc();
-	clear_cmd.get()->SetClearColor(glm::vec4(0.8f));
-
-	AddCommand(clear_cmd.get());
-
-	data_->scene_->PrepareDraw();
 
 }
 
@@ -340,9 +325,12 @@ bool SufferManager::Init(){
 	Suffer::InitInput();
 	data_->interface_.Init();
 
+	//Subsystems init
+	render_manager_.StartUp();
+
+
 	// Threads Allocation
 	logic_.alloc();
-	render_.alloc();
 	input_.alloc();
 	audio_.alloc();
 
@@ -362,8 +350,9 @@ bool SufferManager::Init(){
 
 	data_->window_should_close_ = false;
 
+
 	data_->scene_->Init();
-	newSong.alloc();
+	//newSong.alloc();
 
 	return true;
 }
@@ -373,8 +362,8 @@ bool SufferManager::Init(){
 void SufferManager::Update() {
 
 	while(1){
-		logic_->Sleep();
 		Step(data_->delta_time_);
+		logic_->Sleep();
 	}
 
 }
@@ -390,7 +379,7 @@ void SufferManager::Draw() {
 	data_->interface_.Update();
 	data_->interface_.Render();
 
-	DrawDisplayList();
+	render_manager_.DoRender();
 
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	data_->wind_.swapBuffers();
@@ -406,7 +395,7 @@ void SufferManager::Input() {
 
 		// TEST WITH AUDIO
 		if (Suffer::IsKeyDown(k_F1)) {
-			audio_dl_.push_back(newSong.get());
+			//audio_dl_.push_back(newSong.get());
 		}
 
 		// Window Should Close
@@ -422,9 +411,9 @@ void SufferManager::Input() {
 bool SufferManager::Run(){
 
 
-	newSong->Load("../../../resources/audio/plonk_wet.ogg");
-	newSong->Play3D();
-	newSong->SetLooping(true);
+	//newSong->Load("../../../resources/audio/plonk_wet.ogg");
+	//newSong->Play3D();
+	//newSong->SetLooping(true);
 
 	while (!data_->window_should_close_) {
 
@@ -490,8 +479,8 @@ void SufferManager::PrepareAudio() {
 
 bool SufferManager::Step(double time_step){
 
-	PrepareDraw();
-
+	//PrepareDraw();
+	data_->scene_->Step(time_step);
 	// This will be the last function in UPDATE
 	PrepareAudio();
 
@@ -501,6 +490,8 @@ bool SufferManager::Step(double time_step){
 // --------------------------------------------------------------//
 
 bool SufferManager::Finish(){
+	render_manager_.ShutDown();
+
 	return true;
 }
 
@@ -517,31 +508,31 @@ double SufferManager::DeltaTime(){
 
 // --------------------------------------------------------------//
 
-bool SufferManager::ResetDisplayList(){
-	if (data_->display_list_.empty()) return true;
-
-	data_->display_list_.clear();
-	if (data_->display_list_.empty()) return true;
-}
+//bool SufferManager::ResetDisplayList(){
+//	if (data_->display_list_.empty()) return true;
+//
+//	data_->display_list_.clear();
+//	if (data_->display_list_.empty()) return true;
+//}
+//
+//// --------------------------------------------------------------//
+//
+//void SufferManager::AddCommand(ref_ptr<Command> cmd){
+//	if (!cmd) return;
+//
+//	data_->display_list_.push_back(cmd);
+//}
+//
+//void SufferManager::AddCommand(std::vector<ref_ptr<Command>> *displayList, ref_ptr<Command> cmd){
+//	
+//	if (!cmd) return;
+//	displayList->push_back(cmd);
+//
+//}
 
 // --------------------------------------------------------------//
 
-void SufferManager::AddCommand(EDK3::ref_ptr<Command> cmd){
-	if (!cmd) return;
-
-	data_->display_list_.push_back(cmd);
-}
-
-void SufferManager::AddCommand(std::vector<EDK3::ref_ptr<Command>> *displayList, EDK3::ref_ptr<Command> cmd){
-	
-	if (!cmd) return;
-	displayList->push_back(cmd);
-
-}
-
-// --------------------------------------------------------------//
-
-void SufferManager::SetPredefiniedShape(EDK3::ref_ptr <Geometry> geo, Geometry::BasicShapes shape) {
+void SufferManager::SetPredefiniedShape(ref_ptr <Geometry> geo, Geometry::BasicShapes shape) {
 #ifdef ASSERT
 	assert(geo.get()); // "geo was NULL"
 #endif
@@ -571,7 +562,7 @@ void SufferManager::SetPredefiniedShape(EDK3::ref_ptr <Geometry> geo, Geometry::
 
 // --------------------------------------------------------------//
 
-void SufferManager::SetPredefiniedMaterial(EDK3::ref_ptr <Material> mat, Material::BasicMaterials basic_mat){
+void SufferManager::SetPredefiniedMaterial(ref_ptr <Material> mat, Material::BasicMaterials basic_mat){
 
 #ifdef ASSERT
 	assert(mat.get()); // "mat was NULL"
@@ -597,23 +588,23 @@ void SufferManager::SetPredefiniedMaterial(EDK3::ref_ptr <Material> mat, Materia
 
 // --------------------------------------------------------------//
 
-void SufferManager::DrawDisplayList(){
-
-	if (!data_->render_mutex.try_lock()) {
-#ifdef DEBUG
-		printf("\nError trying to lock the render_mutex: [%s]\n", __FUNCTION__);
-#endif
-		return;
-	}
-
-	for (int i = 0; i < data_->display_list_.size(); ++i){
-		Command* cmd = data_->display_list_[i].get();
-		cmd->Execute();
-	}
-
-	ResetDisplayList();
-
-	data_->render_mutex.unlock();
-}
-
-// --------------------------------------------------------------//
+//void SufferManager::DrawDisplayList(){
+//
+//	if (!data_->render_mutex.try_lock()) {
+//#ifdef DEBUG
+//		printf("\nError trying to lock the render_mutex: [%s]\n", __FUNCTION__);
+//#endif
+//		return;
+//	}
+//
+//	for (int i = 0; i < data_->display_list_.size(); ++i) {
+//		Command* cmd = data_->display_list_[i].get();
+//		cmd->Execute();
+//	}
+//
+//	ResetDisplayList();
+//
+//	data_->render_mutex.unlock();
+//}
+//
+//// --------------------------------------------------------------//

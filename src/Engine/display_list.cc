@@ -6,132 +6,114 @@
 */
 
 #include <display_list.h>
-#include <vector>
-
-// --------------------------------------------------------------//
-
-struct Suffer::DisplayList::Data{
-
-	//std::vector<DisplayList::Command> commands_;
-
-	void Reset();
-	void Copy(const Data& d);
-
-};
-
-// --------------------------------------------------------------//
-
-void Suffer::DisplayList::Data::Reset(){
-
-	// Clear the std::vector of commands.
-	//commands_.clear();
-
-}
-
-// --------------------------------------------------------------//
-
-void Suffer::DisplayList::Data::Copy(const Data& d){
-
-	//commands_ = d.commands_;
-
-}
 
 // --------------------------------------------------------------//
 
 Suffer::DisplayList::DisplayList(){
 
-	data_ = new Data();
+	dl_type_ = kDisplayListType_NONE;
 
 }
 
 // --------------------------------------------------------------//
 
-Suffer::DisplayList::AudioCommands& Suffer::DisplayList::audioCommand(){
-	return AudioCommands();
+void Suffer::DisplayList::reset() {
+	clear();
+	dl_type_ = kDisplayListType_NONE;
 }
 
 // --------------------------------------------------------------//
 
-Suffer::DisplayList::ClearCommands& Suffer::DisplayList::clearCommand(){
-	return ClearCommands();
+void Suffer::DisplayList::clear(){
+	if (dl_commands_.empty()) return;
+
+	dl_commands_.clear();
 }
 
 // --------------------------------------------------------------//
 
-Suffer::DisplayList Suffer::DisplayList::clone() const{
-
-	// TODO: We have to research about that... By JBG
-	DisplayList copy;
-	memcpy(copy.data_, data_, sizeof(copy.data_));
-	return copy;
-
+u32 Suffer::DisplayList::size(){
+	return dl_commands_.size();
 }
 
 // --------------------------------------------------------------//
 
-bool Suffer::DisplayList::clone(DisplayList& out){
-
-	if (out.data_ == nullptr) return false;
-	memcpy(out.data_, this->data_, sizeof(data_));
-	if (out.data_ == nullptr) return false;
-
+void Suffer::DisplayList::SetDisplayListType(DisplayListType dl_type) {
+	if (dl_commands_.empty()){
+		dl_type_ = dl_type;
+	}
+	else {
+#ifdef DEBUG
+		printf("\nError trying to change DL type without being empty: [%s]\n", __FUNCTION__);
+#endif
+		return;
+	}
 }
 
 // --------------------------------------------------------------//
 
-Suffer::DisplayList::DisplayList(DisplayList&& d){
+Suffer::DisplayList::DisplayListType Suffer::DisplayList::GetDisplayListType(){
+	return dl_type_;
+}
 
-	data_ = d.data_;
-	d.data_ = nullptr;
+// --------------------------------------------------------------//
 
+void Suffer::DisplayList::addCommand(const ref_ptr<Command> cmd){
+	if (!cmd) return;
+
+	if (dl_type_ = kDisplayListType_NONE) {
+		switch (cmd->GetCommandType()) {
+		case Command::CommandType::kRender:
+			dl_type_ = kDisplayListType_Render;
+			break;
+		case Command::CommandType::kAudio:
+			dl_type_ = kDisplayListType_Audio;
+			break;
+		default:
+			break;
+		}
+	}
+	else {
+		switch (dl_type_){
+		case Suffer::DisplayList::kDisplayListType_Render:
+			if (cmd->GetCommandType() != Command::kRender){
+#ifdef DEBUG
+				printf("\nError trying to adding Render command to not Render DL: [%s]\n", __FUNCTION__);
+#endif
+				return;
+			}
+			break;
+		case Suffer::DisplayList::kDisplayListType_Audio:
+			if (cmd->GetCommandType() != Command::kAudio) {
+#ifdef DEBUG
+				printf("\nError trying to adding Audio command to not Audio DL: [%s]\n", __FUNCTION__);
+#endif
+				return;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
+	dl_commands_.push_back(cmd);
+}
+
+// --------------------------------------------------------------//
+
+DisplayList & Suffer::DisplayList::operator=(DisplayList && d){
+	// swap pointers to pass values without creating a real copy
+	std::swap(dl_commands_, d.dl_commands_);
+	dl_type_ = d.dl_type_;
+	d.dl_type_ = kDisplayListType_NONE;
+
+	return *this;
 }
 
 // --------------------------------------------------------------//
 
 Suffer::DisplayList::~DisplayList(){
 
-	if (data_ != nullptr) delete data_;
-	data_ = nullptr;
-
-}
-
-// --------------------------------------------------------------//
-
-void Suffer::DisplayList::AudioCommands::Play(Audio3D* source){
-
-#ifdef ASSERT
-	assert(source && "NULL AudioSource");
-#endif
-
-	if (source == nullptr) return;
-	source->Play3D();
-
-}
-
-// --------------------------------------------------------------//
-
-void Suffer::DisplayList::AudioCommands::Load(Audio3D* source, char* file){
-
-#ifdef ASSERT
-	assert(source && "NULL AudioSource");
-#endif
-
-	if (file == nullptr) return;
-	if (source == nullptr) return;
-	source->Load(file);
-
-}
-
-// --------------------------------------------------------------//
-
-void Suffer::DisplayList::AudioCommands::SetGain(Audio3D* source, const float newGain) {
-	
-#ifdef ASSERT
-	assert(source && "NULL AudioSource");
-#endif
-
-	if (source == nullptr) return;
-	source->SetGain(newGain);
 
 }
 

@@ -17,12 +17,13 @@ public:
 	virtual ~Scene();
 
 	void Init();
+	void Step(float time_step);
 	void PrepareDraw();
 
 	// Methods
 
 	// Attributes
-	std::vector<EDK3::ref_ptr<GameObject>> go_;
+	std::vector<ref_ptr<GameObject>> go_;
 
 };
 

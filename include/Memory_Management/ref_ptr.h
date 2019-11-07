@@ -2,10 +2,8 @@
 // Copyright (C) 2014 Jose L. Hidalgo 
 // ref_ptr Class (Referenced holder)
 // ----------------------------------------------------------------------------
-#ifndef INCLUDE_EDK3_REF_PTR_H_
-#define INCLUDE_EDK3_REF_PTR_H_
-
-namespace EDK3 {
+#ifndef __REF_PTR_H__
+#define __REF_PTR_H__
 
   template<class T>
   class ref_ptr {
@@ -14,7 +12,10 @@ namespace EDK3 {
 
     ref_ptr() :ptr_(0L) {}
     ref_ptr(T* t):ptr_(t) { if (ptr_) ptr_->ref(); }
-    ref_ptr(const ref_ptr& rp):ptr_(rp.ptr_)  { if (ptr_) ptr_->ref(); }
+	ref_ptr(const ref_ptr& rp) :ptr_(rp.ptr_) { if (ptr_) ptr_->ref(); }
+	ref_ptr(ref_ptr&& rp) :ptr_(rp.ptr_) {
+		rp.ptr_ = 0;
+	}
     ~ref_ptr() {
       if (ptr_) ptr_->unref();
       ptr_ = 0L;
@@ -123,6 +124,5 @@ namespace EDK3 {
   private:
     const T* ptr_;
   };
-}  // EDK3
 
-#endif  // INCLUDE_EDK3_REF_PTR_H_
+#endif  // __REF_PTR_H__

@@ -629,7 +629,7 @@ CODE
      perfectly fine, as the bool toggle fairly rarely. If you have on a touch device, you might find use for an early call to UpdateHoveredWindowAndCaptureFlags().
     Note: Text input widget releases focus on "Return KeyDown", so the subsequent "Return KeyUp" event that your application receive will typically
      have 'io.WantCaptureKeyboard=false'. Depending on your application logic it may or not be inconvenient. You might want to track which key-downs
-     were targeted for Dear ImGui, e.g. with an array of bool, and filter out the corresponding key-ups.)
+     were targeted for Dear ImGui, e.g. with an Array of bool, and filter out the corresponding key-ups.)
 
  Q: How can I display an image? What is ImTextureID, how does it works?
  A: Short explanation:
@@ -932,7 +932,7 @@ CODE
 
  Q: How can I use this without a mouse, without a keyboard or without a screen? (gamepad, input share, remote display)
  A: - You can control Dear ImGui with a gamepad. Read about navigation in "Using gamepad/keyboard navigation controls".
-      (short version: map gamepad inputs into the io.NavInputs[] array + set io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad)
+      (short version: map gamepad inputs into the io.NavInputs[] Array + set io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad)
     - You can share your computer mouse seamlessly with your console/tablet/phone using Synergy (https://symless.com/synergy)
       This is the preferred solution for developer productivity.
       In particular, the "micro-synergy-client" repository (https://github.com/symless/micro-synergy-client) has simple

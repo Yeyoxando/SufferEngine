@@ -79,7 +79,7 @@ static const char Silent[] = "";
 #define OUT_PART        3
 
 typedef const char *Rule[4];
-/* Rule is an array of 4 character pointers */
+/* Rule is an Array of 4 character pointers */
 
 
 /*0 = Punctuation */

@@ -14,6 +14,7 @@
 #include <data_types.h>
 #include <referenced.h>
 #include <ref_ptr.h>
+#include <command.h>
 
 
 using namespace Suffer;
@@ -49,14 +50,14 @@ public:
 
 	// Getters
 	Transform GetTransform();
-	EDK3::ref_ptr<Material> GetMaterial();
-	EDK3::ref_ptr<Geometry> GetGeometry();
+	ref_ptr<Material> GetMaterial();
+	ref_ptr<Geometry> GetGeometry();
 
 	// Setters
-	void SetMaterial(EDK3::ref_ptr<Material> new_material);
-	void SetGeometry(EDK3::ref_ptr<Geometry> new_geometry);
+	void SetMaterial(ref_ptr<Material> new_material);
+	void SetGeometry(ref_ptr<Geometry> new_geometry);
 
-	void Draw();
+	const ref_ptr<Command> GetDrawCommand();
 
 protected:
 	virtual ~GameObject();
@@ -64,8 +65,8 @@ protected:
 private:
 	// Attributes
 	Transform transform_;
-	EDK3::ref_ptr<Material> material_;
-	EDK3::ref_ptr<Geometry> geometry_;
+	ref_ptr<Material> material_;
+	ref_ptr<Geometry> geometry_;
 
 	// Methods
 

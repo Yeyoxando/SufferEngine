@@ -14,27 +14,35 @@ public:
 	AudioCommands();
 	~AudioCommands();
 
+	struct Load : public Command {
+		Load() { cmd_type_ = Command::kAudio; }
+		virtual void Execute() const override;
+		char* file;
+		Audio3D* audio_3d_ = nullptr;
+		Audio2D* audio_2d_ = nullptr;
+	};
+
 	struct Play : public Command {
-		Play() {};
-		virtual void Execute() override;
+		Play() { cmd_type_ = Command::kAudio; }
+		virtual void Execute() const override;
 		Audio3D* audio_3d_ = nullptr;
 		Audio2D* audio_2d_ = nullptr;
 	};
 
 	struct Pause : public Command {
-		Pause() {};
-		virtual void Execute() override;
+		Pause() { cmd_type_ = Command::kAudio; }
+		virtual void Execute() const override;
 		Audio3D* audio_3d_ = nullptr;
 		Audio2D* audio_2d_ = nullptr;
 	};
 
 	struct SetGain : public Command {
+		SetGain() { cmd_type_ = Command::kAudio; }
 		float gain_;
-		virtual void Execute() override;
+		virtual void Execute() const override;
 		Audio3D* audio_3d_ = nullptr;
 		Audio2D* audio_2d_ = nullptr;
 	};
-
 
 };
 

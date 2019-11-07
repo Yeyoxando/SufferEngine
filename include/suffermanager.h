@@ -11,6 +11,7 @@
 #include <scene.h>
 #include <mutex>
 #include <audio.h>
+#include <render_manager.h>
 
 //Hide from here
 #include <display_list.h>
@@ -36,15 +37,15 @@ public:
 	bool Finish();
 
 	double DeltaTime();
-	void AddCommand(EDK3::ref_ptr<Command> cmd);
-	void AddCommand(std::vector<EDK3::ref_ptr<Command>> *displayList,
-					EDK3::ref_ptr<Command> cmd);
 
-	void SetPredefiniedShape(EDK3::ref_ptr <Geometry> geo, Geometry::BasicShapes shape);
-	void SetPredefiniedMaterial(EDK3::ref_ptr <Material> mat, Material::BasicMaterials basic_mat);
+	void SetPredefiniedShape(ref_ptr <Geometry> geo, Geometry::BasicShapes shape);
+	void SetPredefiniedMaterial(ref_ptr <Material> mat, Material::BasicMaterials basic_mat);
 
 
-	EDK3::ref_ptr<Audio3D> newSong;
+	Audio3D newSong;
+
+	// Subsystems
+	RenderManager render_manager_;
 
 protected:
 
@@ -55,10 +56,6 @@ private:
 
 	SufferManager(const SufferManager&);
 
-	void PrepareDraw();
-	void DrawDisplayList();
-	bool ResetDisplayList();
-
 	struct Data;
 	Data* data_;
 
@@ -67,13 +64,12 @@ private:
 	void Draw();
 
 	// Threads
-	EDK3::ref_ptr<Thread> logic_;
-	EDK3::ref_ptr<Thread> render_;
-	EDK3::ref_ptr<Thread> input_;
-	EDK3::ref_ptr<Thread> audio_;
+	ref_ptr<Thread> logic_;
+	ref_ptr<Thread> input_;
+	ref_ptr<Thread> audio_;
 
 	// Audio STUFF
-	std::vector<EDK3::ref_ptr<Command>> audio_dl_;
+	std::vector<ref_ptr<Command>> audio_dl_;
 
 	// DisplayLists Stuff
 	void Audio();

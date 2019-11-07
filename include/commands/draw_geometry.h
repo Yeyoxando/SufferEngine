@@ -19,15 +19,15 @@ public:
 
 	void SetData(GameObject* go);
 	void SetTransform(Transform t);
-	void SetGeometry(EDK3::ref_ptr<Geometry> geo);
-	void SetMaterial(EDK3::ref_ptr<Material> mat);
+	void SetGeometry(ref_ptr<Geometry> geo);
+	void SetMaterial(ref_ptr<Material> mat);
 
 	DrawGeometry();
 protected:
 
 	virtual ~DrawGeometry();
 
-	virtual void Execute() override;
+	virtual void Execute() const override;
 
 	struct Data;
 	Data* data_;

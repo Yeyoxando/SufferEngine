@@ -148,9 +148,9 @@ float* Suffer::Audio2D::FFT(){
 
 // --------------------------------------------------------------//
 
-void Suffer::Audio2D::Execute(){
-	Play();
-}
+//void Suffer::Audio2D::Execute(){
+//	Play();
+//}
 
 // --------------------------------------------------------------//
 
@@ -492,13 +492,13 @@ glm::vec3 Suffer::Audio3D::GetSoundPosition(){
 
 // MockupMockupMockupMockupMockupMockupMockupMockupMockupMockupMockupMockup
 
-void Suffer::Audio3D::Execute(){
-	Play3D();
-}
-
-void Suffer::Audio3D::Reproduce(){
-
-}
+//void Suffer::Audio3D::Execute(){
+//	Play3D();
+//}
+//
+//void Suffer::Audio3D::Reproduce(){
+//
+//}
 
 // MockupMockupMockupMockupMockupMockupMockupMockupMockupMockupMockupMockup
 

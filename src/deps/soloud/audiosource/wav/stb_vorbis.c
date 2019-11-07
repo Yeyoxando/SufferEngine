@@ -178,7 +178,7 @@ extern int stb_vorbis_decode_frame_pushdata(
          stb_vorbis *f,
          const unsigned char *datablock, int datablock_length_in_bytes,
          int *channels,             // place to write number of float * buffers
-         float ***output,           // place to write float ** array of float * buffers
+         float ***output,           // place to write float ** Array of float * buffers
          int *samples               // place to write number of output samples
      );
 // decode a frame of audio sample data if possible from the passed-in data block
@@ -199,7 +199,7 @@ extern int stb_vorbis_decode_frame_pushdata(
 //
 // The number of channels returned are stored in *channels (which can be
 // NULL--it is always the same as the number of channels reported by
-// get_info). *output will contain an array of float* buffers, one per
+// get_info). *output will contain an Array of float* buffers, one per
 // channel. In other words, (*output)[0][0] contains the first sample from
 // the first channel, and (*output)[1][0] contains the first sample from
 // the second channel.
@@ -289,7 +289,7 @@ extern int stb_vorbis_get_frame_float(stb_vorbis *f, int *channels, float ***out
 // decode the next frame and return the number of samples. the number of
 // channels returned are stored in *channels (which can be NULL--it is always
 // the same as the number of channels reported by get_info). *output will
-// contain an array of float* buffers, one per channel. These outputs will
+// contain an Array of float* buffers, one per channel. These outputs will
 // be overwritten on the next call to stb_vorbis_get_frame_*.
 //
 // You generally should not intermix calls to stb_vorbis_get_frame_*()
@@ -301,7 +301,7 @@ extern int stb_vorbis_get_frame_short            (stb_vorbis *f, int num_c, shor
 #endif
 // decode the next frame and return the number of *samples* per channel.
 // Note that for interleaved data, you pass in the number of shorts (the
-// size of your array), but the return value is the number of samples per
+// size of your Array), but the return value is the number of samples per
 // channel, not the total number of samples.
 //
 // The data is coerced to the number of channels you request according to the
@@ -892,7 +892,7 @@ static int error(vorb *f, enum STBVorbisError e)
 
 #define temp_block_array(f,count,size)  make_block_array(temp_alloc(f,array_size_required(count,size)), count, size)
 
-// given a sufficiently large block of memory, make an array of pointers to subblocks of it
+// given a sufficiently large block of memory, make an Array of pointers to subblocks of it
 static void *make_block_array(void *mem, int count, int size)
 {
    int i;
@@ -3969,7 +3969,7 @@ static int start_decoder(vorb *f)
             }
          }
       }
-      // precompute the classifications[] array to avoid inner-loop mod/divide
+      // precompute the classifications[] Array to avoid inner-loop mod/divide
       // call it 'classdata' since we already have r->classifications
       r->classdata = (uint8 **) setup_malloc(f, sizeof(*r->classdata) * f->codebooks[r->classbook].entries);
       if (!r->classdata) return error(f, VORBIS_outofmem);
@@ -4143,7 +4143,7 @@ static void vorbis_deinit(stb_vorbis *p)
          setup_free(p, c->multiplicands);
          setup_free(p, c->codewords);
          setup_free(p, c->sorted_codewords);
-         // c->sorted_values[-1] is the first entry in the array
+         // c->sorted_values[-1] is the first entry in the Array
          setup_free(p, c->sorted_values ? c->sorted_values-1 : NULL);
       }
       setup_free(p, p->codebooks);
@@ -4344,7 +4344,7 @@ int stb_vorbis_decode_frame_pushdata(
          stb_vorbis *f,                   // the file we're decoding
          const uint8 *data, int data_len, // the memory available for decoding
          int *channels,                   // place to write number of float * buffers
-         float ***output,                 // place to write float ** array of float * buffers
+         float ***output,                 // place to write float ** Array of float * buffers
          int *samples                     // place to write number of output samples
      )
 {

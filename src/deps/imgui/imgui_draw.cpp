@@ -1881,7 +1881,7 @@ bool    ImFontAtlasBuildWithStbTruetype(ImFontAtlas* atlas)
         for (int output_i = 0; output_i < atlas->Fonts.Size && src_tmp.DstIndex == -1; output_i++)
             if (cfg.DstFont == atlas->Fonts[output_i])
                 src_tmp.DstIndex = output_i;
-        IM_ASSERT(src_tmp.DstIndex != -1); // cfg.DstFont not pointing within atlas->Fonts[] array?
+        IM_ASSERT(src_tmp.DstIndex != -1); // cfg.DstFont not pointing within atlas->Fonts[] Array?
         if (src_tmp.DstIndex == -1)
             return false;
 
@@ -3178,8 +3178,8 @@ void ImGui::RenderRectFilledWithHole(ImDrawList* draw_list, ImRect outer, ImRect
 //-----------------------------------------------------------------------------
 // [SECTION] Decompression code
 //-----------------------------------------------------------------------------
-// Compressed with stb_compress() then converted to a C array and encoded as base85.
-// Use the program in misc/fonts/binary_to_compressed_c.cpp to create the array from a TTF file.
+// Compressed with stb_compress() then converted to a C Array and encoded as base85.
+// Use the program in misc/fonts/binary_to_compressed_c.cpp to create the Array from a TTF file.
 // The purpose of encoding as base85 instead of "0x00,0x01,..." style is only save on _source code_ size.
 // Decompression from stb.h (public domain) by Sean Barrett https://github.com/nothings/stb/blob/master/stb.h
 //-----------------------------------------------------------------------------

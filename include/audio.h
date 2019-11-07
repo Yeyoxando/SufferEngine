@@ -15,7 +15,7 @@ namespace Suffer {
 
 // ---------------------------------------------------------------------- //
 
-	class Audio2D : public Command {
+	class Audio2D {
 
 	public:
 
@@ -39,7 +39,7 @@ namespace Suffer {
 		float* Wave();
 		float* FFT();
 
-		virtual void Execute() override;
+		//virtual void Execute() override;
 
 	private:
 
@@ -56,7 +56,7 @@ namespace Suffer {
 
 // ---------------------------------------------------------------------- //
 
-	class Audio3D : public Command {
+	class Audio3D {
 
 	public:
 
@@ -109,8 +109,8 @@ namespace Suffer {
 		bool operator!=(const Audio3D& a);
 
 		// Commands Stuff -- Mockup
-		virtual void Execute() override;
-		virtual void Reproduce();
+		//virtual void Execute() const override;
+		//virtual void Reproduce();
 
 	private:
 

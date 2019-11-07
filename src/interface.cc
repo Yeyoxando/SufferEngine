@@ -374,7 +374,7 @@ void Interface::CreateDock(bool* p_open){
 	if(is_hierarchy_opened_) Hierarchy();
 	if(is_project_window_opened_) Project();
 	if(is_log_opened_) Log();
-	if(is_audio_window_opened_) Audio(SufferManager::instance().newSong.get());
+	//if(is_audio_window_opened_) Audio(SufferManager::instance().newSong.get());
 	if (is_game_window_opened_) Game(0);
 	
 
@@ -719,11 +719,11 @@ void Interface::Audio(Audio3D* sound){
 	// Attributes
 	ImGui::TextColored(ImVec4(1.0, 0.0, 0.0, 1.0), "Sound Attributes");
 		if (ImGui::SliderFloat("Volume", &song_volume, 0.0f, 2.0f)) {
-			EDK3::ref_ptr<AudioCommands::SetGain> set_gain_command;
+			ref_ptr<AudioCommands::SetGain> set_gain_command;
 			set_gain_command.alloc();
 			set_gain_command->audio_3d_ = sound;
 			set_gain_command->gain_ = song_volume;
-			suffer.AddCommand(&suffer.audio_dl_, set_gain_command.get());
+			//suffer.AddCommand(&suffer.audio_dl_, set_gain_command.get());
 			set_gain_command.release();
 		}
 		if (ImGui::InputFloat3("Sound Position", &song_position[0], 0.1f)) {
@@ -731,19 +731,19 @@ void Interface::Audio(Audio3D* sound){
 		}
 		if (paused) {
 			if (ImGui::Button("Play")) {
-				EDK3::ref_ptr<AudioCommands::Play> play_command_;
+				ref_ptr<AudioCommands::Play> play_command_;
 				play_command_.alloc();
 				play_command_->audio_3d_ = sound;
-				suffer.AddCommand(&suffer.audio_dl_, play_command_.get());
+				//suffer.AddCommand(&suffer.audio_dl_, play_command_.get());
 				play_command_.release();
 			}
 		}
 		else {
 			if (ImGui::Button("Pause")) {
-				EDK3::ref_ptr<AudioCommands::Pause> pause_command_;
+				ref_ptr<AudioCommands::Pause> pause_command_;
 				pause_command_.alloc();
 				pause_command_->audio_3d_ = sound;
-				suffer.AddCommand(&suffer.audio_dl_, pause_command_.get());
+				//suffer.AddCommand(&suffer.audio_dl_, pause_command_.get());
 				pause_command_.release();
 			}
 		}

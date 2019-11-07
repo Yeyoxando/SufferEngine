@@ -20,7 +20,8 @@ struct DrawGeometry::Data {
 
 // --------------------------------------------------- //
 
-DrawGeometry::DrawGeometry(){
+DrawGeometry::DrawGeometry() {
+	cmd_type_ = Command::kRender;
 	data_ = new Data();
 }
 
@@ -51,7 +52,7 @@ void DrawGeometry::SetTransform(Transform t){
 
 // --------------------------------------------------- //
 
-void DrawGeometry::SetGeometry(EDK3::ref_ptr<Geometry> geo){
+void DrawGeometry::SetGeometry(ref_ptr<Geometry> geo){
 	data_->number_elements_ = geo.get()->GetNumberElements();
 	data_->indices_ID = (GLint)geo.get()->GetIndicesID();
 	data_->vertices_ID = (GLint)geo.get()->GetVerticesID();
@@ -59,14 +60,14 @@ void DrawGeometry::SetGeometry(EDK3::ref_ptr<Geometry> geo){
 
 // --------------------------------------------------- //
 
-void DrawGeometry::SetMaterial(EDK3::ref_ptr<Material> mat){
+void DrawGeometry::SetMaterial(ref_ptr<Material> mat){
 	data_->color_ = mat.get()->GetColor();
 	data_->program_ID = mat.get()->GetProgramID();
 }
 
 // --------------------------------------------------- //
 
-void DrawGeometry::Execute() {
+void DrawGeometry::Execute() const {
 
 	glUseProgram(data_->program_ID);
 

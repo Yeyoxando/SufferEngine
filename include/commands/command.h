@@ -16,9 +16,18 @@ using namespace Suffer;
 class Command : public virtual Referenced {
 
 public: 
-	virtual void Execute() = 0;
+	virtual void Execute() const = 0;
 
+	enum CommandType {
+		kRender = 0,
+		kAudio = 1,
+		kNONE = 20 // MAX for enum.
+	};
+
+	CommandType GetCommandType() const { return cmd_type_; }
 protected:
+	CommandType cmd_type_;
+	
 	Command();
 	virtual ~Command();
 };
