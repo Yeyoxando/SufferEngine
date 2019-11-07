@@ -33,9 +33,8 @@ public:
 	// Copy-Constructors
 	DisplayList(const DisplayList&) = delete;
 	DisplayList(DisplayList&& d)
-		: dl_commands_(d.dl_commands_) {
-		d.dl_commands_.clear();
-		d.dl_type_ = kDisplayListType_NONE;
+		: dl_commands_(std::move(d.dl_commands_)) {
+		dl_type_ = std::move(d.dl_type_);
 	}
 	DisplayList& operator=(DisplayList&& d);
 	
