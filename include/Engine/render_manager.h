@@ -25,7 +25,7 @@ namespace Suffer {
 
 		// This will be drawn
 		DisplayList render_dl_;
-		std::mutex dl_mutex_;
+		Mutex dl_mutex_;
 	};
 
 

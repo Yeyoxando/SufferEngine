@@ -10,6 +10,8 @@
 #include <thread>
 #include <chrono>
 
+using namespace Suffer;
+
 struct Thread::ThreadData {
 
 	// PpluX Scheduler Stuff
@@ -51,6 +53,14 @@ void Thread::WaitFor(Thread* thread){
 
 	data_->scheduler_.waitFor(thread->data_->thread_);
 
+}
+
+void Thread::WaitMe(){
+    while (!im_done_) {
+        //if (!mutex_.try_lock()) {
+        //    im_done_ = true;
+        //}
+    };
 }
 
 void Thread::Sleep() {

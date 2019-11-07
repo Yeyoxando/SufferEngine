@@ -1,6 +1,5 @@
 #include <suffermanager.h>
 #include <imgui.h>
-#include <scene.h>
 #include <input.h>
 #include <window.h>
 #include "imgui_impl_opengl3.h"
@@ -9,12 +8,6 @@
 #include <time.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-//#include <px_sched.h>
-#include <thread.h>
-
-// STD Headers
-#include <mutex>
-#include <atomic>
 
 // --------------------------------------------------------------//
 
@@ -29,8 +22,8 @@ struct SufferManager::Data {
 	Interface interface_;
 
 	// Mutexes
-	std::mutex audio_mutex;
-	std::mutex render_mutex;
+  Mutex audio_mutex;
+  Mutex render_mutex;
 	
 
 
@@ -372,10 +365,6 @@ void SufferManager::Update() {
 
 void SufferManager::Draw() {
 
-	logic_->Awake();
-	//logic_.get()->WaitFor(logic_.get()); // This will be deleted
-
-	
 	data_->interface_.Update();
 	data_->interface_.Render();
 
@@ -393,11 +382,6 @@ void SufferManager::Input() {
 	while (1) {
 		input_->Sleep();
 
-		// TEST WITH AUDIO
-		if (Suffer::IsKeyDown(k_F1)) {
-			//audio_dl_.push_back(newSong.get());
-		}
-
 		// Window Should Close
 		if (Suffer::IsKeyDown(k_Escape)) {
 			data_->window_should_close_ = true;
@@ -410,11 +394,6 @@ void SufferManager::Input() {
 
 bool SufferManager::Run(){
 
-
-	//newSong->Load("../../../resources/audio/plonk_wet.ogg");
-	//newSong->Play3D();
-	//newSong->SetLooping(true);
-
 	while (!data_->window_should_close_) {
 
 		data_->current_time_ = Suffer::RawTime();
@@ -422,7 +401,11 @@ bool SufferManager::Run(){
 		
 		input_->Awake();
 		
+    logic_->Awake();
+
 		Draw();
+    
+    logic_->WaitMe();
 
 		data_->delta_time_ = (data_->current_time_ - data_->previous_time_) * 0.0001f;
 		data_->previous_time_ = data_->current_time_;

@@ -3,13 +3,11 @@
 #ifndef __SUFFER_MANAGER_H__
 #define __SUFFER_MANAGER_H__
 
-#include <vector>
 #include <game_object.h>
 #include <geometry.h>
 #include <material.h>
 #include <ref_ptr.h>
 #include <scene.h>
-#include <mutex>
 #include <audio.h>
 #include <render_manager.h>
 
@@ -17,8 +15,6 @@
 #include <display_list.h>
 #include <command.h>
 #include <thread.h>
-
-// SCHEDULER
 
 // --------------------------------------------------------------//
 
