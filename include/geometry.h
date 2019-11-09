@@ -7,9 +7,10 @@
 #ifndef __GEOMETRY_H__
 #define __GEOMETRY_H__
 
-#include <data_types.h>
 #include <referenced.h>
 #include <ref_ptr.h>
+#include <resource_manager.h>
+#include <data_types.h>
 
 using namespace Suffer;
 
@@ -18,8 +19,9 @@ using namespace Suffer;
 class Geometry : public virtual Referenced {
 
 public:
-	friend class SufferManager;
 	friend class DrawGeometry;
+
+	Geometry();
 
 	enum BasicShapes {
 		kBasicShapes_Triangle = 0,
@@ -28,7 +30,12 @@ public:
 		kBasicShapes_NONE = 20
 	};
 
-	Geometry();
+  void SetVertexBuffer(ResourceManager::VertexBuffer vertex_buffer);
+  void SetIndexBuffer(ResourceManager::IndexBuffer index_buffer);
+  
+  s32 VertexBuffer();
+  s32 IndexBuffer();
+
 protected:
 	virtual ~Geometry();
 
@@ -38,14 +45,9 @@ private:
 	Data* data_;
 
 	BasicShapes shape_;
-	void SetIndicesID(u16 indices_ID);
-	void SetVerticesID(u16 vertices_ID);
-	void SetNumberElements(u32 number_elements);
 
-	u16 GetIndicesID();
-	u16 GetVerticesID();
-	u32 GetNumberElements();
-
+  ResourceManager::VertexBuffer vertex_buffer_;
+  ResourceManager::IndexBuffer index_buffer_;
 
 	// Methods
 	Geometry(const Geometry&);

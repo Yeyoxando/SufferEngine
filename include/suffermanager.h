@@ -4,7 +4,7 @@
 #define __SUFFER_MANAGER_H__
 
 #include <game_object.h>
-#include <geometry.h>
+//#include <geometry.h>
 #include <material.h>
 #include <ref_ptr.h>
 #include <scene.h>
@@ -34,10 +34,6 @@ public:
 	bool Finish();
 
 	double DeltaTime();
-
-	void SetPredefiniedShape(ref_ptr <Geometry> geo, Geometry::BasicShapes shape);
-	void SetPredefiniedMaterial(ref_ptr <Material> mat, Material::BasicMaterials basic_mat);
-
 
 	Audio3D newSong;
 

@@ -12,6 +12,7 @@ namespace Suffer {
 	class RenderManager {
 		friend class SufferManager;
 
+
 	public:
 		void AddToRenderQueue(DisplayList&& logic_dl);
 		void DoRender();

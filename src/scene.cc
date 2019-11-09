@@ -32,16 +32,16 @@ void Scene::Init() {
 
 	ref_ptr<Geometry> geometry;
 	geometry.alloc();
-	SufferManager::instance().SetPredefiniedShape(geometry, Geometry::kBasicShapes_Cube);
+	//SufferManager::instance().SetPredefiniedShape(geometry, Geometry::kBasicShapes_Cube);
 
 	ref_ptr<Geometry> geometry2;
 	geometry2.alloc();
-	SufferManager::instance().SetPredefiniedShape(geometry2, Geometry::kBasicShapes_Triangle);
+	//SufferManager::instance().SetPredefiniedShape(geometry2, Geometry::kBasicShapes_Triangle);
 
 	
 	ref_ptr<Material> material;
 	material.alloc();
-	SufferManager::instance().SetPredefiniedMaterial(material, Material::kBasicMaterials_Default);
+	//SufferManager::instance().SetPredefiniedMaterial(material, Material::kBasicMaterials_Default);
 
 	go->SetGeometry(geometry);
 	go->SetMaterial(material);

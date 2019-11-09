@@ -22,6 +22,30 @@ Geometry::Geometry() {
 
 // --------------------------------------------------- //
 
+//void Geometry::SetVertexBuffer(ResourceManager::VertexBuffer vertex_buffer){
+//    vertex_buffer_ = vertex_buffer;
+//}
+//
+//// --------------------------------------------------- //
+//
+//void Geometry::SetIndexBuffer(ResourceManager::IndexBuffer index_buffer){
+//    index_buffer_ = index_buffer;
+//}
+//
+//// --------------------------------------------------- //
+//
+//s32 Geometry::VertexBuffer(){
+//    return vertex_buffer_.id_;
+//}
+//
+//// --------------------------------------------------- //
+//
+//s32 Geometry::IndexBuffer(){
+//    return index_buffer_.id_;
+//}
+
+// --------------------------------------------------- //
+
 Geometry::~Geometry() {
 	if (!data_) return;
 	delete data_;
