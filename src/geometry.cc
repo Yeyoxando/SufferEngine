@@ -22,27 +22,27 @@ Geometry::Geometry() {
 
 // --------------------------------------------------- //
 
-//void Geometry::SetVertexBuffer(ResourceManager::VertexBuffer vertex_buffer){
-//    vertex_buffer_ = vertex_buffer;
-//}
-//
-//// --------------------------------------------------- //
-//
-//void Geometry::SetIndexBuffer(ResourceManager::IndexBuffer index_buffer){
-//    index_buffer_ = index_buffer;
-//}
-//
-//// --------------------------------------------------- //
-//
-//s32 Geometry::VertexBuffer(){
-//    return vertex_buffer_.id_;
-//}
-//
-//// --------------------------------------------------- //
-//
-//s32 Geometry::IndexBuffer(){
-//    return index_buffer_.id_;
-//}
+void Geometry::SetVertexBuffer(ResourceManager::VertexBuffer vertex_buffer){
+    vertex_buffer_ = vertex_buffer;
+}
+
+// --------------------------------------------------- //
+
+void Geometry::SetIndexBuffer(ResourceManager::IndexBuffer index_buffer){
+    index_buffer_ = index_buffer;
+}
+
+// --------------------------------------------------- //
+
+s32 Geometry::VertexBuffer(){
+    return vertex_buffer_.id_;
+}
+
+// --------------------------------------------------- //
+
+s32 Geometry::IndexBuffer(){
+    return index_buffer_.id_;
+}
 
 // --------------------------------------------------- //
 
@@ -52,40 +52,40 @@ Geometry::~Geometry() {
 	data_ = nullptr;
 }
 
-// --------------------------------------------------- //
-
-void Geometry::SetIndicesID(u16 indices_ID) {
-	data_->indices_ID = indices_ID;
-}
-
-// --------------------------------------------------- //
-
-void Geometry::SetVerticesID(u16 vertices_ID) {
-	data_->vertices_ID = vertices_ID;
-}
-
-// --------------------------------------------------- //
-
-void Geometry::SetNumberElements(u32 number_elements) {
-	data_->number_elements = number_elements;
-}
-
-// --------------------------------------------------- //
-
-u16 Geometry::GetIndicesID() {
-	return data_->indices_ID;
-}
-
-// --------------------------------------------------- //
-
-u16 Geometry::GetVerticesID() {
-	return data_->vertices_ID;
-}
-
-// --------------------------------------------------- //
-
-u32 Geometry::GetNumberElements() {
-	return data_->number_elements;
-}
+//// --------------------------------------------------- //
+//
+//void Geometry::SetIndicesID(u16 indices_ID) {
+//	data_->indices_ID = indices_ID;
+//}
+//
+//// --------------------------------------------------- //
+//
+//void Geometry::SetVerticesID(u16 vertices_ID) {
+//	data_->vertices_ID = vertices_ID;
+//}
+//
+//// --------------------------------------------------- //
+//
+//void Geometry::SetNumberElements(u32 number_elements) {
+//	data_->number_elements = number_elements;
+//}
+//
+//// --------------------------------------------------- //
+//
+//u16 Geometry::GetIndicesID() {
+//	return data_->indices_ID;
+//}
+//
+//// --------------------------------------------------- //
+//
+//u16 Geometry::GetVerticesID() {
+//	return data_->vertices_ID;
+//}
+//
+//// --------------------------------------------------- //
+//
+//u32 Geometry::GetNumberElements() {
+//	return data_->number_elements;
+//}
 
 // --------------------------------------------------- //

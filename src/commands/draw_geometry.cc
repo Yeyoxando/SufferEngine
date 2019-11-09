@@ -53,9 +53,9 @@ void DrawGeometry::SetTransform(Transform t){
 // --------------------------------------------------- //
 
 void DrawGeometry::SetGeometry(ref_ptr<Geometry> geo){
-	data_->number_elements_ = geo.get()->GetNumberElements();
-	data_->indices_ID = (GLint)geo.get()->GetIndicesID();
-	data_->vertices_ID = (GLint)geo.get()->GetVerticesID();
+	//data_->number_elements_ = geo.get()->GetNumberElements();
+	//data_->indices_ID = (GLint)geo.get()->GetIndicesID();
+	//data_->vertices_ID = (GLint)geo.get()->GetVerticesID();
 }
 
 // --------------------------------------------------- //

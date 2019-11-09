@@ -12,46 +12,47 @@
 #include <resource_manager.h>
 #include <data_types.h>
 
-using namespace Suffer;
-
 // --------------------------------------------------- //
 
-class Geometry : public virtual Referenced {
+namespace Suffer {
 
-public:
-	friend class DrawGeometry;
+	class Geometry : public virtual Referenced {
 
-	Geometry();
+	public:
+		friend class DrawGeometry;
 
-	enum BasicShapes {
-		kBasicShapes_Triangle = 0,
-		kBasicShapes_Quad,
-		kBasicShapes_Cube,
-		kBasicShapes_NONE = 20
+		Geometry();
+
+		enum BasicShapes {
+			kBasicShapes_Triangle = 0,
+			kBasicShapes_Quad,
+			kBasicShapes_Cube,
+			kBasicShapes_NONE = 20
+		};
+
+		void SetVertexBuffer(ResourceManager::VertexBuffer vertex_buffer);
+		void SetIndexBuffer(ResourceManager::IndexBuffer index_buffer);
+
+		s32 VertexBuffer();
+		s32 IndexBuffer();
+
+	protected:
+		virtual ~Geometry();
+
+	private:
+
+		struct Data;
+		Data* data_;
+
+		BasicShapes shape_;
+
+		ResourceManager::VertexBuffer vertex_buffer_;
+		ResourceManager::IndexBuffer index_buffer_;
+
+		// Methods
+		Geometry(const Geometry&);
 	};
-
-  void SetVertexBuffer(ResourceManager::VertexBuffer vertex_buffer);
-  void SetIndexBuffer(ResourceManager::IndexBuffer index_buffer);
-  
-  s32 VertexBuffer();
-  s32 IndexBuffer();
-
-protected:
-	virtual ~Geometry();
-
-private:
-
-	struct Data;
-	Data* data_;
-
-	BasicShapes shape_;
-
-  ResourceManager::VertexBuffer vertex_buffer_;
-  ResourceManager::IndexBuffer index_buffer_;
-
-	// Methods
-	Geometry(const Geometry&);
-};
+}
 
 // --------------------------------------------------- //
 
