@@ -621,19 +621,19 @@ u32 Suffer::SufferManager::IsBufferCreated(ref_ptr<VertexBuffer> vertex_buffer){
 	s32 id_vertex = vertex_buffer.get()->id_;
 	if (data_->internal_vertex_buffers_[id_vertex].gpu_version_ == 0) {
 		glGenBuffers(1, &data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
+		glBindBuffer(GL_ARRAY_BUFFER, data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
 
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			data_->internal_vertex_buffers_[id_vertex].data_.size(),
+		glBufferData(GL_ARRAY_BUFFER,
+			data_->internal_vertex_buffers_[id_vertex].data_.sizeInBytes(),
 			data_->internal_vertex_buffers_[id_vertex].data_.get(),
 			GL_STATIC_DRAW);
 	}
 
 	if (data_->internal_vertex_buffers_[id_vertex].gpu_version_ < data_->internal_vertex_buffers_[id_vertex].version_) {
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
+		glBindBuffer(GL_ARRAY_BUFFER, data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
 
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			data_->internal_vertex_buffers_[id_vertex].data_.size(),
+		glBufferData(GL_ARRAY_BUFFER,
+			data_->internal_vertex_buffers_[id_vertex].data_.sizeInBytes(),
 			data_->internal_vertex_buffers_[id_vertex].data_.get(),
 			GL_STATIC_DRAW);
 	}
@@ -645,6 +645,39 @@ u32 Suffer::SufferManager::IsBufferCreated(ref_ptr<VertexBuffer> vertex_buffer){
 
 // --------------------------------------------------------------//
 
+u32 Suffer::SufferManager::IsBufferCreated(ref_ptr<IndexBuffer> index_buffer) {
+
+#ifdef ASSERT
+  assert(index_buffer.get() != nullptr);
+#endif
+
+  s32 id_index = index_buffer.get()->id_;
+  if (data_->internal_index_buffers_[id_index].gpu_version_ == 0) {
+    glGenBuffers(1, &data_->internal_index_buffers_[id_index].current_gl_buffer_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data_->internal_index_buffers_[id_index].current_gl_buffer_);
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+      data_->internal_index_buffers_[id_index].data_.sizeInBytes(),
+      data_->internal_index_buffers_[id_index].data_.get(),
+      GL_STATIC_DRAW);
+  }
+
+  if (data_->internal_index_buffers_[id_index].gpu_version_ < data_->internal_index_buffers_[id_index].version_) {
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data_->internal_index_buffers_[id_index].current_gl_buffer_);
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+      data_->internal_index_buffers_[id_index].data_.sizeInBytes(),
+      data_->internal_index_buffers_[id_index].data_.get(),
+      GL_STATIC_DRAW);
+  }
+
+  data_->internal_index_buffers_[id_index].gpu_version_ = data_->internal_index_buffers_[id_index].version_;
+  return data_->internal_index_buffers_[id_index].current_gl_buffer_;
+
+}
+
+// --------------------------------------------------------------//
+
 u32 Suffer::SufferManager::IsMaterialCreated(ref_ptr<Material> material){
 
 #ifdef ASSERT
@@ -652,76 +685,77 @@ u32 Suffer::SufferManager::IsMaterialCreated(ref_ptr<Material> material){
 #endif
   GLenum error;
 
+  u32 mat_type = material.get()->GetMaterialType();
 
-  if (!data_->internal_materials_[material.get()->GetMaterialType()].is_created_) {
-		data_->internal_materials_[material.get()->GetMaterialType()].vertex_shader_id_ = 
+  if (!data_->internal_materials_[mat_type].is_created_) {
+		data_->internal_materials_[mat_type].vertex_shader_id_ =
       glCreateShader(GL_VERTEX_SHADER);
     error = glGetError();
-    data_->internal_materials_[material.get()->GetMaterialType()].fragment_shader_id_ =
+    data_->internal_materials_[mat_type].fragment_shader_id_ =
       glCreateShader(GL_FRAGMENT_SHADER);
     error = glGetError();
 
-    const GLint vertex_size = strlen(data_->internal_materials_[material.get()->GetMaterialType()].vertex_shader_);
-    const GLint fragment_size = strlen(data_->internal_materials_[material.get()->GetMaterialType()].fragment_shader_);
+    const GLint vertex_size = strlen(data_->internal_materials_[mat_type].vertex_shader_);
+    const GLint fragment_size = strlen(data_->internal_materials_[mat_type].fragment_shader_);
 
-    glShaderSource(data_->internal_materials_[material.get()->GetMaterialType()].vertex_shader_id_,
-      1, &data_->internal_materials_[material.get()->GetMaterialType()].vertex_shader_, 
+    glShaderSource(data_->internal_materials_[mat_type].vertex_shader_id_,
+      1, &data_->internal_materials_[mat_type].vertex_shader_,
       &vertex_size);
     error = glGetError();
-    glShaderSource(data_->internal_materials_[material.get()->GetMaterialType()].fragment_shader_id_,
-      1, &data_->internal_materials_[material.get()->GetMaterialType()].fragment_shader_, &fragment_size);
+    glShaderSource(data_->internal_materials_[mat_type].fragment_shader_id_,
+      1, &data_->internal_materials_[mat_type].fragment_shader_, &fragment_size);
     error = glGetError();
 
-    glCompileShader(data_->internal_materials_[material.get()->GetMaterialType()].vertex_shader_id_);
+    glCompileShader(data_->internal_materials_[mat_type].vertex_shader_id_);
     error = glGetError();
 
     GLint status = 0;
-    glGetShaderiv(data_->internal_materials_[material.get()->GetMaterialType()].vertex_shader_id_, GL_COMPILE_STATUS, &status);
+    glGetShaderiv(data_->internal_materials_[mat_type].vertex_shader_id_, GL_COMPILE_STATUS, &status);
     GLint log_length = 0;
-    glGetShaderiv(data_->internal_materials_[material.get()->GetMaterialType()].vertex_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
+    glGetShaderiv(data_->internal_materials_[mat_type].vertex_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
     GLchar* info_log = new GLchar[log_length + 1];
-    glGetShaderInfoLog(data_->internal_materials_[material.get()->GetMaterialType()].vertex_shader_id_, log_length, &log_length, info_log);
+    glGetShaderInfoLog(data_->internal_materials_[mat_type].vertex_shader_id_, log_length, &log_length, info_log);
     info_log[log_length] = '\0';
     delete info_log;
     if (status == GL_FALSE)
       printf("\nERROR: vertex shader not compiled");
 
-    glCompileShader(data_->internal_materials_[material.get()->GetMaterialType()].fragment_shader_id_);
+    glCompileShader(data_->internal_materials_[mat_type].fragment_shader_id_);
     error = glGetError();
     status = 0;
-    glGetShaderiv(data_->internal_materials_[material.get()->GetMaterialType()].fragment_shader_id_, GL_COMPILE_STATUS, &status);
+    glGetShaderiv(data_->internal_materials_[mat_type].fragment_shader_id_, GL_COMPILE_STATUS, &status);
     log_length = 0;
-    glGetShaderiv(data_->internal_materials_[material.get()->GetMaterialType()].fragment_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
+    glGetShaderiv(data_->internal_materials_[mat_type].fragment_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
     info_log = new GLchar[log_length + 1];
-    glGetShaderInfoLog(data_->internal_materials_[material.get()->GetMaterialType()].fragment_shader_id_, log_length, &log_length, info_log);
+    glGetShaderInfoLog(data_->internal_materials_[mat_type].fragment_shader_id_, log_length, &log_length, info_log);
     info_log[log_length] = '\0';
     delete info_log;
     if (status == GL_FALSE)
       printf("\nERROR: fragment shader not compiled");
 
     // PROGRAM
-    data_->internal_materials_[material.get()->GetMaterialType()].current_program_ = glCreateProgram();
+    data_->internal_materials_[mat_type].current_program_ = glCreateProgram();
 
     error = glGetError();
-    glAttachShader(data_->internal_materials_[material.get()->GetMaterialType()].current_program_,
-      data_->internal_materials_[material.get()->GetMaterialType()].vertex_shader_id_);
+    glAttachShader(data_->internal_materials_[mat_type].current_program_,
+      data_->internal_materials_[mat_type].vertex_shader_id_);
 
     error = glGetError();
-    glAttachShader(data_->internal_materials_[material.get()->GetMaterialType()].current_program_,
-      data_->internal_materials_[material.get()->GetMaterialType()].fragment_shader_id_);
+    glAttachShader(data_->internal_materials_[mat_type].current_program_,
+      data_->internal_materials_[mat_type].fragment_shader_id_);
 
     error = glGetError();
-    glLinkProgram(data_->internal_materials_[material.get()->GetMaterialType()].current_program_);
+    glLinkProgram(data_->internal_materials_[mat_type].current_program_);
 
     error = glGetError();
-    data_->internal_materials_[material.get()->GetMaterialType()].is_created_ = true;
+    data_->internal_materials_[mat_type].is_created_ = true;
   }
 
   u32 program_id;
 
-  switch (material.get()->GetMaterialType()) {
+  switch (mat_type) {
   case Suffer::Material::kBasicMaterials_Default:
-    program_id = data_->internal_materials_[material.get()->GetMaterialType()].current_program_;
+    program_id = data_->internal_materials_[mat_type].current_program_;
     break;
   case Suffer::Material::kBasicMaterials_Phong:
     break;
@@ -750,35 +784,3 @@ u32 Suffer::SufferManager::NumberElements(ref_ptr<IndexBuffer> index_buffer){
 
 // --------------------------------------------------------------//
 
-u32 Suffer::SufferManager::IsBufferCreated(ref_ptr<IndexBuffer> index_buffer){
-
-#ifdef ASSERT
-	assert(index_buffer.get() != nullptr);
-#endif
-
-	s32 id_vertex = index_buffer.get()->id_;
-	if (data_->internal_index_buffers_[id_vertex].gpu_version_ == 0) {
-		glGenBuffers(1, &data_->internal_index_buffers_[id_vertex].current_gl_buffer_);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data_->internal_index_buffers_[id_vertex].current_gl_buffer_);
-
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			data_->internal_index_buffers_[id_vertex].data_.size(),
-			data_->internal_index_buffers_[id_vertex].data_.get(),
-			GL_STATIC_DRAW);
-	}
-
-	if (data_->internal_index_buffers_[id_vertex].gpu_version_ < data_->internal_index_buffers_[id_vertex].version_) {
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data_->internal_index_buffers_[id_vertex].current_gl_buffer_);
-
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			data_->internal_index_buffers_[id_vertex].data_.size(),
-			data_->internal_index_buffers_[id_vertex].data_.get(),
-			GL_STATIC_DRAW);
-	}
-
-	data_->internal_index_buffers_[id_vertex].gpu_version_ = data_->internal_index_buffers_[id_vertex].version_;
-	return data_->internal_index_buffers_[id_vertex].current_gl_buffer_;
-
-}
-
-// --------------------------------------------------------------//

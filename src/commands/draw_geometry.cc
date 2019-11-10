@@ -67,6 +67,7 @@ void Suffer::DrawGeometry::SetMaterial(ref_ptr<Material> mat){
 
 void Suffer::DrawGeometry::Execute() const {
 
+  GLenum error;
 	u32 id_vertex = SufferManager::instance().IsBufferCreated(data_->vertex_buffer_);
 	u32 id_index = SufferManager::instance().IsBufferCreated(data_->index_buffer_);
 	u32 number_elements = SufferManager::instance().NumberElements(data_->index_buffer_);
@@ -74,13 +75,19 @@ void Suffer::DrawGeometry::Execute() const {
   u32 program_id = SufferManager::instance().IsMaterialCreated(data_->material_);
 
   glUseProgram(program_id);
+  error = glGetError();
 	
- 	glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+  glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
+  error = glGetError();
+  glEnableVertexAttribArray(0);
+  error = glGetError();
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+  error = glGetError();
 	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
-	glDrawElements(GL_TRIANGLES, number_elements, GL_UNSIGNED_BYTE, (GLvoid*)0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
+  error = glGetError();
+  glDrawElements(GL_TRIANGLES, number_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
+  error = glGetError();
 
 }
 
