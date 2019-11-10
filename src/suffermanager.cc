@@ -254,15 +254,15 @@ void Suffer::SufferManager::Input() {
 
 bool Suffer::SufferManager::Run(){
 
-  ref_ptr<Audio3D> audio_source_;
-  audio_source_.alloc();
-  audio_source_->Load("../../../resources/audio/plonk_dry.ogg");
-  ref_ptr <AudioCommands::Play> play_command_;
-  play_command_.alloc();
-  play_command_->audio_3d_ = audio_source_.get();
-  DisplayList audio_dl_;
-  audio_dl_.addCommand(play_command_.get());
-  audio_manager_.AddToAudioQueue(std::move(audio_dl_));
+  //ref_ptr<Audio3D> audio_source_;
+  //audio_source_.alloc();
+  //audio_source_->Load("../../../resources/audio/plonk_dry.ogg");
+  //ref_ptr <AudioCommands::Play> play_command_;
+  //play_command_.alloc();
+  //play_command_->audio_3d_ = audio_source_.get();
+  //DisplayList audio_dl_;
+  //audio_dl_.addCommand(play_command_.get());
+  //audio_manager_.AddToAudioQueue(std::move(audio_dl_));
 
 	while (!data_->window_should_close_) {
 
@@ -477,7 +477,7 @@ u32 Suffer::SufferManager::IsBufferCreated(ref_ptr<VertexBuffer> vertex_buffer){
 #ifdef ASSERT
 	assert(vertex_buffer.get() != nullptr);
 #endif
-
+  if (vertex_buffer->id_ < 0) return 0;
 	s32 id_vertex = vertex_buffer.get()->id_;
 	if (data_->internal_vertex_buffers_[id_vertex].gpu_version_ == 0) {
 		glGenBuffers(1, &data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
@@ -509,6 +509,7 @@ u32 Suffer::SufferManager::IsBufferCreated(ref_ptr<IndexBuffer> index_buffer) {
 #ifdef ASSERT
   assert(index_buffer.get() != nullptr);
 #endif
+  if (index_buffer->id_ < 0) return 0;
   GLenum error = glGetError();
   s32 id_index = index_buffer.get()->id_;
   if (data_->internal_index_buffers_[id_index].gpu_version_ == 0) {
@@ -550,7 +551,7 @@ u32 Suffer::SufferManager::IsMaterialCreated(ref_ptr<Material> material){
   GLenum error;
 
   u32 mat_type = material.get()->GetMaterialType();
-
+  if (mat_type > 1000) return 0;
   if (!data_->internal_materials_[mat_type].is_created_) {
 		data_->internal_materials_[mat_type].vertex_shader_id_ =
       glCreateShader(GL_VERTEX_SHADER);
@@ -635,6 +636,7 @@ u32 Suffer::SufferManager::IsMaterialCreated(ref_ptr<Material> material){
 // --------------------------------------------------------------//
 
 u32 Suffer::SufferManager::NumberElements(ref_ptr<IndexBuffer> index_buffer){
+  if (index_buffer->id_ < 0) return 0;
 	return data_->internal_index_buffers_[index_buffer->id_].data_.size();
 }
 
