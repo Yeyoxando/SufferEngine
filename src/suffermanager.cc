@@ -584,8 +584,6 @@ void Suffer::SufferManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, A
     data_->internal_index_buffers_[buffer->id_].version_++;
     data_->internal_index_buffers_[buffer->id_].id_handle_ = buffer->id_;
 
-	printf("ID: %d\n", buffer->id_);
-	printf("USER VERSION: %d\n", data_->internal_vertex_buffers_[buffer->id_].version_);
 }
 
 // --------------------------------------------------------------//
@@ -606,8 +604,6 @@ void Suffer::SufferManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, u
   data_->internal_index_buffers_[buffer->id_].version_++;
   data_->internal_index_buffers_[buffer->id_].id_handle_ = buffer->id_;
 
-  printf("ID: %d\n", buffer->id_);
-  printf("USER VERSION: %d\n", data_->internal_vertex_buffers_[buffer->id_].version_);
 }
 
 // --------------------------------------------------------------//
@@ -639,7 +635,6 @@ u32 Suffer::SufferManager::IsBufferCreated(ref_ptr<VertexBuffer> vertex_buffer){
 	}
 
 	data_->internal_vertex_buffers_[id_vertex].gpu_version_ = data_->internal_vertex_buffers_[id_vertex].version_;
-	printf("USER VERSION: %d\n", data_->internal_vertex_buffers_[id_vertex].version_);
 	return data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_;
 }
 
@@ -771,14 +766,6 @@ u32 Suffer::SufferManager::IsMaterialCreated(ref_ptr<Material> material){
 // --------------------------------------------------------------//
 
 u32 Suffer::SufferManager::NumberElements(ref_ptr<IndexBuffer> index_buffer){
-
-	printf("IDHandle: %f\nGPUVersion: %f\nSize: %f\nUserVersion:%f",
-		data_->internal_index_buffers_[index_buffer->id_].id_handle_,
-		data_->internal_index_buffers_[index_buffer->id_].gpu_version_,
-		data_->internal_index_buffers_[index_buffer->id_].data_.size(),
-		data_->internal_index_buffers_[index_buffer->id_].version_
-		);
-
 	return data_->internal_index_buffers_[index_buffer->id_].data_.size();
 }
 

@@ -57,17 +57,14 @@ void Thread::WaitFor(Thread* thread){
 
 void Thread::WaitMe(){
     while (!im_done_) {
-        //if (!mutex_.try_lock()) {
-        //    im_done_ = true;
-        //}
+        printf("Waiting\n");
     };
 }
 
 void Thread::Sleep() {
 
-	UniqueLock lock_(mutex_);
-
 	im_done_ = true;
+	UniqueLock lock_(mutex_);
 	current_state_condition_.wait_until(lock_, 0);
 
 }

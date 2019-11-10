@@ -31,15 +31,17 @@ void Suffer::Scene::Init() {
   ind_buff_.alloc();
 
 	float vertices[] = {
-		0.0f,  0.5f, -1.0f,
-		0.5f, -0.5f, -1.0f,
-		-0.5f, -0.5f, -1.0f
+      0.2f, -0.2f, -1.0f,
+      0.2f,  0.2f, -1.0f,
+     -0.2f,  0.2f, -1.0f,
+     -0.2f, -0.2f, -1.0f,
 	};
 
-	u16 indices[]{ 0, 2, 1 };
+  u16 indices[]{ 0, 2, 1,
+                 2, 3, 0 };
 
-	SufferManager::instance().UploadVertexData(vert_buff_, vertices, 9);
-	SufferManager::instance().UploadIndexData(ind_buff_, indices, 3);
+	SufferManager::instance().UploadVertexData(vert_buff_, vertices, 12);
+	SufferManager::instance().UploadIndexData(ind_buff_, indices, 6);
 
 	ref_ptr<Geometry> geometry;
 	geometry.alloc();
@@ -57,6 +59,69 @@ void Suffer::Scene::Init() {
 	go->SetMaterial(material);
 	
 	AddGameObject(go);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ref_ptr<SufferManager::VertexBuffer> vert_buff_2;
+  ref_ptr<SufferManager::IndexBuffer> ind_buff_2;
+  vert_buff_2.alloc();
+  ind_buff_2.alloc();
+
+  float vertices2[] = {
+      0.0f,  0.5f, -1.0f,
+      0.5f, -0.5f, -1.0f,
+     -0.5f, -0.5f, -1.0f
+  };
+
+  u16 indices2[]{ 0, 2, 1};
+
+  SufferManager::instance().UploadVertexData(vert_buff_2, vertices2, 9);
+  SufferManager::instance().UploadIndexData(ind_buff_2, indices2, 3);
+
+  ref_ptr<Geometry> geometry2;
+  geometry2.alloc();
+  geometry2->SetBuffers(vert_buff_2, ind_buff_2);
+
+
+  ref_ptr<Material> material2;
+  material2.alloc();
+  material2->SetMaterialType(Material::kBasicMaterials_Default);
+
+
+  ref_ptr<GameObject> go2;
+  go2.alloc();
+  go2->SetGeometry(geometry2);
+  go2->SetMaterial(material2);
+
+  AddGameObject(go2);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 void Suffer::Scene::Step(float time_step){
