@@ -63,6 +63,8 @@ project "SufferCore"
 		"./src/deps/soloud/filter/",
 		"./deps/soloud/",
 		"./deps/stb/",
+		"./deps/mathmorra/",
+		"./deps/mathmorra/include",
 	}
 
 	--Common files
@@ -89,6 +91,10 @@ project "SufferCore"
 		"./src/deps/GLFW/include/GLFW/glfw3.h",
 		"./src/deps/GLFW/include/GLFW/glfw3native.h",
 		
+    --Mathmorra 
+    "./deps/mathmorra/src/*.cc",
+    "./deps/mathmorra/include/*.h",
+
 		--GLM
 		"./deps/glm/*.h",
 		"./deps/glm/*.hpp",

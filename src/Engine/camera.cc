@@ -4,7 +4,11 @@
 * Camera Source
 */
 
-#include <camera.h>
+#include "camera.h"
+#include "input.h"
+#include "gtx/transform.hpp"
+#include "suffermanager.h"
+#include "matrix4.h"
 
 Suffer::Camera::Camera() {
 
@@ -83,8 +87,34 @@ void Suffer::Camera::SetForward(const float forward[3]){
     camera_forward_ = glm::vec3(forward[0], forward[1], forward[2]);
 }
 
+void Suffer::Camera::SetProjectionMatrix(glm::mat4 projection_matrix){
+    projection_matrix_ = projection_matrix;
+}
+
+void Suffer::Camera::SetProjectionMatrix(const float m[16]){
+    projection_matrix_ = glm::mat4(
+        m[0],  m[1],  m[2],  m[3],
+        m[4],  m[5],  m[6],  m[7],
+        m[8],  m[9],  m[10], m[11],
+        m[12], m[12], m[14], m[15]
+    );
+}
+
 void Suffer::Camera::SetForward(const glm::vec3 forward){
     camera_forward_ = forward;
+}
+
+void Suffer::Camera::SetViewMatrix(glm::mat4 view_matrix){
+    view_matrix_ = view_matrix;
+}
+
+void Suffer::Camera::SetViewMatrix(const float m[16]){
+    view_matrix_ = glm::mat4(
+        m[0],  m[1],  m[2],  m[3],
+        m[4],  m[5],  m[6],  m[7],
+        m[8],  m[9],  m[10], m[11],
+        m[12], m[12], m[14], m[15]
+    );
 }
 
 const float* Suffer::Camera::Position() const {
@@ -103,15 +133,31 @@ const float Suffer::Camera::Fov() const{
     return field_of_view_;
 }
 
-Suffer::Camera::~Camera() {
+// FPS Movement
+void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
+
+    camera_right_ = glm::cross(camera_forward_, camera_up_);
+    float time_ = SufferManager::instance().DeltaTime();
+
+    // Input Stuff
+    if (Suffer::IsKeyDown(k_W)) { // FORWARD
+        //glm::mat4 translate_ = glm::translate(
+        //    camera_forward_.x * speed_ * time_,
+        //    camera_forward_.y * speed_ * time_,
+        //    camera_forward_.z * speed_ * time_,
+        //    );
+    }
 
 }
 
-void Suffer::Camera::Update(){
+void Suffer::Camera::SetSensibility(float new_sensibility){
+    sensibility_ = new_sensibility;
+}
 
-    // Recalculate the Right-Up camera vectors
-    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-    camera_right_ = glm::normalize(glm::cross(up, camera_direction_));
-    camera_up_ = glm::cross(camera_direction_, camera_right_);
+void Suffer::Camera::SetSpeed(float new_speed){
+    speed_ = new_speed;
+}
+
+Suffer::Camera::~Camera() {
 
 }

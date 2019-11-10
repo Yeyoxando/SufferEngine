@@ -80,6 +80,7 @@ dkms.conf
 *.bat
 !compile_vs2017.bat
 !compile_vs2019.bat
+!clean.bat
 *.cgi
 *.com
 *.gadget
