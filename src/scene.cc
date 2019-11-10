@@ -2,6 +2,7 @@
 #include <game_object.h>
 #include <suffermanager.h>
 #include <clear.h>
+#include "draw_geometry.h"
 
 // --------------------------------------------------- //
 
@@ -106,22 +107,6 @@ void Suffer::Scene::Init() {
 
   AddGameObject(go2);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 void Suffer::Scene::Step(float time_step){
@@ -144,7 +129,13 @@ void Suffer::Scene::PrepareDraw(){
 	frame_dl.addCommand(clear_cmd.get());
 
 	for (u32 i = 0; i < current_gameobjects_.size(); ++i) {
-		const ref_ptr<Command> draw_cmd = current_gameobjects_.at(i).get()->GetDrawCommand();
+		ref_ptr<Command> cmd = current_gameobjects_.at(i).get()->GetDrawCommand();
+
+    DrawGeometry* draw_cmd = reinterpret_cast<DrawGeometry*>(cmd.get());
+
+    //draw_cmd->SetViewMatrix();
+    //draw_cmd->SetProjectionMatrix();
+
 		frame_dl.addCommand(draw_cmd);
 	}
 

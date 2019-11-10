@@ -34,47 +34,53 @@ namespace Suffer {
     u32 GetMaterialType();
 
     class MaterialSettings : public Referenced {
-        MaterialSettings() {}
-        ~MaterialSettings() {}
+    public:
+      MaterialSettings();
+      ~MaterialSettings();
+
+      struct DefaultParams {
+      public:
+        DefaultParams();
+        ~DefaultParams() {}
+
+        // Getters
+        glm::vec4 GetColor();
+
+        // Setters
+        void SetColor(glm::vec4 new_color);
+
+      private:
+        glm::vec4 color_;
+      };
+
+      struct PhongParams {
+        PhongParams();
+        ~PhongParams() {}
+
+        // Getters
+        glm::vec4 GetColor();
+
+        // Setters
+        void SetColor(glm::vec4 new_color);
+
+      private:
+        glm::vec4 color_;
+
+      };
 
       union Params {
-        Params() {}
-        ~Params() {}
+        Params();
+        ~Params();
 
-        struct DefaultParams {
-        public:
-          DefaultParams();
-          ~DefaultParams() {}
-
-          // Getters
-          glm::vec4 GetColor();
-
-          // Setters
-          void SetColor(glm::vec4 new_color);
-
-        private:
-          glm::vec4 color_;
-        };
-
-        struct PhongParams {
-          PhongParams();
-          ~PhongParams() {}
-
-          // Getters
-          glm::vec4 GetColor();
-
-          // Setters
-          void SetColor(glm::vec4 new_color);
-
-        private:
-          glm::vec4 color_;
-        
-        };
-       
+        DefaultParams default_params_;
+        PhongParams phong_params_;
       };
 
       Params material_params_;
     };
+
+    ref_ptr<MaterialSettings> material_settings_;
+
 
 	protected:
 		virtual ~Material();
@@ -84,7 +90,6 @@ namespace Suffer {
 		struct Data;
 		Data* data_;
 
-    ref_ptr<MaterialSettings> material_settings_;
 		MaterialType material_type_;
 
 		// Methods

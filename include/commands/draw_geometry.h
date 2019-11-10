@@ -10,7 +10,7 @@
 #include <command.h>
 #include <game_object.h>
 #include <ref_ptr.h>
-#include <suffermanager.h>
+#include <glm.hpp>
 
 // --------------------------------------------------- //
 
@@ -21,11 +21,14 @@ namespace Suffer {
 	public:
 
 		void SetData(GameObject* go);
-		void SetTransform(Transform t);
+    void SetModelMatrix(glm::mat4 model);
+    void SetViewMatrix(glm::mat4 view);
+    void SetProjectionMatrix(glm::mat4 projection);
 		void SetGeometry(ref_ptr<Geometry> geo);
 		void SetMaterial(ref_ptr<Material> mat);
 
 		DrawGeometry();
+
 	protected:
 
 		virtual ~DrawGeometry();

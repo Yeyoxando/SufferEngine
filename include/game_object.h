@@ -53,7 +53,7 @@ namespace Suffer {
 		void SetMaterial(ref_ptr<Material> new_material);
 		void SetGeometry(ref_ptr<Geometry> new_geometry);
 
-		const ref_ptr<Command> GetDrawCommand();
+		ref_ptr<Command> GetDrawCommand();
 
 	protected:
 		virtual ~GameObject();

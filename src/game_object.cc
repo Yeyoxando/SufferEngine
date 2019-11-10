@@ -52,12 +52,27 @@ void Suffer::GameObject::SetGeometry(ref_ptr<Geometry> new_geometry) {
 	geometry_ = new_geometry;
 }
 
-const Suffer::ref_ptr<Suffer::Command> Suffer::GameObject::GetDrawCommand(){
+Suffer::ref_ptr<Suffer::Command> Suffer::GameObject::GetDrawCommand(){
 	ref_ptr<DrawGeometry> draw_geometry;
 
 	draw_geometry.alloc();
 	draw_geometry.get()->SetData(this);
-	
+
+  //glm::mat4 model_matrix;
+  //
+  //glm::mat4 translation_mat;
+  //glm::mat4 rotation_mat_x;
+  //glm::mat4 rotation_mat_y;
+  //glm::mat4 rotation_mat_z;
+  //glm::mat4 scale_mat;
+  //
+ ////translation_mat[12]. = transform_.position.x;
+ ////
+ ////model_matrix = translation_mat * rotation_mat * scale_mat;
+  //
+  //draw_geometry.get()->SetModelMatrix(model_matrix);
+
+
 	return draw_geometry.get();
 }
 
