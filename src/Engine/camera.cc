@@ -250,9 +250,6 @@ void Suffer::Camera::Update(){
         fps_movement_ = !fps_movement_;
     }
 
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-
     camera_right_ = mathmorra::Vector3::Normalized(
         mathmorra::Vector3::CrossProduct(camera_up_, camera_direction_)
     );

@@ -85,6 +85,10 @@ Suffer::ref_ptr<Suffer::Command> Suffer::GameObject::GetDrawCommand(){
 	return draw_geometry.get();
 }
 
+void Suffer::GameObject::SetPosition(glm::vec3 position){
+  transform_.position = position;
+}
+
 // --------------------------------------------------- //
 
 Suffer::Transform Suffer::GameObject::GetTransform() {

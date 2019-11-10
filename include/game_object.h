@@ -55,6 +55,8 @@ namespace Suffer {
 
 		ref_ptr<Command> GetDrawCommand();
 
+    void SetPosition(glm::vec3 position);
+
 	protected:
 		virtual ~GameObject();
 

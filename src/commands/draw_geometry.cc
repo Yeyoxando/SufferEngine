@@ -183,6 +183,11 @@ void Suffer::DrawGeometry::Execute() const {
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
   error = glGetError();
 
+
+  glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LESS);
+
+
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
   error = glGetError();
   glDrawElements(GL_TRIANGLES, number_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);

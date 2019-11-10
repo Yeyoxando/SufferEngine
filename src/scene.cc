@@ -137,6 +137,8 @@ void Suffer::Scene::Init() {
   go2.alloc();
   go2->SetGeometry(geometry2);
   go2->SetMaterial(material2);
+  go2->SetPosition(glm::vec3(0.0f, 0.0f, -0.1f));
+
 
   AddGameObject(go2);
 
