@@ -7,9 +7,9 @@
 
 Suffer::GameObject::GameObject() {
 
-	transform_.scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	transform_.position = glm::vec3(1.0f, 1.0f, 0.0f);
-	transform_.rotation = glm::vec3(1.0f, 1.0f, 0.0f);
+	transform_.scale = glm::vec3(5.0f, 5.0f, 5.0f);
+	transform_.position = glm::vec3(0.0f, 0.0f, 0.0f);
+	transform_.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 }
 

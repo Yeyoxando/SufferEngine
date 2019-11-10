@@ -9,6 +9,7 @@
 #include <scoped_array.h>
 #include <thread.h>
 #include <material.h>
+#include "vector2.h"
 
 class Scene;
 
@@ -83,6 +84,7 @@ namespace Suffer {
 		void UploadIndexData(const ref_ptr<IndexBuffer> buffer, Array<u16> *data);
 		void UploadIndexData(const ref_ptr<IndexBuffer> buffer, u16* data, u32 size);
 
+    mathmorra::Vector2 GetMousePosition();
 
 		// Subsystems
     AudioManager audio_manager_;
@@ -116,11 +118,15 @@ namespace Suffer {
 		u32 IsMaterialCreated(ref_ptr<Material> material);
 
 		u32 NumberElements(ref_ptr<IndexBuffer> index_buffer);
+    void SetMousePosition();
+
 
 		// Threads
 		ref_ptr<Thread> logic_;
 		ref_ptr<Thread> input_;
 		ref_ptr<Thread> audio_;
+
+    mathmorra::Vector2 mouse_position_;
 
 		struct Data;
 		Data* data_;

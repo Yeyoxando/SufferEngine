@@ -266,6 +266,8 @@ bool Suffer::SufferManager::Run(){
 
 	while (!data_->window_should_close_) {
 
+    SetMousePosition();
+
 		data_->current_time_ = Suffer::RawTime();
 		data_->wind_.processEvents();
 		
@@ -634,6 +636,21 @@ u32 Suffer::SufferManager::IsMaterialCreated(ref_ptr<Material> material){
 
 u32 Suffer::SufferManager::NumberElements(ref_ptr<IndexBuffer> index_buffer){
 	return data_->internal_index_buffers_[index_buffer->id_].data_.size();
+}
+
+// --------------------------------------------------------------//
+
+mathmorra::Vector2 Suffer::SufferManager::GetMousePosition(){
+    return mouse_position_;
+}
+
+// --------------------------------------------------------------//
+
+void Suffer::SufferManager::SetMousePosition(){
+
+    mouse_position_.x_ = Suffer::MousePositionX();
+    mouse_position_.y_ = Suffer::MousePositionY();
+
 }
 
 // --------------------------------------------------------------//

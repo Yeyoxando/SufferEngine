@@ -148,7 +148,7 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
 
 
     // Input Stuff
-    if (Suffer::IsKeyPressed(k_W)) { // FORWARD
+    if (Suffer::IsKeyPressed(k_S)) { // FORWARD
         mathmorra::Matrix4 translations = translations.Translate(
             camera_forward_.x_ * speed_ * time_,
             camera_forward_.y_ * speed_ * time_,
@@ -176,7 +176,7 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
         camera_position_ = translations.Transpose() * camera_position_;
     }
 
-    if (Suffer::IsKeyPressed(k_S)) { // BACK
+    if (Suffer::IsKeyPressed(k_W)) { // BACK
         mathmorra::Vector3 back = camera_forward_ * -1.0f;
         mathmorra::Matrix4 translations = translations.Translate(
             back.x_ * speed_ * time_,
@@ -208,11 +208,9 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
     float pos[3] = { camera_position_.x_, camera_position_.y_, camera_position_.z_ };
     camera.get()->SetPosition(pos);
 
-
-    //float angleX = /*Suffer::MousePositionX() /*/ 1280.0f * 6.28f;
-    //float angleY = /*Suffer::MousePositionY() /*/ 720.0f * 6.28f;
-    float angleX = 0.0f;
-    float angleY = 0.0f;
+    mathmorra::Vector2 mouse = SufferManager::instance().GetMousePosition();
+    float angleX = mouse.x_ / WINDOW_WIDTH  * 6.28f;
+    float angleY = mouse.y_ / WINDOW_HEIGHT * 6.28f;
 
 
     //MOUSE CONTROL - QUATERNIONS

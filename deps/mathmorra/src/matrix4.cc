@@ -483,8 +483,8 @@ void mathmorra::Matrix4::operator*=(const Matrix4& b){
 
    Vector4 a(cotangent / aspect, 0.0f, 0.0f, 0.0f);
    Vector4 b(0.0f, cotangent, 0.0f, 0.0f);
-   Vector4 c(0.0f, 0.0f, (far + near) * rcpdz, 2.0f * near * far * rcpdz);
-   Vector4 d(0.0f, 0.0f, -1.0f, 0.0f);
+   Vector4 c(0.0f, 0.0f, (far + near) * rcpdz, -1.0f);
+   Vector4 d(0.0f, 0.0f, 2.0f * near * far * rcpdz, 0.0f);
 
    return Matrix4( a, b, c, d );
 
