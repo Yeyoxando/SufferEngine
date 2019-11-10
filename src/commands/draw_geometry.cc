@@ -121,18 +121,60 @@ void Suffer::DrawGeometry::Execute() const {
   glUseProgram(program_id);
   error = glGetError();
 	
-  glm::vec4 color = data_->mat_params_.default_params_.color_;
-  float aux_color[4] = { color.r, color.g, color.b, color.a };
-  
-  int u_pos = glGetUniformLocation(program_id, "u_color");
+  s32 u_pos = -1;
+
+  // Material setting uniforms
+  switch (data_->material_->material_type_) {
+  case Material::kBasicMaterials_Default:
+    glm::vec4 color = data_->mat_params_.default_params_.color_;
+
+    u_pos = glGetUniformLocation(program_id, "u_color");
     if (u_pos < 0) {
-      printf("\nERROR: uniform not exists.");
+      printf("\nERROR: u_color uniform not exists.");
       return;
     }
 
-  glUniform4f(u_pos, aux_color[0], aux_color[1], aux_color[2], aux_color[3]);
+    glUniform4f(u_pos, color.r, color.g, color.b, color.a);
+    u_pos = -1;
+    break;
+  case Material::kBasicMaterials_Phong:
+    
+    break;
+  case Material::kBasicMaterials_NONE:
+    break;
+  default:
+    break;
+  }
 
 
+
+  //Matrix uniforms
+  u_pos = glGetUniformLocation(program_id, "u_m_matrix");
+  if (u_pos < 0) {
+    printf("\nERROR: model matrix uniform not exists.");
+    return;
+  }
+
+  glUniformMatrix4fv(u_pos, 1, GL_FALSE, &data_->model_matrix_.m[0]);
+  u_pos = -1;
+
+  u_pos = glGetUniformLocation(program_id, "u_v_matrix");
+  if (u_pos < 0) {
+    printf("\nERROR: view matrix uniform not exists.");
+    return;
+  }
+
+  glUniformMatrix4fv(u_pos, 1, GL_FALSE, &data_->view_matrix_.m[0]);
+  u_pos = -1;
+
+  u_pos = glGetUniformLocation(program_id, "u_p_matrix");
+  if (u_pos < 0) {
+    printf("\nERROR: projection matrix uniform not exists.");
+    return;
+  }
+
+  glUniformMatrix4fv(u_pos, 1, GL_FALSE, &data_->projection_matrix_.m[0]);
+  u_pos = -1;
 
   glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
   error = glGetError();

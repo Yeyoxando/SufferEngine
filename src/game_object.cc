@@ -1,5 +1,6 @@
 #include <game_object.h>
 #include <draw_geometry.h>
+#include <matrix4.h>
 #include <suffermanager.h>
 
 // --------------------------------------------------- //
@@ -58,19 +59,27 @@ Suffer::ref_ptr<Suffer::Command> Suffer::GameObject::GetDrawCommand(){
 	draw_geometry.alloc();
 	draw_geometry.get()->SetData(this);
 
-  //glm::mat4 model_matrix;
-  //
-  //glm::mat4 translation_mat;
-  //glm::mat4 rotation_mat_x;
-  //glm::mat4 rotation_mat_y;
-  //glm::mat4 rotation_mat_z;
-  //glm::mat4 scale_mat;
-  //
- ////translation_mat[12]. = transform_.position.x;
- ////
- ////model_matrix = translation_mat * rotation_mat * scale_mat;
-  //
-  //draw_geometry.get()->SetModelMatrix(model_matrix);
+  mathmorra::Matrix4 model_matrix;
+
+  mathmorra::Matrix4 translation_mat;
+  translation_mat = translation_mat.Translate(transform_.position.x, transform_.position.y, transform_.position.z);
+  
+  mathmorra::Matrix4 rotation_mat_x;
+  mathmorra::Matrix4 rotation_mat_y;
+  mathmorra::Matrix4 rotation_mat_z;
+  rotation_mat_x = rotation_mat_x.RotateX(transform_.rotation.x);
+  rotation_mat_y = rotation_mat_y.RotateY(transform_.rotation.y);
+  rotation_mat_z = rotation_mat_z.RotateZ(transform_.rotation.z);
+
+  rotation_mat_z = rotation_mat_z.Multiply(rotation_mat_y);
+  rotation_mat_z = rotation_mat_z.Multiply(rotation_mat_x);
+
+  mathmorra::Matrix4 scale_mat;
+  scale_mat = scale_mat.Scale(transform_.scale.x, transform_.scale.y, transform_.scale.z);
+  
+  model_matrix = translation_mat * rotation_mat_z * scale_mat;
+
+  draw_geometry.get()->SetModelMatrix(model_matrix);
 
 
 	return draw_geometry.get();
