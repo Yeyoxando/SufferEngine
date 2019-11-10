@@ -7,7 +7,9 @@
 #ifndef __CAMERA_H__
 #define __CAMERA_H__
 
-#include <glm.hpp>
+#include "vector3.h"
+#include "matrix4.h"
+#include "quaternion.h"
 #include <referenced.h>
 #include <ref_ptr.h>
 
@@ -25,24 +27,24 @@ namespace Suffer {
                           float bottom, float top,
                           float znear, float zfar);
 
-        void SetPosition(const glm::vec3 position);
+        void SetPosition(const mathmorra::Vector3 position);
         void SetPosition(const float position[3]);
 
-        void SetViewDirection(const glm::vec3 view_direction);
+        void SetViewDirection(const mathmorra::Vector3 view_direction);
         void SetViewDirection(const float view_direction[3]);
 
-        void SetViewTarget(const glm::vec3 target);
+        void SetViewTarget(const mathmorra::Vector3 target);
         void SetViewTarget(const float target[3]);
 
         void SetFOV(const float new_fov);
 
         void SetForward(const float forward[3]);
-        void SetForward(const glm::vec3 forward);
+        void SetForward(const mathmorra::Vector3 forward);
 
-        void SetProjectionMatrix(glm::mat4 projection_matrix);
+        void SetProjectionMatrix(mathmorra::Matrix4 projection_matrix);
         void SetProjectionMatrix(const float m[16]);
 
-        void SetViewMatrix(glm::mat4 view_matrix);
+        void SetViewMatrix(mathmorra::Matrix4 view_matrix);
         void SetViewMatrix(const float m[16]);
 
         const float* Position() const;
@@ -59,17 +61,18 @@ namespace Suffer {
     protected:
         virtual ~Camera();
 
+
     private:
-        glm::vec3 position_;
-        glm::vec3 camera_target_;
-        glm::vec3 camera_direction_;
+        mathmorra::Vector3 camera_position_;
+        mathmorra::Vector3 camera_target_;
+        mathmorra::Vector3 camera_direction_;
 
-        glm::vec3 camera_up_;
-        glm::vec3 camera_right_;
-        glm::vec3 camera_forward_;
+        mathmorra::Vector3 camera_up_;
+        mathmorra::Vector3 camera_right_;
+        mathmorra::Vector3 camera_forward_;
 
-        glm::mat4 view_matrix_;
-        glm::mat4 projection_matrix_;
+        mathmorra::Matrix4 view_matrix_;
+        mathmorra::Matrix4 projection_matrix_;
 
         float field_of_view_; // FOV
 
