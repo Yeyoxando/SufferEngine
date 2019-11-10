@@ -1,7 +1,7 @@
 #include <draw_geometry.h>
-#include <glm.hpp>
 #include <gl/glew.h>
 #include <data_types.h>
+#include <glm.hpp>
 #include "suffermanager.h"
 
 struct Suffer::DrawGeometry::Data {
@@ -13,9 +13,9 @@ struct Suffer::DrawGeometry::Data {
   ref_ptr<Material> material_;
 
   // Transform 
-  glm::mat4 model_matrix_;
-	glm::mat4 view_matrix_;
-	glm::mat4 projection_matrix_;
+  mathmorra::Matrix4 model_matrix_;
+  mathmorra::Matrix4 view_matrix_;
+  mathmorra::Matrix4 projection_matrix_;
   
   
   struct DefaultParams {
@@ -60,19 +60,19 @@ void Suffer::DrawGeometry::SetData(GameObject* go){
 
 // --------------------------------------------------- //
 
-void Suffer::DrawGeometry::SetModelMatrix(glm::mat4 model){
+void Suffer::DrawGeometry::SetModelMatrix(mathmorra::Matrix4 model){
   data_->model_matrix_ = model;
 }
 
 // --------------------------------------------------- //
 
-void Suffer::DrawGeometry::SetViewMatrix(glm::mat4 view){
+void Suffer::DrawGeometry::SetViewMatrix(mathmorra::Matrix4 view){
   data_->view_matrix_ = view;
 }
 
 // --------------------------------------------------- //
 
-void Suffer::DrawGeometry::SetProjectionMatrix(glm::mat4 projection){
+void Suffer::DrawGeometry::SetProjectionMatrix(mathmorra::Matrix4 projection){
   data_->projection_matrix_ = projection;
 }
 
@@ -90,10 +90,10 @@ void Suffer::DrawGeometry::SetMaterial(ref_ptr<Material> mat){
 
   switch (mat.get()->material_type_){
   case Material::kBasicMaterials_Default:
-    //data_->mat_params_->default_params_->color_ = mat->material_settings_
+    data_->mat_params_.default_params_.color_ = mat->material_settings_.get()->material_params_.default_params_.GetColor();
     break;
   case Material::kBasicMaterials_Phong:
-
+    data_->mat_params_.phong_params_.color_ = mat->material_settings_.get()->material_params_.phong_params_.GetColor();
     break;
   case Material::kBasicMaterials_NONE:
 
@@ -121,16 +121,16 @@ void Suffer::DrawGeometry::Execute() const {
   glUseProgram(program_id);
   error = glGetError();
 	
-  //const Vector4 color = //materialsettings
-  //float colorAux[3] = { color.x, color.y, color.z };
-  //
-  //int u_pos =  glGetUniformLocation(program_id_, name)
-  //if (u_pos < 0) {
-  //  printf("\nERROR: uniform not exists.");
-  //  return false;
-  //}
-  //
-  //glUniform4f(uniform_pos, value[0], value[1], value[2], value[3]);
+  glm::vec4 color = data_->mat_params_.default_params_.color_;
+  float aux_color[4] = { color.r, color.g, color.b, color.a };
+  
+  int u_pos = glGetUniformLocation(program_id, "u_color");
+    if (u_pos < 0) {
+      printf("\nERROR: uniform not exists.");
+      return;
+    }
+
+  glUniform4f(u_pos, aux_color[0], aux_color[1], aux_color[2], aux_color[3]);
 
 
 

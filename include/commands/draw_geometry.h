@@ -10,7 +10,7 @@
 #include <command.h>
 #include <game_object.h>
 #include <ref_ptr.h>
-#include <glm.hpp>
+#include "matrix4.h"
 
 // --------------------------------------------------- //
 
@@ -21,9 +21,9 @@ namespace Suffer {
 	public:
 
 		void SetData(GameObject* go);
-    void SetModelMatrix(glm::mat4 model);
-    void SetViewMatrix(glm::mat4 view);
-    void SetProjectionMatrix(glm::mat4 projection);
+    void SetModelMatrix(mathmorra::Matrix4 model);
+    void SetViewMatrix(mathmorra::Matrix4 view);
+    void SetProjectionMatrix(mathmorra::Matrix4 projection);
 		void SetGeometry(ref_ptr<Geometry> geo);
 		void SetMaterial(ref_ptr<Material> mat);
 
