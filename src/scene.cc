@@ -144,8 +144,8 @@ void Suffer::Scene::Init() {
 
 void Suffer::Scene::Step(float time_step){
 	// Logic
-  //main_camera_->CameraMovement(main_camera_);
   main_camera_.get()->Update();
+  main_camera_->CameraMovement(main_camera_);
 	PrepareDraw();
 }
 

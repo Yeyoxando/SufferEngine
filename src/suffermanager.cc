@@ -507,25 +507,30 @@ u32 Suffer::SufferManager::IsBufferCreated(ref_ptr<IndexBuffer> index_buffer) {
 #ifdef ASSERT
   assert(index_buffer.get() != nullptr);
 #endif
-
+  GLenum error = glGetError();
   s32 id_index = index_buffer.get()->id_;
   if (data_->internal_index_buffers_[id_index].gpu_version_ == 0) {
     glGenBuffers(1, &data_->internal_index_buffers_[id_index].current_gl_buffer_);
+    error = glGetError();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data_->internal_index_buffers_[id_index].current_gl_buffer_);
+    error = glGetError();
 
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
       data_->internal_index_buffers_[id_index].data_.sizeInBytes(),
       data_->internal_index_buffers_[id_index].data_.get(),
       GL_STATIC_DRAW);
+    error = glGetError();
   }
 
   if (data_->internal_index_buffers_[id_index].gpu_version_ < data_->internal_index_buffers_[id_index].version_) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data_->internal_index_buffers_[id_index].current_gl_buffer_);
+    error = glGetError();
 
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
       data_->internal_index_buffers_[id_index].data_.sizeInBytes(),
       data_->internal_index_buffers_[id_index].data_.get(),
       GL_STATIC_DRAW);
+    error = glGetError();
   }
 
   data_->internal_index_buffers_[id_index].gpu_version_ = data_->internal_index_buffers_[id_index].version_;
