@@ -32,17 +32,49 @@ void Suffer::Scene::Init() {
   ind_buff_.alloc();
 
 	float vertices[] = {
-      0.2f, -0.2f, -1.0f,
-      0.2f,  0.2f, -1.0f,
-     -0.2f,  0.2f, -1.0f,
-     -0.2f, -0.2f, -1.0f,
+       //Face1
+       1.0f,  1.0f,  1.0f,
+       1.0f, -1.0f,  1.0f,
+       1.0f, -1.0f, -1.0f,
+       1.0f,  1.0f, -1.0f,
+      //Face2
+      -1.0f,  1.0f, -1.0f,
+      -1.0f, -1.0f, -1.0f,
+       1.0f, -1.0f, -1.0f,
+       1.0f,  1.0f, -1.0f,
+      //Face3
+      -1.0f,  1.0f,  1.0f,
+      -1.0f, -1.0f,  1.0f,
+      -1.0f, -1.0f, -1.0f,
+      -1.0f,  1.0f, -1.0f,
+      //Face4
+      -1.0f,  1.0f,  1.0f,
+      -1.0f, -1.0f,  1.0f,
+       1.0f, -1.0f,  1.0f,
+       1.0f,  1.0f,  1.0f,
+      //Face5
+      -1.0f,  1.0f, -1.0f,
+      -1.0f,  1.0f,  1.0f,
+       1.0f,  1.0f,  1.0f,
+       1.0f,  1.0f, -1.0f,
+      //Face6
+      -1.0f, -1.0f, -1.0f,
+      -1.0f, -1.0f,  1.0f,
+       1.0f, -1.0f,  1.0f,
+       1.0f, -1.0f, -1.0f,
 	};
 
-  u16 indices[]{ 0, 2, 1,
-                 2, 3, 0 };
+  u16 indices[]{ 			
+         0,  1,  2,  2,  3,  0,
+         6,  5,  4,  4,  7,  6,
+        10,  9,  8,  8, 11, 10,
+        12, 13, 14, 14, 15, 12,
+        16, 17, 18, 18, 19, 16,
+        22, 21, 20, 20, 23, 22
+  };
 
-	SufferManager::instance().UploadVertexData(vert_buff_, vertices, 12);
-	SufferManager::instance().UploadIndexData(ind_buff_, indices, 6);
+	SufferManager::instance().UploadVertexData(vert_buff_, vertices, 72);
+	SufferManager::instance().UploadIndexData(ind_buff_, indices, 36);
 
 	ref_ptr<Geometry> geometry;
 	geometry.alloc();
@@ -52,7 +84,7 @@ void Suffer::Scene::Init() {
 	ref_ptr<Material> material;
 	material.alloc();
   material->SetMaterialType(Material::kBasicMaterials_Default);
-
+  material->material_settings_->material_params_.default_params_.SetColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 
 	ref_ptr<GameObject> go;
 	go.alloc();
@@ -66,7 +98,7 @@ void Suffer::Scene::Init() {
 
 
 
-
+  main_camera_.alloc();
 
 
 
@@ -98,6 +130,7 @@ void Suffer::Scene::Init() {
   ref_ptr<Material> material2;
   material2.alloc();
   material2->SetMaterialType(Material::kBasicMaterials_Default);
+  material2->material_settings_->material_params_.default_params_.SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
 
   ref_ptr<GameObject> go2;
@@ -111,7 +144,8 @@ void Suffer::Scene::Init() {
 
 void Suffer::Scene::Step(float time_step){
 	// Logic
-
+  //main_camera_->CameraMovement(main_camera_);
+  main_camera_.get()->Update();
 	PrepareDraw();
 }
 
@@ -133,8 +167,8 @@ void Suffer::Scene::PrepareDraw(){
 
     DrawGeometry* draw_cmd = reinterpret_cast<DrawGeometry*>(cmd.get());
 
-    //draw_cmd->SetViewMatrix();
-    //draw_cmd->SetProjectionMatrix();
+    draw_cmd->SetViewMatrix(main_camera_->ViewMatrix());
+    draw_cmd->SetProjectionMatrix(main_camera_->ProjectionMatrix());
 
 		frame_dl.addCommand(draw_cmd);
 	}

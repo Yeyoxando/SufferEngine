@@ -204,6 +204,26 @@ bool Suffer::IsKeyUp(Key key){
 
 bool Suffer::IsKeyPressed(Key key){
 
+    /*
+      static bool is_key_down = false;
+  static int key_pressed = 0;
+
+  if (inpKey == GetGLFWKey(key) && inpAction == GLFW_PRESS) {
+    is_key_down = true;
+    key_pressed = inpKey;
+  }
+
+  if (key_pressed != inpKey) return false;
+
+  if (is_key_down) {
+    if (IsKeyUp(key)) {
+      is_key_down = false;
+      return false;
+    }
+    return true;
+  }
+    */
+
 	static bool is_key_down = false;
 
 	if (IsKeyDown(key) || is_key_down) {

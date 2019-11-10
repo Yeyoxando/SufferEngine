@@ -16,6 +16,7 @@
 namespace Suffer {
 
     class Camera : public virtual Referenced {
+
     public:
         Camera();
         Camera(const Camera& copy);
@@ -53,10 +54,16 @@ namespace Suffer {
 
         const float Fov() const;
 
+        mathmorra::Matrix4 ProjectionMatrix();
+        mathmorra::Matrix4 ViewMatrix();
+
         // FPS Movement
         void CameraMovement(ref_ptr<Camera> camera);
         void SetSensibility(float new_sensibility);
         void SetSpeed(float new_speed);
+
+        // TODO: This will be private
+        void Update();
 
     protected:
         virtual ~Camera();

@@ -155,7 +155,7 @@ void Suffer::DrawGeometry::Execute() const {
     return;
   }
 
-  glUniformMatrix4fv(u_pos, 1, GL_FALSE, &data_->model_matrix_.m[0]);
+  glUniformMatrix4fv(u_pos, 1, GL_FALSE, data_->model_matrix_.m);
   u_pos = -1;
 
   u_pos = glGetUniformLocation(program_id, "u_v_matrix");
@@ -164,7 +164,7 @@ void Suffer::DrawGeometry::Execute() const {
     return;
   }
 
-  glUniformMatrix4fv(u_pos, 1, GL_FALSE, &data_->view_matrix_.m[0]);
+  glUniformMatrix4fv(u_pos, 1, GL_FALSE, data_->view_matrix_.m);
   u_pos = -1;
 
   u_pos = glGetUniformLocation(program_id, "u_p_matrix");
@@ -173,7 +173,7 @@ void Suffer::DrawGeometry::Execute() const {
     return;
   }
 
-  glUniformMatrix4fv(u_pos, 1, GL_FALSE, &data_->projection_matrix_.m[0]);
+  glUniformMatrix4fv(u_pos, 1, GL_FALSE, data_->projection_matrix_.m);
   u_pos = -1;
 
   glBindBuffer(GL_ARRAY_BUFFER, id_vertex);

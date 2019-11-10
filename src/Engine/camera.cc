@@ -6,21 +6,23 @@
 
 #include "camera.h"
 #include "input.h"
-#include "gtx/transform.hpp"
 #include "suffermanager.h"
+#include "common_definitions.h"
 
 
 Suffer::Camera::Camera() {
 
-    field_of_view_ = 45.0f;
-    camera_position_ = mathmorra::Vector3(0.0f, 0.0f, -5.0f);
-    camera_target_ = mathmorra::Vector3(0.0f, 0.0f, 0.0f);
-    camera_direction_ = mathmorra::Vector3(0.0f, 0.0f, 0.0f);
+    field_of_view_ = 50.0f;
+    speed_ = 100.0f;
 
-    mathmorra::Vector3 up = mathmorra::Vector3(0.0f, 1.0f, 0.0f);
+    camera_position_ = mathmorra::Vector3(0.0f, 0.0f, 5.0f);
+    camera_target_ = mathmorra::Vector3(0.0f, 0.0f, -1.0f);
+    camera_direction_ = mathmorra::Vector3(0.0f, 0.0f, -1.0f);
+
+    camera_forward_ = mathmorra::Vector3(0.0f, 0.0f, -1.0f);
     
-    camera_right_ = mathmorra::Vector3::Normalized(mathmorra::Vector3::CrossProduct(up, camera_direction_));
-    camera_up_ = mathmorra::Vector3::CrossProduct(camera_direction_, camera_right_);
+    camera_up_ = mathmorra::Vector3(0.0f, 1.0f, 0.0f);
+    //camera_right_ = mathmorra::Vector3::Normalized(mathmorra::Vector3::CrossProduct(up, camera_direction_));
 
 }
 
@@ -34,7 +36,7 @@ Suffer::Camera& Suffer::Camera::operator=(const Camera& cam){
     camera_.camera_direction_ = cam.camera_direction_;
 
     camera_.camera_up_ = cam.camera_up_;
-    camera_.camera_right_ = cam.camera_right_;
+   // camera_.camera_right_ = cam.camera_right_;
     camera_.camera_forward_ = cam.camera_forward_;
 
     camera_.field_of_view_ = cam.field_of_view_;
@@ -119,11 +121,29 @@ const float Suffer::Camera::Fov() const{
     return field_of_view_;
 }
 
+mathmorra::Matrix4 Suffer::Camera::ProjectionMatrix(){
+    return projection_matrix_;
+}
+
+mathmorra::Matrix4 Suffer::Camera::ViewMatrix(){
+    return view_matrix_;
+}
+
 // FPS Movement
 void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
 
-    camera_right_ = mathmorra::Vector3::CrossProduct(camera_forward_, camera_up_);
+    // CAMERA UTILS
+    mathmorra::Vector3 right;
+    mathmorra::Vector3 up;
+    const float* updirection = camera.get()->Up();
+
+    up.x_ = *updirection;
+    up.y_ = *(updirection + 1);
+    up.z_ = *(updirection + 2);
+
+    right = mathmorra::Vector3::CrossProduct(camera_forward_, up);
     float time_ = SufferManager::instance().DeltaTime();
+
 
     // Input Stuff
     if (Suffer::IsKeyPressed(k_W)) { // FORWARD
@@ -136,7 +156,7 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
     }
 
     if (Suffer::IsKeyPressed(k_A)) { // LEFT
-        mathmorra::Vector3 left = camera_right_ * -1.0f;
+        mathmorra::Vector3 left = right * -1.0f;
         mathmorra::Matrix4 translations = translations.Translate(
             left.x_ * speed_ * time_,
             0.0f,
@@ -147,9 +167,9 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
 
     if (Suffer::IsKeyPressed(k_D)) { // RIGHT
         mathmorra::Matrix4 translations = translations.Translate(
-            camera_right_.x_ * speed_ * time_,
+            right.x_ * speed_ * time_,
             0.0f,
-            camera_right_.z_ * speed_ * time_);
+            right.z_ * speed_ * time_);
 
         camera_position_ = translations.Transpose() * camera_position_;
     }
@@ -165,7 +185,8 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
     }
 
     if (Suffer::IsKeyPressed(k_Q)) { //UP
-        mathmorra::Matrix4 translations = translations.Translate(0.0f,
+        mathmorra::Matrix4 translations = translations.Translate(
+            0.0f,
             camera_up_.y_ * speed_ * time_,
             0.0f);
 
@@ -186,8 +207,8 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
     camera.get()->SetPosition(pos);
 
 
-    float angleX = Suffer::MousePositionX() / 1280.0f * 6.28f;
-    float angleY = Suffer::MousePositionY() / 720.0f * 6.28f;
+    float angleX = /*Suffer::MousePositionX() /*/ 1280.0f * 6.28f;
+    float angleY = /*Suffer::MousePositionY() /*/ 720.0f * 6.28f;
 
 
     //MOUSE CONTROL - QUATERNIONS
@@ -204,6 +225,8 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
 
     camera.get()->SetViewDirection(camera_forward_);
 
+    printf("POS: %f, %f, %f\n\n", camera_position_.x_, camera_position_.y_, camera_position_.z_);
+
 }
 
 void Suffer::Camera::SetSensibility(float new_sensibility){
@@ -216,4 +239,24 @@ void Suffer::Camera::SetSpeed(float new_speed){
 
 Suffer::Camera::~Camera() {
 
+}
+
+void Suffer::Camera::Update(){
+
+    camera_right_ = mathmorra::Vector3::Normalized(
+        mathmorra::Vector3::CrossProduct(camera_up_, camera_direction_)
+    );
+
+    camera_up_ = mathmorra::Vector3::CrossProduct(camera_direction_, camera_right_);
+    camera_forward_ = camera_direction_;
+
+    projection_matrix_ = projection_matrix_.PerspectiveMatrix(
+        field_of_view_, WINDOW_HEIGHT / WINDOW_WIDTH, 0.01f, 15000.0f);
+
+    view_matrix_ = mathmorra::Matrix4(
+        mathmorra::Vector4(camera_right_,    0.0f),
+        mathmorra::Vector4(camera_up_,       0.0f),
+        mathmorra::Vector4(camera_forward_,  0.0f),
+        mathmorra::Vector4(camera_position_, 1.0f)
+    );
 }

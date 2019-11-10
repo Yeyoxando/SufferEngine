@@ -362,6 +362,7 @@ void mathmorra::Vector3::Scale(const mathmorra::Vector3& other) {
 mathmorra::Vector3 mathmorra::Vector3::Normalized(mathmorra::Vector3 a) {
 
   mathmorra::Vector3 result = mathmorra::Vector3();
+  if (a.Magnitude() == 0.0f) return Vector3();
   float inverted_module = 1.0f / a.Magnitude();
   
   result.x_ = a.x_ * inverted_module;

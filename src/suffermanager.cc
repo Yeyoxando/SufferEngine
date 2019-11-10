@@ -102,20 +102,28 @@ void Suffer::SufferManager::Data::InitInternalMaterials(){
 	
 	  #version 330
 	  layout(location = 0) in vec3 a_position;
+    
+    uniform mat4 u_m_matrix;
+    uniform mat4 u_v_matrix;
+    uniform mat4 u_p_matrix;
+
 
 	  void main(){
-		  gl_Position = vec4(a_position, 1.0f);
+      mat4 accum_matrix = u_p_matrix * u_v_matrix * u_m_matrix;
+		  gl_Position = accum_matrix * vec4(a_position, 1.0f);
 	  }
 
 	)VSHADER";
 
   internal_materials_[number_of_materials_].fragment_shader_ = R"FSHADER(
   
-  	#version 330
-  
-  	void main(){
-  		gl_FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);
-  	}
+    #version 330
+
+    uniform vec4 u_color;
+
+      void main(){
+          gl_FragColor = vec4(u_color.r, u_color.g, u_color.b, u_color.a);
+      }
   	
   )FSHADER";
 
@@ -127,138 +135,6 @@ void Suffer::SufferManager::Data::InitInternalMaterials(){
 
   number_of_materials_++;
 }
-
-// --------------------------------------------------------------//
-
-//void SufferManager::Data::InternalGeometry::CreateGeometry(Geometry::BasicShapes shape){
-//	switch (shape) {
-//	case Geometry::kBasicShapes_Triangle: {
-//		// BUFFERS
-//		float vertices[] = {
-//			0.0f,  0.5f, -1.0f,
-//			0.5f, -0.5f, -1.0f,
-//			-0.5f, -0.5f, -1.0f
-//		};
-//
-//		glGenBuffers(1, &vertices_ID);
-//		glBindBuffer(GL_ARRAY_BUFFER, vertices_ID);
-//		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-//
-//		unsigned char indices[]{ 0, 2, 1 };
-//
-//		glGenBuffers(1, &indices_ID);
-//		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_ID);
-//		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-//
-//		number_elements = 3;
-//
-//		break;
-//	}
-//	case Geometry::kBasicShapes_Quad: {
-//
-//		// BUFFERS
-//		float vertices[] = {
-//			0.5f, -0.5f, -1.0f,
-//			0.5f,  0.5f, -1.0f,
-//		   -0.5f,  0.5f, -1.0f,
-//		   -0.5f, -0.5f, -1.0f,
-//		};
-//
-//		glGenBuffers(1, &vertices_ID);
-//		glBindBuffer(GL_ARRAY_BUFFER, vertices_ID);
-//		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-//
-//		unsigned char indices[]{ 0, 2, 1, 
-//								 2, 3, 0 };
-//
-//		glGenBuffers(1, &indices_ID);
-//		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_ID);
-//		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-//
-//		number_elements = 6;
-//
-//		break;
-//
-//	}
-//	case Geometry::kBasicShapes_Cube: {
-//
-//		// BUFFERS
-//		float vertices[] = {
-//			// front
-//			-0.5, -0.5,  0.5,
-//			 0.5, -0.5,  0.5,
-//			 0.5,  0.5,  0.5,
-//			-0.5,  0.5,  0.5,
-//			// back
-//			-0.5, -0.5, -0.5,
-//			 0.5, -0.5, -0.5,
-//			 0.5,  0.5, -0.5,
-//			-0.5,  0.5, -0.5
-//		};
-//
-//		glGenBuffers(1, &vertices_ID);
-//		glBindBuffer(GL_ARRAY_BUFFER, vertices_ID);
-//		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-//
-//		unsigned char indices[]{ 		
-//			// front
-//			0, 1, 2,
-//			2, 3, 0,
-//			// right
-//			1, 5, 6,
-//			6, 2, 1,
-//			// back
-//			7, 6, 5,
-//			5, 4, 7,
-//			// left
-//			4, 0, 3,
-//			3, 7, 4,
-//			// bottom
-//			4, 5, 1,
-//			1, 0, 4,
-//			// top
-//			3, 2, 6,
-//			6, 7, 3 
-//		};
-//
-//		glGenBuffers(1, &indices_ID);
-//		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_ID);
-//		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-//
-//		number_elements = 36;
-//
-//		break;
-//	}
-//	case Geometry::kBasicShapes_NONE:
-//		break;
-//	default:
-//		break;
-//	}
-//
-//}
-//
-//// --------------------------------------------------------------//
-//
-//void SufferManager::Data::InternalMaterial::CreateMaterial(Material::BasicMaterials material) {
-//	switch (material) {
-//	case Material::kBasicMaterials_Default: {
-//		// DEFAULT SHADERS
-//		
-//
-//		// HELLO TRIANGLE STUFF -> TODO: THIS WILL BE DELETED
-//		GLenum error = glGetError();
-//		
-//		
-//		break;
-//	}
-//	case Material::kBasicMaterials_NONE: {
-//		break;
-//	}
-//	default:
-//		break;
-//	}
-//
-//}
 
 // --------------------------------------------------------------//
 
@@ -300,7 +176,7 @@ bool Suffer::SufferManager::Init(){
 	assert(data_ && "\n Data is null.");
 #endif // ASSERT
 
-	data_->wind_.init(800, 600);
+	data_->wind_.init(WINDOW_WIDTH, WINDOW_HEIGHT);
 	Suffer::InitInput();
 	data_->interface_.Init();
 
@@ -313,6 +189,14 @@ bool Suffer::SufferManager::Init(){
 	input_.alloc();
 	audio_.alloc();
 
+
+	data_->InitInternalBuffers();
+	data_->InitInternalMaterials();
+
+	data_->window_should_close_ = false;
+
+	data_->scene_context_->Init();
+
 	// Threads Function Assignment
 	auto audio_thread = [] { SufferManager::instance().Audio(); };
 	audio_.get()->NewTask(audio_thread);
@@ -322,16 +206,6 @@ bool Suffer::SufferManager::Init(){
 
 	auto input_thread = [] { SufferManager::instance().Input(); };
 	input_.get()->NewTask(input_thread);
-
-
-	data_->InitInternalBuffers();
-	data_->InitInternalMaterials();
-
-	data_->window_should_close_ = false;
-
-	data_->scene_context_->Init();
-
-	//newSong.alloc();
 
 	return true;
 }
