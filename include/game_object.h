@@ -17,60 +17,58 @@
 #include <command.h>
 
 
-using namespace Suffer;
+namespace Suffer {
 
-// --------------------------------------------------- //
+	// --------------------------------------------------- //
 
-struct Transform {
+	struct Transform {
 
-public:
-	glm::vec3 scale;
-	glm::vec3 position;
-	glm::vec3 rotation;
+	public:
+		glm::vec3 scale;
+		glm::vec3 position;
+		glm::vec3 rotation;
 
-	glm::quat quat_rotation_;
+		glm::quat quat_rotation_;
 
-	glm::mat4 ModelMatrix() {
-		return glm::mat4(1.0f);
-	}
+	private:
+		glm::mat4 model_;
 
-private:
-	glm::mat4 model_;
+	};
 
-};
+	// --------------------------------------------------- //
 
-// --------------------------------------------------- //
+	class GameObject : public virtual Referenced {
 
-class GameObject : public virtual Referenced {
+	public:
 
-public:
+		GameObject();
+		GameObject(const GameObject& go);
 
-	GameObject();
-	GameObject(const GameObject& go);
+		// Getters
+		Transform GetTransform();
+		ref_ptr<Material> GetMaterial();
+		ref_ptr<Geometry> GetGeometry();
 
-	// Getters
-	Transform GetTransform();
-	ref_ptr<Material> GetMaterial();
-	ref_ptr<Geometry> GetGeometry();
+		// Setters
+		void SetMaterial(ref_ptr<Material> new_material);
+		void SetGeometry(ref_ptr<Geometry> new_geometry);
 
-	// Setters
-	void SetMaterial(ref_ptr<Material> new_material);
-	void SetGeometry(ref_ptr<Geometry> new_geometry);
+		const ref_ptr<Command> GetDrawCommand();
 
-	const ref_ptr<Command> GetDrawCommand();
+	protected:
+		virtual ~GameObject();
 
-protected:
-	virtual ~GameObject();
+	private:
+		// Attributes
+		Transform transform_;
+		ref_ptr<Material> material_;
+		ref_ptr<Geometry> geometry_;
 
-private:
-	// Attributes
-	Transform transform_;
-	ref_ptr<Material> material_;
-	ref_ptr<Geometry> geometry_;
+		// Methods
 
-	// Methods
+	};
 
-};
+} // End of Suffer namespace
 
 // --------------------------------------------------- //
 

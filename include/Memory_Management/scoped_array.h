@@ -15,6 +15,8 @@
 
     Array(): px_(NULL), elements_(0) {}
 
+	//Array(const Array& copy) : px_(copy.px_), elements_(copy.elements_) {}
+
     ~Array() {
         delete[] px_;
     }

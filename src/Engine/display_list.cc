@@ -101,7 +101,7 @@ void Suffer::DisplayList::addCommand(const ref_ptr<Command> cmd){
 
 // --------------------------------------------------------------//
 
-DisplayList & Suffer::DisplayList::operator=(DisplayList && d){
+Suffer::DisplayList & Suffer::DisplayList::operator=(DisplayList && d){
 	// swap pointers to pass values without creating a real copy
 	std::swap(dl_commands_, d.dl_commands_);
 	dl_type_ = d.dl_type_;

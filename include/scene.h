@@ -6,25 +6,30 @@
 #include <referenced.h>
 #include <ref_ptr.h>
 
-using namespace Suffer;
+namespace Suffer {
 
-class Scene : public Referenced{
+	class Scene : public Referenced {
 
-public:
+	public:
 
-	Scene();
-	Scene(const Scene&);
-	virtual ~Scene();
+		Scene();
+		Scene(const Scene&);
+		virtual ~Scene();
 
-	void Init();
-	void Step(float time_step);
-	void PrepareDraw();
+		void Init();
+		void Step(float time_step);
+		void PrepareDraw();
 
-	// Methods
+		// Methods
+    void AddGameObject(ref_ptr<GameObject> gameobject);
 
-	// Attributes
-	std::vector<ref_ptr<GameObject>> go_;
 
-};
+  private:
+		// Attributes
+		std::vector<ref_ptr<GameObject>> current_gameobjects_;
+
+	};
+
+}
 
 #endif // __SCENE_H__

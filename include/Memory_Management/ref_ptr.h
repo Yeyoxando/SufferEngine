@@ -5,124 +5,128 @@
 #ifndef __REF_PTR_H__
 #define __REF_PTR_H__
 
-  template<class T>
-  class ref_ptr {
-  public:
-    typedef T element_type;
+namespace Suffer {
 
-    ref_ptr() :ptr_(0L) {}
-    ref_ptr(T* t):ptr_(t) { if (ptr_) ptr_->ref(); }
-	ref_ptr(const ref_ptr& rp) :ptr_(rp.ptr_) { if (ptr_) ptr_->ref(); }
-	ref_ptr(ref_ptr&& rp) :ptr_(rp.ptr_) {
-		rp.ptr_ = 0;
-	}
-    ~ref_ptr() {
-      if (ptr_) ptr_->unref();
-      ptr_ = 0L;
-    }
+	template<class T>
+	class ref_ptr {
+	public:
+		typedef T element_type;
 
-    element_type* alloc() { (*this) =new T(); return ptr_; }
+		ref_ptr() :ptr_(0L) {}
+		ref_ptr(T* t) :ptr_(t) { if (ptr_) ptr_->ref(); }
+		ref_ptr(const ref_ptr& rp) :ptr_(rp.ptr_) { if (ptr_) ptr_->ref(); }
+		ref_ptr(ref_ptr&& rp) :ptr_(rp.ptr_) {
+			rp.ptr_ = 0;
+		}
+		~ref_ptr() {
+			if (ptr_) ptr_->unref();
+			ptr_ = 0L;
+		}
 
-    template<class SubT>
-    SubT* allocT() {
-      SubT *i = new SubT();
-      (*this) = i;
-      return i;
-    }
+		element_type* alloc() { (*this) = new T(); return ptr_; }
 
-    void release() { ref_ptr empty; swap(empty); }
+		template<class SubT>
+		SubT* allocT() {
+			SubT *i = new SubT();
+			(*this) = i;
+			return i;
+		}
 
-    ref_ptr& operator = (const ref_ptr& rp) {
-      if (ptr_ == rp.ptr_) return *this;
-      T* tmp_ptr = ptr_;
-      ptr_ = rp.ptr_;
-      if (ptr_) ptr_->ref();
-      if (tmp_ptr) tmp_ptr->unref();
-      return *this;
-    }
+		void release() { ref_ptr empty; swap(empty); }
 
-    void swap(ref_ptr &other) {
-      T* tmp = other.ptr_;
-      other.ptr_ = ptr_;
-      ptr_ = tmp;
-    }
+		ref_ptr& operator = (const ref_ptr& rp) {
+			if (ptr_ == rp.ptr_) return *this;
+			T* tmp_ptr = ptr_;
+			ptr_ = rp.ptr_;
+			if (ptr_) ptr_->ref();
+			if (tmp_ptr) tmp_ptr->unref();
+			return *this;
+		}
 
-    // comparison operators for ref_ptr.
-    bool operator == (const ref_ptr& rp) const { return (ptr_ == rp.ptr_); }
-    bool operator != (const ref_ptr& rp) const { return (ptr_ != rp.ptr_); }
-    bool operator < (const ref_ptr& rp) const { return (ptr_ < rp.ptr_); }
-    bool operator > (const ref_ptr& rp) const { return (ptr_ > rp.ptr_); }
+		void swap(ref_ptr &other) {
+			T* tmp = other.ptr_;
+			other.ptr_ = ptr_;
+			ptr_ = tmp;
+		}
 
-    // comparison operator for const T*.
-    bool operator == (const T* ptr) const { return (ptr_ == ptr); }
-    bool operator != (const T* ptr) const { return (ptr_ != ptr); }
-    bool operator < (const T* ptr) const { return (ptr_ < ptr); }
-    bool operator > (const T* ptr) const { return (ptr_ > ptr); }
+		// comparison operators for ref_ptr.
+		bool operator == (const ref_ptr& rp) const { return (ptr_ == rp.ptr_); }
+		bool operator != (const ref_ptr& rp) const { return (ptr_ != rp.ptr_); }
+		bool operator < (const ref_ptr& rp) const { return (ptr_ < rp.ptr_); }
+		bool operator > (const ref_ptr& rp) const { return (ptr_ > rp.ptr_); }
 
-    T& operator*() { return *ptr_; }
-    const T& operator*() const { return *ptr_; }
-    T* operator->() { return ptr_; }
-    const T* operator->() const { return ptr_; }
-    bool operator!() const { return ptr_ == 0L; }
-    bool valid() const { return ptr_ != 0L; }
-    T* get() { return ptr_; }
-    const T* get() const { return ptr_; }
+		// comparison operator for const T*.
+		bool operator == (const T* ptr) const { return (ptr_ == ptr); }
+		bool operator != (const T* ptr) const { return (ptr_ != ptr); }
+		bool operator < (const T* ptr) const { return (ptr_ < ptr); }
+		bool operator > (const T* ptr) const { return (ptr_ > ptr); }
 
-  private:
-    T* ptr_;
-  };
+		T& operator*() { return *ptr_; }
+		const T& operator*() const { return *ptr_; }
+		T* operator->() { return ptr_; }
+		const T* operator->() const { return ptr_; }
+		bool operator!() const { return ptr_ == 0L; }
+		bool valid() const { return ptr_ != 0L; }
+		T* get() { return ptr_; }
+		const T* get() const { return ptr_; }
 
-  template<class T>
-  class const_ref_ptr {
-  public:
-    typedef T element_type;
+	private:
+		T* ptr_;
+	};
 
-    const_ref_ptr() :ptr_(0L) {}
-    const_ref_ptr(const T* t):ptr_(t) { if (ptr_) const_cast<T*>(ptr_)->ref(); }
-    const_ref_ptr(const const_ref_ptr& rp):ptr_(rp.ptr_)  { if (ptr_) const_cast<T*>(ptr_)->ref(); }
-    const_ref_ptr(const ref_ptr<T>& rp): ptr_(rp.get())  { if (ptr_) const_cast<T*>(ptr_)->ref(); }
-    ~const_ref_ptr() {
-      if (ptr_) const_cast<T*>(ptr_)->unref();
-      ptr_ = 0L;
-    }
+	template<class T>
+	class const_ref_ptr {
+	public:
+		typedef T element_type;
 
-    void release() { const_ref_ptr empty; swap(empty); }
+		const_ref_ptr() :ptr_(0L) {}
+		const_ref_ptr(const T* t) :ptr_(t) { if (ptr_) const_cast<T*>(ptr_)->ref(); }
+		const_ref_ptr(const const_ref_ptr& rp) :ptr_(rp.ptr_) { if (ptr_) const_cast<T*>(ptr_)->ref(); }
+		const_ref_ptr(const ref_ptr<T>& rp) : ptr_(rp.get()) { if (ptr_) const_cast<T*>(ptr_)->ref(); }
+		~const_ref_ptr() {
+			if (ptr_) const_cast<T*>(ptr_)->unref();
+			ptr_ = 0L;
+		}
 
-    const_ref_ptr& operator = (const const_ref_ptr& rp) {
-      if (ptr_ == rp.ptr_) return *this;
-      const T* tmp_ptr = ptr_;
-      ptr_ = rp.ptr_;
-      if (ptr_) const_cast<T*>(ptr_)->ref();
-      if (tmp_ptr) const_cast<T*>(tmp_ptr)->unref();
-      return *this;
-    }
+		void release() { const_ref_ptr empty; swap(empty); }
 
-    void swap(const_ref_ptr &other) {
-      const T* tmp = other.ptr_;
-      other.ptr_ = ptr_;
-      ptr_ = tmp;
-    }
+		const_ref_ptr& operator = (const const_ref_ptr& rp) {
+			if (ptr_ == rp.ptr_) return *this;
+			const T* tmp_ptr = ptr_;
+			ptr_ = rp.ptr_;
+			if (ptr_) const_cast<T*>(ptr_)->ref();
+			if (tmp_ptr) const_cast<T*>(tmp_ptr)->unref();
+			return *this;
+		}
 
-    // comparison operators for const_ref_ptr.
-    bool operator == (const const_ref_ptr& rp) const { return (ptr_ == rp.ptr_); }
-    bool operator != (const const_ref_ptr& rp) const { return (ptr_ != rp.ptr_); }
-    bool operator < (const const_ref_ptr& rp) const { return (ptr_ < rp.ptr_); }
-    bool operator > (const const_ref_ptr& rp) const { return (ptr_ > rp.ptr_); }
+		void swap(const_ref_ptr &other) {
+			const T* tmp = other.ptr_;
+			other.ptr_ = ptr_;
+			ptr_ = tmp;
+		}
 
-    // comparison operator for const T*.
-    bool operator == (const T* ptr) const { return (ptr_ == ptr); }
-    bool operator != (const T* ptr) const { return (ptr_ != ptr); }
-    bool operator < (const T* ptr) const { return (ptr_ < ptr); }
-    bool operator > (const T* ptr) const { return (ptr_ > ptr); }
+		// comparison operators for const_ref_ptr.
+		bool operator == (const const_ref_ptr& rp) const { return (ptr_ == rp.ptr_); }
+		bool operator != (const const_ref_ptr& rp) const { return (ptr_ != rp.ptr_); }
+		bool operator < (const const_ref_ptr& rp) const { return (ptr_ < rp.ptr_); }
+		bool operator > (const const_ref_ptr& rp) const { return (ptr_ > rp.ptr_); }
 
-    const T& operator*() const { return *ptr_; }
-    const T* operator->() const { return ptr_; }
-    bool operator!() const { return ptr_ == 0L; }
-    bool valid() const { return ptr_ != 0L; }
-    const T* get() const { return ptr_; }
+		// comparison operator for const T*.
+		bool operator == (const T* ptr) const { return (ptr_ == ptr); }
+		bool operator != (const T* ptr) const { return (ptr_ != ptr); }
+		bool operator < (const T* ptr) const { return (ptr_ < ptr); }
+		bool operator > (const T* ptr) const { return (ptr_ > ptr); }
 
-  private:
-    const T* ptr_;
-  };
+		const T& operator*() const { return *ptr_; }
+		const T* operator->() const { return ptr_; }
+		bool operator!() const { return ptr_ == 0L; }
+		bool valid() const { return ptr_ != 0L; }
+		const T* get() const { return ptr_; }
+
+	private:
+		const T* ptr_;
+	};
+
+}
 
 #endif  // __REF_PTR_H__
