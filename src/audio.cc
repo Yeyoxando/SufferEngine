@@ -16,23 +16,21 @@ struct ExampleAppLog {
 	void    AddLog(const char* fmt, ...) IM_FMTARGS(2);
 };
 
-using namespace Suffer;
-
 // --------------------------------------------------------------//
 
 /*
-							   _ _         ___  _____
-				/\            | (_)       |__ \|  __ \
-			   /  \  _   _  __| |_  ___      ) | |  | |
-			  / /\ \| | | |/ _` | |/ _ \    / /| |  | |
-			 / ____ \ |_| | (_| | | (_) |  / /_| |__| |
-			/_/    \_\__,_|\__,_|_|\___/  |____|_____/
+                       _ _         ____  _____
+        /\            | (_)       |___ \|  __ \
+       /  \  _   _  __| |_  ___     __) | |  | |
+      / /\ \| | | |/ _` | |/ _ \   |__ <| |  | |
+     / ____ \ |_| | (_| | | (_) |  ___) | |__| |
+    /_/    \_\__,_|\__,_|_|\___/  |____/|_____/
 
 */
 
 // --------------------------------------------------------------//
 
-struct Audio2D::Data {
+struct Suffer::Audio3D::Data {
 
 	SoLoud::Soloud sound_;
 	SoLoud::Wav wave_;
@@ -43,141 +41,7 @@ struct Audio2D::Data {
 
 // --------------------------------------------------------------//
 
-Audio2D::Audio2D(){
-
-	_ptr = new Data();
-	_ptr->sound_.init(SoLoud::Soloud::CLIP_ROUNDOFF |
-		SoLoud::Soloud::ENABLE_VISUALIZATION);
-
-}
-
-// --------------------------------------------------------------//
-
-Audio2D::~Audio2D(){
-
-	_ptr->sound_.deinit();
-	delete _ptr;
-
-}
-
-// --------------------------------------------------------------//
-
-bool Audio2D::Load(const char* file){
-
-	file_ = file;
-	!_ptr->wave_.load(file);
-	if(_ptr->wave_.mData != nullptr) return true;
-	return false;
-
-}
-
-// --------------------------------------------------------------//
-
-bool Audio2D::Play(){
-
-	_ptr->handle_ = _ptr->sound_.play(_ptr->wave_);
-	Interface::log.AddLog("\n[" _information_ "] Reproducing a new 2D song: [%s]", file_);
-	if (_ptr->handle_ > 0) return true;
-	return false;
-
-}
-
-// --------------------------------------------------------------//
-
-bool Audio2D::Stop(){
-	_ptr->sound_.stop(_ptr->handle_);
-	return true;
-}
-
-// --------------------------------------------------------------//
-
-void Audio2D::SetLooping(const bool looping){
-	looping_ = looping;
-	_ptr->sound_.setLooping(_ptr->handle_, looping_);
-}
-
-// --------------------------------------------------------------//
-
-void Audio2D::SetGain(const double newGain){
-	_ptr->wave_.setVolume(newGain);
-	gain_ = newGain;
-}
-
-// --------------------------------------------------------------//
-
-void Audio2D::SetGlobalVolume(const double newVolume){
-	_ptr->sound_.setGlobalVolume(newVolume);
-}
-
-// --------------------------------------------------------------//
-
-void Audio2D::SetPitch(const double newPitch){
-	_ptr->sound_.setRelativePlaySpeed(_ptr->handle_, newPitch);
-	pitch_ = newPitch;
-}
-
-// --------------------------------------------------------------//
-
-bool Audio2D::Looping(){
-	return looping_;
-}
-
-// --------------------------------------------------------------//
-
-double Audio2D::Pitch(){
-	return pitch_;
-}
-
-// --------------------------------------------------------------//
-
-double Audio2D::Gain(){
-	return gain_;
-}
-
-// --------------------------------------------------------------//
-
-float* Suffer::Audio2D::Wave(){
-	return _ptr->sound_.getWave();
-}
-
-// --------------------------------------------------------------//
-
-float* Suffer::Audio2D::FFT(){
-	return _ptr->sound_.calcFFT();
-}
-
-// --------------------------------------------------------------//
-
-//void Suffer::Audio2D::Execute(){
-//	Play();
-//}
-
-// --------------------------------------------------------------//
-
-/*
-							   _ _         ____  _____
-				/\            | (_)       |___ \|  __ \
-			   /  \  _   _  __| |_  ___     __) | |  | |
-			  / /\ \| | | |/ _` | |/ _ \   |__ <| |  | |
-			 / ____ \ |_| | (_| | | (_) |  ___) | |__| |
-			/_/    \_\__,_|\__,_|_|\___/  |____/|_____/
-
-*/
-
-// --------------------------------------------------------------//
-
-struct Audio3D::Data {
-
-	SoLoud::Soloud sound_;
-	SoLoud::Wav wave_;
-	SoLoud::handle handle_;
-	SoLoud::Monotone wave_form_;
-
-};
-
-// --------------------------------------------------------------//
-
-Audio3D::Audio3D(){
+Suffer::Audio3D::Audio3D(){
 
 	_ptr = new Data();
 	_ptr->sound_.init(SoLoud::Soloud::ENABLE_VISUALIZATION);
@@ -195,7 +59,7 @@ Audio3D::Audio3D(){
 
 // --------------------------------------------------------------//
 
-Audio3D::Audio3D(const Audio3D& copy){
+Suffer::Audio3D::Audio3D(const Audio3D& copy){
 	
 	this->file_ = copy.file_;
 	this->gain_ = copy.gain_;
@@ -207,7 +71,7 @@ Audio3D::Audio3D(const Audio3D& copy){
 
 // --------------------------------------------------------------//
 
-Audio3D::~Audio3D(){
+Suffer::Audio3D::~Audio3D(){
 
 	_ptr->sound_.deinit();
 	if (_ptr == nullptr) return;
@@ -217,7 +81,7 @@ Audio3D::~Audio3D(){
 
 // --------------------------------------------------------------//
 
-bool Audio3D::Load(char* file){
+bool Suffer::Audio3D::Load(char* file){
 
 	file_ = file;
 	_ptr->wave_.load(file);
@@ -230,7 +94,7 @@ bool Audio3D::Load(char* file){
 
 // --------------------------------------------------------------//
 
-bool Audio3D::Play3D(glm::vec3 velocity /*= glm::vec3(0, 0, 0)*/){
+bool Suffer::Audio3D::Play3D(glm::vec3 velocity /*= glm::vec3(0, 0, 0)*/){
 
 	if (_ptr->handle_ != 0) {
 		_ptr->sound_.stop(_ptr->handle_);
@@ -257,7 +121,7 @@ bool Audio3D::Play3D(glm::vec3 velocity /*= glm::vec3(0, 0, 0)*/){
 
 // --------------------------------------------------------------//
 
-void Audio3D::SetGain(const float newGain /*= 1.0f*/){
+void Suffer::Audio3D::SetGain(const float newGain /*= 1.0f*/){
 
 #ifdef ASSERT
 	assert(newGain >= 0 && "¡Volume cannot set under 0!");
@@ -269,7 +133,7 @@ void Audio3D::SetGain(const float newGain /*= 1.0f*/){
 
 // --------------------------------------------------------------//
 
-void Audio3D::SetPitch(const float newPitch /*= 1.0f*/){
+void Suffer::Audio3D::SetPitch(const float newPitch /*= 1.0f*/) {
 
 	pitch_ = newPitch;
 	_ptr->sound_.setRelativePlaySpeed(_ptr->handle_, pitch_);
@@ -278,7 +142,7 @@ void Audio3D::SetPitch(const float newPitch /*= 1.0f*/){
 
 // --------------------------------------------------------------//
 
-void Audio3D::SetLooping(const bool looping /*= false*/){
+void Suffer::Audio3D::SetLooping(const bool looping /*= false*/){
 
 	looping_ = looping;
 	_ptr->sound_.setLooping(_ptr->handle_, looping_);
@@ -287,7 +151,7 @@ void Audio3D::SetLooping(const bool looping /*= false*/){
 
 // --------------------------------------------------------------//
 
-void Audio3D::SetVelocity(const glm::vec3 newVelocity /*= glm::vec3(0, 0, 0)*/){
+void Suffer::Audio3D::SetVelocity(const glm::vec3 newVelocity /*= glm::vec3(0, 0, 0)*/){
 
 	_ptr->sound_.set3dSourceVelocity(_ptr->handle_, newVelocity.x, newVelocity.y, newVelocity.z);
 	_ptr->sound_.update3dAudio();
@@ -297,13 +161,13 @@ void Audio3D::SetVelocity(const glm::vec3 newVelocity /*= glm::vec3(0, 0, 0)*/){
 
 // --------------------------------------------------------------//
 
-void Audio3D::SetGlobalVolume(const float newVolume /* = 1.0f */) {
+void Suffer::Audio3D::SetGlobalVolume(const float newVolume /* = 1.0f */) {
 	_ptr->sound_.setGlobalVolume(newVolume);
 }
 
 // --------------------------------------------------------------//
 
-void Audio3D::SetSoundParameters(glm::vec3 position, glm::vec3 velocity){
+void Suffer::Audio3D::SetSoundParameters(glm::vec3 position, glm::vec3 velocity){
 
 	_ptr->sound_.set3dSourceParameters(_ptr->handle_, position.x, position.y, position.z,
 									   velocity.x, velocity.y, velocity.z);
@@ -315,7 +179,7 @@ void Audio3D::SetSoundParameters(glm::vec3 position, glm::vec3 velocity){
 
 // --------------------------------------------------------------//
 
-void Audio3D::SetSoundSpeed(glm::vec3 newSpeed){
+void Suffer::Audio3D::SetSoundSpeed(glm::vec3 newSpeed){
 
 	_ptr->sound_.set3dSourceVelocity(_ptr->handle_, newSpeed.x, newSpeed.y, newSpeed.z);
 
@@ -323,7 +187,7 @@ void Audio3D::SetSoundSpeed(glm::vec3 newSpeed){
 
 // --------------------------------------------------------------//
 
-void Audio3D::SetSoundPosition(glm::vec3 newPosition){
+void Suffer::Audio3D::SetSoundPosition(glm::vec3 newPosition){
 
 	_ptr->sound_.set3dSourcePosition(_ptr->handle_, newPosition.x, newPosition.y, newPosition.z);
 	_ptr->sound_.update3dAudio();
@@ -333,7 +197,7 @@ void Audio3D::SetSoundPosition(glm::vec3 newPosition){
 
 // --------------------------------------------------------------//
 
-void Audio3D::SetSoundMinMaxDistance(float min, float max){
+void Suffer::Audio3D::SetSoundMinMaxDistance(float min, float max){
 
 	_ptr->sound_.set3dSourceMinMaxDistance(_ptr->handle_, min, max);
 
@@ -341,7 +205,7 @@ void Audio3D::SetSoundMinMaxDistance(float min, float max){
 
 // --------------------------------------------------------------//
 
-void Audio3D::SetSoundAttenuation(u32 attenuation, float rollOffFactor){
+void Suffer::Audio3D::SetSoundAttenuation(u32 attenuation, float rollOffFactor){
 
 	_ptr->sound_.set3dSourceAttenuation(_ptr->handle_, attenuation, rollOffFactor);
 
@@ -349,13 +213,13 @@ void Audio3D::SetSoundAttenuation(u32 attenuation, float rollOffFactor){
 
 // --------------------------------------------------------------//
 
-void Audio3D::SetSoundDopplerFactor(float newDopplerFactor){
+void Suffer::Audio3D::SetSoundDopplerFactor(float newDopplerFactor){
 
 	_ptr->sound_.set3dSourceDopplerFactor(_ptr->handle_, newDopplerFactor);
 
 }
 
-void Audio3D::SetListenerParameters(glm::vec3 position, glm::vec3 at, glm::vec3 up, glm::vec3 velocity){
+void Suffer::Audio3D::SetListenerParameters(glm::vec3 position, glm::vec3 at, glm::vec3 up, glm::vec3 velocity){
 	
 	_ptr->sound_.set3dListenerParameters(position.x, position.y, position.z, at.x, at.y, at.z,
 										 up.x, up.y, up.z, velocity.x, velocity.y, velocity.z);
@@ -364,7 +228,7 @@ void Audio3D::SetListenerParameters(glm::vec3 position, glm::vec3 at, glm::vec3 
 
 // --------------------------------------------------------------//
 
-void Audio3D::SetListenerPosition(glm::vec3 newPosition){
+void Suffer::Audio3D::SetListenerPosition(glm::vec3 newPosition){
 
 	_ptr->sound_.set3dListenerPosition(newPosition.x, newPosition.y, newPosition.z);
 	_ptr->sound_.update3dAudio();
@@ -373,7 +237,7 @@ void Audio3D::SetListenerPosition(glm::vec3 newPosition){
 
 // --------------------------------------------------------------//
 
-void Audio3D::SetListenerAt(glm::vec3 newAt){
+void Suffer::Audio3D::SetListenerAt(glm::vec3 newAt){
 
 	_ptr->sound_.set3dListenerAt(newAt.x, newAt.y, newAt.z);
 
@@ -381,7 +245,7 @@ void Audio3D::SetListenerAt(glm::vec3 newAt){
 
 // --------------------------------------------------------------//
 
-void Audio3D::SetListenerUp(glm::vec3 newUp){
+void Suffer::Audio3D::SetListenerUp(glm::vec3 newUp){
 
 	_ptr->sound_.set3dListenerUp(newUp.x, newUp.y, newUp.z);
 
@@ -389,7 +253,7 @@ void Audio3D::SetListenerUp(glm::vec3 newUp){
 
 // --------------------------------------------------------------//
 
-void Audio3D::SetListenerVelocity(glm::vec3 newVelocity){
+void Suffer::Audio3D::SetListenerVelocity(glm::vec3 newVelocity){
 
 	_ptr->sound_.set3dListenerVelocity(newVelocity.x, newVelocity.y, newVelocity.z);
 
@@ -397,37 +261,37 @@ void Audio3D::SetListenerVelocity(glm::vec3 newVelocity){
 
 // --------------------------------------------------------------//
 
-int Audio3D::GetHertz(){
+int Suffer::Audio3D::GetHertz(){
 	return hertz_;
 }
 
 // --------------------------------------------------------------//
 
-double Audio3D::GetGain(){
+double Suffer::Audio3D::GetGain(){
 	return gain_;
 }
 
 // --------------------------------------------------------------//
 
-double Audio3D::GetPitch(){
+double Suffer::Audio3D::GetPitch(){
 	return pitch_;
 }
 
 // --------------------------------------------------------------//
 
-bool Audio3D::GetLooping(){
+bool Suffer::Audio3D::GetLooping(){
 	return looping_;
 }
 
 // --------------------------------------------------------------//
 
-glm::vec3 Audio3D::GetSoundSpeed(){
+glm::vec3 Suffer::Audio3D::GetSoundSpeed(){
 	return glm::vec3(0, 0, 0);
 }
 
 // --------------------------------------------------------------//
 
-bool Audio3D::operator!=(const Audio3D& a){
+bool Suffer::Audio3D::operator!=(const Audio3D& a){
 
 	return (gain_ != a.gain_		||
 			hertz_ != a.hertz_		||
@@ -439,7 +303,7 @@ bool Audio3D::operator!=(const Audio3D& a){
 
 // --------------------------------------------------------------//
 
-void Audio3D::operator=(const Audio3D& a){
+void Suffer::Audio3D::operator=(const Audio3D& a){
 
 	this->Load(a.file_);
 

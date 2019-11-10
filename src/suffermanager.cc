@@ -560,6 +560,7 @@ void Suffer::SufferManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer,
 
 #ifdef ASSERT
   assert(buffer.get() != nullptr && "Buffer is NULL!");
+  assert(data != nullptr && "Data is NULL!");
 #endif
 
   Array<float> vertices_;
@@ -592,6 +593,7 @@ void Suffer::SufferManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, u
 
 #ifdef ASSERT
   assert(buffer.get() != nullptr && "Buffer is NULL!");
+  assert(data != nullptr && "Data is NULL!");
 #endif
 
   Array<u16> indices_;

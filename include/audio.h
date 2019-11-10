@@ -15,47 +15,6 @@ namespace Suffer {
 
 // ---------------------------------------------------------------------- //
 
-	class Audio2D {
-
-	public:
-
-		Audio2D();
-		~Audio2D();
-
-		bool Load(const char* file);
-		bool Play();
-		bool Stop();
-
-		// Setters
-		void SetGain(const double newGain = 1.0f); // Gain (a.k.a volume)
-		void SetPitch(const double newPitch = 1.0f);
-		void SetLooping(const bool looping = false);
-		void SetGlobalVolume(const double newVolume = 1.0f);
-
-		// Getters
-		double Gain();
-		double Pitch();
-		bool   Looping();
-		float* Wave();
-		float* FFT();
-
-		//virtual void Execute() override;
-
-	private:
-
-		int    hertz_;
-		bool   looping_;
-		double pitch_;
-		double gain_;
-		const char* file_;
-
-		struct Data;
-		Data* _ptr;
-
-	};
-
-// ---------------------------------------------------------------------- //
-
 	class Audio3D {
 
 	public:
@@ -104,13 +63,7 @@ namespace Suffer {
 
 		// Operand overload
 		void operator=(const Audio3D& a);
-		//Audio3D operator=(const Audio3D& a) const;
-
 		bool operator!=(const Audio3D& a);
-
-		// Commands Stuff -- Mockup
-		//virtual void Execute() const override;
-		//virtual void Reproduce();
 
 	private:
 
