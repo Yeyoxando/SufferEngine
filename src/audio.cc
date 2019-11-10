@@ -11,6 +11,7 @@
 #include <soloud_monotone.h>
 #include <soloud_wav.h>
 #include <suffermanager.h>
+#include <audio_manager.h>
 
 struct ExampleAppLog {
 	void    AddLog(const char* fmt, ...) IM_FMTARGS(2);
@@ -43,17 +44,24 @@ struct Suffer::Audio3D::Data {
 
 Suffer::Audio3D::Audio3D(){
 
-	_ptr = new Data();
-	_ptr->sound_.init(SoLoud::Soloud::ENABLE_VISUALIZATION);
+#ifdef ASSERT
+ assert(SufferManager::instance().audio_manager_.audio_sources_ <
+        SufferManager::instance().audio_manager_.max_audio_sources_
+        && "Too many audio sources!");
+#endif
 
-	gain_ = 1.0f;
-	looping_ = false;
-	pitch_ = 1.0f;
-	hertz_ = 0;
-	paused_ = false;
-
-	current_position_ = glm::vec3(0, 0, 0);
-	current_velocity_ = glm::vec3(0, 0, 0);
+    SufferManager::instance().audio_manager_.audio_sources_++;
+    _ptr = new Data();
+    _ptr->sound_.init(SoLoud::Soloud::ENABLE_VISUALIZATION);
+    
+    gain_ = 1.0f;
+    looping_ = false;
+    pitch_ = 1.0f;
+    hertz_ = 0;
+    paused_ = false;
+    
+    current_position_ = glm::vec3(0, 0, 0);
+    current_velocity_ = glm::vec3(0, 0, 0);
 
 }
 
@@ -261,7 +269,7 @@ void Suffer::Audio3D::SetListenerVelocity(glm::vec3 newVelocity){
 
 // --------------------------------------------------------------//
 
-int Suffer::Audio3D::GetHertz(){
+u32 Suffer::Audio3D::GetHertz(){
 	return hertz_;
 }
 
@@ -323,7 +331,7 @@ void Suffer::Audio3D::SetPaused(const bool paused){
 
 // --------------------------------------------------------------//
 
-void Suffer::Audio3D::SetMonotoneParams(int channels, int wave_form){
+void Suffer::Audio3D::SetMonotoneParams(u32 channels, u32 wave_form){
 	_ptr->wave_form_.setParams(channels, wave_form);
 }
 

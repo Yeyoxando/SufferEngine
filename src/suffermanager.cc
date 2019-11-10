@@ -9,6 +9,7 @@
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 #include "scene.h"
+#include "audio_commands.h"
 
 // --------------------------------------------------------------//
 
@@ -22,14 +23,8 @@ struct Suffer::SufferManager::Data {
 
 	ref_ptr<Scene> scene_context_;
 
-	// Mutexes
-  Mutex audio_mutex;
-  Mutex render_mutex;
-
 	// Running
 	bool window_should_close_;
-
-
 
   struct InternalVertexBuffer {
 
@@ -310,8 +305,8 @@ bool Suffer::SufferManager::Init(){
 	data_->interface_.Init();
 
 	//Subsystems init
-	render_manager_.StartUp();
-
+  audio_manager_.StartUp();
+  render_manager_.StartUp();
 
 	// Threads Allocation
 	logic_.alloc();
@@ -385,6 +380,16 @@ void Suffer::SufferManager::Input() {
 
 bool Suffer::SufferManager::Run(){
 
+  ref_ptr<Audio3D> audio_source_;
+  audio_source_.alloc();
+  audio_source_->Load("../../../resources/audio/plonk_dry.ogg");
+  ref_ptr <AudioCommands::Play> play_command_;
+  play_command_.alloc();
+  play_command_->audio_3d_ = audio_source_.get();
+  DisplayList audio_dl_;
+  audio_dl_.addCommand(play_command_.get());
+  audio_manager_.AddToAudioQueue(std::move(audio_dl_));
+
 	while (!data_->window_should_close_) {
 
 		data_->current_time_ = Suffer::RawTime();
@@ -414,27 +419,7 @@ void Suffer::SufferManager::Audio() {
 	while (1) {
 
 		audio_->Sleep();
-
-		if (!data_->audio_mutex.try_lock()) {
-	#ifdef DEBUG
-			printf("\nError trying to lock the audio_mutex: [%s]\n", __FUNCTION__);
-	#endif
-			return;
-		}
-
-		/*int display_list_size = audio_dl_.size();
-
-		for (int i = 0; i < display_list_size; ++i) {
-			Command* audio_command = audio_dl_[i].get();
-	#ifdef ASSERT
-			assert(audio_command && "NULL Audio Command");
-	#endif
-			audio_command->Execute();
-		}*/
-	
-		//audio_dl_.clear();
-
-		data_->audio_mutex.unlock();
+    audio_manager_.DoAudio();
 
 	}
 }
@@ -443,9 +428,9 @@ void Suffer::SufferManager::Audio() {
 
 void Suffer::SufferManager::PrepareAudio() {
 	
-	/*if (!audio_dl_.empty()) {
-		audio_->Awake();
-	}*/
+    if (audio_manager_.audio_dl_.size() > 0) {
+        audio_->Awake();
+    }
 
 }
 
@@ -489,6 +474,7 @@ bool Suffer::SufferManager::Step(double time_step){
 bool Suffer::SufferManager::Finish(){
 
 	render_manager_.ShutDown();
+  audio_manager_.ShutDown();
 
 	return true;
 }
@@ -565,7 +551,7 @@ void Suffer::SufferManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer,
 
   Array<float> vertices_;
   vertices_.alloc(size);
-  for (int i = 0; i < size; ++i) {
+  for (u32 i = 0; i < size; ++i) {
     vertices_[i] = data[i];
   }
 
@@ -598,7 +584,7 @@ void Suffer::SufferManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, u
 
   Array<u16> indices_;
   indices_.alloc(size);
-  for (int i = 0; i < size; ++i) {
+  for (u32 i = 0; i < size; ++i) {
     indices_[i] = data[i];
   }
 

@@ -143,7 +143,7 @@ void Suffer::Scene::PrepareDraw(){
 
 	frame_dl.addCommand(clear_cmd.get());
 
-	for (int i = 0; i < current_gameobjects_.size(); ++i) {
+	for (u32 i = 0; i < current_gameobjects_.size(); ++i) {
 		const ref_ptr<Command> draw_cmd = current_gameobjects_.at(i).get()->GetDrawCommand();
 		frame_dl.addCommand(draw_cmd);
 	}

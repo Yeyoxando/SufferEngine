@@ -1,8 +1,7 @@
 /*
-* Author: Pablo Bano Benito <banyobe@esat-alumni.com>
+* Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
 * Date: 11-02-2019
 * DisplayLists Source
-* Base structure extracted from px_render.h (Pplux)
 */
 
 #include <display_list.h>

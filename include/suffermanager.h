@@ -5,6 +5,7 @@
 
 #include <ref_ptr.h>
 #include <render_manager.h>
+#include <audio_manager.h>
 #include <scoped_array.h>
 #include <thread.h>
 #include <material.h>
@@ -84,9 +85,9 @@ namespace Suffer {
 
 
 		// Subsystems
+    AudioManager audio_manager_;
 		RenderManager render_manager_;
 
-		Audio3D newSong;
 	protected:
 
 		SufferManager();
