@@ -23,7 +23,7 @@ Suffer::Camera::Camera() {
     camera_forward_ = mathmorra::Vector3(0.0f, 0.0f, 1.0f);
     
     camera_up_ = mathmorra::Vector3(0.0f, 1.0f, 0.0f);
-    //camera_right_ = mathmorra::Vector3::Normalized(mathmorra::Vector3::CrossProduct(up, camera_direction_));
+    fps_movement_ = false;
 
 }
 
@@ -245,6 +245,10 @@ Suffer::Camera::~Camera() {
 }
 
 void Suffer::Camera::Update(){
+
+    if (Suffer::IsKeyDown(k_F1)) {
+        fps_movement_ = !fps_movement_;
+    }
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);

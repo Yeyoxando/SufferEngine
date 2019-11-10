@@ -64,6 +64,7 @@ namespace Suffer {
 
         // TODO: This will be private
         void Update();
+        bool  fps_movement_;
 
     protected:
         virtual ~Camera();
