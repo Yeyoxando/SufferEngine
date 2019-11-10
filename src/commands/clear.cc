@@ -5,19 +5,19 @@
 
 // --------------------------------------------------- //
 
-Clear::Clear(){
+Suffer::Clear::Clear(){
 	cmd_type_ = Command::kRender;
 }
 
 // --------------------------------------------------- //
 
-Clear::~Clear(){
+Suffer::Clear::~Clear(){
 
 }
 
 // --------------------------------------------------- //
 
-void Clear::Execute() const{
+void Suffer::Clear::Execute() const{
 	glClearColor(color_.r, color_.g, color_.b, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }

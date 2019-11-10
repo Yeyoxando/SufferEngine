@@ -61,7 +61,6 @@ void Suffer::RenderManager::DoRender(){
 	//}
 	//
 	//render_dl_.clear();
-
 	u32 size = list_of_dl_.front().size();
 	
 	for (int i = 0; i < size; ++i) {

@@ -3,78 +3,128 @@
 #ifndef __SUFFER_MANAGER_H__
 #define __SUFFER_MANAGER_H__
 
-#include <game_object.h>
-#include <geometry.h>
-#include <material.h>
 #include <ref_ptr.h>
-#include <scene.h>
-#include <audio.h>
 #include <render_manager.h>
-#include <resource_manager.h>
-
-//Hide from here
-#include <display_list.h>
-#include <command.h>
+#include <scoped_array.h>
 #include <thread.h>
+
+class Scene;
 
 // --------------------------------------------------------------//
 
-class SufferManager {
+namespace Suffer {
 
-public:
-	static SufferManager& instance();
+	class SufferManager {
 
-	friend class Audio3D;
-	friend class Audio2D;
-	friend class Interface;
+	public:
+		friend class Audio3D;
+		friend class Audio2D;
+		friend class Interface;
+		friend class DrawGeometry;
 
-	bool Init();
-	bool Run();
-	bool Step(double time_step);
-	bool Finish();
+		static SufferManager& instance();
 
-	double DeltaTime();
+		bool Init();
+		bool Run();
+		bool Step(double time_step);
+		bool Finish();
 
-	void SetPredefiniedShape(ref_ptr <Geometry> geo, Geometry::BasicShapes shape);
-	void SetPredefiniedMaterial(ref_ptr <Material> mat, Material::BasicMaterials basic_mat);
+		double DeltaTime();
+
+		// Resources
+
+		class GPUResource : public Referenced {
+
+		public:
+			GPUResource();
+			~GPUResource();
+
+			enum ResourceType {
+				kVertexBuffer = 0,
+				kIndexBuffer,
+				kFrameBuffer,
+				kTexture,
+				kInvalid
+			};
+
+			s32 id_;
+
+			ResourceType type_;
+
+		};
+
+		class VertexBuffer : public GPUResource {
+		public:
+			friend class SufferManager;
+			enum VertexFormat {
+				kVertexFormat_3P = 0,
+				kVertexFormat_Invalid
+			};
+
+			VertexBuffer();
+			~VertexBuffer() {};
+
+			VertexFormat format_;
+
+		};
+
+		class IndexBuffer : public GPUResource {
+		public:
+			IndexBuffer();
+			~IndexBuffer() {};
+
+		};
+
+		//Buffers
+		void UploadVertexData(const ref_ptr<VertexBuffer> buffer, Array<float> *data);
+		void UploadVertexData(const ref_ptr<VertexBuffer> buffer, float* data, u32 size);
+		void UploadIndexData(const ref_ptr<IndexBuffer> buffer, Array<u16> *data);
+		void UploadIndexData(const ref_ptr<IndexBuffer> buffer, u16* data, u32 size);
 
 
-	Audio3D newSong;
+		// Subsystems
+		RenderManager render_manager_;
 
-	// Subsystems
-	RenderManager render_manager_;
-  ResourceManager resource_manager_;
+		Audio3D newSong;
+	protected:
 
-protected:
+		SufferManager();
+		virtual ~SufferManager();
 
-	SufferManager();
-	virtual ~SufferManager();
+	private:
 
-private:
+		SufferManager(const SufferManager&);
 
-	SufferManager(const SufferManager&);
+		void Input();
+		void Update();
+		void Draw();
 
-	struct Data;
-	Data* data_;
+		// DisplayLists Stuff
+		void Audio();
+		void PrepareAudio();
 
-	void Input();
-	void Update();
-	void Draw();
+		u32 GetNumberOfVertexBuffers();
+		u32 GetNumberOfIndexBuffers();
 
-	// Threads
-	ref_ptr<Thread> logic_;
-	ref_ptr<Thread> input_;
-	ref_ptr<Thread> audio_;
+		void SumVertexBufferCount();
+		void SumIndexBufferCount();
 
-	// Audio STUFF
-	std::vector<ref_ptr<Command>> audio_dl_;
+		u32 IsBufferCreated(ref_ptr<VertexBuffer> vertex_buffer);
+		u32 IsBufferCreated(ref_ptr<IndexBuffer> index_buffer);
 
-	// DisplayLists Stuff
-	void Audio();
-	void PrepareAudio();
+		u32 NumberElements(ref_ptr<IndexBuffer> index_buffer);
 
 
-};
+		// Threads
+		ref_ptr<Thread> logic_;
+		ref_ptr<Thread> input_;
+		ref_ptr<Thread> audio_;
+
+		struct Data;
+		Data* data_;
+	};
+
+}
 
 // --------------------------------------------------------------//
 

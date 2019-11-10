@@ -10,29 +10,34 @@
 #include <command.h>
 #include <game_object.h>
 #include <ref_ptr.h>
+#include <suffermanager.h>
 
 // --------------------------------------------------- //
 
-class DrawGeometry : public Command {
+namespace Suffer {
 
-public:
+	class DrawGeometry : public Command {
 
-	void SetData(GameObject* go);
-	void SetTransform(Transform t);
-	void SetGeometry(ref_ptr<Geometry> geo);
-	void SetMaterial(ref_ptr<Material> mat);
+	public:
 
-	DrawGeometry();
-protected:
+		void SetData(GameObject* go);
+		void SetTransform(Transform t);
+		void SetGeometry(ref_ptr<Geometry> geo);
+		void SetMaterial(ref_ptr<Material> mat);
 
-	virtual ~DrawGeometry();
+		DrawGeometry();
+	protected:
 
-	virtual void Execute() const override;
+		virtual ~DrawGeometry();
 
-	struct Data;
-	Data* data_;
-};
+		virtual void Execute() const override;
 
+		struct Data;
+		Data* data_;
+
+	};
+
+}
 // --------------------------------------------------- //
 
 #endif // __DRAW_GEOMETRY_H__

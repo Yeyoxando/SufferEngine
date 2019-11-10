@@ -11,45 +11,47 @@
 #include <data_types.h>
 #include <referenced.h>
 #include <ref_ptr.h>
+//#include <suffermanager.h>
 
-using namespace Suffer;
+namespace Suffer {
 
-// --------------------------------------------------- //
+	// --------------------------------------------------- //
 
-class Material : public virtual Referenced {
+	class Material : public virtual Referenced {
 
-public:
-	friend class SufferManager;
-	friend class DrawGeometry;
+	public:
+		friend class SufferManager;
+		friend class DrawGeometry;
 
-	enum BasicMaterials {
-		kBasicMaterials_Default = 0,
-		kBasicMaterials_NONE = 20
+		enum BasicMaterials {
+			kBasicMaterials_Default = 0,
+			kBasicMaterials_NONE = 20
+		};
+
+		// Getters
+		glm::vec4 GetColor();
+
+		// Setters
+		void SetColor(glm::vec4 newColor);
+
+		Material();
+	protected:
+		virtual ~Material();
+
+	private:
+
+		struct Data;
+		Data* data_;
+
+		BasicMaterials material_;
+
+		void SetProgram(u16 program);
+		u16 GetProgramID();
+
+		// Methods
+		Material(const Material&);
 	};
-
-	// Getters
-	glm::vec4 GetColor();
-
-	// Setters
-	void SetColor(glm::vec4 newColor);
-
-	Material();
-protected:
-	virtual ~Material();
-
-private:
-
-	struct Data;
-	Data* data_;
-
-	BasicMaterials material_;
-
-	void SetProgram(u16 program);
-	u16 GetProgramID();
-
-	// Methods
-	Material(const Material&);
-};
+}
 
 // --------------------------------------------------- //
 
