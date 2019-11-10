@@ -9,29 +9,30 @@
 
 #include <referenced.h>
 
-using namespace Suffer;
+namespace Suffer {
 
-// --------------------------------------------------- //
+	// --------------------------------------------------- //
 
-class Command : public virtual Referenced {
+	class Command : public virtual Referenced {
 
-public: 
-	virtual void Execute() const = 0;
+	public:
+		virtual void Execute() const = 0;
 
-	enum CommandType {
-		kRender = 0,
-		kAudio = 1,
-		kNONE = 20 // MAX for enum.
+		enum CommandType {
+			kRender = 0,
+			kAudio = 1,
+			kNONE = 20 // MAX for enum.
+		};
+
+		CommandType GetCommandType() const { return cmd_type_; }
+	protected:
+		CommandType cmd_type_;
+
+		Command();
+		virtual ~Command();
 	};
 
-	CommandType GetCommandType() const { return cmd_type_; }
-protected:
-	CommandType cmd_type_;
-	
-	Command();
-	virtual ~Command();
-};
-
+}
 // --------------------------------------------------- //
 
 #endif // __COMMAND_H__

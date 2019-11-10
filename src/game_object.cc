@@ -4,7 +4,7 @@
 
 // --------------------------------------------------- //
 
-GameObject::GameObject() {
+Suffer::GameObject::GameObject() {
 
 	transform_.scale = glm::vec3(0.0f, 0.0f, 0.0f);
 	transform_.position = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -14,7 +14,7 @@ GameObject::GameObject() {
 
 // --------------------------------------------------- //
 
-GameObject::GameObject(const GameObject& go) {
+Suffer::GameObject::GameObject(const GameObject& go) {
 
 	this->geometry_ = go.geometry_;
 	this->material_ = go.material_;
@@ -23,19 +23,19 @@ GameObject::GameObject(const GameObject& go) {
 
 // --------------------------------------------------- //
 
-ref_ptr<Material> GameObject::GetMaterial() {
+Suffer::ref_ptr<Suffer::Material> Suffer::GameObject::GetMaterial() {
 	return material_;
 }
 
 // --------------------------------------------------- //
 
-ref_ptr<Geometry> GameObject::GetGeometry() {
+Suffer::ref_ptr<Suffer::Geometry> Suffer::GameObject::GetGeometry() {
 	return geometry_;
 }
 
 // --------------------------------------------------- //
 
-void GameObject::SetMaterial(ref_ptr<Material> new_material) {
+void Suffer::GameObject::SetMaterial(ref_ptr<Material> new_material) {
 
 #ifdef ASSERT
 	assert(new_material); // "newMaterial was NULL"
@@ -45,14 +45,14 @@ void GameObject::SetMaterial(ref_ptr<Material> new_material) {
 
 // --------------------------------------------------- //
 
-void GameObject::SetGeometry(ref_ptr<Geometry> new_geometry) {
+void Suffer::GameObject::SetGeometry(ref_ptr<Geometry> new_geometry) {
 #ifdef ASSERT
 	assert(new_geometry); // "newGeometry was NULL"
 #endif
 	geometry_ = new_geometry;
 }
 
-const ref_ptr<Command> GameObject::GetDrawCommand(){
+const Suffer::ref_ptr<Suffer::Command> Suffer::GameObject::GetDrawCommand(){
 	ref_ptr<DrawGeometry> draw_geometry;
 
 	draw_geometry.alloc();
@@ -63,13 +63,13 @@ const ref_ptr<Command> GameObject::GetDrawCommand(){
 
 // --------------------------------------------------- //
 
-Transform GameObject::GetTransform() {
+Suffer::Transform Suffer::GameObject::GetTransform() {
 	return transform_;
 }
 
 // --------------------------------------------------- //
 
-GameObject::~GameObject() {
+Suffer::GameObject::~GameObject() {
 
 }
 

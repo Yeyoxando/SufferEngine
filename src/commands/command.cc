@@ -2,19 +2,19 @@
 
 // --------------------------------------------------- //
 
-Command::Command(){
+Suffer::Command::Command(){
 
 }
 
 // --------------------------------------------------- //
 
-Command::~Command(){
+Suffer::Command::~Command(){
 
 }
 
 // --------------------------------------------------- //
 
-void Command::Execute() const{
+void Suffer::Command::Execute() const{
 
 }
 

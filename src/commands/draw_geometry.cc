@@ -4,15 +4,15 @@
 #include <data_types.h>
 #include "suffermanager.h"
 
-struct DrawGeometry::Data {
-	//Geometry
-	u32 number_elements_;
-	GLuint indices_ID;
-	GLuint vertices_ID;
+struct Suffer::DrawGeometry::Data {
+	// Geometry
+	ref_ptr<SufferManager::VertexBuffer> vertex_buffer_;
+	ref_ptr<SufferManager::IndexBuffer> index_buffer_;
 
-	//Material
-	GLuint program_ID;
-	glm::vec4 color_;
+	// Material
+  ref_ptr<Material> material_;
+
+  // Transform 
 	glm::vec3 position_;
 	glm::vec3 rotation_;
 	glm::vec3 scale_;
@@ -20,14 +20,14 @@ struct DrawGeometry::Data {
 
 // --------------------------------------------------- //
 
-DrawGeometry::DrawGeometry() {
+Suffer::DrawGeometry::DrawGeometry() {
 	cmd_type_ = Command::kRender;
 	data_ = new Data();
 }
 
 // --------------------------------------------------- //
 
-DrawGeometry::~DrawGeometry(){
+Suffer::DrawGeometry::~DrawGeometry(){
 	if (!data_) return;
 
 	delete data_;
@@ -36,7 +36,7 @@ DrawGeometry::~DrawGeometry(){
 
 // --------------------------------------------------- //
 
-void DrawGeometry::SetData(GameObject* go){
+void Suffer::DrawGeometry::SetData(GameObject* go){
 	SetTransform(go->GetTransform());
 	SetGeometry(go->GetGeometry());
 	SetMaterial(go->GetMaterial());
@@ -44,7 +44,7 @@ void DrawGeometry::SetData(GameObject* go){
 
 // --------------------------------------------------- //
 
-void DrawGeometry::SetTransform(Transform t){
+void Suffer::DrawGeometry::SetTransform(Transform t){
 	data_->position_ = t.position;
 	data_->rotation_ = t.rotation;
 	data_->scale_ = t.scale;
@@ -52,32 +52,43 @@ void DrawGeometry::SetTransform(Transform t){
 
 // --------------------------------------------------- //
 
-void DrawGeometry::SetGeometry(ref_ptr<Geometry> geo){
-	data_->number_elements_ = geo.get()->GetNumberElements();
-	data_->indices_ID = (GLint)geo.get()->GetIndicesID();
-	data_->vertices_ID = (GLint)geo.get()->GetVerticesID();
+void Suffer::DrawGeometry::SetGeometry(ref_ptr<Geometry> geo){
+	data_->vertex_buffer_ = geo.get()->vertex_buffer_;
+	data_->index_buffer_ = geo.get()->index_buffer_;
 }
 
 // --------------------------------------------------- //
 
-void DrawGeometry::SetMaterial(ref_ptr<Material> mat){
-	data_->color_ = mat.get()->GetColor();
-	data_->program_ID = mat.get()->GetProgramID();
+void Suffer::DrawGeometry::SetMaterial(ref_ptr<Material> mat){
+  data_->material_ = mat;
 }
 
 // --------------------------------------------------- //
 
-void DrawGeometry::Execute() const {
+void Suffer::DrawGeometry::Execute() const {
 
-	glUseProgram(data_->program_ID);
+  GLenum error;
+	u32 id_vertex = SufferManager::instance().IsBufferCreated(data_->vertex_buffer_);
+	u32 id_index = SufferManager::instance().IsBufferCreated(data_->index_buffer_);
+	u32 number_elements = SufferManager::instance().NumberElements(data_->index_buffer_);
 
-	glBindBuffer(GL_ARRAY_BUFFER, data_->vertices_ID);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+  u32 program_id = SufferManager::instance().IsMaterialCreated(data_->material_);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data_->indices_ID);
-	glDrawElements(GL_TRIANGLES, data_->number_elements_, GL_UNSIGNED_BYTE, (GLvoid*)0);
+  glUseProgram(program_id);
+  error = glGetError();
+	
+  glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
+  error = glGetError();
+  glEnableVertexAttribArray(0);
+  error = glGetError();
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+  error = glGetError();
+	
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
+  error = glGetError();
+  glDrawElements(GL_TRIANGLES, number_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
+  error = glGetError();
+
 }
-
 
 // --------------------------------------------------- //

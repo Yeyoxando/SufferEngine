@@ -10,47 +10,50 @@
 #include <data_types.h>
 #include <referenced.h>
 #include <ref_ptr.h>
+#include <suffermanager.h>
 
-using namespace Suffer;
+namespace Suffer {
 
-// --------------------------------------------------- //
+    class Geometry : public virtual Referenced {
 
-class Geometry : public virtual Referenced {
+    public:
+	    friend class DrawGeometry;
 
-public:
-	friend class SufferManager;
-	friend class DrawGeometry;
+	    Geometry();
 
-	enum BasicShapes {
-		kBasicShapes_Triangle = 0,
-		kBasicShapes_Quad,
-		kBasicShapes_Cube,
-		kBasicShapes_NONE = 20
-	};
+	    enum BasicShapes {
+		    kBasicShapes_Triangle = 0,
+		    kBasicShapes_Quad,
+		    kBasicShapes_Cube,
+		    kBasicShapes_NONE = 20
+	    };
+		
 
-	Geometry();
-protected:
-	virtual ~Geometry();
+      void SetVertexBuffer(ref_ptr<SufferManager::VertexBuffer> buffer);
+      void SetIndexBuffer(ref_ptr<SufferManager::IndexBuffer> buffer);
+      void SetBuffers(ref_ptr<SufferManager::VertexBuffer> vertex_buffer, ref_ptr<SufferManager::IndexBuffer> index_buffer);
 
-private:
+    protected:
+	    virtual ~Geometry();
 
-	struct Data;
-	Data* data_;
+    private:
 
-	BasicShapes shape_;
-	void SetIndicesID(u16 indices_ID);
-	void SetVerticesID(u16 vertices_ID);
-	void SetNumberElements(u32 number_elements);
+	    struct Data;
+	    Data* data_;
 
-	u16 GetIndicesID();
-	u16 GetVerticesID();
-	u32 GetNumberElements();
+	    BasicShapes shape_;
+      s32 index_buffer_id_;
+      s32 vertex_buffer_id_;
+
+	  ref_ptr<SufferManager::IndexBuffer> index_buffer_;
+	  ref_ptr<SufferManager::VertexBuffer> vertex_buffer_;
 
 
-	// Methods
-	Geometry(const Geometry&);
-};
+	    // Methods
+	    Geometry(const Geometry&);
+    };
 
+}
 // --------------------------------------------------- //
 
 #endif // __GEOMETRY_H__

@@ -132,17 +132,17 @@ struct ExampleAppLog
 	}
 };
 
-ExampleAppLog Interface::log;
+ExampleAppLog Suffer::Interface::log;
 
 // --------------------------------------------------- //
 
-struct Interface::Data {
+struct Suffer::Interface::Data {
 
 	bool LoadTextureFromFile(const char* filename, GLuint * out_texture, int* out_width, int* out_height);
 
 };
 
-bool Interface::Data::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height){
+bool Suffer::Interface::Data::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height){
 	
 	// Load from file
 	int image_width = 0;
@@ -175,7 +175,7 @@ bool Interface::Data::LoadTextureFromFile(const char* filename, GLuint* out_text
 
 // --------------------------------------------------- //
 
-Interface::Interface(){
+Suffer::Interface::Interface(){
 
 	// Init attributes
 	options_window_ = false;
@@ -193,7 +193,7 @@ Interface::Interface(){
 }
 // --------------------------------------------------- //
 
-Interface::~Interface(){
+Suffer::Interface::~Interface(){
 
 	if (_ptr == nullptr) return;
 	delete _ptr;
@@ -203,7 +203,7 @@ Interface::~Interface(){
 
 // --------------------------------------------------- //
 
-void Interface::Init(){
+void Suffer::Interface::Init(){
 
 #ifdef DEBUG
 
@@ -222,7 +222,7 @@ void Interface::Init(){
 
 // --------------------------------------------------- //
 
-void Interface::Update(){
+void  Suffer::Interface::Update(){
 
 	// New Frame
 	ImGui_ImplOpenGL3_NewFrame();
@@ -240,7 +240,7 @@ void Interface::Update(){
 
 }
 
-void Interface::Render(){
+void  Suffer::Interface::Render(){
 
 	// Rendering
 	ImGui::Render();
@@ -254,13 +254,13 @@ void Interface::Render(){
 
 // --------------------------------------------------- //
 
-void Interface::End(){
+void  Suffer::Interface::End(){
 
 }
 
 // --------------------------------------------------- //
 
-void Interface::DrawMenuBar(){
+void Suffer::Interface::DrawMenuBar(){
 
 	ImGui::BeginMainMenuBar();
 
@@ -309,7 +309,7 @@ void Interface::DrawMenuBar(){
 
 // --------------------------------------------------- //
 
-void Interface::CreateDock(bool* p_open){
+void  Suffer::Interface::CreateDock(bool* p_open){
 
 	static bool opt_fullscreen_persistant = true;
 	bool opt_fullscreen = opt_fullscreen_persistant;
@@ -384,13 +384,13 @@ void Interface::CreateDock(bool* p_open){
 
 // --------------------------------------------------- //
 
-void Interface::ResetDock(){
+void  Suffer::Interface::ResetDock(){
 
 }
 
 // --------------------------------------------------- //
 
-void Interface::OpenWindows(){
+void  Suffer::Interface::OpenWindows(){
 
 	if (options_window_) Options();
 
@@ -398,7 +398,7 @@ void Interface::OpenWindows(){
 
 // --------------------------------------------------- //
 
-void Interface::ChangeEditorStyle(){
+void  Suffer::Interface::ChangeEditorStyle(){
 
 	ImGuiStyle& new_style_ = ImGui::GetStyle();
 	#define COL(v, b, n) ImVec4(v / 255.0f, b / 255.0f, n / 255.0f, 100.0f);
@@ -623,7 +623,7 @@ void Interface::ChangeEditorStyle(){
 
 // --------------------------------------------------- //
 
-void Interface::Hierarchy(){
+void  Suffer::Interface::Hierarchy(){
 	ImGui::Begin("Hierarchy", &is_hierarchy_opened_);
 	ImGui::Text("I'm the Hierarchy!");
 	
@@ -640,13 +640,13 @@ void Interface::Hierarchy(){
 
 // --------------------------------------------------- //
 
-void Interface::Log() {
+void  Suffer::Interface::Log() {
 	log.Draw("Log", &is_log_opened_);
 }
 
 // --------------------------------------------------- //
 
-void Interface::Inspector(){
+void  Suffer::Interface::Inspector(){
 	ImGui::Begin("Inspector", &is_inspector_opened_);
 	ImGui::Text("I'm the Inspector");
 
@@ -663,7 +663,7 @@ void Interface::Inspector(){
 
 // --------------------------------------------------- //
 
-void Interface::Project(){
+void  Suffer::Interface::Project(){
 	ImGui::Begin("Project", &is_project_window_opened_);
 	ImGui::Text("I'm the project structure!");
 	ImGui::End();
@@ -671,7 +671,7 @@ void Interface::Project(){
 
 // --------------------------------------------------- //
 
-void Interface::Audio(Audio3D* sound){
+void  Suffer::Interface::Audio(Audio3D* sound){
 
 	static char buffer[255] = "\0";
 	static char pre_buffer_[255] = "../../../resources/audio/";
@@ -758,7 +758,7 @@ void Interface::Audio(Audio3D* sound){
 
 // --------------------------------------------------- //
 
-void Interface::Game(s8 tex){
+void  Suffer::Interface::Game(s8 tex){
 
 #ifdef ASSERT
 	assert(tex >= 0 && "Texture ID not valid.\n");
@@ -781,7 +781,7 @@ void Interface::Game(s8 tex){
 
 // --------------------------------------------------- //
 
-void Interface::Options(){
+void  Suffer::Interface::Options(){
 
 	static int styleSelection = (int)style_;
 

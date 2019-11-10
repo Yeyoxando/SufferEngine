@@ -1,291 +1,282 @@
-#include <suffermanager.h>
-#include <imgui.h>
-#include <input.h>
-#include <window.h>
+#include "suffermanager.h"
+#include "imgui.h"
+#include "input.h"
+#include "window.h"
 #include "imgui_impl_opengl3.h"
-#include <interface.h>
-#include <clear.h>
-#include <time.h>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "interface.h"
+#include "common_definitions.h"
+#include "time.h"
+#include "GL/glew.h"
+#include "GLFW/glfw3.h"
+#include "scene.h"
 
 // --------------------------------------------------------------//
 
-struct SufferManager::Data {
+struct Suffer::SufferManager::Data {
 
-	//std::vector<ref_ptr<Command>> display_list_;
-	ref_ptr<Scene> scene_;
 	Suffer::Window wind_;
 	double previous_time_;
 	double current_time_;
 	double delta_time_;
 	Interface interface_;
 
+	ref_ptr<Scene> scene_context_;
+
 	// Mutexes
   Mutex audio_mutex;
   Mutex render_mutex;
-	
-
 
 	// Running
 	bool window_should_close_;
 
-	// Predefined geometries
-	struct InternalGeometry {
-		GLuint vertices_ID;
-		GLuint indices_ID;
-		u32 number_elements;
-	
-		void CreateGeometry(Geometry::BasicShapes shape);
-	};
 
-	InternalGeometry triangle_; 
-	InternalGeometry quad_; 
-	InternalGeometry cube_; 
 
-	void InitInternalGeometries();
-								  
-	// Predefined materials
-	struct InternalMaterial {
-		GLuint program_ID;
-		GLuint vertex_shader_ID;
-		GLuint fragment_shader_ID;
+  struct InternalVertexBuffer {
 
-		void CreateMaterial(Material::BasicMaterials material);
-	};
+    InternalVertexBuffer() { id_handle_ = -1; version_ = 0; gpu_version_ = 0; };
+    ~InternalVertexBuffer() {};
 
-	InternalMaterial default_material_;
+    Array<float> data_;
+    s32 id_handle_;
+    u32 version_;
+    u32 gpu_version_;
+	  GLuint current_gl_buffer_;
 
-	void InitInternalMaterials();
+  };
+
+  struct InternalIndexBuffer {
+
+    InternalIndexBuffer() { id_handle_ = -1; version_ = 0; gpu_version_ = 0; };
+    ~InternalIndexBuffer() {};
+
+    Array<u16> data_;
+    s32 id_handle_;
+    u32 version_;
+    u32 gpu_version_;
+	  GLuint current_gl_buffer_;
+
+  };
+
+  struct InternalMaterial {
+    InternalMaterial() { id_handle_ = -1; is_created_ = false; };
+    ~InternalMaterial() {};
+
+    s32 id_handle_;
+    char* vertex_shader_;
+    char* fragment_shader_;
+    GLuint current_program_;
+    GLuint vertex_shader_id_;
+    GLuint fragment_shader_id_;
+    bool is_created_;
+  };
+
+  Array<InternalVertexBuffer> internal_vertex_buffers_;
+  Array<InternalIndexBuffer> internal_index_buffers_;
+  Array<InternalMaterial> internal_materials_;
+
+  u32 number_of_vertex_buffers_;
+  u32 number_of_index_buffers_;
+  u32 number_of_materials_;
+
+  void InitInternalBuffers();
+  void InitInternalMaterials();
 
 };
 
 // --------------------------------------------------------------//
 
-void SufferManager::Data::InitInternalGeometries() {
-	triangle_.CreateGeometry(Geometry::kBasicShapes_Triangle);
-	quad_.CreateGeometry(Geometry::kBasicShapes_Quad);
-	cube_.CreateGeometry(Geometry::kBasicShapes_Cube);
-}
+void Suffer::SufferManager::Data::InitInternalBuffers(){
 
-// --------------------------------------------------------------//
+    internal_index_buffers_.alloc(MAX_BUFFERS);
+    internal_vertex_buffers_.alloc(MAX_BUFFERS);
 
-void SufferManager::Data::InitInternalMaterials(){
-	default_material_.CreateMaterial(Material::kBasicMaterials_Default);
-}
-
-// --------------------------------------------------------------//
-
-void SufferManager::Data::InternalGeometry::CreateGeometry(Geometry::BasicShapes shape){
-	switch (shape) {
-	case Geometry::kBasicShapes_Triangle: {
-		// BUFFERS
-		float vertices[] = {
-			0.0f,  0.5f, -1.0f,
-			0.5f, -0.5f, -1.0f,
-			-0.5f, -0.5f, -1.0f
-		};
-
-		glGenBuffers(1, &vertices_ID);
-		glBindBuffer(GL_ARRAY_BUFFER, vertices_ID);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-		unsigned char indices[]{ 0, 2, 1 };
-
-		glGenBuffers(1, &indices_ID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_ID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-		number_elements = 3;
-
-		break;
-	}
-	case Geometry::kBasicShapes_Quad: {
-
-		// BUFFERS
-		float vertices[] = {
-			0.5f, -0.5f, -1.0f,
-			0.5f,  0.5f, -1.0f,
-		   -0.5f,  0.5f, -1.0f,
-		   -0.5f, -0.5f, -1.0f,
-		};
-
-		glGenBuffers(1, &vertices_ID);
-		glBindBuffer(GL_ARRAY_BUFFER, vertices_ID);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-		unsigned char indices[]{ 0, 2, 1, 
-								 2, 3, 0 };
-
-		glGenBuffers(1, &indices_ID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_ID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-		number_elements = 6;
-
-		break;
-
-	}
-	case Geometry::kBasicShapes_Cube: {
-
-		// BUFFERS
-		float vertices[] = {
-			// front
-			-0.5, -0.5,  0.5,
-			 0.5, -0.5,  0.5,
-			 0.5,  0.5,  0.5,
-			-0.5,  0.5,  0.5,
-			// back
-			-0.5, -0.5, -0.5,
-			 0.5, -0.5, -0.5,
-			 0.5,  0.5, -0.5,
-			-0.5,  0.5, -0.5
-		};
-
-		glGenBuffers(1, &vertices_ID);
-		glBindBuffer(GL_ARRAY_BUFFER, vertices_ID);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-		unsigned char indices[]{ 		
-			// front
-			0, 1, 2,
-			2, 3, 0,
-			// right
-			1, 5, 6,
-			6, 2, 1,
-			// back
-			7, 6, 5,
-			5, 4, 7,
-			// left
-			4, 0, 3,
-			3, 7, 4,
-			// bottom
-			4, 5, 1,
-			1, 0, 4,
-			// top
-			3, 2, 6,
-			6, 7, 3 
-		};
-
-		glGenBuffers(1, &indices_ID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_ID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-		number_elements = 36;
-
-		break;
-	}
-	case Geometry::kBasicShapes_NONE:
-		break;
-	default:
-		break;
-	}
+    number_of_index_buffers_ = 0;
+    number_of_vertex_buffers_ = 0;
 
 }
 
 // --------------------------------------------------------------//
 
-void SufferManager::Data::InternalMaterial::CreateMaterial(Material::BasicMaterials material) {
-	switch (material) {
-	case Material::kBasicMaterials_Default: {
-		// DEFAULT SHADERS
-		const GLchar* vertex_shader = R"VSHADER(
+void Suffer::SufferManager::Data::InitInternalMaterials(){
+  internal_materials_.alloc(1);
+
+  // Default material
+  internal_materials_[number_of_materials_].id_handle_ = 0;
+
+  internal_materials_[number_of_materials_].vertex_shader_ = R"VSHADER(
 	
-	#version 330
-	layout(location = 0) in vec3 a_position;
+	  #version 330
+	  layout(location = 0) in vec3 a_position;
 
-	void main(){
-		gl_Position = vec4(a_position, 1.0f);
-	}
+	  void main(){
+		  gl_Position = vec4(a_position, 1.0f);
+	  }
 
 	)VSHADER";
 
-		const GLchar* fragment_shader = R"FSHADER(
+  internal_materials_[number_of_materials_].fragment_shader_ = R"FSHADER(
+  
+  	#version 330
+  
+  	void main(){
+  		gl_FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);
+  	}
+  	
+  )FSHADER";
 
-	#version 330
+  //strncpy(internal_materials_[number_of_materials_].vertex_shader_, vertex_shader, sizeof(vertex_shader));
+  //strncpy(internal_materials_[number_of_materials_].fragment_shader_, fragment_shader, sizeof(fragment_shader));
 
-	void main(){
-		gl_FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);
-	}
-	
-	)FSHADER";
+  //internal_materials_[number_of_materials_].vertex_shader_ = vertex_shader;
+  //internal_materials_[number_of_materials_].fragment_shader_ = fragment_shader;
 
-		// HELLO TRIANGLE STUFF -> TODO: THIS WILL BE DELETED
-		GLenum error = glGetError();
-		vertex_shader_ID = glCreateShader(GL_VERTEX_SHADER);
-		error = glGetError();
-		fragment_shader_ID = glCreateShader(GL_FRAGMENT_SHADER);
-		error = glGetError();
-
-		const GLint vertex_size = strlen(vertex_shader);
-		const GLint fragment_size = strlen(fragment_shader);
-
-		glShaderSource(vertex_shader_ID, 1, &vertex_shader, &vertex_size);
-		error = glGetError();
-		glShaderSource(fragment_shader_ID, 1, &fragment_shader, &fragment_size);
-		error = glGetError();
-
-		glCompileShader(vertex_shader_ID);
-		error = glGetError();
-
-		GLint status = 0;
-		glGetShaderiv(vertex_shader_ID, GL_COMPILE_STATUS, &status);
-		GLint log_length = 0;
-		glGetShaderiv(vertex_shader_ID, GL_INFO_LOG_LENGTH, &log_length);
-		GLchar* info_log = new GLchar[log_length + 1];
-		glGetShaderInfoLog(vertex_shader_ID, log_length, &log_length, info_log);
-		info_log[log_length] = '\0';
-		delete info_log;
-		if (status == GL_FALSE)
-			printf("\nERROR: vertex shader not compiled");
-
-		glCompileShader(fragment_shader_ID);
-		error = glGetError();
-		status = 0;
-		glGetShaderiv(fragment_shader_ID, GL_COMPILE_STATUS, &status);
-		log_length = 0;
-		glGetShaderiv(fragment_shader_ID, GL_INFO_LOG_LENGTH, &log_length);
-		info_log = new GLchar[log_length + 1];
-		glGetShaderInfoLog(fragment_shader_ID, log_length, &log_length, info_log);
-		info_log[log_length] = '\0';
-		delete info_log;
-		if (status == GL_FALSE)
-			printf("\nERROR: fragment shader not compiled");
-
-		// PROGRAM
-		program_ID = glCreateProgram();
-
-		glAttachShader(program_ID, vertex_shader_ID);
-		glAttachShader(program_ID, fragment_shader_ID);
-
-		glLinkProgram(program_ID);
-		
-		break;
-	}
-	case Material::kBasicMaterials_NONE: {
-		break;
-	}
-	default:
-		break;
-	}
-
+  number_of_materials_++;
 }
 
 // --------------------------------------------------------------//
 
-SufferManager::SufferManager(){
+//void SufferManager::Data::InternalGeometry::CreateGeometry(Geometry::BasicShapes shape){
+//	switch (shape) {
+//	case Geometry::kBasicShapes_Triangle: {
+//		// BUFFERS
+//		float vertices[] = {
+//			0.0f,  0.5f, -1.0f,
+//			0.5f, -0.5f, -1.0f,
+//			-0.5f, -0.5f, -1.0f
+//		};
+//
+//		glGenBuffers(1, &vertices_ID);
+//		glBindBuffer(GL_ARRAY_BUFFER, vertices_ID);
+//		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+//
+//		unsigned char indices[]{ 0, 2, 1 };
+//
+//		glGenBuffers(1, &indices_ID);
+//		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_ID);
+//		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+//
+//		number_elements = 3;
+//
+//		break;
+//	}
+//	case Geometry::kBasicShapes_Quad: {
+//
+//		// BUFFERS
+//		float vertices[] = {
+//			0.5f, -0.5f, -1.0f,
+//			0.5f,  0.5f, -1.0f,
+//		   -0.5f,  0.5f, -1.0f,
+//		   -0.5f, -0.5f, -1.0f,
+//		};
+//
+//		glGenBuffers(1, &vertices_ID);
+//		glBindBuffer(GL_ARRAY_BUFFER, vertices_ID);
+//		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+//
+//		unsigned char indices[]{ 0, 2, 1, 
+//								 2, 3, 0 };
+//
+//		glGenBuffers(1, &indices_ID);
+//		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_ID);
+//		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+//
+//		number_elements = 6;
+//
+//		break;
+//
+//	}
+//	case Geometry::kBasicShapes_Cube: {
+//
+//		// BUFFERS
+//		float vertices[] = {
+//			// front
+//			-0.5, -0.5,  0.5,
+//			 0.5, -0.5,  0.5,
+//			 0.5,  0.5,  0.5,
+//			-0.5,  0.5,  0.5,
+//			// back
+//			-0.5, -0.5, -0.5,
+//			 0.5, -0.5, -0.5,
+//			 0.5,  0.5, -0.5,
+//			-0.5,  0.5, -0.5
+//		};
+//
+//		glGenBuffers(1, &vertices_ID);
+//		glBindBuffer(GL_ARRAY_BUFFER, vertices_ID);
+//		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+//
+//		unsigned char indices[]{ 		
+//			// front
+//			0, 1, 2,
+//			2, 3, 0,
+//			// right
+//			1, 5, 6,
+//			6, 2, 1,
+//			// back
+//			7, 6, 5,
+//			5, 4, 7,
+//			// left
+//			4, 0, 3,
+//			3, 7, 4,
+//			// bottom
+//			4, 5, 1,
+//			1, 0, 4,
+//			// top
+//			3, 2, 6,
+//			6, 7, 3 
+//		};
+//
+//		glGenBuffers(1, &indices_ID);
+//		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_ID);
+//		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+//
+//		number_elements = 36;
+//
+//		break;
+//	}
+//	case Geometry::kBasicShapes_NONE:
+//		break;
+//	default:
+//		break;
+//	}
+//
+//}
+//
+//// --------------------------------------------------------------//
+//
+//void SufferManager::Data::InternalMaterial::CreateMaterial(Material::BasicMaterials material) {
+//	switch (material) {
+//	case Material::kBasicMaterials_Default: {
+//		// DEFAULT SHADERS
+//		
+//
+//		// HELLO TRIANGLE STUFF -> TODO: THIS WILL BE DELETED
+//		GLenum error = glGetError();
+//		
+//		
+//		break;
+//	}
+//	case Material::kBasicMaterials_NONE: {
+//		break;
+//	}
+//	default:
+//		break;
+//	}
+//
+//}
+
+// --------------------------------------------------------------//
+
+Suffer::SufferManager::SufferManager(){
 
 	data_ = new Data();
-
-	//data_->display_list_ = std::vector<ref_ptr<Command>>(0);
-	audio_dl_ = std::vector<ref_ptr<Command>>(0);
-	data_->scene_.alloc();
+	data_->scene_context_.alloc();
 
 }
 
 // --------------------------------------------------------------//
 
-SufferManager::~SufferManager(){
+Suffer::SufferManager::~SufferManager(){
 	if (!data_) return;
 	delete data_;
 	data_ = nullptr;
@@ -293,13 +284,13 @@ SufferManager::~SufferManager(){
 
 // --------------------------------------------------------------//
 
-SufferManager::SufferManager(const SufferManager&){
+Suffer::SufferManager::SufferManager(const SufferManager&){
 
 }
 
 // --------------------------------------------------------------//
 
-SufferManager& SufferManager::instance() {
+Suffer::SufferManager& Suffer::SufferManager::instance() {
 
 	static SufferManager* instance = new SufferManager();
 	return *instance;
@@ -308,7 +299,7 @@ SufferManager& SufferManager::instance() {
 
 // --------------------------------------------------------------//
 
-bool SufferManager::Init(){
+bool Suffer::SufferManager::Init(){
 
 #ifdef ASSERT
 	assert(data_ && "\n Data is null.");
@@ -320,7 +311,6 @@ bool SufferManager::Init(){
 
 	//Subsystems init
 	render_manager_.StartUp();
-  resource_manager_.StartUp();
 
 
 	// Threads Allocation
@@ -339,13 +329,13 @@ bool SufferManager::Init(){
 	input_.get()->NewTask(input_thread);
 
 
+	data_->InitInternalBuffers();
 	data_->InitInternalMaterials();
-	data_->InitInternalGeometries();
 
 	data_->window_should_close_ = false;
 
+	data_->scene_context_->Init();
 
-	data_->scene_->Init();
 	//newSong.alloc();
 
 	return true;
@@ -353,7 +343,7 @@ bool SufferManager::Init(){
 
 // --------------------------------------------------------------//
 
-void SufferManager::Update() {
+void Suffer::SufferManager::Update() {
 
 	while(1){
 		Step(data_->delta_time_);
@@ -364,21 +354,21 @@ void SufferManager::Update() {
 
 // --------------------------------------------------------------//
 
-void SufferManager::Draw() {
+void Suffer::SufferManager::Draw() {
 
-	data_->interface_.Update();
-	data_->interface_.Render();
+	//data_->interface_.Update();
+	//data_->interface_.Render();
 
 	render_manager_.DoRender();
 
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	data_->wind_.swapBuffers();
 
 }
 
 // --------------------------------------------------------------//
 
-void SufferManager::Input() {
+void Suffer::SufferManager::Input() {
 
 	while (1) {
 		input_->Sleep();
@@ -393,7 +383,7 @@ void SufferManager::Input() {
 
 // --------------------------------------------------------------//
 
-bool SufferManager::Run(){
+bool Suffer::SufferManager::Run(){
 
 	while (!data_->window_should_close_) {
 
@@ -419,7 +409,7 @@ bool SufferManager::Run(){
 
 // --------------------------------------------------------------//
 
-void SufferManager::Audio() {
+void Suffer::SufferManager::Audio() {
 
 	while (1) {
 
@@ -432,7 +422,7 @@ void SufferManager::Audio() {
 			return;
 		}
 
-		int display_list_size = audio_dl_.size();
+		/*int display_list_size = audio_dl_.size();
 
 		for (int i = 0; i < display_list_size; ++i) {
 			Command* audio_command = audio_dl_[i].get();
@@ -440,9 +430,9 @@ void SufferManager::Audio() {
 			assert(audio_command && "NULL Audio Command");
 	#endif
 			audio_command->Execute();
-		}
+		}*/
 	
-		audio_dl_.clear();
+		//audio_dl_.clear();
 
 		data_->audio_mutex.unlock();
 
@@ -451,20 +441,43 @@ void SufferManager::Audio() {
 
 // --------------------------------------------------------------//
 
-void SufferManager::PrepareAudio() {
+void Suffer::SufferManager::PrepareAudio() {
 	
-	if (!audio_dl_.empty()) {
+	/*if (!audio_dl_.empty()) {
 		audio_->Awake();
-	}
+	}*/
 
 }
 
 // --------------------------------------------------------------//
 
-bool SufferManager::Step(double time_step){
+u32 Suffer::SufferManager::GetNumberOfVertexBuffers(){
+    return data_->number_of_vertex_buffers_;
+}
 
-	//PrepareDraw();
-	data_->scene_->Step(time_step);
+// --------------------------------------------------------------//
+
+u32 Suffer::SufferManager::GetNumberOfIndexBuffers(){
+    return data_->number_of_index_buffers_;
+}
+
+// --------------------------------------------------------------//
+
+void Suffer::SufferManager::SumVertexBufferCount(){
+    data_->number_of_vertex_buffers_++;
+}
+
+// --------------------------------------------------------------//
+
+void Suffer::SufferManager::SumIndexBufferCount(){
+    data_->number_of_index_buffers_++;
+}
+
+// --------------------------------------------------------------//
+
+bool Suffer::SufferManager::Step(double time_step){
+
+	data_->scene_context_->Step(time_step);
 	// This will be the last function in UPDATE
 	PrepareAudio();
 
@@ -473,9 +486,8 @@ bool SufferManager::Step(double time_step){
 
 // --------------------------------------------------------------//
 
-bool SufferManager::Finish(){
+bool Suffer::SufferManager::Finish(){
 
-	resource_manager_.ShutDown();
 	render_manager_.ShutDown();
 
 	return true;
@@ -483,7 +495,7 @@ bool SufferManager::Finish(){
 
 // --------------------------------------------------------------//
 
-double SufferManager::DeltaTime(){
+double Suffer::SufferManager::DeltaTime(){
 
 #ifdef ASSERT
 	assert(data_ && "\n Data is null.");
@@ -494,103 +506,268 @@ double SufferManager::DeltaTime(){
 
 // --------------------------------------------------------------//
 
-//bool SufferManager::ResetDisplayList(){
-//	if (data_->display_list_.empty()) return true;
-//
-//	data_->display_list_.clear();
-//	if (data_->display_list_.empty()) return true;
-//}
-//
-//// --------------------------------------------------------------//
-//
-//void SufferManager::AddCommand(ref_ptr<Command> cmd){
-//	if (!cmd) return;
-//
-//	data_->display_list_.push_back(cmd);
-//}
-//
-//void SufferManager::AddCommand(std::vector<ref_ptr<Command>> *displayList, ref_ptr<Command> cmd){
-//	
-//	if (!cmd) return;
-//	displayList->push_back(cmd);
-//
-//}
+Suffer::SufferManager::GPUResource::GPUResource() {
 
-// --------------------------------------------------------------//
+    id_ = -1;
+    type_ = kInvalid;
 
-void SufferManager::SetPredefiniedShape(ref_ptr <Geometry> geo, Geometry::BasicShapes shape) {
-#ifdef ASSERT
-	assert(geo.get()); // "geo was NULL"
-#endif
-	Data::InternalGeometry predefinied_shape;
-	
-	switch (shape) {
-	case Geometry::BasicShapes::kBasicShapes_Triangle: 
-		predefinied_shape = data_->triangle_;
-		break;
-	case Geometry::BasicShapes::kBasicShapes_Quad:
-		predefinied_shape = data_->quad_;
-		break;
-	case Geometry::BasicShapes::kBasicShapes_Cube:
-		predefinied_shape = data_->cube_;
-		break;
-	case Geometry::BasicShapes::kBasicShapes_NONE: 
-		break;
-	default:
-		break;
-	}
-
-	geo.get()->shape_ = shape;
-	geo.get()->SetIndicesID(predefinied_shape.indices_ID);
-	geo.get()->SetVerticesID(predefinied_shape.vertices_ID);
-	geo.get()->SetNumberElements(predefinied_shape.number_elements);
 }
 
 // --------------------------------------------------------------//
 
-void SufferManager::SetPredefiniedMaterial(ref_ptr <Material> mat, Material::BasicMaterials basic_mat){
+Suffer::SufferManager::GPUResource::~GPUResource() {
 
-#ifdef ASSERT
-	assert(mat.get()); // "mat was NULL"
-#endif
-	
-	Data::InternalMaterial predefinied_material;
-	
-	switch (basic_mat) {
-	case Material::BasicMaterials::kBasicMaterials_Default: {
-		predefinied_material = data_->default_material_;
-		break;
-	}
-	case Material::BasicMaterials::kBasicMaterials_NONE: {
-		break;
-	}
-	default:
-		break;
-	}
-
-	mat.get()->material_ = basic_mat;
-	mat.get()->SetProgram(predefinied_material.program_ID);
 }
 
 // --------------------------------------------------------------//
 
-//void SufferManager::DrawDisplayList(){
-//
-//	if (!data_->render_mutex.try_lock()) {
-//#ifdef DEBUG
-//		printf("\nError trying to lock the render_mutex: [%s]\n", __FUNCTION__);
-//#endif
-//		return;
-//	}
-//
-//	for (int i = 0; i < data_->display_list_.size(); ++i) {
-//		Command* cmd = data_->display_list_[i].get();
-//		cmd->Execute();
-//	}
-//
-//	ResetDisplayList();
-//
-//	data_->render_mutex.unlock();
-//}
-//
-//// --------------------------------------------------------------//
+Suffer::SufferManager::VertexBuffer::VertexBuffer() {
+
+    type_ = GPUResource::kVertexBuffer;
+    format_ = kVertexFormat_Invalid;
+    id_ = SufferManager::instance().GetNumberOfVertexBuffers();
+    SufferManager::instance().SumVertexBufferCount();
+
+}
+
+// --------------------------------------------------------------//
+
+Suffer::SufferManager::IndexBuffer::IndexBuffer() {
+
+    type_ = GPUResource::kIndexBuffer;
+    id_ = SufferManager::instance().GetNumberOfIndexBuffers();
+    SufferManager::instance().SumIndexBufferCount();
+
+}
+
+// --------------------------------------------------------------//
+
+void Suffer::SufferManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer, Array<float> *data){
+
+#ifdef ASSERT
+    assert(buffer.get() != nullptr && "Buffer is NULL!");
+#endif
+
+	data_->internal_vertex_buffers_[buffer->id_].data_.copy(*data);
+    data_->internal_vertex_buffers_[buffer->id_].version_++;
+    data_->internal_vertex_buffers_[buffer->id_].id_handle_ = buffer->id_;
+
+}
+
+// --------------------------------------------------------------//
+
+void Suffer::SufferManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer, float* data, u32 size) {
+
+#ifdef ASSERT
+  assert(buffer.get() != nullptr && "Buffer is NULL!");
+#endif
+
+  Array<float> vertices_;
+  vertices_.alloc(size);
+  for (int i = 0; i < size; ++i) {
+    vertices_[i] = data[i];
+  }
+
+  data_->internal_vertex_buffers_[buffer->id_].data_.copy(vertices_);
+  data_->internal_vertex_buffers_[buffer->id_].version_++;
+  data_->internal_vertex_buffers_[buffer->id_].id_handle_ = buffer->id_;
+}
+
+// --------------------------------------------------------------//
+
+void Suffer::SufferManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, Array<u16> *data){
+
+#ifdef ASSERT
+    assert(buffer.get() != nullptr && "Buffer is NULL!");
+#endif
+    data_->internal_index_buffers_[buffer->id_].data_.copy(*data);
+    data_->internal_index_buffers_[buffer->id_].version_++;
+    data_->internal_index_buffers_[buffer->id_].id_handle_ = buffer->id_;
+
+}
+
+// --------------------------------------------------------------//
+
+void Suffer::SufferManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, u16* data, u32 size){
+
+#ifdef ASSERT
+  assert(buffer.get() != nullptr && "Buffer is NULL!");
+#endif
+
+  Array<u16> indices_;
+  indices_.alloc(size);
+  for (int i = 0; i < size; ++i) {
+    indices_[i] = data[i];
+  }
+
+  data_->internal_index_buffers_[buffer->id_].data_.copy(indices_);
+  data_->internal_index_buffers_[buffer->id_].version_++;
+  data_->internal_index_buffers_[buffer->id_].id_handle_ = buffer->id_;
+
+}
+
+// --------------------------------------------------------------//
+
+u32 Suffer::SufferManager::IsBufferCreated(ref_ptr<VertexBuffer> vertex_buffer){
+	
+#ifdef ASSERT
+	assert(vertex_buffer.get() != nullptr);
+#endif
+
+	s32 id_vertex = vertex_buffer.get()->id_;
+	if (data_->internal_vertex_buffers_[id_vertex].gpu_version_ == 0) {
+		glGenBuffers(1, &data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
+		glBindBuffer(GL_ARRAY_BUFFER, data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
+
+		glBufferData(GL_ARRAY_BUFFER,
+			data_->internal_vertex_buffers_[id_vertex].data_.sizeInBytes(),
+			data_->internal_vertex_buffers_[id_vertex].data_.get(),
+			GL_STATIC_DRAW);
+	}
+
+	if (data_->internal_vertex_buffers_[id_vertex].gpu_version_ < data_->internal_vertex_buffers_[id_vertex].version_) {
+		glBindBuffer(GL_ARRAY_BUFFER, data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
+
+		glBufferData(GL_ARRAY_BUFFER,
+			data_->internal_vertex_buffers_[id_vertex].data_.sizeInBytes(),
+			data_->internal_vertex_buffers_[id_vertex].data_.get(),
+			GL_STATIC_DRAW);
+	}
+
+	data_->internal_vertex_buffers_[id_vertex].gpu_version_ = data_->internal_vertex_buffers_[id_vertex].version_;
+	return data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_;
+}
+
+// --------------------------------------------------------------//
+
+u32 Suffer::SufferManager::IsBufferCreated(ref_ptr<IndexBuffer> index_buffer) {
+
+#ifdef ASSERT
+  assert(index_buffer.get() != nullptr);
+#endif
+
+  s32 id_index = index_buffer.get()->id_;
+  if (data_->internal_index_buffers_[id_index].gpu_version_ == 0) {
+    glGenBuffers(1, &data_->internal_index_buffers_[id_index].current_gl_buffer_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data_->internal_index_buffers_[id_index].current_gl_buffer_);
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+      data_->internal_index_buffers_[id_index].data_.sizeInBytes(),
+      data_->internal_index_buffers_[id_index].data_.get(),
+      GL_STATIC_DRAW);
+  }
+
+  if (data_->internal_index_buffers_[id_index].gpu_version_ < data_->internal_index_buffers_[id_index].version_) {
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data_->internal_index_buffers_[id_index].current_gl_buffer_);
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+      data_->internal_index_buffers_[id_index].data_.sizeInBytes(),
+      data_->internal_index_buffers_[id_index].data_.get(),
+      GL_STATIC_DRAW);
+  }
+
+  data_->internal_index_buffers_[id_index].gpu_version_ = data_->internal_index_buffers_[id_index].version_;
+  return data_->internal_index_buffers_[id_index].current_gl_buffer_;
+
+}
+
+// --------------------------------------------------------------//
+
+u32 Suffer::SufferManager::IsMaterialCreated(ref_ptr<Material> material){
+
+#ifdef ASSERT
+  assert(material.get() != nullptr);
+#endif
+  GLenum error;
+
+  u32 mat_type = material.get()->GetMaterialType();
+
+  if (!data_->internal_materials_[mat_type].is_created_) {
+		data_->internal_materials_[mat_type].vertex_shader_id_ =
+      glCreateShader(GL_VERTEX_SHADER);
+    error = glGetError();
+    data_->internal_materials_[mat_type].fragment_shader_id_ =
+      glCreateShader(GL_FRAGMENT_SHADER);
+    error = glGetError();
+
+    const GLint vertex_size = strlen(data_->internal_materials_[mat_type].vertex_shader_);
+    const GLint fragment_size = strlen(data_->internal_materials_[mat_type].fragment_shader_);
+
+    glShaderSource(data_->internal_materials_[mat_type].vertex_shader_id_,
+      1, &data_->internal_materials_[mat_type].vertex_shader_,
+      &vertex_size);
+    error = glGetError();
+    glShaderSource(data_->internal_materials_[mat_type].fragment_shader_id_,
+      1, &data_->internal_materials_[mat_type].fragment_shader_, &fragment_size);
+    error = glGetError();
+
+    glCompileShader(data_->internal_materials_[mat_type].vertex_shader_id_);
+    error = glGetError();
+
+    GLint status = 0;
+    glGetShaderiv(data_->internal_materials_[mat_type].vertex_shader_id_, GL_COMPILE_STATUS, &status);
+    GLint log_length = 0;
+    glGetShaderiv(data_->internal_materials_[mat_type].vertex_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
+    GLchar* info_log = new GLchar[log_length + 1];
+    glGetShaderInfoLog(data_->internal_materials_[mat_type].vertex_shader_id_, log_length, &log_length, info_log);
+    info_log[log_length] = '\0';
+    delete info_log;
+    if (status == GL_FALSE)
+      printf("\nERROR: vertex shader not compiled");
+
+    glCompileShader(data_->internal_materials_[mat_type].fragment_shader_id_);
+    error = glGetError();
+    status = 0;
+    glGetShaderiv(data_->internal_materials_[mat_type].fragment_shader_id_, GL_COMPILE_STATUS, &status);
+    log_length = 0;
+    glGetShaderiv(data_->internal_materials_[mat_type].fragment_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
+    info_log = new GLchar[log_length + 1];
+    glGetShaderInfoLog(data_->internal_materials_[mat_type].fragment_shader_id_, log_length, &log_length, info_log);
+    info_log[log_length] = '\0';
+    delete info_log;
+    if (status == GL_FALSE)
+      printf("\nERROR: fragment shader not compiled");
+
+    // PROGRAM
+    data_->internal_materials_[mat_type].current_program_ = glCreateProgram();
+
+    error = glGetError();
+    glAttachShader(data_->internal_materials_[mat_type].current_program_,
+      data_->internal_materials_[mat_type].vertex_shader_id_);
+
+    error = glGetError();
+    glAttachShader(data_->internal_materials_[mat_type].current_program_,
+      data_->internal_materials_[mat_type].fragment_shader_id_);
+
+    error = glGetError();
+    glLinkProgram(data_->internal_materials_[mat_type].current_program_);
+
+    error = glGetError();
+    data_->internal_materials_[mat_type].is_created_ = true;
+  }
+
+  u32 program_id;
+
+  switch (mat_type) {
+  case Suffer::Material::kBasicMaterials_Default:
+    program_id = data_->internal_materials_[mat_type].current_program_;
+    break;
+  case Suffer::Material::kBasicMaterials_Phong:
+    break;
+  case Suffer::Material::kBasicMaterials_NONE:
+    break;
+  default:
+    break;
+  }
+
+  return program_id;
+}
+
+// --------------------------------------------------------------//
+
+u32 Suffer::SufferManager::NumberElements(ref_ptr<IndexBuffer> index_buffer){
+	return data_->internal_index_buffers_[index_buffer->id_].data_.size();
+}
+
+// --------------------------------------------------------------//
+

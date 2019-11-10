@@ -12,22 +12,25 @@
 
 // --------------------------------------------------- //
 
-class Clear : public Command {
+namespace Suffer {
 
-public:
-	Clear();
-	~Clear();
+	class Clear : public Command {
 
-	void SetClearColor(glm::vec4 color) { color_ = color; }
+	public:
+		Clear();
+		~Clear();
 
-protected:
-	virtual void Execute() const override;
+		void SetClearColor(glm::vec4 color) { color_ = color; }
+
+	protected:
+		virtual void Execute() const override;
 
 
-private:
-	glm::vec4 color_;
-};
+	private:
+		glm::vec4 color_;
+	};
 
+}
 // --------------------------------------------------- //
 
 #endif // __CLEAR_H__
