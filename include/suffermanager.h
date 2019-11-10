@@ -7,6 +7,7 @@
 #include <render_manager.h>
 #include <scoped_array.h>
 #include <thread.h>
+#include <material.h>
 
 class Scene;
 
@@ -111,9 +112,9 @@ namespace Suffer {
 
 		u32 IsBufferCreated(ref_ptr<VertexBuffer> vertex_buffer);
 		u32 IsBufferCreated(ref_ptr<IndexBuffer> index_buffer);
+		u32 IsMaterialCreated(ref_ptr<Material> material);
 
 		u32 NumberElements(ref_ptr<IndexBuffer> index_buffer);
-
 
 		// Threads
 		ref_ptr<Thread> logic_;

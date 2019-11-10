@@ -11,30 +11,71 @@
 #include <data_types.h>
 #include <referenced.h>
 #include <ref_ptr.h>
-//#include <suffermanager.h>
 
 namespace Suffer {
 
 	// --------------------------------------------------- //
 
-	class Material : public virtual Referenced {
+	class Material : public Referenced {
 
 	public:
-		friend class SufferManager;
 		friend class DrawGeometry;
 
-		enum BasicMaterials {
+		enum MaterialType {
 			kBasicMaterials_Default = 0,
+			kBasicMaterials_Phong,
 			kBasicMaterials_NONE = 20
 		};
 
-		// Getters
-		glm::vec4 GetColor();
-
-		// Setters
-		void SetColor(glm::vec4 newColor);
 
 		Material();
+
+    void SetMaterialType(MaterialType type);
+    u32 GetMaterialType();
+
+    class MaterialSettings : public Referenced {
+        MaterialSettings() {}
+        ~MaterialSettings() {}
+
+      union Params {
+        Params() {}
+        ~Params() {}
+
+        struct DefaultParams {
+        public:
+          DefaultParams();
+          ~DefaultParams() {}
+
+          // Getters
+          glm::vec4 GetColor();
+
+          // Setters
+          void SetColor(glm::vec4 new_color);
+
+        private:
+          glm::vec4 color_;
+        };
+
+        struct PhongParams {
+          PhongParams();
+          ~PhongParams() {}
+
+          // Getters
+          glm::vec4 GetColor();
+
+          // Setters
+          void SetColor(glm::vec4 new_color);
+
+        private:
+          glm::vec4 color_;
+        
+        };
+       
+      };
+
+      Params material_params_;
+    };
+
 	protected:
 		virtual ~Material();
 
@@ -43,10 +84,8 @@ namespace Suffer {
 		struct Data;
 		Data* data_;
 
-		BasicMaterials material_;
-
-		void SetProgram(u16 program);
-		u16 GetProgramID();
+    ref_ptr<MaterialSettings> material_settings_;
+		MaterialType material_type_;
 
 		// Methods
 		Material(const Material&);

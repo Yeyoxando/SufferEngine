@@ -5,13 +5,14 @@
 #include "suffermanager.h"
 
 struct Suffer::DrawGeometry::Data {
-	//Geometry
+	// Geometry
 	ref_ptr<SufferManager::VertexBuffer> vertex_buffer_;
 	ref_ptr<SufferManager::IndexBuffer> index_buffer_;
 
-	//Material
-	GLuint program_ID;
-	glm::vec4 color_;
+	// Material
+  ref_ptr<Material> material_;
+
+  // Transform 
 	glm::vec3 position_;
 	glm::vec3 rotation_;
 	glm::vec3 scale_;
@@ -59,19 +60,20 @@ void Suffer::DrawGeometry::SetGeometry(ref_ptr<Geometry> geo){
 // --------------------------------------------------- //
 
 void Suffer::DrawGeometry::SetMaterial(ref_ptr<Material> mat){
-	data_->color_ = mat.get()->GetColor();
-	data_->program_ID = mat.get()->GetProgramID();
+  data_->material_ = mat;
 }
 
 // --------------------------------------------------- //
 
 void Suffer::DrawGeometry::Execute() const {
 
-	glUseProgram(data_->program_ID);
-
 	u32 id_vertex = SufferManager::instance().IsBufferCreated(data_->vertex_buffer_);
 	u32 id_index = SufferManager::instance().IsBufferCreated(data_->index_buffer_);
 	u32 number_elements = SufferManager::instance().NumberElements(data_->index_buffer_);
+
+  u32 program_id = SufferManager::instance().IsMaterialCreated(data_->material_);
+
+  glUseProgram(program_id);
 	
  	glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
 	glEnableVertexAttribArray(0);
@@ -81,6 +83,5 @@ void Suffer::DrawGeometry::Execute() const {
 	glDrawElements(GL_TRIANGLES, number_elements, GL_UNSIGNED_BYTE, (GLvoid*)0);
 
 }
-
 
 // --------------------------------------------------- //

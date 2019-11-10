@@ -4,40 +4,66 @@
 // --------------------------------------------------- //
 
 struct Suffer::Material::Data {
-	glm::vec4 color;
 	GLuint program_ID;
 };
 
+
 // --------------------------------------------------- //
 
-glm::vec4 Suffer::Material::GetColor() {
-	return data_->color;
+Suffer::Material::MaterialSettings::Params::DefaultParams::DefaultParams(){
+
+  color_ = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
 }
 
 // --------------------------------------------------- //
 
-u16 Suffer::Material::GetProgramID() {
-	return data_->program_ID;
+glm::vec4 Suffer::Material::MaterialSettings::Params::DefaultParams::GetColor() {
+  return color_;
 }
 
 // --------------------------------------------------- //
 
-void Suffer::Material::SetColor(glm::vec4 new_color) {
-	data_->color = new_color;
+void Suffer::Material::MaterialSettings::Params::DefaultParams::SetColor(glm::vec4 new_color) {
+  color_ = new_color;
 }
 
 // --------------------------------------------------- //
 
-void Suffer::Material::SetProgram(u16 program) {
-	data_->program_ID = program;
+Suffer::Material::MaterialSettings::Params::PhongParams::PhongParams() {
+  
+  color_ = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+}
+
+// --------------------------------------------------- //
+
+glm::vec4 Suffer::Material::MaterialSettings::Params::PhongParams::GetColor() {
+  return color_;
+}
+
+// --------------------------------------------------- //
+
+void Suffer::Material::MaterialSettings::Params::PhongParams::SetColor(glm::vec4 new_color) {
+  color_ = new_color;
 }
 
 // --------------------------------------------------- //
 
 Suffer::Material::Material() {
+
 	data_ = new Data();
 
-	data_->color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+// --------------------------------------------------- //
+
+void Suffer::Material::SetMaterialType(MaterialType type){
+  material_type_ = type;
+}
+
+u32 Suffer::Material::GetMaterialType(){
+  return (u32)material_type_;
 }
 
 // --------------------------------------------------- //

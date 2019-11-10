@@ -48,6 +48,7 @@ void Suffer::Scene::Init() {
 	
 	ref_ptr<Material> material;
 	material.alloc();
+  material->SetMaterialType(Material::kBasicMaterials_Default);
 
 
 	ref_ptr<GameObject> go;
