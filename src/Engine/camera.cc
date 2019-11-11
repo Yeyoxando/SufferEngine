@@ -257,7 +257,7 @@ void Suffer::Camera::Update(){
     camera_up_ = mathmorra::Vector3::CrossProduct(camera_direction_, camera_right_);
 
     projection_matrix_ = projection_matrix_.PerspectiveMatrix(
-        field_of_view_, WINDOW_WIDTH / WINDOW_HEIGHT, 0.01f, 15000.0f);
+        field_of_view_, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.01f, 15000.0f);
 
     view_matrix_ = mathmorra::Matrix4(
         mathmorra::Vector4(camera_right_,    0.0f),
