@@ -60,8 +60,8 @@ Suffer::Audio3D::Audio3D(){
     hertz_ = 0;
     paused_ = false;
     
-    current_position_ = glm::vec3(0, 0, 0);
-    current_velocity_ = glm::vec3(0, 0, 0);
+    current_position_ = mathmorra::Vector3(0, 0, 0);
+    current_velocity_ = mathmorra::Vector3(0, 0, 0);
 
 }
 
@@ -102,16 +102,16 @@ bool Suffer::Audio3D::Load(char* file){
 
 // --------------------------------------------------------------//
 
-bool Suffer::Audio3D::Play3D(glm::vec3 velocity /*= glm::vec3(0, 0, 0)*/){
+bool Suffer::Audio3D::Play3D(mathmorra::Vector3 velocity /*= mathmorra::Vector3(0, 0, 0)*/){
 
 	if (_ptr->handle_ != 0) {
 		_ptr->sound_.stop(_ptr->handle_);
 	}
 
-	glm::vec3 current_position = GetSoundPosition();
+	mathmorra::Vector3 current_position = GetSoundPosition();
 
-	_ptr->handle_ = _ptr->sound_.play3d(_ptr->wave_, current_position.x, current_position.y, current_position.z,
-										velocity.x, velocity.y, velocity.z);
+	_ptr->handle_ = _ptr->sound_.play3d(_ptr->wave_, current_position.x_, current_position.y_, current_position.z_,
+										velocity.x_, velocity.y_, velocity.z_);
 
 	if (_ptr->wave_.mData == nullptr) return false;
 	Interface::log.AddLog("\n[" _audio_ "] Reproducing a new 3D song: [%s]", file_);
@@ -159,9 +159,9 @@ void Suffer::Audio3D::SetLooping(const bool looping /*= false*/){
 
 // --------------------------------------------------------------//
 
-void Suffer::Audio3D::SetVelocity(const glm::vec3 newVelocity /*= glm::vec3(0, 0, 0)*/){
+void Suffer::Audio3D::SetVelocity(const mathmorra::Vector3 newVelocity /*= mathmorra::Vector3(0, 0, 0)*/){
 
-	_ptr->sound_.set3dSourceVelocity(_ptr->handle_, newVelocity.x, newVelocity.y, newVelocity.z);
+	_ptr->sound_.set3dSourceVelocity(_ptr->handle_, newVelocity.x_, newVelocity.y_, newVelocity.z_);
 	_ptr->sound_.update3dAudio();
 	current_velocity_ = newVelocity;
 
@@ -175,10 +175,10 @@ void Suffer::Audio3D::SetGlobalVolume(const float newVolume /* = 1.0f */) {
 
 // --------------------------------------------------------------//
 
-void Suffer::Audio3D::SetSoundParameters(glm::vec3 position, glm::vec3 velocity){
+void Suffer::Audio3D::SetSoundParameters(mathmorra::Vector3 position, mathmorra::Vector3 velocity){
 
-	_ptr->sound_.set3dSourceParameters(_ptr->handle_, position.x, position.y, position.z,
-									   velocity.x, velocity.y, velocity.z);
+	_ptr->sound_.set3dSourceParameters(_ptr->handle_, position.x_, position.y_, position.z_,
+									   velocity.x_, velocity.y_, velocity.z_);
 
 	current_position_ = position;
 	current_velocity_ = velocity;
@@ -187,17 +187,17 @@ void Suffer::Audio3D::SetSoundParameters(glm::vec3 position, glm::vec3 velocity)
 
 // --------------------------------------------------------------//
 
-void Suffer::Audio3D::SetSoundSpeed(glm::vec3 newSpeed){
+void Suffer::Audio3D::SetSoundSpeed(mathmorra::Vector3 newSpeed){
 
-	_ptr->sound_.set3dSourceVelocity(_ptr->handle_, newSpeed.x, newSpeed.y, newSpeed.z);
+	_ptr->sound_.set3dSourceVelocity(_ptr->handle_, newSpeed.x_, newSpeed.y_, newSpeed.z_);
 
 }
 
 // --------------------------------------------------------------//
 
-void Suffer::Audio3D::SetSoundPosition(glm::vec3 newPosition){
+void Suffer::Audio3D::SetSoundPosition(mathmorra::Vector3 newPosition){
 
-	_ptr->sound_.set3dSourcePosition(_ptr->handle_, newPosition.x, newPosition.y, newPosition.z);
+	_ptr->sound_.set3dSourcePosition(_ptr->handle_, newPosition.x_, newPosition.y_, newPosition.z_);
 	_ptr->sound_.update3dAudio();
 	current_position_ = newPosition;
 
@@ -227,43 +227,43 @@ void Suffer::Audio3D::SetSoundDopplerFactor(float newDopplerFactor){
 
 }
 
-void Suffer::Audio3D::SetListenerParameters(glm::vec3 position, glm::vec3 at, glm::vec3 up, glm::vec3 velocity){
+void Suffer::Audio3D::SetListenerParameters(mathmorra::Vector3 position, mathmorra::Vector3 at, mathmorra::Vector3 up, mathmorra::Vector3 velocity){
 	
-	_ptr->sound_.set3dListenerParameters(position.x, position.y, position.z, at.x, at.y, at.z,
-										 up.x, up.y, up.z, velocity.x, velocity.y, velocity.z);
+	_ptr->sound_.set3dListenerParameters(position.x_, position.y_, position.z_, at.x_, at.y_, at.z_,
+										 up.x_, up.y_, up.z_, velocity.x_, velocity.y_, velocity.z_);
 
 }
 
 // --------------------------------------------------------------//
 
-void Suffer::Audio3D::SetListenerPosition(glm::vec3 newPosition){
+void Suffer::Audio3D::SetListenerPosition(mathmorra::Vector3 newPosition){
 
-	_ptr->sound_.set3dListenerPosition(newPosition.x, newPosition.y, newPosition.z);
+	_ptr->sound_.set3dListenerPosition(newPosition.x_, newPosition.y_, newPosition.z_);
 	_ptr->sound_.update3dAudio();
 
 }
 
 // --------------------------------------------------------------//
 
-void Suffer::Audio3D::SetListenerAt(glm::vec3 newAt){
+void Suffer::Audio3D::SetListenerAt(mathmorra::Vector3 newAt){
 
-	_ptr->sound_.set3dListenerAt(newAt.x, newAt.y, newAt.z);
-
-}
-
-// --------------------------------------------------------------//
-
-void Suffer::Audio3D::SetListenerUp(glm::vec3 newUp){
-
-	_ptr->sound_.set3dListenerUp(newUp.x, newUp.y, newUp.z);
+	_ptr->sound_.set3dListenerAt(newAt.x_, newAt.y_, newAt.z_);
 
 }
 
 // --------------------------------------------------------------//
 
-void Suffer::Audio3D::SetListenerVelocity(glm::vec3 newVelocity){
+void Suffer::Audio3D::SetListenerUp(mathmorra::Vector3 newUp){
 
-	_ptr->sound_.set3dListenerVelocity(newVelocity.x, newVelocity.y, newVelocity.z);
+	_ptr->sound_.set3dListenerUp(newUp.x_, newUp.y_, newUp.z_);
+
+}
+
+// --------------------------------------------------------------//
+
+void Suffer::Audio3D::SetListenerVelocity(mathmorra::Vector3 newVelocity){
+
+	_ptr->sound_.set3dListenerVelocity(newVelocity.x_, newVelocity.y_, newVelocity.z_);
 
 }
 
@@ -293,8 +293,8 @@ bool Suffer::Audio3D::GetLooping(){
 
 // --------------------------------------------------------------//
 
-glm::vec3 Suffer::Audio3D::GetSoundSpeed(){
-	return glm::vec3(0, 0, 0);
+mathmorra::Vector3 Suffer::Audio3D::GetSoundSpeed(){
+	return mathmorra::Vector3(0, 0, 0);
 }
 
 // --------------------------------------------------------------//
@@ -358,7 +358,7 @@ float* Suffer::Audio3D::FFT(){
 
 // --------------------------------------------------------------//
 
-glm::vec3 Suffer::Audio3D::GetSoundPosition(){
+mathmorra::Vector3 Suffer::Audio3D::GetSoundPosition(){
 	return current_position_;
 }
 

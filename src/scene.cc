@@ -87,7 +87,7 @@ void Suffer::Scene::Init() {
 	ref_ptr<Material> material;
 	material.alloc();
   material->SetMaterialParamsType(Material::MaterialSettings::kParams_Default);
-  material->material_settings_->SetColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+  material->material_settings_->SetColor(mathmorra::Vector4( 0.5, 0.0f, 1.0f, 1.0f ));
 
 	ref_ptr<GameObject> go;
 	go.alloc();
@@ -114,36 +114,36 @@ void Suffer::Scene::Init() {
   vert_buff_2.alloc();
   vert_buff_2->format_ = SufferManager::VertexBuffer::kVertexFormat_3P;
   ind_buff_2.alloc();
-
+  
   float vertices2[] = {
       0.0f,  0.5f, -1.0f,
       0.5f, -0.5f, -1.0f,
      -0.5f, -0.5f, -1.0f
   };
-
+  
   u16 indices2[]{ 0, 2, 1};
-
+  
   SufferManager::instance().UploadVertexData(vert_buff_2, vertices2, 9);
   SufferManager::instance().UploadIndexData(ind_buff_2, indices2, 3);
-
+  
   ref_ptr<Geometry> geometry2;
   geometry2.alloc();
   geometry2->SetBuffers(vert_buff_2, ind_buff_2);
-
-
+  
+  
   ref_ptr<Material> material2;
   material2.alloc();
   material2->SetMaterialParamsType(Material::MaterialSettings::kParams_Default);
-  material2->material_settings_->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-
-
+  material2->material_settings_->SetColor(mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+  
+  
   ref_ptr<GameObject> go2;
   go2.alloc();
   go2->SetGeometry(geometry2);
   go2->SetMaterial(material2);
-  go2->SetPosition(glm::vec3(0.0f, 0.0f, -0.1f));
-
-
+  go2->Translate(mathmorra::Vector3(0.0f, 0.0f, -0.1f));
+  
+  
   AddGameObject(go2);
 
 }
@@ -163,7 +163,7 @@ void Suffer::Scene::PrepareDraw(){
 	ref_ptr<Clear> clear_cmd;
 
 	clear_cmd.alloc();
-	clear_cmd.get()->SetClearColor(glm::vec4(0.8f));
+	clear_cmd.get()->SetClearColor(mathmorra::Vector4(0.8f));
 
 
 	frame_dl.addCommand(clear_cmd.get());

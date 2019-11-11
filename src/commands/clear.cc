@@ -18,7 +18,7 @@ Suffer::Clear::~Clear(){
 // --------------------------------------------------- //
 
 void Suffer::Clear::Execute() const{
-	glClearColor(color_.r, color_.g, color_.b, 1.0f);
+	glClearColor(color_.x_, color_.y_, color_.z_, 1.0f);
   
   glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

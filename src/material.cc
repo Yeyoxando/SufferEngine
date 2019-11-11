@@ -12,14 +12,14 @@ struct Suffer::Material::Data {
 
 Suffer::Material::MaterialSettings::DefaultParams::DefaultParams(){
 
-  color_ = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+  color_ = (0.0f, 0.0f, 0.0f, 1.0f);
 
 }
 
 // --------------------------------------------------- //
 
-glm::vec4 Suffer::Material::MaterialSettings::GetColor() const{
-  glm::vec4 color;
+mathmorra::Vector4 Suffer::Material::MaterialSettings::GetColor() const{
+    mathmorra::Vector4 color;
   switch (params_type_) {
   case Suffer::Material::MaterialSettings::kParams_Default:
     color = material_params_.default_params_.color_;
@@ -37,7 +37,7 @@ glm::vec4 Suffer::Material::MaterialSettings::GetColor() const{
 
 // --------------------------------------------------- //
 
-void Suffer::Material::MaterialSettings::SetColor(glm::vec4 new_color) {
+void Suffer::Material::MaterialSettings::SetColor(mathmorra::Vector4 new_color) {
   switch (params_type_) {
   case Suffer::Material::MaterialSettings::kParams_Default:
     material_params_.default_params_.color_ = new_color;
@@ -56,7 +56,7 @@ void Suffer::Material::MaterialSettings::SetColor(glm::vec4 new_color) {
 
 Suffer::Material::MaterialSettings::PhongParams::PhongParams() {
   
-  color_ = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+  color_ = (0.0f, 0.0f, 0.0f, 1.0f);
 
 }
 
@@ -76,10 +76,10 @@ void Suffer::Material::SetMaterialParamsType(MaterialSettings::ParamsType type){
   material_settings_.get()->params_type_ = type;
   switch (type){
   case Suffer::Material::MaterialSettings::kParams_Default:
-    material_settings_->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    material_settings_->SetColor((1.0f, 0.0f, 0.0f, 1.0f));
     break;
   case Suffer::Material::MaterialSettings::kParams_Phong:
-    material_settings_->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    material_settings_->SetColor((1.0f, 0.0f, 0.0f, 1.0f));
     break;
   case Suffer::Material::MaterialSettings::kParams_NONE:
     break;

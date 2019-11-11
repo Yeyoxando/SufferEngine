@@ -7,10 +7,10 @@
 #ifndef __MATERIAL_H__
 #define __MATERIAL_H__
 
-#include <glm.hpp>
 #include <data_types.h>
 #include <referenced.h>
 #include <ref_ptr.h>
+#include "vector4.h"
 
 namespace Suffer {
 
@@ -43,7 +43,7 @@ namespace Suffer {
         ~DefaultParams() {}
 
       private:
-        glm::vec4 color_;
+        mathmorra::Vector4 color_;
       };
 
       struct PhongParams {
@@ -52,7 +52,7 @@ namespace Suffer {
         ~PhongParams() {}
 
       private:
-        glm::vec4 color_;
+          mathmorra::Vector4 color_;
 
       };
 
@@ -66,10 +66,10 @@ namespace Suffer {
 
 
       // Getters
-      glm::vec4 GetColor() const;
+      mathmorra::Vector4 GetColor() const;
 
       // Setters
-      void SetColor(glm::vec4 new_color);
+      void SetColor(mathmorra::Vector4 new_color);
 
       Params material_params_;
 

@@ -7,14 +7,16 @@
 #ifndef __GAME_OBJECT_H__
 #define __GAME_OBJECT_H__
 
-#include <glm.hpp>
-#include <gtc/quaternion.hpp>
 #include <geometry.h>
 #include <material.h>
 #include <data_types.h>
 #include <referenced.h>
 #include <ref_ptr.h>
 #include <command.h>
+
+// Mathematic Headers
+#include <vector3.h>
+#include <matrix4.h>
 
 
 namespace Suffer {
@@ -24,14 +26,13 @@ namespace Suffer {
 	struct Transform {
 
 	public:
-		glm::vec3 scale;
-		glm::vec3 position;
-		glm::vec3 rotation;
+		mathmorra::Vector3 scale_;
+		mathmorra::Vector3 position_;
+		mathmorra::Vector3 rotation_;
 
-		glm::quat quat_rotation_;
-
-	private:
-		glm::mat4 model_;
+    mathmorra::Vector3 up_;
+    mathmorra::Vector3 right_;
+    mathmorra::Vector3 forward_;
 
 	};
 
@@ -44,6 +45,10 @@ namespace Suffer {
 		GameObject();
 		GameObject(const GameObject& go);
 
+    // Operators
+    bool operator!=(const GameObject& go);
+    bool operator==(const GameObject& go);
+
 		// Getters
 		Transform GetTransform();
 		const ref_ptr<Material> GetMaterial();
@@ -55,7 +60,16 @@ namespace Suffer {
 
 		ref_ptr<Command> GetDrawCommand();
 
-    void SetPosition(glm::vec3 position);
+
+    // Hierarchy Stuff
+    void DetachChildren();
+    void GetChild(u32 child);
+    void RemoveChild(u32 child);
+
+    // Transform
+    void Rotate(float x, float y, float z);
+    void Translate(float x, float y, float z);
+    void Translate(mathmorra::Vector3 position);
 
 	protected:
 		virtual ~GameObject();
@@ -67,6 +81,8 @@ namespace Suffer {
 		ref_ptr<Geometry> geometry_;
 
 		// Methods
+    void Step(float delta_time);
+    void Destroy();
 
 	};
 

@@ -1,3 +1,9 @@
+/*
+* Author: Pablo Bano Benito <banyobe@esat-alumni.com>
+* Date: 10-12-2019
+* GameObject Source (Material, Transform, Geometry)
+*/
+
 #include <game_object.h>
 #include <draw_geometry.h>
 #include <matrix4.h>
@@ -7,9 +13,27 @@
 
 Suffer::GameObject::GameObject() {
 
-	transform_.scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	transform_.position = glm::vec3(0.0f, 0.0f, 0.0f);
-	transform_.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+  transform_.scale_ = { 1.0f, 1.0f, 1.0f };
+  transform_.position_ = { 0.0f, 0.0f, 0.0f };
+  transform_.rotation_ = { 0.0f, 0.0f, 0.0f };
+
+  transform_.up_ =    { 0.0f, 1.0f, 0.0f };
+  transform_.right_ = { 1.0f, 0.0f, 0.0f };
+  transform_.forward_ = mathmorra::Vector3::CrossProduct(transform_.up_, 
+                                                         transform_.right_);
+
+}
+
+bool Suffer::GameObject::operator!=(const GameObject& go){
+
+    if (transform_.position_ !=  go.transform_.position_ ||
+        transform_.scale_    !=  go.transform_.scale_    ||
+        transform_.rotation_ !=  go.transform_.rotation_) 
+    {
+        return false;
+    }
+
+    // TODO: expand
 
 }
 
@@ -54,6 +78,7 @@ void Suffer::GameObject::SetGeometry(ref_ptr<Geometry> new_geometry) {
 }
 
 Suffer::ref_ptr<Suffer::Command> Suffer::GameObject::GetDrawCommand(){
+
 	ref_ptr<DrawGeometry> draw_geometry;
 
 	draw_geometry.alloc();
@@ -62,20 +87,24 @@ Suffer::ref_ptr<Suffer::Command> Suffer::GameObject::GetDrawCommand(){
   mathmorra::Matrix4 model_matrix;
 
   mathmorra::Matrix4 translation_mat;
-  translation_mat = translation_mat.Translate(transform_.position.x, transform_.position.y, transform_.position.z);
+  translation_mat = translation_mat.Translate(transform_.position_.x_, 
+                                              transform_.position_.y_, 
+                                              transform_.position_.z_);
   
   mathmorra::Matrix4 rotation_mat_x;
   mathmorra::Matrix4 rotation_mat_y;
   mathmorra::Matrix4 rotation_mat_z;
-  rotation_mat_x = rotation_mat_x.RotateX(transform_.rotation.x);
-  rotation_mat_y = rotation_mat_y.RotateY(transform_.rotation.y);
-  rotation_mat_z = rotation_mat_z.RotateZ(transform_.rotation.z);
+  rotation_mat_x = rotation_mat_x.RotateX(transform_.rotation_.x_);
+  rotation_mat_y = rotation_mat_y.RotateY(transform_.rotation_.y_);
+  rotation_mat_z = rotation_mat_z.RotateZ(transform_.rotation_.z_);
 
   rotation_mat_z = rotation_mat_z.Multiply(rotation_mat_y);
   rotation_mat_z = rotation_mat_z.Multiply(rotation_mat_x);
 
   mathmorra::Matrix4 scale_mat;
-  scale_mat = scale_mat.Scale(transform_.scale.x, transform_.scale.y, transform_.scale.z);
+  scale_mat = scale_mat.Scale(transform_.scale_.x_, 
+                              transform_.scale_.y_, 
+                              transform_.scale_.z_);
   
   model_matrix = translation_mat * rotation_mat_z * scale_mat;
 
@@ -85,8 +114,22 @@ Suffer::ref_ptr<Suffer::Command> Suffer::GameObject::GetDrawCommand(){
 	return draw_geometry.get();
 }
 
-void Suffer::GameObject::SetPosition(glm::vec3 position){
-  transform_.position = position;
+// --------------------------------------------------- //
+
+void Suffer::GameObject::Translate(mathmorra::Vector3 position){
+  transform_.position_ = position;
+}
+
+// --------------------------------------------------- //
+
+void Suffer::GameObject::Rotate(float x, float y, float z){
+    transform_.rotation_ = { x, y, z };
+}
+
+// --------------------------------------------------- //
+
+void Suffer::GameObject::Translate(float x, float y, float z){
+    transform_.position_ = { x, y, z };
 }
 
 // --------------------------------------------------- //
@@ -99,6 +142,24 @@ Suffer::Transform Suffer::GameObject::GetTransform() {
 
 Suffer::GameObject::~GameObject() {
 
+}
+
+// --------------------------------------------------- //
+
+void Suffer::GameObject::Step(float delta_time){
+
+    // Updates
+    
+
+    // Logic
+
+}
+
+// --------------------------------------------------- //
+
+void Suffer::GameObject::Destroy(){
+    // Destroy Himself
+    
 }
 
 // --------------------------------------------------- //

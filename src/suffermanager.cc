@@ -112,7 +112,7 @@ void Suffer::SufferManager::Data::InitInternalMaterials(){
 
 	  void main(){
       mat4 accum_matrix = u_p_matrix * u_v_matrix * u_m_matrix;
-      normal = normalize((u_m_matrix * vec4(a_normal, 0.0))).xyz;
+      normal = normalize((accum_matrix * vec4(a_normal, 0.0))).xyz;
 		  gl_Position = accum_matrix * vec4(a_position, 1.0f);
 	  }
 
@@ -126,20 +126,36 @@ void Suffer::SufferManager::Data::InitInternalMaterials(){
     
     uniform vec4 u_color;
     in vec3 normal;
+    vec3 light_dir = vec3(0, 0, 1);
+    vec3 light_color = vec3(1, 1, 1);
+
+//---------------------------------------------------------------------------//
+
+vec3 CreateDiffuseLight(vec3 lightPos){
+
+	vec3 norm = normalize(normal);
+	float diffs = max(dot(norm, -lightPos), 0.0f);
+	vec3 diffuseLight = diffs * vec3(light_color) * 0.4;
+
+	return diffuseLight;
+}
+
+//---------------------------------------------------------------------------//
 
     void main(){
-	       //vec3 aux_color = vec3(u_color.r, u_color.g, u_color.b) * normal;
-         //fragColor = vec4(aux_color.r + 0.5f, aux_color.g + 0.5f, aux_color.b + 0.5f, 1.0f);
-        fragColor = vec4(normal.r + 0.5f, normal.g + 0.5f, normal.b + 0.5f, 1.0f);
+
+      //Ambient
+      vec3 ambient = 0.4 * light_color; // (0, 0.8, 0)
+      //Diffuse
+      float diff = max(dot(normalize(normal), normalize(-light_dir)), 0.0);
+      vec3 test = CreateDiffuseLight(light_dir);
+      vec3 colorResult = (ambient + test) * u_color.xyz;
+
+      //vec3 aux = u_color.xyz * (normal * 0.5 + 0.5);
+      fragColor = vec4(colorResult, 1.0f);
     }
   	
   )FSHADER";
-
-  //strncpy(internal_materials_[number_of_materials_].vertex_shader_, vertex_shader, sizeof(vertex_shader));
-  //strncpy(internal_materials_[number_of_materials_].fragment_shader_, fragment_shader, sizeof(fragment_shader));
-
-  //internal_materials_[number_of_materials_].vertex_shader_ = vertex_shader;
-  //internal_materials_[number_of_materials_].fragment_shader_ = fragment_shader;
 
   number_of_materials_++;
 }

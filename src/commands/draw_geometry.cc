@@ -96,17 +96,18 @@ void Suffer::DrawGeometry::Execute() const {
 
   // Material setting uniforms
   switch (data_->material_->material_settings_.get()->params_type_) {
-  case Material::MaterialSettings::kParams_Default:
-    glm::vec4 color = data_->material_->material_settings_->GetColor();
+  case Material::MaterialSettings::kParams_Default: {
 
+    mathmorra::Vector4 color = data_->material_->material_settings_->GetColor();
     u_pos = glGetUniformLocation(program_id, "u_color");
     if (u_pos < 0) {
       printf("\nERROR: u_color uniform not exists.");
       //return;
     }
 
-    glUniform4f(u_pos, color.r, color.g, color.b, color.a);
+    glUniform4f(u_pos, color.x_, color.y_, color.z_, color.w_);
     u_pos = -1;
+  }
     break;
   case Material::MaterialSettings::kParams_Phong:
     

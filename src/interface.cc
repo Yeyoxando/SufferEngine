@@ -712,7 +712,7 @@ void  Suffer::Interface::Audio(Audio3D* sound){
 	ImGui::Separator();
 
 	static float song_volume = sound->GetGain();
-	static glm::vec3 song_position = sound->GetSoundPosition();
+	static mathmorra::Vector3 song_position = sound->GetSoundPosition();
 	static bool looping = sound->GetLooping();
 	bool paused = sound->isPaused();
 
@@ -726,7 +726,7 @@ void  Suffer::Interface::Audio(Audio3D* sound){
 			//suffer.AddCommand(&suffer.audio_dl_, set_gain_command.get());
 			set_gain_command.release();
 		}
-		if (ImGui::InputFloat3("Sound Position", &song_position[0], 0.1f)) {
+		if (ImGui::InputFloat3("Sound Position", &song_position.x_, 0.1f)) {
 			sound->SetSoundPosition(song_position);
 		}
 		if (paused) {

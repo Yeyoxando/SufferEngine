@@ -174,16 +174,16 @@ mathmorra::Quaternion mathmorra::Quaternion::operator*(Quaternion q) const {
 
  mathmorra::Vector3 mathmorra::Quaternion::RotateVectorByQuaternion(const Vector3 v, const Quaternion q) const {
 
-   Vector3  qv = { q.x, q.y, q.z };
+     Vector3  qv = { q.x, q.y, q.z };
 
-   mathmorra::Vector3 vcv = vcv.CrossProduct(qv, v);
+     mathmorra::Vector3 vcv = vcv.CrossProduct(qv, v);
 
-   mathmorra::Vector3 cross = cross.CrossProduct(qv, vcv);
-   mathmorra::Vector3 rotated = { v.x_ + vcv.x_ * 2.0f * q.w + cross.x_ * 2.0f,
-                                  v.y_ + vcv.y_ * 2.0f * q.w + cross.y_ * 2.0f,
-                                  v.z_ + vcv.z_ * 2.0f * q.w + cross.z_ * 2.0f };
+     mathmorra::Vector3 cross = cross.CrossProduct(qv, vcv);
+     mathmorra::Vector3 rotated = { v.x_ + vcv.x_ * 2.0f * q.w + cross.x_ * 2.0f,
+                                    v.y_ + vcv.y_ * 2.0f * q.w + cross.y_ * 2.0f,
+                                    v.z_ + vcv.z_ * 2.0f * q.w + cross.z_ * 2.0f };
 
-   return rotated;
+     return rotated;
 
  }
 
