@@ -18,14 +18,38 @@ Suffer::Material::MaterialSettings::DefaultParams::DefaultParams(){
 
 // --------------------------------------------------- //
 
-glm::vec4 Suffer::Material::MaterialSettings::DefaultParams::GetColor() {
-  return color_;
+glm::vec4 Suffer::Material::MaterialSettings::GetColor() const{
+  glm::vec4 color;
+  switch (params_type_) {
+  case Suffer::Material::MaterialSettings::kParams_Default:
+    color = material_params_.default_params_.color_;
+    break;
+  case Suffer::Material::MaterialSettings::kParams_Phong:
+    color = material_params_.phong_params_.color_;
+    break;
+  case Suffer::Material::MaterialSettings::kParams_NONE:
+    break;
+  default:
+    break;
+  }
+  return color;
 }
 
 // --------------------------------------------------- //
 
-void Suffer::Material::MaterialSettings::DefaultParams::SetColor(glm::vec4 new_color) {
-  color_ = new_color;
+void Suffer::Material::MaterialSettings::SetColor(glm::vec4 new_color) {
+  switch (params_type_) {
+  case Suffer::Material::MaterialSettings::kParams_Default:
+    material_params_.default_params_.color_ = new_color;
+    break;
+  case Suffer::Material::MaterialSettings::kParams_Phong:
+    material_params_.phong_params_.color_ = new_color;
+    break;
+  case Suffer::Material::MaterialSettings::kParams_NONE:
+    break;
+  default:
+    break;
+  }
 }
 
 // --------------------------------------------------- //
@@ -38,46 +62,34 @@ Suffer::Material::MaterialSettings::PhongParams::PhongParams() {
 
 // --------------------------------------------------- //
 
-glm::vec4 Suffer::Material::MaterialSettings::PhongParams::GetColor() {
-  return color_;
-}
-
-// --------------------------------------------------- //
-
-void Suffer::Material::MaterialSettings::PhongParams::SetColor(glm::vec4 new_color) {
-  color_ = new_color;
-}
-
-// --------------------------------------------------- //
-
 Suffer::Material::Material() {
 
 	data_ = new Data();
 
-  material_type_ = kBasicMaterials_NONE;
   material_settings_.alloc();
+  material_settings_.get()->params_type_ = MaterialSettings::kParams_NONE;
 }
 
 // --------------------------------------------------- //
 
-void Suffer::Material::SetMaterialType(MaterialType type){
-  material_type_ = type;
+void Suffer::Material::SetMaterialParamsType(MaterialSettings::ParamsType type){
+  material_settings_.get()->params_type_ = type;
   switch (type){
-  case Suffer::Material::kBasicMaterials_Default:
-    material_settings_->material_params_.default_params_.SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+  case Suffer::Material::MaterialSettings::kParams_Default:
+    material_settings_->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
     break;
-  case Suffer::Material::kBasicMaterials_Phong:
-    material_settings_->material_params_.phong_params_.SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+  case Suffer::Material::MaterialSettings::kParams_Phong:
+    material_settings_->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
     break;
-  case Suffer::Material::kBasicMaterials_NONE:
+  case Suffer::Material::MaterialSettings::kParams_NONE:
     break;
   default:
     break;
   }
 }
 
-u32 Suffer::Material::GetMaterialType(){
-  return (u32)material_type_;
+u32 Suffer::Material::GetMaterialParamsType() const{
+  return (u32)material_settings_.get()->params_type_;
 }
 
 // --------------------------------------------------- //
@@ -93,7 +105,7 @@ Suffer::Material::MaterialSettings::MaterialSettings(){
 }
 
 Suffer::Material::MaterialSettings::~MaterialSettings(){
-
+  printf("shit");
 }
 
 Suffer::Material::MaterialSettings::Params::Params(){

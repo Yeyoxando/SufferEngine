@@ -21,47 +21,35 @@ namespace Suffer {
 	public:
 		friend class DrawGeometry;
 
-		enum MaterialType {
-			kBasicMaterials_Default = 0,
-			kBasicMaterials_Phong,
-			kBasicMaterials_NONE = 20
-		};
-
 
 		Material();
-
-    void SetMaterialType(MaterialType type);
-    u32 GetMaterialType();
 
     class MaterialSettings : public Referenced {
     public:
       MaterialSettings();
       ~MaterialSettings();
 
+
+      enum ParamsType {
+        kParams_Default = 0,
+        kParams_Phong,
+        kParams_NONE = 20
+      };
+
       struct DefaultParams {
+        friend class MaterialSettings;
       public:
         DefaultParams();
         ~DefaultParams() {}
-
-        // Getters
-        glm::vec4 GetColor();
-
-        // Setters
-        void SetColor(glm::vec4 new_color);
 
       private:
         glm::vec4 color_;
       };
 
       struct PhongParams {
+        friend class MaterialSettings;
         PhongParams();
         ~PhongParams() {}
-
-        // Getters
-        glm::vec4 GetColor();
-
-        // Setters
-        void SetColor(glm::vec4 new_color);
 
       private:
         glm::vec4 color_;
@@ -76,8 +64,20 @@ namespace Suffer {
         PhongParams phong_params_;
       };
 
+
+      // Getters
+      glm::vec4 GetColor() const;
+
+      // Setters
+      void SetColor(glm::vec4 new_color);
+
       Params material_params_;
+
+      ParamsType params_type_;
     };
+
+    void SetMaterialParamsType(MaterialSettings::ParamsType type);
+    u32 GetMaterialParamsType() const;
 
     ref_ptr<MaterialSettings> material_settings_;
 
@@ -89,8 +89,6 @@ namespace Suffer {
 
 		struct Data;
 		Data* data_;
-
-		MaterialType material_type_;
 
 		// Methods
 		Material(const Material&);

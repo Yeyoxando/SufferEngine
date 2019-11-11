@@ -6,33 +6,17 @@
 
 struct Suffer::DrawGeometry::Data {
 	// Geometry
-	ref_ptr<SufferManager::VertexBuffer> vertex_buffer_;
-	ref_ptr<SufferManager::IndexBuffer> index_buffer_;
+  const SufferManager::VertexBuffer* vertex_buffer_;
+  const SufferManager::IndexBuffer* index_buffer_;
 
 	// Material
-  ref_ptr<Material> material_;
+  const Material* material_;
 
   // Transform 
   mathmorra::Matrix4 model_matrix_;
   mathmorra::Matrix4 view_matrix_;
   mathmorra::Matrix4 projection_matrix_;
-  
-  
-  struct DefaultParams {
-    glm::vec4 color_;
-  };
-
-  struct PhongParams {
-    glm::vec4 color_;
-  };
-
-  union MaterialParams {
-    DefaultParams default_params_;
-    PhongParams phong_params_;
-  };
-
-
-  MaterialParams mat_params_;
+ 
 };
 
 // --------------------------------------------------- //
@@ -78,36 +62,23 @@ void Suffer::DrawGeometry::SetProjectionMatrix(mathmorra::Matrix4 projection){
 
 // --------------------------------------------------- //
 
-void Suffer::DrawGeometry::SetGeometry(ref_ptr<Geometry> geo){
-	data_->vertex_buffer_ = geo.get()->vertex_buffer_;
-	data_->index_buffer_ = geo.get()->index_buffer_;
+void Suffer::DrawGeometry::SetGeometry(const ref_ptr<Geometry> geo){
+	data_->vertex_buffer_ = geo.get()->vertex_buffer_.get();
+	data_->index_buffer_ = geo.get()->index_buffer_.get();
 }
 
 // --------------------------------------------------- //
 
-void Suffer::DrawGeometry::SetMaterial(ref_ptr<Material> mat){
-  data_->material_ = mat;
+void Suffer::DrawGeometry::SetMaterial(const ref_ptr<Material> mat){
+  data_->material_ = mat.get();
 
-  switch (mat.get()->material_type_){
-  case Material::kBasicMaterials_Default:
-    data_->mat_params_.default_params_.color_ = mat->material_settings_.get()->material_params_.default_params_.GetColor();
-    break;
-  case Material::kBasicMaterials_Phong:
-    data_->mat_params_.phong_params_.color_ = mat->material_settings_.get()->material_params_.phong_params_.GetColor();
-    break;
-  case Material::kBasicMaterials_NONE:
-
-    break;
-  default:
-    break;
-  }
 }
 
 // --------------------------------------------------- //
 
 void Suffer::DrawGeometry::Execute() const {
 #ifdef ASSERT
-  assert(data_->material_->material_type_ != Material::kBasicMaterials_NONE && "Material type not set");
+  assert(data_->material_->material_settings_->params_type_ != Material::MaterialSettings::kParams_NONE && "Material type not set");
 #endif
 
 
@@ -124,23 +95,23 @@ void Suffer::DrawGeometry::Execute() const {
   s32 u_pos = -1;
 
   // Material setting uniforms
-  switch (data_->material_->material_type_) {
-  case Material::kBasicMaterials_Default:
-    glm::vec4 color = data_->mat_params_.default_params_.color_;
+  switch (data_->material_->material_settings_.get()->params_type_) {
+  case Material::MaterialSettings::kParams_Default:
+    glm::vec4 color = data_->material_->material_settings_->GetColor();
 
     u_pos = glGetUniformLocation(program_id, "u_color");
     if (u_pos < 0) {
       printf("\nERROR: u_color uniform not exists.");
-      return;
+      //return;
     }
 
     glUniform4f(u_pos, color.r, color.g, color.b, color.a);
     u_pos = -1;
     break;
-  case Material::kBasicMaterials_Phong:
+  case Material::MaterialSettings::kParams_Phong:
     
     break;
-  case Material::kBasicMaterials_NONE:
+  case Material::MaterialSettings::kParams_NONE:
     break;
   default:
     break;
@@ -176,16 +147,30 @@ void Suffer::DrawGeometry::Execute() const {
   glUniformMatrix4fv(u_pos, 1, GL_FALSE, data_->projection_matrix_.m);
   u_pos = -1;
 
+
+
   glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
-  error = glGetError();
-  glEnableVertexAttribArray(0);
-  error = glGetError();
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
-  error = glGetError();
+
+  switch (data_->vertex_buffer_->format_) {
+  case SufferManager::VertexBuffer::kVertexFormat_3P:
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+    break;
+  case SufferManager::VertexBuffer::kVertexFormat_3P_3N:
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)72);
+
+    break;
+  default:
+
+    break;
+  }
+  
+  
 
 
-  glEnable(GL_DEPTH_TEST);
-  glDepthFunc(GL_LESS);
 
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);

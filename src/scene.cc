@@ -29,9 +29,11 @@ void Suffer::Scene::Init() {
   ref_ptr<SufferManager::VertexBuffer> vert_buff_;
   ref_ptr<SufferManager::IndexBuffer> ind_buff_;
   vert_buff_.alloc();
+  vert_buff_->format_ = SufferManager::VertexBuffer::kVertexFormat_3P_3N;
   ind_buff_.alloc();
 
 	float vertices[] = {
+    //Vertex
        //Face1
        1.0f,  1.0f,  1.0f,
        1.0f, -1.0f,  1.0f,
@@ -62,6 +64,39 @@ void Suffer::Scene::Init() {
       -1.0f, -1.0f,  1.0f,
        1.0f, -1.0f,  1.0f,
        1.0f, -1.0f, -1.0f,
+
+       //Normals
+       //Face1
+        1.0f,  0.0f,  0.0f,
+        1.0f,  0.0f,  0.0f,
+        1.0f,  0.0f,  0.0f,
+        1.0f,  0.0f,  0.0f,
+        //Face2
+         0.0f,  0.0f, -1.0f,
+         0.0f,  0.0f, -1.0f,
+         0.0f,  0.0f, -1.0f,
+         0.0f,  0.0f, -1.0f,
+         //Face3
+         -1.0f,  0.0f,  0.0f,
+         -1.0f,  0.0f,  0.0f,
+         -1.0f,  0.0f,  0.0f,
+         -1.0f,  0.0f,  0.0f,
+         //Face4
+          0.0f,  0.0f,  1.0f,
+          0.0f,  0.0f,  1.0f,
+          0.0f,  0.0f,  1.0f,
+          0.0f,  0.0f,  1.0f,
+          //Face5				 
+           0.0f,  1.0f,  0.0f,
+           0.0f,  1.0f,  0.0f,
+           0.0f,  1.0f,  0.0f,
+           0.0f,  1.0f,  0.0f,
+           //Face6				 
+            0.0f, -1.0f,  0.0f,
+            0.0f, -1.0f,  0.0f,
+            0.0f, -1.0f,  0.0f,
+            0.0f, -1.0f,  0.0f,
+
 	};
 
   u16 indices[]{ 			
@@ -73,7 +108,7 @@ void Suffer::Scene::Init() {
         22, 21, 20, 20, 23, 22
   };
 
-	SufferManager::instance().UploadVertexData(vert_buff_, vertices, 72);
+	SufferManager::instance().UploadVertexData(vert_buff_, vertices, 144);
 	SufferManager::instance().UploadIndexData(ind_buff_, indices, 36);
 
 	ref_ptr<Geometry> geometry;
@@ -83,8 +118,8 @@ void Suffer::Scene::Init() {
 	
 	ref_ptr<Material> material;
 	material.alloc();
-  material->SetMaterialType(Material::kBasicMaterials_Default);
-  material->material_settings_->material_params_.default_params_.SetColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+  material->SetMaterialParamsType(Material::MaterialSettings::kParams_Default);
+  material->material_settings_->SetColor(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 
 	ref_ptr<GameObject> go;
 	go.alloc();
@@ -109,6 +144,7 @@ void Suffer::Scene::Init() {
   ref_ptr<SufferManager::VertexBuffer> vert_buff_2;
   ref_ptr<SufferManager::IndexBuffer> ind_buff_2;
   vert_buff_2.alloc();
+  vert_buff_2->format_ = SufferManager::VertexBuffer::kVertexFormat_3P;
   ind_buff_2.alloc();
 
   float vertices2[] = {
@@ -129,8 +165,8 @@ void Suffer::Scene::Init() {
 
   ref_ptr<Material> material2;
   material2.alloc();
-  material2->SetMaterialType(Material::kBasicMaterials_Default);
-  material2->material_settings_->material_params_.default_params_.SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+  material2->SetMaterialParamsType(Material::MaterialSettings::kParams_Default);
+  material2->material_settings_->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
 
   ref_ptr<GameObject> go2;

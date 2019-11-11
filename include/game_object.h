@@ -46,8 +46,8 @@ namespace Suffer {
 
 		// Getters
 		Transform GetTransform();
-		ref_ptr<Material> GetMaterial();
-		ref_ptr<Geometry> GetGeometry();
+		const ref_ptr<Material> GetMaterial();
+		const ref_ptr<Geometry> GetGeometry();
 
 		// Setters
 		void SetMaterial(ref_ptr<Material> new_material);

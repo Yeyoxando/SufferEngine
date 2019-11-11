@@ -41,14 +41,16 @@ void Suffer::RenderManager::DoRender(){
 
 	dl_mutex_.lock();
 
-	u32 size = list_of_dl_.front().size();
-	
-	for (int i = 0; i < size; ++i) {
-		const Command* cmd = list_of_dl_.front().dl_commands_[i].get();
-		cmd->Execute();
-	}
-	
-	list_of_dl_.pop_front();
+  if (!list_of_dl_.empty()) {
+    u32 size = list_of_dl_.front().size();
+
+    for (int i = 0; i < size; ++i) {
+      const Command* cmd = list_of_dl_.front().dl_commands_[i].get();
+      cmd->Execute();
+    }
+
+    list_of_dl_.pop_front();
+  }
 
 	dl_mutex_.unlock();
 

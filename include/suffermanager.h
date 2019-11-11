@@ -61,12 +61,13 @@ namespace Suffer {
 			friend class SufferManager;
 			enum VertexFormat {
 				kVertexFormat_3P = 0,
+				kVertexFormat_3P_3N = 1,
 				kVertexFormat_Invalid
 			};
 
 			VertexBuffer();
 			~VertexBuffer() {};
-
+      
 			VertexFormat format_;
 
 		};
@@ -113,11 +114,11 @@ namespace Suffer {
 		void SumVertexBufferCount();
 		void SumIndexBufferCount();
 
-		u32 IsBufferCreated(ref_ptr<VertexBuffer> vertex_buffer);
-		u32 IsBufferCreated(ref_ptr<IndexBuffer> index_buffer);
-		u32 IsMaterialCreated(ref_ptr<Material> material);
+		u32 IsBufferCreated(const VertexBuffer* vertex_buffer);
+		u32 IsBufferCreated(const IndexBuffer* index_buffer);
+		u32 IsMaterialCreated(const Material* material);
 
-		u32 NumberElements(ref_ptr<IndexBuffer> index_buffer);
+		u32 NumberElements(const IndexBuffer* index_buffer);
     void SetMousePosition();
 
 

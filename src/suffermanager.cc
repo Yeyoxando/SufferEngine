@@ -102,14 +102,17 @@ void Suffer::SufferManager::Data::InitInternalMaterials(){
 	
 	  #version 330
 	  layout(location = 0) in vec3 a_position;
+	  layout(location = 1) in vec3 a_normal;
     
     uniform mat4 u_m_matrix;
     uniform mat4 u_v_matrix;
     uniform mat4 u_p_matrix;
-
+    
+    out vec3 normal;
 
 	  void main(){
       mat4 accum_matrix = u_p_matrix * u_v_matrix * u_m_matrix;
+      normal = normalize((u_m_matrix * vec4(a_normal, 0.0))).xyz;
 		  gl_Position = accum_matrix * vec4(a_position, 1.0f);
 	  }
 
@@ -119,11 +122,16 @@ void Suffer::SufferManager::Data::InitInternalMaterials(){
   
     #version 330
 
+    out vec4 fragColor;
+    
     uniform vec4 u_color;
+    in vec3 normal;
 
-      void main(){
-          gl_FragColor = vec4(u_color.r, u_color.g, u_color.b, u_color.a);
-      }
+    void main(){
+	       //vec3 aux_color = vec3(u_color.r, u_color.g, u_color.b) * normal;
+         //fragColor = vec4(aux_color.r + 0.5f, aux_color.g + 0.5f, aux_color.b + 0.5f, 1.0f);
+        fragColor = vec4(normal.r + 0.5f, normal.g + 0.5f, normal.b + 0.5f, 1.0f);
+    }
   	
   )FSHADER";
 
@@ -408,6 +416,7 @@ void Suffer::SufferManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer,
 
 #ifdef ASSERT
     assert(buffer.get() != nullptr && "Buffer is NULL!");
+    assert(buffer.get()->format_ != VertexBuffer::kVertexFormat_Invalid && "Vertex format is INVALID!");
 #endif
 
 	data_->internal_vertex_buffers_[buffer->id_].data_.copy(*data);
@@ -423,6 +432,7 @@ void Suffer::SufferManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer,
 #ifdef ASSERT
   assert(buffer.get() != nullptr && "Buffer is NULL!");
   assert(data != nullptr && "Data is NULL!");
+  assert(buffer.get()->format_ != VertexBuffer::kVertexFormat_Invalid && "Vertex format is INVALID!");
 #endif
 
   Array<float> vertices_;
@@ -441,7 +451,7 @@ void Suffer::SufferManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer,
 void Suffer::SufferManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, Array<u16> *data){
 
 #ifdef ASSERT
-    assert(buffer.get() != nullptr && "Buffer is NULL!");
+  assert(buffer.get() != nullptr && "Buffer is NULL!");
 #endif
     data_->internal_index_buffers_[buffer->id_].data_.copy(*data);
     data_->internal_index_buffers_[buffer->id_].version_++;
@@ -472,13 +482,13 @@ void Suffer::SufferManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, u
 
 // --------------------------------------------------------------//
 
-u32 Suffer::SufferManager::IsBufferCreated(ref_ptr<VertexBuffer> vertex_buffer){
+u32 Suffer::SufferManager::IsBufferCreated(const VertexBuffer* vertex_buffer){
 	
 #ifdef ASSERT
-	assert(vertex_buffer.get() != nullptr);
+	assert(vertex_buffer != nullptr);
 #endif
   if (vertex_buffer->id_ < 0) return 0;
-	s32 id_vertex = vertex_buffer.get()->id_;
+	s32 id_vertex = vertex_buffer->id_;
 	if (data_->internal_vertex_buffers_[id_vertex].gpu_version_ == 0) {
 		glGenBuffers(1, &data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
 		glBindBuffer(GL_ARRAY_BUFFER, data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
@@ -486,7 +496,8 @@ u32 Suffer::SufferManager::IsBufferCreated(ref_ptr<VertexBuffer> vertex_buffer){
 		glBufferData(GL_ARRAY_BUFFER,
 			data_->internal_vertex_buffers_[id_vertex].data_.sizeInBytes(),
 			data_->internal_vertex_buffers_[id_vertex].data_.get(),
-			GL_STATIC_DRAW);
+      GL_STATIC_DRAW);
+    data_->internal_vertex_buffers_[id_vertex].gpu_version_ = data_->internal_vertex_buffers_[id_vertex].version_;
 	}
 
 	if (data_->internal_vertex_buffers_[id_vertex].gpu_version_ < data_->internal_vertex_buffers_[id_vertex].version_) {
@@ -495,23 +506,23 @@ u32 Suffer::SufferManager::IsBufferCreated(ref_ptr<VertexBuffer> vertex_buffer){
 		glBufferData(GL_ARRAY_BUFFER,
 			data_->internal_vertex_buffers_[id_vertex].data_.sizeInBytes(),
 			data_->internal_vertex_buffers_[id_vertex].data_.get(),
-			GL_STATIC_DRAW);
+      GL_STATIC_DRAW);
+    data_->internal_vertex_buffers_[id_vertex].gpu_version_ = data_->internal_vertex_buffers_[id_vertex].version_;
 	}
 
-	data_->internal_vertex_buffers_[id_vertex].gpu_version_ = data_->internal_vertex_buffers_[id_vertex].version_;
 	return data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_;
 }
 
 // --------------------------------------------------------------//
 
-u32 Suffer::SufferManager::IsBufferCreated(ref_ptr<IndexBuffer> index_buffer) {
+u32 Suffer::SufferManager::IsBufferCreated(const IndexBuffer* index_buffer) {
 
 #ifdef ASSERT
-  assert(index_buffer.get() != nullptr);
+  assert(index_buffer != nullptr);
 #endif
   if (index_buffer->id_ < 0) return 0;
   GLenum error = glGetError();
-  s32 id_index = index_buffer.get()->id_;
+  s32 id_index = index_buffer->id_;
   if (data_->internal_index_buffers_[id_index].gpu_version_ == 0) {
     glGenBuffers(1, &data_->internal_index_buffers_[id_index].current_gl_buffer_);
     error = glGetError();
@@ -543,14 +554,14 @@ u32 Suffer::SufferManager::IsBufferCreated(ref_ptr<IndexBuffer> index_buffer) {
 
 // --------------------------------------------------------------//
 
-u32 Suffer::SufferManager::IsMaterialCreated(ref_ptr<Material> material){
+u32 Suffer::SufferManager::IsMaterialCreated(const Material* material){
 
 #ifdef ASSERT
-  assert(material.get() != nullptr);
+  assert(material != nullptr);
 #endif
   GLenum error;
 
-  u32 mat_type = material.get()->GetMaterialType();
+  u32 mat_type = material->GetMaterialParamsType();
   if (mat_type > 1000) return 0;
   if (!data_->internal_materials_[mat_type].is_created_) {
 		data_->internal_materials_[mat_type].vertex_shader_id_ =
@@ -581,6 +592,7 @@ u32 Suffer::SufferManager::IsMaterialCreated(ref_ptr<Material> material){
     GLchar* info_log = new GLchar[log_length + 1];
     glGetShaderInfoLog(data_->internal_materials_[mat_type].vertex_shader_id_, log_length, &log_length, info_log);
     info_log[log_length] = '\0';
+    printf("%s", info_log);
     delete info_log;
     if (status == GL_FALSE)
       printf("\nERROR: vertex shader not compiled");
@@ -594,6 +606,7 @@ u32 Suffer::SufferManager::IsMaterialCreated(ref_ptr<Material> material){
     info_log = new GLchar[log_length + 1];
     glGetShaderInfoLog(data_->internal_materials_[mat_type].fragment_shader_id_, log_length, &log_length, info_log);
     info_log[log_length] = '\0';
+    printf("%s", info_log);
     delete info_log;
     if (status == GL_FALSE)
       printf("\nERROR: fragment shader not compiled");
@@ -618,24 +631,15 @@ u32 Suffer::SufferManager::IsMaterialCreated(ref_ptr<Material> material){
 
   u32 program_id;
 
-  switch (mat_type) {
-  case Suffer::Material::kBasicMaterials_Default:
-    program_id = data_->internal_materials_[mat_type].current_program_;
-    break;
-  case Suffer::Material::kBasicMaterials_Phong:
-    break;
-  case Suffer::Material::kBasicMaterials_NONE:
-    break;
-  default:
-    break;
-  }
+  // We used to have a switch here with material type, but its not needed
+  program_id = data_->internal_materials_[mat_type].current_program_;
 
   return program_id;
 }
 
 // --------------------------------------------------------------//
 
-u32 Suffer::SufferManager::NumberElements(ref_ptr<IndexBuffer> index_buffer){
+u32 Suffer::SufferManager::NumberElements(const IndexBuffer* index_buffer){
   if (index_buffer->id_ < 0) return 0;
 	return data_->internal_index_buffers_[index_buffer->id_].data_.size();
 }
