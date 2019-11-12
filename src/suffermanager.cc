@@ -277,18 +277,6 @@ void Suffer::SufferManager::PrepareAudio() {
 
 // --------------------------------------------------------------//
 
-u32 Suffer::SufferManager::GetNumberOfVertexBuffers(){
-    return data_->number_of_vertex_buffers_;
-}
-
-// --------------------------------------------------------------//
-
-u32 Suffer::SufferManager::GetNumberOfIndexBuffers(){
-    return data_->number_of_index_buffers_;
-}
-
-// --------------------------------------------------------------//
-
 bool Suffer::SufferManager::Step(double time_step){
 
 	data_->scene_context_->Step(time_step);
@@ -340,7 +328,7 @@ Suffer::SufferManager::VertexBuffer::VertexBuffer() {
 
     type_ = GPUResource::kVertexBuffer;
     format_ = kVertexFormat_Invalid;
-    id_ = SufferManager::instance().GetNumberOfVertexBuffers();
+    id_ = SufferManager::instance().data_->number_of_vertex_buffers_;
     SufferManager::instance().data_->number_of_vertex_buffers_++;
 
 }
@@ -350,7 +338,7 @@ Suffer::SufferManager::VertexBuffer::VertexBuffer() {
 Suffer::SufferManager::IndexBuffer::IndexBuffer() {
 
     type_ = GPUResource::kIndexBuffer;
-    id_ = SufferManager::instance().GetNumberOfIndexBuffers();
+    id_ = SufferManager::instance().data_->number_of_index_buffers_;
     SufferManager::instance().data_->number_of_index_buffers_++;
 
 }
@@ -574,13 +562,6 @@ u32 Suffer::SufferManager::IsMaterialCreated(u32 material_id){
   program_id = data_->internal_materials_[material_id].current_program_;
 
   return program_id;
-}
-
-// --------------------------------------------------------------//
-
-u32 Suffer::SufferManager::NumberElements(const IndexBuffer* index_buffer){
-  if (index_buffer->id_ < 0) return 0;
-	return data_->internal_index_buffers_[index_buffer->id_].data_.size();
 }
 
 // --------------------------------------------------------------//

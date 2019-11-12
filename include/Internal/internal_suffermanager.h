@@ -1,4 +1,6 @@
 #include "suffermanager.h"
+#include "window.h"
+#include "interface.h"
 
 struct Suffer::SufferManager::Data {
 

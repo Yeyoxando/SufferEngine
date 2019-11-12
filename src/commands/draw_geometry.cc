@@ -3,6 +3,7 @@
 #include <data_types.h>
 #include <glm.hpp>
 #include "suffermanager.h"
+#include "internal_suffermanager.h"
 
 struct Suffer::DrawGeometry::Data {
 	// Geometry
@@ -123,7 +124,7 @@ void Suffer::DrawGeometry::Execute() const {
   GLenum error;
 	u32 id_vertex = SufferManager::instance().IsBufferCreated(data_->vertex_buffer_);
 	u32 id_index = SufferManager::instance().IsBufferCreated(data_->index_buffer_);
-	u32 number_elements = SufferManager::instance().NumberElements(data_->index_buffer_);
+	u32 number_elements = SufferManager::instance().data_->internal_index_buffers_[data_->index_buffer_->id_].data_.size();
 
   u32 program_id = SufferManager::instance().IsMaterialCreated(data_->internal_material_id_);
 
