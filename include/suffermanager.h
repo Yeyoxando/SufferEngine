@@ -111,9 +111,6 @@ namespace Suffer {
 		u32 GetNumberOfVertexBuffers();
 		u32 GetNumberOfIndexBuffers();
 
-		void SumVertexBufferCount();
-		void SumIndexBufferCount();
-
 		u32 IsBufferCreated(const VertexBuffer* vertex_buffer);
 		u32 IsBufferCreated(const IndexBuffer* index_buffer);
 		u32 IsMaterialCreated(u32 material_id);

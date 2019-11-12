@@ -22,6 +22,17 @@ mathmorra::Vector4::Vector4() {
 
 //---------------------------------------------------------------------------//
 
+mathmorra::Vector4::Vector4(float* a){
+
+    this->x_ = a[0];
+    this->y_ = a[1];
+    this->z_ = a[2];
+    this->w_ = a[3];
+
+}
+
+//---------------------------------------------------------------------------//
+
 mathmorra::Vector4::Vector4(float x_, float y_, float z_, float w_) {
 
   this->x_ = x_;

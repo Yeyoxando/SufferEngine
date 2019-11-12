@@ -42,6 +42,7 @@ namespace mathmorra {
     Vector4(float x, float y, float z, float w);
     Vector4(Vector3 a, float w);
     Vector4(float a);
+    Vector4(float* a);
     Vector4(const Vector4& other);
     ~Vector4();
 
