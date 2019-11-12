@@ -371,7 +371,7 @@ void  Suffer::Interface::CreateDock(bool* p_open){
 	ImGui::DockSpace(ImGui::GetID("SufferDockSpace"), ImVec2(0.0f, 0.0f), dockspace_flags);
 
 	if(is_inspector_opened_) Inspector();
-	if(is_hierarchy_opened_) Hierarchy();
+	if(is_hierarchy_opened_) Hierarchy(SufferManager::instance().GetCurrentScene());
 	if(is_project_window_opened_) Project();
 	if(is_log_opened_) Log();
 	//if(is_audio_window_opened_) Audio(SufferManager::instance().newSong.get());
@@ -623,19 +623,29 @@ void  Suffer::Interface::ChangeEditorStyle(){
 
 // --------------------------------------------------- //
 
-void  Suffer::Interface::Hierarchy(){
+void  Suffer::Interface::Hierarchy(Scene* current_scene_){
+
+#ifdef ASSERT
+    assert(current_scene_ != nullptr && "NULL Scene!");
+#endif
+
 	ImGui::Begin("Hierarchy", &is_hierarchy_opened_);
-	ImGui::Text("I'm the Hierarchy!");
-	
-	if (!ImGui::CollapsingHeader("GameObjects")) {
-		for (int i = 0; i < 20; ++i) {
-			if (ImGui::TreeNode("GameObject_G")) {
-				ImGui::TreePop();
-			}
-		}
-	}
+	ImGui::Text("Scene Hierarchy");
+
+  u32 scene_game_objects = current_scene_->current_gameobjects_.size();
+
+  for (int i = 0; i < scene_game_objects; ++i) {
+      ImGui::CollapsingHeader("GameObject");
+      u32 number_of_childs = current_scene_->current_gameobjects_.at(i).get()->NumberChilds();
+      for (int i = 0; i < number_of_childs; ++i) {
+        if (ImGui::TreeNode("Childs")) {
+          ImGui::TreePop();
+        }
+      }
+  }
 
 	ImGui::End();
+
 }
 
 // --------------------------------------------------- //

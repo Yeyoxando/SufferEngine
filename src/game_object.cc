@@ -120,6 +120,32 @@ void Suffer::GameObject::Translate(mathmorra::Vector3 position){
   transform_.position_ = position;
 }
 
+Suffer::GameObject* Suffer::GameObject::GetChild(u32 child){
+    // TODO: Expand this
+    return &GameObject();
+}
+
+// --------------------------------------------------- //
+
+u32 Suffer::GameObject::NumberChilds(){
+    return 0;
+}
+
+// --------------------------------------------------- //
+
+u32 Suffer::GameObject::NumberChildsRecursively(GameObject* go){
+
+    u32 number_of_childs = go->NumberChilds();
+    u32 result = 0;
+
+    for (u32 i = 0; i < number_of_childs; ++i) {
+        result = go->NumberChildsRecursively(go->GetChild(i));
+    }
+
+    return result;
+
+}
+
 // --------------------------------------------------- //
 
 void Suffer::GameObject::Rotate(float x, float y, float z){

@@ -8,6 +8,7 @@
 #include "input.h"
 #include "suffermanager.h"
 #include "common_definitions.h"
+#include "math_utils.h"
 #include "GL/glew.h"
 
 
@@ -166,7 +167,7 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
     }
 
     // LEFT
-    if (Suffer::IsKeyPressed(k_D)) {
+    if (Suffer::IsKeyPressed(k_A)) {
 
         mathmorra::Vector3 left = right * -1.0f;
         mathmorra::Matrix4 translations = translations.Translate(
@@ -179,7 +180,7 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
     }
 
     // RIGHT
-    if (Suffer::IsKeyPressed(k_A)) {
+    if (Suffer::IsKeyPressed(k_D)) {
 
         mathmorra::Matrix4 translations = translations.Translate(
             right.x_ * camera_speed * time,
@@ -235,9 +236,10 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
     float pos[3] = { camera_position_.x_, camera_position_.y_, camera_position_.z_ };
     camera->SetPosition(pos);
 
+    mathmorra::Vector2 mouse = SufferManager::instance().GetMousePosition();
 
-    float angleX = SufferManager::instance().GetMousePosition().x_ / (WINDOW_WIDTH * 1.0f) * 6.28f;
-    float angleY = SufferManager::instance().GetMousePosition().y_ / (WINDOW_HEIGHT * 1.0f) * 6.28f;
+    float angleX = (mouse.x_ / (WINDOW_WIDTH)) * 6.28f;
+    float angleY = (mouse.y_ / (WINDOW_HEIGHT)) * 6.28f;
 
 
     //MOUSE CONTROL - QUATERNIONS
@@ -245,7 +247,7 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
     mathmorra::Vector3 y = mathmorra::Vector3(0.0f, 1.0f, 0.0f);
 
     mathmorra::Quaternion q = q.EulerAngles(x, angleY);
-    mathmorra::Quaternion p = p.EulerAngles(y, -angleX);
+    mathmorra::Quaternion p = p.EulerAngles(y, angleX);
 
     mathmorra::Quaternion quaternion = quaternion.Multiply(p, q);
 
@@ -275,10 +277,10 @@ void Suffer::Camera::Update(){
     }
 
     camera_right_ = mathmorra::Vector3::Normalized(
-        mathmorra::Vector3::CrossProduct(camera_up_, camera_direction_)
+        mathmorra::Vector3::CrossProduct(camera_direction_, camera_up_)
     );
 
-    camera_up_ = mathmorra::Vector3::CrossProduct(camera_direction_, camera_right_);
+    camera_up_ = mathmorra::Vector3::CrossProduct(camera_right_, camera_direction_);
 
     projection_matrix_ = projection_matrix_.PerspectiveMatrix(
         field_of_view_, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.01f, 15000.0f);

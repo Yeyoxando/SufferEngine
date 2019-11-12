@@ -279,7 +279,6 @@ mathmorra::Quaternion mathmorra::Quaternion::operator*(Quaternion q) const {
 
   Quaternion result;
 
-  //float half = grades >> 1;
   float new_angle = grades * 0.5;
   float angle = sin(new_angle);
 

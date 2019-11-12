@@ -63,8 +63,11 @@ namespace Suffer {
 
     // Hierarchy Stuff
     void DetachChildren();
-    void GetChild(u32 child);
     void RemoveChild(u32 child);
+    GameObject* GetChild(u32 child);
+    
+    u32 NumberChilds();
+    u32 NumberChildsRecursively(GameObject* go);
 
     // Transform
     void Rotate(float x, float y, float z);

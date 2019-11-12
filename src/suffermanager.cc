@@ -678,3 +678,9 @@ void Suffer::SufferManager::SetMousePosition(){
 
 // --------------------------------------------------------------//
 
+Suffer::Scene* Suffer::SufferManager::GetCurrentScene() {
+    return data_->scene_context_.get();
+}
+
+// --------------------------------------------------------------//
+

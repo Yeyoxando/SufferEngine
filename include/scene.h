@@ -11,6 +11,7 @@ namespace Suffer {
 
 	class Scene : public Referenced {
       friend class Camera;
+      friend class Interface;
 	public:
 
 		Scene();

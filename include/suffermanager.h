@@ -11,12 +11,12 @@
 #include <material.h>
 #include "vector2.h"
 
-class Scene;
 
 // --------------------------------------------------------------//
 
 namespace Suffer {
 
+  class Scene;
 	class SufferManager {
 
 	public:
@@ -121,6 +121,7 @@ namespace Suffer {
 		u32 NumberElements(const IndexBuffer* index_buffer);
     void SetMousePosition();
 
+    Scene* GetCurrentScene();
 
 		// Threads
 		ref_ptr<Thread> logic_;
