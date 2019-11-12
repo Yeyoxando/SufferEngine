@@ -955,35 +955,37 @@ bool mathmorra::Matrix4::IsIdentity(){
                                                mathmorra::Vector3 target, 
                                                mathmorra::Vector3 up){
 
-   Matrix3 rot = Matrix3::LookRotation(Vector3::Normalized(target - eye), up);
+     Vector3 forward = eye - target;
+     forward.Normalized();
 
-   Matrix4 matrix;
-   Vector4 column_0 = { rot.GetColum(0).x_,
-                        rot.GetColum(0).y_,
-                        rot.GetColum(0).z_,
-                        0.0f };
+     // compute the left vector
+     Vector3 left = up.CrossProduct(up, forward); // cross product
+     left.Normalized();
 
-   Vector4 column_1 = { rot.GetColum(1).x_,
-                        rot.GetColum(1).y_,
-                        rot.GetColum(1).z_,
-                        0.0f };
+     // recompute the orthonormal up vector
+     Vector3 upDir = forward.CrossProduct(forward, left);    // cross product
 
-   Vector4 column_2 = { rot.GetColum(2).x_,
-                        rot.GetColum(2).y_,
-                        rot.GetColum(2).z_,
-                        0.0f };
+     // init 4x4 matrix
+     Matrix4 matrix;
+     matrix.Identity();
 
-   Vector4 eye_4 = { eye.x_,
-                     eye.y_,
-                     eye.z_,
-                     1.0f };
+     // set rotation part, inverse rotation matrix: M^-1 = M^T for Euclidean transform
+     matrix.m[0] = left.x_;
+     matrix.m[4] = left.y_;
+     matrix.m[8] = left.z_;
+     matrix.m[1] = upDir.x_;
+     matrix.m[5] = upDir.y_;
+     matrix.m[9] = upDir.z_;
+     matrix.m[2] = forward.x_;
+     matrix.m[6] = forward.y_;
+     matrix.m[10] = forward.z_;
 
-   matrix.SetColum(column_0, 0);
-   matrix.SetColum(column_1, 1);
-   matrix.SetColum(column_2, 2);
-   matrix.SetColum(eye_4, 3);
+     // set translation part
+     matrix.m[12] = -left.x_ * eye.x_ - left.y_ * eye.y_ - left.z_ * eye.z_;
+     matrix.m[13] = -upDir.x_ * eye.x_ - upDir.y_ * eye.y_ - upDir.z_ * eye.z_;
+     matrix.m[14] = -forward.x_ * eye.x_ - forward.y_ * eye.y_ - forward.z_ * eye.z_;
 
-   return matrix;
+     return matrix;
 
  }
 

@@ -6,6 +6,7 @@ Vector3
 */
 
 #include "vector3.h"
+#include "matrix4.h"
 #include "math.h"
 
 const mathmorra::Vector3 mathmorra::Vector3::up = Vector3(0.0f, 1.0f, 0.0f);
@@ -251,6 +252,20 @@ mathmorra::Vector3& mathmorra::Vector3::operator/=(const float& b) {
   this->z_ *= inverted_b;
 
   return *this;
+
+}
+
+//---------------------------------------------------------------------------//
+
+mathmorra::Vector3 mathmorra::Vector3::operator*(mathmorra::Matrix4 matrix) const{
+
+    Vector3 result;
+
+    result.x_ = (x_ * matrix.m[0]) + (y_ * matrix.m[1]) + (z_ * matrix.m[2]) + matrix.m[3];
+    result.y_ = (x_ * matrix.m[4]) + (y_ * matrix.m[5]) + (z_ * matrix.m[6]) + matrix.m[7];
+    result.z_ = (x_ * matrix.m[8]) + (y_ * matrix.m[9]) + (z_ * matrix.m[10]) + matrix.m[11];
+
+    return result;
 
 }
 

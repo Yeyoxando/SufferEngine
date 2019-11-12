@@ -28,8 +28,10 @@ Version: 5.0
 #ifndef __VECTOR_3_H__
 #define __VECTOR_3_H__ 1
 
+
 namespace mathmorra {
 
+  class Matrix4;
   class Vector3 {
 
   public:
@@ -57,6 +59,9 @@ namespace mathmorra {
     Vector3& operator*=(const float& b);
     Vector3 operator/(const float& b);
     Vector3& operator/=(const float& b);
+
+
+    mathmorra::Vector3 operator*(mathmorra::Matrix4 matrix) const;
 
     float Magnitude() const;
     Vector3 Normalized() const;

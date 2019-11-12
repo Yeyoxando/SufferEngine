@@ -240,6 +240,7 @@ void Suffer::SufferManager::Update() {
 
 	while(1){
 		Step(data_->delta_time_);
+
 		logic_->Sleep();
 	}
 
@@ -301,7 +302,7 @@ bool Suffer::SufferManager::Run(){
 
 		Draw();
     
-    logic_->WaitMe();
+    //logic_->WaitMe();
 
 		data_->delta_time_ = (data_->current_time_ - data_->previous_time_) * 0.0001f;
 		data_->previous_time_ = data_->current_time_;

@@ -18,11 +18,12 @@ Suffer::Camera::Camera() {
 
     camera_position_ = mathmorra::Vector3(0.0f, 0.0f, -15.0f);
     camera_target_ = mathmorra::Vector3(0.0f, 0.0f, 1.0f);
+
+    camera_up_ = mathmorra::Vector3(0.0f, 1.0f, 0.0f);
+    camera_right_ = mathmorra::Vector3(1.0f, 0.0f, 0.0f);
+    camera_forward_ = mathmorra::Vector3(0.0f, 0.0f, -1.0f);
     camera_direction_ = mathmorra::Vector3(0.0f, 0.0f, 1.0f);
 
-    camera_forward_ = mathmorra::Vector3(0.0f, 0.0f, 1.0f);
-    
-    camera_up_ = mathmorra::Vector3(0.0f, 1.0f, 0.0f);
     fps_movement_ = false;
 
 }
@@ -133,87 +134,110 @@ mathmorra::Matrix4 Suffer::Camera::ViewMatrix(){
 // FPS Movement
 void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
 
+    float time = SufferManager::instance().DeltaTime() * 0.01f;
+    float camera_speed = speed_;
+
+    // MOUSE UTILS
+    mathmorra::Vector2 current_position;
+    mathmorra::Vector2 last_position;
+
     // CAMERA UTILS
     mathmorra::Vector3 right;
     mathmorra::Vector3 up;
-    const float* updirection = camera.get()->Up();
+    const float* updirection = camera->Up();
 
-    up.x_ = updirection[0];
-    up.y_ = updirection[1];
-    up.z_ = updirection[2];
+    up.x_ = *updirection;
+    up.y_ = *(updirection + 1);
+    up.z_ = *(updirection + 2);
 
-    right = mathmorra::Vector3::CrossProduct(camera_forward_.Normalized(), 
-                                             up.Normalized());
-    right.Normalize();
-
-    double time_ = SufferManager::instance().DeltaTime();
-    time_ *= 0.01f;
+    right = right.CrossProduct(camera_forward_.Normalized(), up.Normalized());
 
 
-    // Input Stuff
-    if (Suffer::IsKeyPressed(k_W)) { // BACK
-        mathmorra::Vector3 back = camera_forward_ * -1.0f;
+    // FORWARD
+    if (Suffer::IsKeyPressed(k_S)) {
+
         mathmorra::Matrix4 translations = translations.Translate(
-            back.x_ * speed_ * time_,
-            back.y_ * speed_ * time_,
-            back.z_ * speed_ * time_);
-        camera_position_ = translations.Transpose() * camera_position_;
+            camera_forward_.x_ * camera_speed * time,
+            camera_forward_.y_ * camera_speed * time,
+            camera_forward_.z_ * camera_speed * time);
 
+        //Transform Matrix4 / Vector3
+        camera_position_ = translations.Transpose() * camera_position_;
     }
 
-    if (Suffer::IsKeyPressed(k_A)) { // LEFT
+    // LEFT
+    if (Suffer::IsKeyPressed(k_D)) {
+
         mathmorra::Vector3 left = right * -1.0f;
         mathmorra::Matrix4 translations = translations.Translate(
-            left.x_ * speed_ * time_,
+            left.x_ * camera_speed * time,
             0.0f,
-            left.z_ * speed_ * time_);
+            left.z_ * camera_speed * time);
 
-        camera_position_ = translations.Transpose() * camera_position_;
+        //Transform Matrix4 / Vector3
+        camera_position_ = translations.Transpose() * camera_position_ ;
     }
 
-    if (Suffer::IsKeyPressed(k_S)) { // FORWARD
-        mathmorra::Matrix4 translations = translations.Translate(
-            camera_forward_.x_ * speed_ * time_,
-            camera_forward_.y_ * speed_ * time_,
-            camera_forward_.z_ * speed_ * time_);
+    // RIGHT
+    if (Suffer::IsKeyPressed(k_A)) {
 
-        camera_position_ = translations.Transpose() * camera_position_;
+        mathmorra::Matrix4 translations = translations.Translate(
+            right.x_ * camera_speed * time,
+            0.0f,
+            right.z_ * camera_speed * time);
+
+        //Transform Matrix4 / Vector3
+        camera_position_ = translations.Transpose() * camera_position_ ;
+
     }
 
+    // BACK
+    if (Suffer::IsKeyPressed(k_W)) {
 
-    if (Suffer::IsKeyPressed(k_D)) { // RIGHT
-        mathmorra::Matrix4 translations = translations.Translate(
-            right.x_ * speed_ * time_,
-            0.0f,
-            right.z_ * speed_ * time_);
+        mathmorra::Vector3 back = camera_forward_ * -1.0f;
+        mathmorra::Matrix4 translations = translations.Translate(back.x_ * camera_speed * time,
+            back.y_ * camera_speed * time,
+            back.z_ * camera_speed * time);
 
-        camera_position_ = translations.Transpose() * camera_position_;
+        //Transform Matrix4 / Vector3
+        camera_position_ = translations.Transpose() * camera_position_ ;
+
     }
-    if (Suffer::IsKeyPressed(k_Q)) { //UP
+
+    //UP
+    if (Suffer::IsKeyPressed(k_E)) {
+
         mathmorra::Matrix4 translations = translations.Translate(
             0.0f,
-            camera_up_.y_ * speed_ * time_,
+            up.y_ * camera_speed * time,
             0.0f);
 
-        camera_position_ = translations.Transpose() * camera_position_;
+        //Transform Matrix4 / Vector3
+        camera_position_ = translations.Transpose() * camera_position_ ;
 
     }
-    if (Suffer::IsKeyPressed(k_E)) { // DOWN
-        mathmorra::Vector3 down = camera_up_ * -1.0f;
-        mathmorra::Matrix4 translations = translations.Translate(0.0f,
-            down.y_ * speed_ * time_,
+
+    //DOWN
+    if (Suffer::IsKeyPressed(k_Q)) {
+
+        mathmorra::Vector3 down = up * -1.0f;
+
+        mathmorra::Matrix4 translations = translations.Translate(
+            0.0f,
+            down.y_ * speed_ * time,
             0.0f);
 
+        //Transform Matrix4 / Vector3
         camera_position_ = translations.Transpose() * camera_position_;
 
     }
 
     float pos[3] = { camera_position_.x_, camera_position_.y_, camera_position_.z_ };
-    camera.get()->SetPosition(pos);
+    camera->SetPosition(pos);
 
-    mathmorra::Vector2 mouse = SufferManager::instance().GetMousePosition();
-    float angleX = mouse.x_ / WINDOW_WIDTH * 6.28f;
-    float angleY = mouse.y_ / WINDOW_HEIGHT * 6.28f;
+
+    float angleX = SufferManager::instance().GetMousePosition().x_ / (WINDOW_WIDTH * 1.0f) * 6.28f;
+    float angleY = SufferManager::instance().GetMousePosition().y_ / (WINDOW_HEIGHT * 1.0f) * 6.28f;
 
 
     //MOUSE CONTROL - QUATERNIONS
@@ -228,7 +252,7 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
     camera_forward_ = { 0.0f, 0.0f, -1.0f };
     camera_forward_ = quaternion.RotateVectorByQuaternion(camera_forward_, quaternion);
 
-    camera.get()->SetViewDirection(camera_forward_);
+    camera->SetViewDirection(-camera_forward_);
 
 }
 
@@ -265,4 +289,6 @@ void Suffer::Camera::Update(){
         mathmorra::Vector4(camera_forward_,  0.0f),
         mathmorra::Vector4(camera_position_, 1.0f)
     );
+
+    view_matrix_.GetInverse(&view_matrix_);
 }
