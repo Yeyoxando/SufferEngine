@@ -20,6 +20,7 @@ struct Suffer::SufferManager::Data {
 	double current_time_;
 	double delta_time_;
 	Interface interface_;
+  bool is_interface_active_;
 
 	ref_ptr<Scene> scene_context_;
 
@@ -203,6 +204,7 @@ bool Suffer::SufferManager::Init(){
 	data_->wind_.init(WINDOW_WIDTH, WINDOW_HEIGHT);
 	Suffer::InitInput();
 	data_->interface_.Init();
+  data_->is_interface_active_ = false;
 
 	//Subsystems init
   audio_manager_.StartUp();
@@ -250,12 +252,14 @@ void Suffer::SufferManager::Update() {
 
 void Suffer::SufferManager::Draw() {
 
-	data_->interface_.Update();
-	data_->interface_.Render();
-
 	render_manager_.DoRender();
 
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+  if (data_->is_interface_active_) {
+      data_->interface_.Update();
+      data_->interface_.Render();
+      ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+  }
+
 	data_->wind_.swapBuffers();
 
 }
@@ -271,6 +275,9 @@ void Suffer::SufferManager::Input() {
 		if (Suffer::IsKeyDown(k_Escape)) {
 			data_->window_should_close_ = true;
 		}
+    if (Suffer::IsKeyDown(k_F2)) {
+        data_->is_interface_active_ = !data_->is_interface_active_;
+    }
 	}
 
 }
