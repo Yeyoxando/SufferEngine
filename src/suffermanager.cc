@@ -571,57 +571,52 @@ u32 Suffer::SufferManager::IsBufferCreated(const IndexBuffer* index_buffer) {
 
 // --------------------------------------------------------------//
 
-u32 Suffer::SufferManager::IsMaterialCreated(const Material* material){
+u32 Suffer::SufferManager::IsMaterialCreated(u32 material_id){
 
-#ifdef ASSERT
-  assert(material != nullptr);
-#endif
   GLenum error;
-
-  u32 mat_type = material->GetMaterialParamsType();
-  if (mat_type > 1000) return 0;
-  if (!data_->internal_materials_[mat_type].is_created_) {
-		data_->internal_materials_[mat_type].vertex_shader_id_ =
+  
+  if (!data_->internal_materials_[material_id].is_created_) {
+		data_->internal_materials_[material_id].vertex_shader_id_ =
       glCreateShader(GL_VERTEX_SHADER);
     error = glGetError();
-    data_->internal_materials_[mat_type].fragment_shader_id_ =
+    data_->internal_materials_[material_id].fragment_shader_id_ =
       glCreateShader(GL_FRAGMENT_SHADER);
     error = glGetError();
 
-    const GLint vertex_size = strlen(data_->internal_materials_[mat_type].vertex_shader_);
-    const GLint fragment_size = strlen(data_->internal_materials_[mat_type].fragment_shader_);
+    const GLint vertex_size = strlen(data_->internal_materials_[material_id].vertex_shader_);
+    const GLint fragment_size = strlen(data_->internal_materials_[material_id].fragment_shader_);
 
-    glShaderSource(data_->internal_materials_[mat_type].vertex_shader_id_,
-      1, &data_->internal_materials_[mat_type].vertex_shader_,
+    glShaderSource(data_->internal_materials_[material_id].vertex_shader_id_,
+      1, &data_->internal_materials_[material_id].vertex_shader_,
       &vertex_size);
     error = glGetError();
-    glShaderSource(data_->internal_materials_[mat_type].fragment_shader_id_,
-      1, &data_->internal_materials_[mat_type].fragment_shader_, &fragment_size);
+    glShaderSource(data_->internal_materials_[material_id].fragment_shader_id_,
+      1, &data_->internal_materials_[material_id].fragment_shader_, &fragment_size);
     error = glGetError();
 
-    glCompileShader(data_->internal_materials_[mat_type].vertex_shader_id_);
+    glCompileShader(data_->internal_materials_[material_id].vertex_shader_id_);
     error = glGetError();
 
     GLint status = 0;
-    glGetShaderiv(data_->internal_materials_[mat_type].vertex_shader_id_, GL_COMPILE_STATUS, &status);
+    glGetShaderiv(data_->internal_materials_[material_id].vertex_shader_id_, GL_COMPILE_STATUS, &status);
     GLint log_length = 0;
-    glGetShaderiv(data_->internal_materials_[mat_type].vertex_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
+    glGetShaderiv(data_->internal_materials_[material_id].vertex_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
     GLchar* info_log = new GLchar[log_length + 1];
-    glGetShaderInfoLog(data_->internal_materials_[mat_type].vertex_shader_id_, log_length, &log_length, info_log);
+    glGetShaderInfoLog(data_->internal_materials_[material_id].vertex_shader_id_, log_length, &log_length, info_log);
     info_log[log_length] = '\0';
     printf("%s", info_log);
     delete info_log;
     if (status == GL_FALSE)
       printf("\nERROR: vertex shader not compiled");
 
-    glCompileShader(data_->internal_materials_[mat_type].fragment_shader_id_);
+    glCompileShader(data_->internal_materials_[material_id].fragment_shader_id_);
     error = glGetError();
     status = 0;
-    glGetShaderiv(data_->internal_materials_[mat_type].fragment_shader_id_, GL_COMPILE_STATUS, &status);
+    glGetShaderiv(data_->internal_materials_[material_id].fragment_shader_id_, GL_COMPILE_STATUS, &status);
     log_length = 0;
-    glGetShaderiv(data_->internal_materials_[mat_type].fragment_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
+    glGetShaderiv(data_->internal_materials_[material_id].fragment_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
     info_log = new GLchar[log_length + 1];
-    glGetShaderInfoLog(data_->internal_materials_[mat_type].fragment_shader_id_, log_length, &log_length, info_log);
+    glGetShaderInfoLog(data_->internal_materials_[material_id].fragment_shader_id_, log_length, &log_length, info_log);
     info_log[log_length] = '\0';
     printf("%s", info_log);
     delete info_log;
@@ -629,27 +624,26 @@ u32 Suffer::SufferManager::IsMaterialCreated(const Material* material){
       printf("\nERROR: fragment shader not compiled");
 
     // PROGRAM
-    data_->internal_materials_[mat_type].current_program_ = glCreateProgram();
+    data_->internal_materials_[material_id].current_program_ = glCreateProgram();
 
     error = glGetError();
-    glAttachShader(data_->internal_materials_[mat_type].current_program_,
-      data_->internal_materials_[mat_type].vertex_shader_id_);
+    glAttachShader(data_->internal_materials_[material_id].current_program_,
+      data_->internal_materials_[material_id].vertex_shader_id_);
 
     error = glGetError();
-    glAttachShader(data_->internal_materials_[mat_type].current_program_,
-      data_->internal_materials_[mat_type].fragment_shader_id_);
+    glAttachShader(data_->internal_materials_[material_id].current_program_,
+      data_->internal_materials_[material_id].fragment_shader_id_);
 
     error = glGetError();
-    glLinkProgram(data_->internal_materials_[mat_type].current_program_);
+    glLinkProgram(data_->internal_materials_[material_id].current_program_);
 
     error = glGetError();
-    data_->internal_materials_[mat_type].is_created_ = true;
+    data_->internal_materials_[material_id].is_created_ = true;
   }
 
   u32 program_id;
 
-  // We used to have a switch here with material type, but its not needed
-  program_id = data_->internal_materials_[mat_type].current_program_;
+  program_id = data_->internal_materials_[material_id].current_program_;
 
   return program_id;
 }

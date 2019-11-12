@@ -1,7 +1,7 @@
 /*
 * Author: Pablo Bano Benito <banyobe@esat-alumni.com>
 * Date: 10-12-2019
-* GameObject Header (Material, Transform, Geometry)
+* GameObject Header (Transform)
 */
 
 #ifndef __GAME_OBJECT_H__
@@ -51,11 +51,11 @@ namespace Suffer {
 
 		// Getters
 		Transform GetTransform();
-		const ref_ptr<Material> GetMaterial();
+		const ref_ptr<MaterialInstance> GetMaterial();
 		const ref_ptr<Geometry> GetGeometry();
 
 		// Setters
-		void SetMaterial(ref_ptr<Material> new_material);
+		void SetMaterial(ref_ptr<MaterialInstance> new_material);
 		void SetGeometry(ref_ptr<Geometry> new_geometry);
 
 		ref_ptr<Command> GetDrawCommand();
@@ -83,7 +83,7 @@ namespace Suffer {
 	private:
 		// Attributes
 		Transform transform_;
-		ref_ptr<Material> material_;
+		ref_ptr<MaterialInstance> material_;
 		ref_ptr<Geometry> geometry_;
 
     char* name_;

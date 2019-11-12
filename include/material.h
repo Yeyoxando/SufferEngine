@@ -1,7 +1,7 @@
 /*
 * Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
 * Date: 10-12-2019
-* Material Header
+* MaterialInstance Header
 */
 
 #ifndef __MATERIAL_H__
@@ -16,82 +16,41 @@ namespace Suffer {
 
 	// --------------------------------------------------- //
 
-	class Material : public Referenced {
+	class MaterialInstance : public Referenced {
 
 	public:
 		friend class DrawGeometry;
 
+		MaterialInstance();
 
-		Material();
-
-    class MaterialSettings : public Referenced {
-    public:
-      MaterialSettings();
-      ~MaterialSettings();
-
-
-      enum ParamsType {
-        kParams_Default = 0,
-        kParams_Phong,
-        kParams_NONE = 20
-      };
-
-      struct DefaultParams {
-        friend class MaterialSettings;
-      public:
-        DefaultParams();
-        ~DefaultParams() {}
-
-      private:
-        mathmorra::Vector4 color_;
-      };
-
-      struct PhongParams {
-        friend class MaterialSettings;
-        PhongParams();
-        ~PhongParams() {}
-
-      private:
-          mathmorra::Vector4 color_;
-
-      };
-
-      union Params {
-        Params();
-        ~Params();
-
-        DefaultParams default_params_;
-        PhongParams phong_params_;
-      };
-
-
-      // Getters
-      mathmorra::Vector4 GetColor() const;
-
-      // Setters
-      void SetColor(mathmorra::Vector4 new_color);
-
-      Params material_params_;
-
-      ParamsType params_type_;
+    enum ParamsType {
+      kParams_Default = 0,
+      kParams_Phong,
+      kParams_NONE = 20
     };
 
-    void SetMaterialParamsType(MaterialSettings::ParamsType type);
-    u32 GetMaterialParamsType() const;
+    // Getters
+    mathmorra::Vector4 GetColor() const;
 
-    ref_ptr<MaterialSettings> material_settings_;
+    // Setters
+    void SetColor(mathmorra::Vector4 new_color);
+
+
+    void SetMaterialParamsType(ParamsType type);
+    u32 GetMaterialParamsType() const;
 
 
 	protected:
-		virtual ~Material();
+		virtual ~MaterialInstance();
 
 	private:
+    ParamsType params_type_;
 
 		struct Data;
 		Data* data_;
 
 		// Methods
-		Material(const Material&);
+		MaterialInstance(const MaterialInstance&);
 	};
 }
 

@@ -25,7 +25,7 @@ namespace Suffer {
     void SetViewMatrix(mathmorra::Matrix4 view);
     void SetProjectionMatrix(mathmorra::Matrix4 projection);
 		void SetGeometry(const ref_ptr<Geometry> geo);
-		void SetMaterial(const ref_ptr<Material> mat);
+		void SetMaterial(const ref_ptr<MaterialInstance> mat);
 
 		DrawGeometry();
 

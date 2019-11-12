@@ -84,10 +84,10 @@ void Suffer::Scene::Init() {
 	geometry->SetBuffers(vert_buff_, ind_buff_);
 	
 	
-	ref_ptr<Material> material;
+	ref_ptr<MaterialInstance> material;
 	material.alloc();
-  material->SetMaterialParamsType(Material::MaterialSettings::kParams_Default);
-  material->material_settings_->SetColor(mathmorra::Vector4( 0.5, 0.0f, 1.0f, 1.0f ));
+  material->SetMaterialParamsType(MaterialInstance::kParams_Default);
+  material->SetColor(mathmorra::Vector4( 0.5, 0.0f, 1.0f, 1.0f ));
 
 	ref_ptr<GameObject> go;
 	go.alloc();
@@ -132,10 +132,10 @@ void Suffer::Scene::Init() {
   geometry2->SetBuffers(vert_buff_2, ind_buff_2);
   
   
-  ref_ptr<Material> material2;
+  ref_ptr<MaterialInstance> material2;
   material2.alloc();
-  material2->SetMaterialParamsType(Material::MaterialSettings::kParams_Default);
-  material2->material_settings_->SetColor(mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+  material2->SetMaterialParamsType(MaterialInstance::kParams_Default);
+  material2->SetColor(mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f));
   
   
   ref_ptr<GameObject> go2;

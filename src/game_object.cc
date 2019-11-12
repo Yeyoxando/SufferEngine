@@ -1,7 +1,7 @@
 /*
 * Author: Pablo Bano Benito <banyobe@esat-alumni.com>
 * Date: 10-12-2019
-* GameObject Source (Material, Transform, Geometry)
+* GameObject Source (Transform)
 */
 
 #include <game_object.h>
@@ -50,7 +50,7 @@ Suffer::GameObject::GameObject(const GameObject& go) {
 
 // --------------------------------------------------- //
 
-const Suffer::ref_ptr<Suffer::Material> Suffer::GameObject::GetMaterial() {
+const Suffer::ref_ptr<Suffer::MaterialInstance> Suffer::GameObject::GetMaterial() {
 	return material_;
 }
 
@@ -62,7 +62,7 @@ const Suffer::ref_ptr<Suffer::Geometry> Suffer::GameObject::GetGeometry() {
 
 // --------------------------------------------------- //
 
-void Suffer::GameObject::SetMaterial(ref_ptr<Material> new_material) {
+void Suffer::GameObject::SetMaterial(ref_ptr<MaterialInstance> new_material) {
 
 #ifdef ASSERT
 	assert(new_material); // "newMaterial was NULL"

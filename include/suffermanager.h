@@ -116,7 +116,7 @@ namespace Suffer {
 
 		u32 IsBufferCreated(const VertexBuffer* vertex_buffer);
 		u32 IsBufferCreated(const IndexBuffer* index_buffer);
-		u32 IsMaterialCreated(const Material* material);
+		u32 IsMaterialCreated(u32 material_id);
 
 		u32 NumberElements(const IndexBuffer* index_buffer);
     void SetMousePosition();

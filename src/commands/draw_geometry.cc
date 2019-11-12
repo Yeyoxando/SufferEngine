@@ -9,14 +9,37 @@ struct Suffer::DrawGeometry::Data {
   const SufferManager::VertexBuffer* vertex_buffer_;
   const SufferManager::IndexBuffer* index_buffer_;
 
-	// Material
-  const Material* material_;
-
   // Transform 
   mathmorra::Matrix4 model_matrix_;
   mathmorra::Matrix4 view_matrix_;
   mathmorra::Matrix4 projection_matrix_;
  
+  // Material 
+  struct DefaultParams {
+    DefaultParams() {}
+    ~DefaultParams() {}
+    
+    mathmorra::Vector4 color_;
+  };
+
+  struct PhongParams{
+    PhongParams() {}
+    ~PhongParams() {}
+
+    mathmorra::Vector4 color_;
+  
+  };
+
+  union Params {
+    Params() {}
+    ~Params() {}
+
+    DefaultParams default_params_;
+    PhongParams phong_params_;
+  };
+
+  u32 internal_material_id_;
+  Params material_params_;
 };
 
 // --------------------------------------------------- //
@@ -69,36 +92,51 @@ void Suffer::DrawGeometry::SetGeometry(const ref_ptr<Geometry> geo){
 
 // --------------------------------------------------- //
 
-void Suffer::DrawGeometry::SetMaterial(const ref_ptr<Material> mat){
-  data_->material_ = mat.get();
+void Suffer::DrawGeometry::SetMaterial(const ref_ptr<MaterialInstance> mat){
+  data_->internal_material_id_ = (u32)mat->params_type_;
+
+  switch (mat->params_type_){
+  case MaterialInstance::ParamsType::kParams_Default:
+    data_->material_params_.default_params_.color_ = mat->GetColor();
+    break;
+  case MaterialInstance::ParamsType::kParams_Phong:
+    data_->material_params_.default_params_.color_ = mat->GetColor();
+    //Other parameters for phong
+    break;
+  case MaterialInstance::ParamsType::kParams_NONE:
+#ifdef ASSERT
+    assert(mat->params_type_ != MaterialInstance::kParams_NONE && "MaterialInstance type not set");
+#endif
+    break;
+  default:
+    break;
+  }
+
+  //data_->material_ = mat.get();
 
 }
 
 // --------------------------------------------------- //
 
 void Suffer::DrawGeometry::Execute() const {
-#ifdef ASSERT
-  assert(data_->material_->material_settings_->params_type_ != Material::MaterialSettings::kParams_NONE && "Material type not set");
-#endif
-
 
   GLenum error;
 	u32 id_vertex = SufferManager::instance().IsBufferCreated(data_->vertex_buffer_);
 	u32 id_index = SufferManager::instance().IsBufferCreated(data_->index_buffer_);
 	u32 number_elements = SufferManager::instance().NumberElements(data_->index_buffer_);
 
-  u32 program_id = SufferManager::instance().IsMaterialCreated(data_->material_);
+  u32 program_id = SufferManager::instance().IsMaterialCreated(data_->internal_material_id_);
 
   glUseProgram(program_id);
   error = glGetError();
 	
   s32 u_pos = -1;
 
-  // Material setting uniforms
-  switch (data_->material_->material_settings_.get()->params_type_) {
-  case Material::MaterialSettings::kParams_Default: {
+  // MaterialInstance setting uniforms
+  switch (data_->internal_material_id_) {
+  case MaterialInstance::kParams_Default: {
 
-    mathmorra::Vector4 color = data_->material_->material_settings_->GetColor();
+    mathmorra::Vector4 color = data_->material_params_.default_params_.color_;
     u_pos = glGetUniformLocation(program_id, "u_color");
     if (u_pos < 0) {
       printf("\nERROR: u_color uniform not exists.");
@@ -109,10 +147,10 @@ void Suffer::DrawGeometry::Execute() const {
     u_pos = -1;
   }
     break;
-  case Material::MaterialSettings::kParams_Phong:
+  case MaterialInstance::kParams_Phong:
     
     break;
-  case Material::MaterialSettings::kParams_NONE:
+  case MaterialInstance::kParams_NONE:
     break;
   default:
     break;
