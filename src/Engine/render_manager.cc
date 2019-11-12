@@ -40,19 +40,24 @@ void Suffer::RenderManager::AddToRenderQueue(DisplayList&& logic_dl){
 void Suffer::RenderManager::DoRender(){
 
 	dl_mutex_.lock();
+  
+  if (!list_of_dl_.empty())
+    render_dl_ = std::move(list_of_dl_.front());
+  
+  list_of_dl_.pop_front();
+	
+  dl_mutex_.unlock();
+    
 
-  if (!list_of_dl_.empty()) {
-    u32 size = list_of_dl_.front().size();
 
-    for (int i = 0; i < size; ++i) {
-      const Command* cmd = list_of_dl_.front().dl_commands_[i].get();
-      cmd->Execute();
-    }
+  u32 size = render_dl_.size();
 
-    list_of_dl_.pop_front();
+  for (int i = 0; i < size; ++i) {
+    const Command* cmd = render_dl_.dl_commands_[i].get();
+    cmd->Execute();
   }
 
-	dl_mutex_.unlock();
+  render_dl_.clear();
 
 }
 

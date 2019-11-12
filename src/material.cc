@@ -12,7 +12,7 @@ struct Suffer::MaterialInstance::Data {
 
 // --------------------------------------------------- //
 
-mathmorra::Vector4 Suffer::MaterialInstance::GetColor() const{
+float* Suffer::MaterialInstance::GetColor() const{
  // This switch will be needed in other atrributtes that can only be set in specific material, 
   // For example specular in phong will be needed, but not it default
   
@@ -31,7 +31,7 @@ mathmorra::Vector4 Suffer::MaterialInstance::GetColor() const{
  //}
 
 
-  return data_->color_;
+  return data_->color_.GetValues();
 }
 
 // --------------------------------------------------- //

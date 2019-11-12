@@ -30,7 +30,7 @@ namespace Suffer {
     };
 
     // Getters
-    mathmorra::Vector4 GetColor() const;
+    float* GetColor() const;
 
     // Setters
     void SetColor(mathmorra::Vector4 new_color);
