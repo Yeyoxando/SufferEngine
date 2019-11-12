@@ -74,6 +74,7 @@ namespace mathmorra {
     static float DotProduct(Vector4 a, Vector4 b); // a · b
     static Vector4 Lerp(const Vector4& a, const Vector4& b, float index);
     static Vector4 Projection(Vector4 a, Vector4 b);
+    float* GetValues();
 
     //Constants
     static const Vector4 one;
