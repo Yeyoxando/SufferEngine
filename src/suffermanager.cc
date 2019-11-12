@@ -250,12 +250,12 @@ void Suffer::SufferManager::Update() {
 
 void Suffer::SufferManager::Draw() {
 
-	//data_->interface_.Update();
-	//data_->interface_.Render();
+	data_->interface_.Update();
+	data_->interface_.Render();
 
 	render_manager_.DoRender();
 
-	//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	data_->wind_.swapBuffers();
 
 }

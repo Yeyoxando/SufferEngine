@@ -235,7 +235,7 @@ void  Suffer::Interface::Update(){
 	DrawMenuBar();
 	CreateDock(&open);
 	OpenWindows();
-	//ImGui::ShowDemoWindow(&open);
+	ImGui::ShowDemoWindow(&open);
 	//ImGui::ShowMetricsWindow(&open);
 
 }
@@ -635,12 +635,13 @@ void  Suffer::Interface::Hierarchy(Scene* current_scene_){
   u32 scene_game_objects = current_scene_->current_gameobjects_.size();
 
   for (int i = 0; i < scene_game_objects; ++i) {
-      ImGui::CollapsingHeader("GameObject");
       u32 number_of_childs = current_scene_->current_gameobjects_.at(i).get()->NumberChilds();
-      for (int i = 0; i < number_of_childs; ++i) {
-        if (ImGui::TreeNode("Childs")) {
-          ImGui::TreePop();
-        }
+      if (ImGui::CollapsingHeader(current_scene_->current_gameobjects_.at(i).get()->Name())) {
+          for (int i = 0; i < number_of_childs; ++i) {
+              if (ImGui::TreeNode("Childs")) {
+                  ImGui::TreePop();
+              }
+          }
       }
   }
 

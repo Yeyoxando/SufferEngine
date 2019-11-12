@@ -74,6 +74,9 @@ namespace Suffer {
     void Translate(float x, float y, float z);
     void Translate(mathmorra::Vector3 position);
 
+    const char* Name();
+    void SetName(const char* name);
+
 	protected:
 		virtual ~GameObject();
 
@@ -82,6 +85,8 @@ namespace Suffer {
 		Transform transform_;
 		ref_ptr<Material> material_;
 		ref_ptr<Geometry> geometry_;
+
+    char* name_;
 
 		// Methods
     void Step(float delta_time);

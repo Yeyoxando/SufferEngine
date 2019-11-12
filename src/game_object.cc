@@ -22,6 +22,8 @@ Suffer::GameObject::GameObject() {
   transform_.forward_ = mathmorra::Vector3::CrossProduct(transform_.up_, 
                                                          transform_.right_);
 
+  name_ = "GameObject";
+
 }
 
 bool Suffer::GameObject::operator!=(const GameObject& go){
@@ -119,6 +121,18 @@ Suffer::ref_ptr<Suffer::Command> Suffer::GameObject::GetDrawCommand(){
 void Suffer::GameObject::Translate(mathmorra::Vector3 position){
   transform_.position_ = position;
 }
+
+const char* Suffer::GameObject::Name(){
+    return name_;
+}
+
+// --------------------------------------------------- //
+
+void Suffer::GameObject::SetName(const char* name){
+    name_ = (char*)name;
+}
+
+// --------------------------------------------------- //
 
 Suffer::GameObject* Suffer::GameObject::GetChild(u32 child){
     // TODO: Expand this

@@ -93,6 +93,7 @@ void Suffer::Scene::Init() {
 	go.alloc();
 	go->SetGeometry(geometry);
 	go->SetMaterial(material);
+  go->SetName("Cube");
 	
 	AddGameObject(go);
 
@@ -142,6 +143,7 @@ void Suffer::Scene::Init() {
   go2->SetGeometry(geometry2);
   go2->SetMaterial(material2);
   go2->Translate(mathmorra::Vector3(0.0f, 0.0f, -0.1f));
+  go2->SetName("Triangle");
   
   
   AddGameObject(go2);
