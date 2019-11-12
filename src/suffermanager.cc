@@ -11,6 +11,7 @@
 #include "scene.h"
 #include "audio_commands.h"
 #include "internal_suffermanager.h"
+#include <string>
 
 // --------------------------------------------------------------//
 
@@ -517,11 +518,12 @@ u32 Suffer::SufferManager::IsMaterialCreated(u32 material_id){
     glGetShaderiv(data_->internal_materials_[material_id].vertex_shader_id_, GL_COMPILE_STATUS, &status);
     GLint log_length = 0;
     glGetShaderiv(data_->internal_materials_[material_id].vertex_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
-    GLchar* info_log = new GLchar[log_length + 1];
-    glGetShaderInfoLog(data_->internal_materials_[material_id].vertex_shader_id_, log_length, &log_length, info_log);
+    Array<char> info_log;
+    info_log.alloc(log_length + 1);
     info_log[log_length] = '\0';
-    printf("%s", info_log);
-    delete info_log;
+    glGetShaderInfoLog(data_->internal_materials_[material_id].vertex_shader_id_, log_length, &log_length, &info_log[0]);
+    
+    printf("\n\n%s", info_log.get());
     if (status == GL_FALSE)
       printf("\nERROR: vertex shader not compiled");
 
@@ -530,15 +532,15 @@ u32 Suffer::SufferManager::IsMaterialCreated(u32 material_id){
     status = 0;
     glGetShaderiv(data_->internal_materials_[material_id].fragment_shader_id_, GL_COMPILE_STATUS, &status);
     log_length = 0;
+    info_log.release();
     glGetShaderiv(data_->internal_materials_[material_id].fragment_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
-    info_log = new GLchar[log_length + 1];
-    glGetShaderInfoLog(data_->internal_materials_[material_id].fragment_shader_id_, log_length, &log_length, info_log);
+    info_log.alloc(log_length + 1);
     info_log[log_length] = '\0';
-    printf("%s", info_log);
-    delete info_log;
+    glGetShaderInfoLog(data_->internal_materials_[material_id].fragment_shader_id_, log_length, &log_length, &info_log[0]);
+    printf("\n\n%s", info_log.get());
     if (status == GL_FALSE)
       printf("\nERROR: fragment shader not compiled");
-
+    info_log.release();
     // PROGRAM
     data_->internal_materials_[material_id].current_program_ = glCreateProgram();
 
