@@ -108,10 +108,6 @@ namespace Suffer {
 		void Audio();
 		void PrepareAudio();
 
-		u32 IsBufferCreated(const VertexBuffer* vertex_buffer);
-		u32 IsBufferCreated(const IndexBuffer* index_buffer);
-		u32 IsMaterialCreated(u32 material_id);
-
     void SetMousePosition();
 
     Scene* GetCurrentScene();

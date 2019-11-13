@@ -1,3 +1,8 @@
+/*
+ * Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
+ * Date: 15-10-2019
+ * Draw Geometry command Header
+ */
 
 
 #include <draw_geometry.h>
@@ -5,11 +10,13 @@
 #include <data_types.h>
 #include <glm.hpp>
 #include "internal_suffermanager.h"
+#include "common_definitions.h"
 
 struct Suffer::DrawGeometry::Data {
   // Geometry
   const SufferManager::VertexBuffer* vertex_buffer_;
   const SufferManager::IndexBuffer* index_buffer_;
+
 
   // Transform 
   mathmorra::Matrix4 model_matrix_;
@@ -120,100 +127,297 @@ void Suffer::DrawGeometry::SetMaterial(const ref_ptr<MaterialInstance> mat) {
 void Suffer::DrawGeometry::Execute() const {
 
   GLenum error;
-  u32 id_vertex = SufferManager::instance().IsBufferCreated(data_->vertex_buffer_);
-  u32 id_index = SufferManager::instance().IsBufferCreated(data_->index_buffer_);
-  u32 number_elements = SufferManager::instance().data_->internal_index_buffers_[data_->index_buffer_->id_].data_.size();
+  
+  // ---------------------- IsBufferCreated (Vertex) ----------------------- //
 
-  u32 program_id = SufferManager::instance().IsMaterialCreated(data_->internal_material_id_);
+  {
 
-  glUseProgram(program_id);
-  error = glGetError();
+#ifdef ASSERT
+    assert(data_->vertex_buffer_ != nullptr);
+#endif
+    if (data_->vertex_buffer_->id_ < 0) return;
 
-  s32 u_pos = -1;
+    s32 id_vertex = data_->vertex_buffer_->id_;
 
-  // MaterialInstance setting uniforms
-  switch (data_->internal_material_id_) {
-  case MaterialInstance::kParams_Default: {
+    if (suffer.data_->internal_vertex_buffers_[id_vertex].gpu_version_ == 0) {
+      glGenBuffers(1, &suffer.data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
+      error = glGetError();
+      glBindBuffer(GL_ARRAY_BUFFER, suffer.data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
+      error = glGetError();
 
-    mathmorra::Vector4 color(data_->material_params_.color_);
-    u_pos = glGetUniformLocation(program_id, "u_color");
-    if (u_pos < 0) {
-      printf("\nERROR: u_color uniform not exists.");
-      //return;
+      glBufferData(GL_ARRAY_BUFFER,
+        suffer.data_->internal_vertex_buffers_[id_vertex].data_.sizeInBytes(),
+        suffer.data_->internal_vertex_buffers_[id_vertex].data_.get(),
+        GL_STATIC_DRAW);
+      error = glGetError();
+
+      suffer.data_->internal_vertex_buffers_[id_vertex].gpu_version_ = suffer.data_->internal_vertex_buffers_[id_vertex].version_;
     }
 
-    glUniform4f(u_pos, color.x_, color.y_, color.z_, color.w_);
+    if (suffer.data_->internal_vertex_buffers_[id_vertex].gpu_version_ < suffer.data_->internal_vertex_buffers_[id_vertex].version_) {
+      glBindBuffer(GL_ARRAY_BUFFER, suffer.data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
+      error = glGetError();
+
+      glBufferData(GL_ARRAY_BUFFER,
+        suffer.data_->internal_vertex_buffers_[id_vertex].data_.sizeInBytes(),
+        suffer.data_->internal_vertex_buffers_[id_vertex].data_.get(),
+        GL_STATIC_DRAW);
+      error = glGetError();
+
+      suffer.data_->internal_vertex_buffers_[id_vertex].gpu_version_ = suffer.data_->internal_vertex_buffers_[id_vertex].version_;
+    }
+
+  }
+
+  // ---------------------- IsBufferCreated (Vertex) ----------------------- //
+
+  // ----------------------------------------------------------------------- //
+
+  // ----------------------- IsBufferCreated (Index) ----------------------- //
+
+  {
+  
+#ifdef ASSERT
+    assert(data_->index_buffer_ != nullptr);
+#endif
+    if (data_->index_buffer_->id_ < 0) return;
+    s32 id_index = data_->index_buffer_->id_;
+    if (suffer.data_->internal_index_buffers_[id_index].gpu_version_ == 0) {
+      glGenBuffers(1, &suffer.data_->internal_index_buffers_[id_index].current_gl_buffer_);
+      error = glGetError();
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.data_->internal_index_buffers_[id_index].current_gl_buffer_);
+      error = glGetError();
+
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+        suffer.data_->internal_index_buffers_[id_index].data_.sizeInBytes(),
+        suffer.data_->internal_index_buffers_[id_index].data_.get(),
+        GL_STATIC_DRAW);
+      error = glGetError();
+    }
+
+    if (suffer.data_->internal_index_buffers_[id_index].gpu_version_ < suffer.data_->internal_index_buffers_[id_index].version_) {
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.data_->internal_index_buffers_[id_index].current_gl_buffer_);
+      error = glGetError();
+
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+        suffer.data_->internal_index_buffers_[id_index].data_.sizeInBytes(),
+        suffer.data_->internal_index_buffers_[id_index].data_.get(),
+        GL_STATIC_DRAW);
+      error = glGetError();
+    }
+
+    suffer.data_->internal_index_buffers_[id_index].gpu_version_ = suffer.data_->internal_index_buffers_[id_index].version_;
+
+  }
+
+  // ----------------------- IsBufferCreated (Index) ----------------------- //
+
+  // ----------------------------------------------------------------------- //
+
+  // -------------------------- IsMaterialCreated -------------------------- //
+
+  {
+  
+    u32 mat_id = data_->internal_material_id_;
+
+    // If internal material is not created, creates it
+    if (!suffer.data_->internal_materials_[mat_id].is_created_) {
+      // Create vertex shader
+      suffer.data_->internal_materials_[mat_id].vertex_shader_id_ =
+        glCreateShader(GL_VERTEX_SHADER);
+      error = glGetError();
+
+      // Create fragment shader
+      suffer.data_->internal_materials_[mat_id].fragment_shader_id_ =
+        glCreateShader(GL_FRAGMENT_SHADER);
+      error = glGetError();
+
+      // Get shaders length
+      const GLint vertex_size = strlen(suffer.data_->internal_materials_[mat_id].vertex_shader_);
+      const GLint fragment_size = strlen(suffer.data_->internal_materials_[mat_id].fragment_shader_);
+
+      // Upload vertex shader data
+      glShaderSource(suffer.data_->internal_materials_[mat_id].vertex_shader_id_,
+        1, &suffer.data_->internal_materials_[mat_id].vertex_shader_,
+        &vertex_size);
+      error = glGetError();
+
+      // Upload fragment shader data
+      glShaderSource(suffer.data_->internal_materials_[mat_id].fragment_shader_id_,
+        1, &suffer.data_->internal_materials_[mat_id].fragment_shader_, &fragment_size);
+      error = glGetError();
+
+      // Compile vertex shader
+      glCompileShader(suffer.data_->internal_materials_[mat_id].vertex_shader_id_);
+      error = glGetError();
+
+      GLint status = 0;
+      glGetShaderiv(suffer.data_->internal_materials_[mat_id].vertex_shader_id_, GL_COMPILE_STATUS, &status);
+      GLint log_length = 0;
+      glGetShaderiv(suffer.data_->internal_materials_[mat_id].vertex_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
+      Array<char> info_log;
+      info_log.alloc(log_length + 1);
+      info_log[log_length] = '\0';
+      glGetShaderInfoLog(suffer.data_->internal_materials_[mat_id].vertex_shader_id_, log_length, &log_length, &info_log[0]);
+
+      printf("\n\n%s", info_log.get());
+      if (status == GL_FALSE)
+        printf("\nERROR: vertex shader not compiled");
+
+      // Compile fragment shader
+      glCompileShader(suffer.data_->internal_materials_[mat_id].fragment_shader_id_);
+      error = glGetError();
+      status = 0;
+      glGetShaderiv(suffer.data_->internal_materials_[mat_id].fragment_shader_id_, GL_COMPILE_STATUS, &status);
+      log_length = 0;
+      info_log.release();
+      glGetShaderiv(suffer.data_->internal_materials_[mat_id].fragment_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
+      info_log.alloc(log_length + 1);
+      info_log[log_length] = '\0';
+      glGetShaderInfoLog(suffer.data_->internal_materials_[mat_id].fragment_shader_id_, log_length, &log_length, &info_log[0]);
+      printf("\n\n%s", info_log.get());
+      if (status == GL_FALSE)
+        printf("\nERROR: fragment shader not compiled");
+      info_log.release();
+
+
+      // Create program
+      suffer.data_->internal_materials_[mat_id].current_program_ = glCreateProgram();
+      error = glGetError();
+
+      // Attach shaders
+      glAttachShader(suffer.data_->internal_materials_[mat_id].current_program_,
+        suffer.data_->internal_materials_[mat_id].vertex_shader_id_);
+      error = glGetError();
+
+      glAttachShader(suffer.data_->internal_materials_[mat_id].current_program_,
+        suffer.data_->internal_materials_[mat_id].fragment_shader_id_);
+      error = glGetError();
+
+      // Link program
+      glLinkProgram(suffer.data_->internal_materials_[mat_id].current_program_);
+      error = glGetError();
+
+      // Mark internal material as created
+      suffer.data_->internal_materials_[mat_id].is_created_ = true;
+    }
+
+  }
+
+  // -------------------------- IsMaterialCreated -------------------------- //
+
+  // ----------------------------------------------------------------------- //
+
+  // ------------------------------- Uniforms ------------------------------ //
+
+  u32 program_id = suffer.data_->internal_materials_[data_->internal_material_id_].current_program_;
+
+  {
+
+    glUseProgram(program_id);
+    error = glGetError();
+
+    s32 u_pos = -1;
+
+    // MaterialInstance setting uniforms
+    switch (data_->internal_material_id_) {
+    case MaterialInstance::kParams_Default: {
+      mathmorra::Vector4 color(data_->material_params_.color_);
+      u_pos = glGetUniformLocation(program_id, "u_color");
+      if (u_pos < 0) {
+        printf("\nERROR: u_color uniform not exists.");
+        //return;
+      }
+
+      glUniform4f(u_pos, color.x_, color.y_, color.z_, color.w_);
+      u_pos = -1;
+    }
+    break;
+    case MaterialInstance::kParams_Phong:
+
+      break;
+    case MaterialInstance::kParams_NONE:
+      break;
+    default:
+      break;
+    }
+
+    //Matrix uniforms
+    u_pos = glGetUniformLocation(program_id, "u_m_matrix");
+    if (u_pos < 0) {
+      printf("\nERROR: model matrix uniform not exists.");
+      return;
+    }
+
+    glUniformMatrix4fv(u_pos, 1, GL_FALSE, data_->model_matrix_.m);
     u_pos = -1;
-  }
-                                          break;
-  case MaterialInstance::kParams_Phong:
 
-    break;
-  case MaterialInstance::kParams_NONE:
-    break;
-  default:
-    break;
-  }
+    u_pos = glGetUniformLocation(program_id, "u_v_matrix");
+    if (u_pos < 0) {
+      printf("\nERROR: view matrix uniform not exists.");
+      return;
+    }
 
+    glUniformMatrix4fv(u_pos, 1, GL_FALSE, data_->view_matrix_.m);
+    u_pos = -1;
 
+    u_pos = glGetUniformLocation(program_id, "u_p_matrix");
+    if (u_pos < 0) {
+      printf("\nERROR: projection matrix uniform not exists.");
+      return;
+    }
 
-  //Matrix uniforms
-  u_pos = glGetUniformLocation(program_id, "u_m_matrix");
-  if (u_pos < 0) {
-    printf("\nERROR: model matrix uniform not exists.");
-    return;
-  }
+    glUniformMatrix4fv(u_pos, 1, GL_FALSE, data_->projection_matrix_.m);
+    u_pos = -1;
 
-  glUniformMatrix4fv(u_pos, 1, GL_FALSE, data_->model_matrix_.m);
-  u_pos = -1;
-
-  u_pos = glGetUniformLocation(program_id, "u_v_matrix");
-  if (u_pos < 0) {
-    printf("\nERROR: view matrix uniform not exists.");
-    return;
   }
 
-  glUniformMatrix4fv(u_pos, 1, GL_FALSE, data_->view_matrix_.m);
-  u_pos = -1;
+  // ------------------------------- Uniforms ------------------------------ //
 
-  u_pos = glGetUniformLocation(program_id, "u_p_matrix");
-  if (u_pos < 0) {
-    printf("\nERROR: projection matrix uniform not exists.");
-    return;
+  // ----------------------------------------------------------------------- //
+
+  // --------------------------- Vertex Attributes ------------------------- //
+
+  {
+
+    glBindBuffer(GL_ARRAY_BUFFER, suffer.data_->internal_vertex_buffers_[data_->vertex_buffer_->id_].current_gl_buffer_);
+
+    switch (data_->vertex_buffer_->format_) {
+    case SufferManager::VertexBuffer::kVertexFormat_3P:
+      glEnableVertexAttribArray(0);
+      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+      break;
+    case SufferManager::VertexBuffer::kVertexFormat_3P_3N:
+      glEnableVertexAttribArray(0);
+      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (6 * sizeof(float)), (GLvoid*)0);
+      glEnableVertexAttribArray(1);
+      glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (6 * sizeof(float)), (GLvoid*)(3 * sizeof(float)));
+      break;
+    default:
+
+      break;
+    }
+  
   }
 
-  glUniformMatrix4fv(u_pos, 1, GL_FALSE, data_->projection_matrix_.m);
-  u_pos = -1;
+  // --------------------------- Vertex Attributes ------------------------- //
 
+  // ----------------------------------------------------------------------- //
 
+  // --------------------------------- Draw -------------------------------- //
 
-  glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
+  {
 
-  switch (data_->vertex_buffer_->format_) {
-  case SufferManager::VertexBuffer::kVertexFormat_3P:
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
-    break;
-  case SufferManager::VertexBuffer::kVertexFormat_3P_3N:
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (6 * sizeof(float)), (GLvoid*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (6 * sizeof(float)), (GLvoid*)(3 * sizeof(float)));
-    break;
-  default:
+    u32 number_elements = SufferManager::instance().data_->internal_index_buffers_[data_->index_buffer_->id_].data_.size();
 
-    break;
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.data_->internal_index_buffers_[data_->index_buffer_->id_].current_gl_buffer_);
+    error = glGetError();
+    glDrawElements(GL_TRIANGLES, number_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
+    error = glGetError();
+
   }
 
-
-
-
-
-
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
-  error = glGetError();
-  glDrawElements(GL_TRIANGLES, number_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
-  error = glGetError();
+  // --------------------------------- Draw -------------------------------- //
 
 }
 

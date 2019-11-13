@@ -1,3 +1,7 @@
+#ifndef __INTERNAL_SUFFERMANAGER_H__
+#define __INTERNAL_SUFFERMANAGER_H__
+
+
 #include "suffermanager.h"
 #include "window.h"
 #include "interface.h"
@@ -67,3 +71,5 @@ struct Suffer::SufferManager::Data {
     void InitInternalMaterials();
 
 };
+
+#endif //__INTERNAL_SUFFERMANAGER_H__

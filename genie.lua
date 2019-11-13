@@ -41,6 +41,7 @@ project "SufferCore"
 	kind "ConsoleApp"
 	
 	includedirs{
+		"./src/Internal/",
 		"./src/deps/GLFW/include/GLFW/",
 		"./src/deps/GLFW/include/",
 		"./src/deps/GLFW/deps/glad/",
@@ -50,7 +51,6 @@ project "SufferCore"
 		"./include/Memory_Management/",
 		"./include/commands/",
 		"./include/Engine/",
-		"./include/Internal/",
 		"./deps/glm/",
 		"./deps/sokol/",
 		"./deps/pplux/",
@@ -79,6 +79,7 @@ project "SufferCore"
 		"./src/*.cc",
 		"./src/commands/*.cc",
 		"./src/Engine/*.cc",
+		"./src/Internal/*.h",
 		"./tests/*.cc",
 
 		--GLFW
