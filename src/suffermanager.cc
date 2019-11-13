@@ -54,7 +54,7 @@ bool Suffer::SufferManager::Init(){
 #endif // ASSERT
 
 	data_->wind_.init(WINDOW_WIDTH, WINDOW_HEIGHT);
-	Suffer::InitInput();
+	//Suffer::InitInput();
 	data_->interface_.Init();
   data_->is_interface_active_ = false;
 
@@ -74,16 +74,6 @@ bool Suffer::SufferManager::Init(){
 
 	data_->scene_context_->Init();
 
-	// Threads Function Assignment
-	auto audio_thread = [] { SufferManager::instance().Audio(); };
-	audio_.get()->NewTask(audio_thread);
-
-	auto update_thread = [] { SufferManager::instance().Update(); };
-	logic_.get()->NewTask(update_thread);
-
-	auto input_thread = [] { SufferManager::instance().Input(); };
-	input_.get()->NewTask(input_thread);
-
 	return true;
 }
 
@@ -91,11 +81,7 @@ bool Suffer::SufferManager::Init(){
 
 void Suffer::SufferManager::Update() {
 
-	while(1){
-		Step(data_->delta_time_);
-
-		logic_->Sleep();
-	}
+    Step(data_->delta_time_);
 
 }
 
@@ -119,17 +105,13 @@ void Suffer::SufferManager::Draw() {
 
 void Suffer::SufferManager::Input() {
 
-	while (1) {
-		input_->Sleep();
-
 		// Window Should Close
-		if (Suffer::IsKeyDown(k_Escape)) {
-			data_->window_should_close_ = true;
-		}
-    if (Suffer::IsKeyDown(k_F2)) {
-        data_->is_interface_active_ = !data_->is_interface_active_;
-    }
-	}
+		//if (Suffer::IsKeyDown(k_Escape)) {
+		//	data_->window_should_close_ = true;
+		//}
+  //  if (Suffer::IsKeyDown(k_F2)) {
+  //      data_->is_interface_active_ = !data_->is_interface_active_;
+  //  }
 
 }
 
@@ -137,30 +119,38 @@ void Suffer::SufferManager::Input() {
 
 bool Suffer::SufferManager::Run(){
 
-  //ref_ptr<Audio3D> audio_source_;
-  //audio_source_.alloc();
-  //audio_source_->Load("../../../resources/audio/plonk_dry.ogg");
-  //ref_ptr <AudioCommands::Play> play_command_;
-  //play_command_.alloc();
-  //play_command_->audio_3d_ = audio_source_.get();
-  //DisplayList audio_dl_;
-  //audio_dl_.addCommand(play_command_.get());
-  //audio_manager_.AddToAudioQueue(std::move(audio_dl_));
+    //ref_ptr<Audio3D> audio_source_;
+    //audio_source_.alloc();
+    //audio_source_->Load("../../../resources/audio/plonk_dry.ogg");
+    //ref_ptr <AudioCommands::Play> play_command_;
+    //play_command_.alloc();
+    //play_command_->audio_3d_ = audio_source_.get();
+    //DisplayList audio_dl_;
+    //audio_dl_.addCommand(play_command_.get());
+    //audio_manager_.AddToAudioQueue(std::move(audio_dl_));
+
+  // Threads Function Assignment
+  auto update_thread = [] { SufferManager::instance().Update(); };
+  auto input_thread = [] { SufferManager::instance().Input(); };
+
+  logic_->NewTask(update_thread);
 
 	while (!data_->window_should_close_) {
 
+    // TODO: remove from here
     SetMousePosition();
 
 		data_->current_time_ = Suffer::RawTime();
 		data_->wind_.processEvents();
 		
-		input_->Awake();
+    // TODO: remove this thread
+		input_->NewTask(input_thread);
 		
-    logic_->Awake();
+    logic_->NewTask(update_thread);
 
 		Draw();
     
-    logic_->WaitMe();
+    logic_->WaitFor(logic_.get());
 
 		data_->delta_time_ = (data_->current_time_ - data_->previous_time_) * 0.0001f;
 		data_->previous_time_ = data_->current_time_;
@@ -175,12 +165,8 @@ bool Suffer::SufferManager::Run(){
 
 void Suffer::SufferManager::Audio() {
 
-	while (1) {
-
-		audio_->Sleep();
     audio_manager_.DoAudio();
 
-	}
 }
 
 // --------------------------------------------------------------//
@@ -188,7 +174,8 @@ void Suffer::SufferManager::Audio() {
 void Suffer::SufferManager::PrepareAudio() {
 	
     if (audio_manager_.audio_dl_.size() > 0) {
-        audio_->Awake();
+        auto audio_thread = [] { SufferManager::instance().Audio(); };
+        audio_->NewTask(audio_thread);
     }
 
 }
@@ -198,6 +185,7 @@ void Suffer::SufferManager::PrepareAudio() {
 bool Suffer::SufferManager::Step(double time_step){
 
 	data_->scene_context_->Step(time_step);
+
 	// This will be the last function in UPDATE
 	PrepareAudio();
 
@@ -236,8 +224,8 @@ mathmorra::Vector2 Suffer::SufferManager::GetMousePosition(){
 
 void Suffer::SufferManager::SetMousePosition(){
 
-    mouse_position_.x_ = Suffer::MousePositionX();
-    mouse_position_.y_ = Suffer::MousePositionY();
+    //mouse_position_.x_ = Suffer::MousePositionX();
+    //mouse_position_.y_ = Suffer::MousePositionY();
 
 }
 
