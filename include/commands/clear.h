@@ -8,6 +8,7 @@
 #define __CLEAR_H__
 
 #include <command.h>
+#include "vector4.h"
 #include <glm.hpp>
 
 // --------------------------------------------------- //
@@ -20,14 +21,14 @@ namespace Suffer {
 		Clear();
 		~Clear();
 
-		void SetClearColor(glm::vec4 color) { color_ = color; }
+		void SetClearColor(mathmorra::Vector4 color) { color_ = color; }
 
 	protected:
 		virtual void Execute() const override;
 
 
 	private:
-		glm::vec4 color_;
+		mathmorra::Vector4 color_;
 	};
 
 }

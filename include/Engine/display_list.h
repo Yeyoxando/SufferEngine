@@ -1,8 +1,7 @@
 /*
-* Author: Pablo Bano Benito <banyobe@esat-alumni.com>
+* Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
 * Date: 11-02-2019
 * DisplayLists Header
-* Base structure extracted from px_render.h (Pplux)
 */
 
 #ifndef __DISPLAY_LIST_H__
@@ -18,6 +17,7 @@ namespace Suffer {
 
 class DisplayList : public Referenced {
 	friend class RenderManager;
+  friend class AudioManager;
 
 public:
 	enum DisplayListType {

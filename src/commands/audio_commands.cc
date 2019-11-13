@@ -16,8 +16,7 @@ void Suffer::AudioCommands::Load::Execute() const {
 void Suffer::AudioCommands::Play::Execute() const {
 
 	if (audio_3d_ == nullptr) return;
-	audio_3d_->SetPaused(false);
-	//audio_3d_->Play3D(); This was in DL mockup by Pablo
+	audio_3d_->Play3D();
 
 }
 
@@ -38,18 +37,4 @@ void Suffer::AudioCommands::SetGain::Execute() const {
 	audio_3d_->SetGain(gain_);
 
 }
-
-// --------------------------------------------------------------//
-
-Suffer::AudioCommands::AudioCommands(){
-
-}
-
-// --------------------------------------------------------------//
-
-Suffer::AudioCommands::~AudioCommands(){
-
-}
-
-// --------------------------------------------------------------//
 

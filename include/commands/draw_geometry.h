@@ -10,7 +10,7 @@
 #include <command.h>
 #include <game_object.h>
 #include <ref_ptr.h>
-#include <suffermanager.h>
+#include "matrix4.h"
 
 // --------------------------------------------------- //
 
@@ -21,11 +21,14 @@ namespace Suffer {
 	public:
 
 		void SetData(GameObject* go);
-		void SetTransform(Transform t);
-		void SetGeometry(ref_ptr<Geometry> geo);
-		void SetMaterial(ref_ptr<Material> mat);
+    void SetModelMatrix(mathmorra::Matrix4 model);
+    void SetViewMatrix(mathmorra::Matrix4 view);
+    void SetProjectionMatrix(mathmorra::Matrix4 projection);
+		void SetGeometry(const ref_ptr<Geometry> geo);
+		void SetMaterial(const ref_ptr<MaterialInstance> mat);
 
 		DrawGeometry();
+
 	protected:
 
 		virtual ~DrawGeometry();

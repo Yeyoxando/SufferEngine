@@ -7,44 +7,36 @@
 
 namespace Suffer {
 
-class AudioCommands : public Referenced {
+  namespace AudioCommands {
 
-public:
+	    struct Load : public Command {
+		    Load() { cmd_type_ = Command::kAudio; }
+		    virtual void Execute() const override;
+		    char* file;
+		    Audio3D* audio_3d_ = nullptr;
+	    };
 
-	AudioCommands();
-	~AudioCommands();
+	    struct Play : public Command {
+		    Play() { cmd_type_ = Command::kAudio; }
+		    virtual void Execute() const override;
+		    Audio3D* audio_3d_ = nullptr;
+	    };
 
-	struct Load : public Command {
-		Load() { cmd_type_ = Command::kAudio; }
-		virtual void Execute() const override;
-		char* file;
-		Audio3D* audio_3d_ = nullptr;
-		Audio2D* audio_2d_ = nullptr;
-	};
+	    struct Pause : public Command {
+		    Pause() { cmd_type_ = Command::kAudio; }
+		    virtual void Execute() const override;
+		    Audio3D* audio_3d_ = nullptr;
+	    };
 
-	struct Play : public Command {
-		Play() { cmd_type_ = Command::kAudio; }
-		virtual void Execute() const override;
-		Audio3D* audio_3d_ = nullptr;
-		Audio2D* audio_2d_ = nullptr;
-	};
+	    struct SetGain : public Command {
+		    SetGain() { cmd_type_ = Command::kAudio; }
+		    float gain_;
+		    virtual void Execute() const override;
+		    Audio3D* audio_3d_ = nullptr;
+	    };
 
-	struct Pause : public Command {
-		Pause() { cmd_type_ = Command::kAudio; }
-		virtual void Execute() const override;
-		Audio3D* audio_3d_ = nullptr;
-		Audio2D* audio_2d_ = nullptr;
-	};
+  } // End of AudioCommands namespace
 
-	struct SetGain : public Command {
-		SetGain() { cmd_type_ = Command::kAudio; }
-		float gain_;
-		virtual void Execute() const override;
-		Audio3D* audio_3d_ = nullptr;
-		Audio2D* audio_2d_ = nullptr;
-	};
+} // End of Suffer namespace
 
-};
-
-}
 #endif // __AUDIO_COMMANDS_H__

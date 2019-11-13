@@ -4,7 +4,7 @@
 * Audio Header
 */
 
-#include <glm.hpp>
+#include "vector3.h"
 #include <command.h>
 #include <data_types.h>
 
@@ -15,117 +15,71 @@ namespace Suffer {
 
 // ---------------------------------------------------------------------- //
 
-	class Audio2D {
+    class Audio3D : public Referenced {
 
-	public:
+    public:
+        Audio3D();
+		    Audio3D(const Audio3D& copy);
 
-		Audio2D();
-		~Audio2D();
+		    bool Load(char* file);
+		    bool Play3D(mathmorra::Vector3 velocity = mathmorra::Vector3(0, 0, 0));
 
-		bool Load(const char* file);
-		bool Play();
-		bool Stop();
+		    void SetPaused(const bool paused);
+		    void SetGain(const float newGain = 1.0f);
+		    void SetPitch(const float newPitch = 1.0f);
+		    void SetLooping(const bool looping = false);
+		    void SetVelocity(const mathmorra::Vector3 newVelocity = mathmorra::Vector3(0, 0, 0));
+		    void SetGlobalVolume(const float newVolume = 1.0f);
 
-		// Setters
-		void SetGain(const double newGain = 1.0f); // Gain (a.k.a volume)
-		void SetPitch(const double newPitch = 1.0f);
-		void SetLooping(const bool looping = false);
-		void SetGlobalVolume(const double newVolume = 1.0f);
+		    // Sound
+		    void SetSoundParameters(mathmorra::Vector3 position, mathmorra::Vector3 velocity);
+		    void SetSoundSpeed(mathmorra::Vector3 newSpeed);
+		    void SetSoundPosition(mathmorra::Vector3 newPosition);
+		    void SetSoundMinMaxDistance(float min, float max);
+		    void SetSoundAttenuation(u32 attenuation, float rollOffFactor);
+		    void SetSoundDopplerFactor(float newDopplerFactor);
+		    void SetMonotoneParams(u32 channels, u32 wave_form);
 
-		// Getters
-		double Gain();
-		double Pitch();
-		bool   Looping();
-		float* Wave();
-		float* FFT();
+		    // Listener
+		    void SetListenerParameters(mathmorra::Vector3 position, mathmorra::Vector3 at, mathmorra::Vector3 up, mathmorra::Vector3 velocity);
+		    void SetListenerPosition(mathmorra::Vector3 newPosition);
+		    void SetListenerAt(mathmorra::Vector3 newAt);
+		    void SetListenerUp(mathmorra::Vector3 newUp);
+		    void SetListenerVelocity(mathmorra::Vector3 newVelocity);
 
-		//virtual void Execute() override;
+		    // Getters
+		    bool isPaused();
+		    u32 GetHertz();
+		    double GetGain();
+		    double GetPitch();
+		    bool GetLooping();
+		    float* Wave();
+		    float* FFT(); // FFT: Fast Fourier Transform
 
-	private:
+		    mathmorra::Vector3 GetSoundPosition();
+		    mathmorra::Vector3 GetSoundSpeed();
 
-		int    hertz_;
-		bool   looping_;
-		double pitch_;
-		double gain_;
-		const char* file_;
+		    // Operand overload
+		    void operator=(const Audio3D& a);
+		    bool operator!=(const Audio3D& a);
 
-		struct Data;
-		Data* _ptr;
+        protected:
+            ~Audio3D();
 
-	};
+        private:
 
-// ---------------------------------------------------------------------- //
+            u32    hertz_;
+            bool   looping_;
+            double pitch_;
+            double gain_;
+            char* file_;
+            bool paused_;
 
-	class Audio3D {
+            mathmorra::Vector3 current_position_;
+            mathmorra::Vector3 current_velocity_;
 
-	public:
-
-		Audio3D();
-		~Audio3D();
-		Audio3D(const Audio3D& copy);
-
-		bool Load(char* file);
-		bool Play3D(glm::vec3 velocity = glm::vec3(0, 0, 0));
-
-		void SetPaused(const bool paused);
-		void SetGain(const float newGain = 1.0f);
-		void SetPitch(const float newPitch = 1.0f);
-		void SetLooping(const bool looping = false);
-		void SetVelocity(const glm::vec3 newVelocity = glm::vec3(0, 0, 0));
-		void SetGlobalVolume(const float newVolume = 1.0f);
-
-		// Sound
-		void SetSoundParameters(glm::vec3 position, glm::vec3 velocity);
-		void SetSoundSpeed(glm::vec3 newSpeed);
-		void SetSoundPosition(glm::vec3 newPosition);
-		void SetSoundMinMaxDistance(float min, float max);
-		void SetSoundAttenuation(u32 attenuation, float rollOffFactor);
-		void SetSoundDopplerFactor(float newDopplerFactor);
-		void SetMonotoneParams(int channels, int wave_form);
-
-		// Listener
-		void SetListenerParameters(glm::vec3 position, glm::vec3 at, glm::vec3 up, glm::vec3 velocity);
-		void SetListenerPosition(glm::vec3 newPosition);
-		void SetListenerAt(glm::vec3 newAt);
-		void SetListenerUp(glm::vec3 newUp);
-		void SetListenerVelocity(glm::vec3 newVelocity);
-
-		// Getters
-		bool isPaused();
-		int GetHertz();
-		double GetGain();
-		double GetPitch();
-		bool GetLooping();
-		float* Wave();
-		float* FFT(); // FFT: Fast Fourier Transform
-
-		glm::vec3 GetSoundPosition();
-		glm::vec3 GetSoundSpeed();
-
-		// Operand overload
-		void operator=(const Audio3D& a);
-		//Audio3D operator=(const Audio3D& a) const;
-
-		bool operator!=(const Audio3D& a);
-
-		// Commands Stuff -- Mockup
-		//virtual void Execute() const override;
-		//virtual void Reproduce();
-
-	private:
-
-		int    hertz_;
-		bool   looping_;
-		double pitch_;
-		double gain_;
-		char* file_;
-		bool paused_;
-
-		glm::vec3 current_position_;
-		glm::vec3 current_velocity_;
-
-		struct Data;
-		Data* _ptr = nullptr;
+            struct Data;
+            Data* _ptr = nullptr;
 
 	};
 

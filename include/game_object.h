@@ -1,21 +1,23 @@
 /*
 * Author: Pablo Bano Benito <banyobe@esat-alumni.com>
 * Date: 10-12-2019
-* GameObject Header (Material, Transform, Geometry)
+* GameObject Header (Transform)
 */
 
 #ifndef __GAME_OBJECT_H__
 #define __GAME_OBJECT_H__
 
-#include <glm.hpp>
-#include <gtc/quaternion.hpp>
 #include <geometry.h>
 #include <material.h>
 #include <data_types.h>
 #include <referenced.h>
 #include <ref_ptr.h>
 #include <command.h>
+#include "display_list.h"
 
+// Mathematic Headers
+#include <vector3.h>
+#include <matrix4.h>
 
 namespace Suffer {
 
@@ -24,14 +26,13 @@ namespace Suffer {
 	struct Transform {
 
 	public:
-		glm::vec3 scale;
-		glm::vec3 position;
-		glm::vec3 rotation;
+		mathmorra::Vector3 scale_;
+		mathmorra::Vector3 position_;
+		mathmorra::Vector3 rotation_;
 
-		glm::quat quat_rotation_;
-
-	private:
-		glm::mat4 model_;
+    mathmorra::Vector3 up_;
+    mathmorra::Vector3 right_;
+    mathmorra::Vector3 forward_;
 
 	};
 
@@ -44,27 +45,53 @@ namespace Suffer {
 		GameObject();
 		GameObject(const GameObject& go);
 
+    // Operators
+    bool operator!=(const GameObject& go);
+    bool operator==(const GameObject& go);
+
 		// Getters
 		Transform GetTransform();
-		ref_ptr<Material> GetMaterial();
-		ref_ptr<Geometry> GetGeometry();
+		const ref_ptr<MaterialInstance> GetMaterial();
+		const ref_ptr<Geometry> GetGeometry();
 
 		// Setters
-		void SetMaterial(ref_ptr<Material> new_material);
+		void SetMaterial(ref_ptr<MaterialInstance> new_material);
 		void SetGeometry(ref_ptr<Geometry> new_geometry);
 
-		const ref_ptr<Command> GetDrawCommand();
+    void AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matrix4 view, mathmorra::Matrix4 projection);
+
+
+    // Hierarchy Stuff
+    void DetachChildren();
+    void RemoveChild(u32 child);
+    GameObject* GetChild(u32 child);
+    
+    u32 NumberChilds();
+    u32 NumberChildsRecursively(GameObject* go);
+
+    // Transform
+    void Rotate(float x, float y, float z);
+    void Translate(float x, float y, float z);
+    void Translate(mathmorra::Vector3 position);
+
+    const char* Name();
+    void SetName(const char* name);
 
 	protected:
 		virtual ~GameObject();
 
 	private:
+
 		// Attributes
 		Transform transform_;
-		ref_ptr<Material> material_;
+		ref_ptr<MaterialInstance> material_;
 		ref_ptr<Geometry> geometry_;
 
+    char* name_;
+
 		// Methods
+    void Step(float delta_time);
+    void Destroy();
 
 	};
 

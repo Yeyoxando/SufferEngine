@@ -41,6 +41,7 @@ project "SufferCore"
 	kind "ConsoleApp"
 	
 	includedirs{
+		"./src/Internal/",
 		"./src/deps/GLFW/include/GLFW/",
 		"./src/deps/GLFW/include/",
 		"./src/deps/GLFW/deps/glad/",
@@ -63,6 +64,8 @@ project "SufferCore"
 		"./src/deps/soloud/filter/",
 		"./deps/soloud/",
 		"./deps/stb/",
+		"./deps/mathmorra/",
+		"./deps/mathmorra/include",
 	}
 
 	--Common files
@@ -71,10 +74,12 @@ project "SufferCore"
 		"./include/*.h",
 		"./include/commands/*.h",
 		"./include/Engine/*.h",
+		"./include/Internal/*.h",
 		"./include/Memory_Management/*.h",
 		"./src/*.cc",
 		"./src/commands/*.cc",
 		"./src/Engine/*.cc",
+		"./src/Internal/*.h",
 		"./tests/*.cc",
 
 		--GLFW
@@ -89,6 +94,10 @@ project "SufferCore"
 		"./src/deps/GLFW/include/GLFW/glfw3.h",
 		"./src/deps/GLFW/include/GLFW/glfw3native.h",
 		
+    --Mathmorra 
+    "./deps/mathmorra/src/*.cc",
+    "./deps/mathmorra/include/*.h",
+
 		--GLM
 		"./deps/glm/*.h",
 		"./deps/glm/*.hpp",

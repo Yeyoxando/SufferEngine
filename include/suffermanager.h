@@ -5,23 +5,26 @@
 
 #include <ref_ptr.h>
 #include <render_manager.h>
+#include <resource_manager.h>
+#include <audio_manager.h>
 #include <scoped_array.h>
 #include <thread.h>
 #include <material.h>
+#include "vector2.h"
+#include "input.h"
 
-class Scene;
 
 // --------------------------------------------------------------//
 
 namespace Suffer {
 
+  class Scene;
 	class SufferManager {
 
 	public:
 		friend class Audio3D;
 		friend class Audio2D;
 		friend class Interface;
-		friend class DrawGeometry;
 
 		static SufferManager& instance();
 
@@ -32,61 +35,14 @@ namespace Suffer {
 
 		double DeltaTime();
 
-		// Resources
-
-		class GPUResource : public Referenced {
-
-		public:
-			GPUResource();
-			~GPUResource();
-
-			enum ResourceType {
-				kVertexBuffer = 0,
-				kIndexBuffer,
-				kFrameBuffer,
-				kTexture,
-				kInvalid
-			};
-
-			s32 id_;
-
-			ResourceType type_;
-
-		};
-
-		class VertexBuffer : public GPUResource {
-		public:
-			friend class SufferManager;
-			enum VertexFormat {
-				kVertexFormat_3P = 0,
-				kVertexFormat_Invalid
-			};
-
-			VertexBuffer();
-			~VertexBuffer() {};
-
-			VertexFormat format_;
-
-		};
-
-		class IndexBuffer : public GPUResource {
-		public:
-			IndexBuffer();
-			~IndexBuffer() {};
-
-		};
-
-		//Buffers
-		void UploadVertexData(const ref_ptr<VertexBuffer> buffer, Array<float> *data);
-		void UploadVertexData(const ref_ptr<VertexBuffer> buffer, float* data, u32 size);
-		void UploadIndexData(const ref_ptr<IndexBuffer> buffer, Array<u16> *data);
-		void UploadIndexData(const ref_ptr<IndexBuffer> buffer, u16* data, u32 size);
-
+    mathmorra::Vector2 GetMousePosition();
 
 		// Subsystems
+    AudioManager audio_manager_;
+    InputManager input_manager_;
 		RenderManager render_manager_;
+		ResourceManager resource_manager_;
 
-		Audio3D newSong;
 	protected:
 
 		SufferManager();
@@ -104,22 +60,16 @@ namespace Suffer {
 		void Audio();
 		void PrepareAudio();
 
-		u32 GetNumberOfVertexBuffers();
-		u32 GetNumberOfIndexBuffers();
+    void SetMousePosition();
 
-		void SumVertexBufferCount();
-		void SumIndexBufferCount();
-
-		u32 IsBufferCreated(ref_ptr<VertexBuffer> vertex_buffer);
-		u32 IsBufferCreated(ref_ptr<IndexBuffer> index_buffer);
-		u32 IsMaterialCreated(ref_ptr<Material> material);
-
-		u32 NumberElements(ref_ptr<IndexBuffer> index_buffer);
+    Scene* GetCurrentScene();
 
 		// Threads
 		ref_ptr<Thread> logic_;
 		ref_ptr<Thread> input_;
 		ref_ptr<Thread> audio_;
+
+    mathmorra::Vector2 mouse_position_;
 
 		struct Data;
 		Data* data_;

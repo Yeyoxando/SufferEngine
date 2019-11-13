@@ -9,6 +9,7 @@
 
 #include <data_types.h>
 #include <audio.h>
+#include "scene.h"
 
  // Forward declaration for the Engine LOG
 struct ExampleAppLog;
@@ -47,7 +48,7 @@ namespace Suffer {
 		void ChangeEditorStyle();
 
 		// Engine Interface Structure
-		void Hierarchy();
+		void Hierarchy(Scene* current_scene_);
 		void Log();
 		void Inspector();
 		void Project();

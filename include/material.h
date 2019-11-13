@@ -1,94 +1,56 @@
 /*
 * Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
 * Date: 10-12-2019
-* Material Header
+* MaterialInstance Header
 */
 
 #ifndef __MATERIAL_H__
 #define __MATERIAL_H__
 
-#include <glm.hpp>
 #include <data_types.h>
 #include <referenced.h>
 #include <ref_ptr.h>
+#include "vector4.h"
 
 namespace Suffer {
 
 	// --------------------------------------------------- //
 
-	class Material : public Referenced {
+	class MaterialInstance : public Referenced {
 
 	public:
 		friend class DrawGeometry;
 
-		enum MaterialType {
-			kBasicMaterials_Default = 0,
-			kBasicMaterials_Phong,
-			kBasicMaterials_NONE = 20
-		};
+		MaterialInstance();
 
-
-		Material();
-
-    void SetMaterialType(MaterialType type);
-    u32 GetMaterialType();
-
-    class MaterialSettings : public Referenced {
-        MaterialSettings() {}
-        ~MaterialSettings() {}
-
-      union Params {
-        Params() {}
-        ~Params() {}
-
-        struct DefaultParams {
-        public:
-          DefaultParams();
-          ~DefaultParams() {}
-
-          // Getters
-          glm::vec4 GetColor();
-
-          // Setters
-          void SetColor(glm::vec4 new_color);
-
-        private:
-          glm::vec4 color_;
-        };
-
-        struct PhongParams {
-          PhongParams();
-          ~PhongParams() {}
-
-          // Getters
-          glm::vec4 GetColor();
-
-          // Setters
-          void SetColor(glm::vec4 new_color);
-
-        private:
-          glm::vec4 color_;
-        
-        };
-       
-      };
-
-      Params material_params_;
+    enum ParamsType {
+      kParams_Default = 0,
+      kParams_Phong,
+      kParams_NONE = 20
     };
 
+    // Getters
+    float* GetColor() const;
+
+    // Setters
+    void SetColor(mathmorra::Vector4 new_color);
+
+
+    void SetMaterialParamsType(ParamsType type);
+    u32 GetMaterialParamsType() const;
+
+
 	protected:
-		virtual ~Material();
+		virtual ~MaterialInstance();
 
 	private:
+    ParamsType params_type_;
 
 		struct Data;
 		Data* data_;
 
-    ref_ptr<MaterialSettings> material_settings_;
-		MaterialType material_type_;
-
 		// Methods
-		Material(const Material&);
+		MaterialInstance(const MaterialInstance&);
 	};
 }
 

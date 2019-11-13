@@ -3,72 +3,97 @@
 
 // --------------------------------------------------- //
 
-struct Suffer::Material::Data {
+struct Suffer::MaterialInstance::Data {
 	GLuint program_ID;
+
+  //Material values
+  mathmorra::Vector4 color_;
 };
 
-
 // --------------------------------------------------- //
 
-Suffer::Material::MaterialSettings::Params::DefaultParams::DefaultParams(){
-
-  color_ = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-
-}
-
-// --------------------------------------------------- //
-
-glm::vec4 Suffer::Material::MaterialSettings::Params::DefaultParams::GetColor() {
-  return color_;
-}
-
-// --------------------------------------------------- //
-
-void Suffer::Material::MaterialSettings::Params::DefaultParams::SetColor(glm::vec4 new_color) {
-  color_ = new_color;
-}
-
-// --------------------------------------------------- //
-
-Suffer::Material::MaterialSettings::Params::PhongParams::PhongParams() {
+float* Suffer::MaterialInstance::GetColor() const{
+ // This switch will be needed in other atrributtes that can only be set in specific material, 
+  // For example specular in phong will be needed, but not it default
   
-  color_ = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+  //mathmorra::Vector4 color;
+ //switch (params_type_) {
+ //case Suffer::MaterialInstance::kParams_Default:
+ //  color = data_->color_;
+ //  break;
+ //case Suffer::MaterialInstance::kParams_Phong:
+ //  color = data_->color_;
+ //  break;
+ //case Suffer::MaterialInstance::kParams_NONE:
+ //  break;
+ //default:
+ //  break;
+ //}
 
+
+  return data_->color_.GetValues();
 }
 
 // --------------------------------------------------- //
 
-glm::vec4 Suffer::Material::MaterialSettings::Params::PhongParams::GetColor() {
-  return color_;
+void Suffer::MaterialInstance::SetColor(mathmorra::Vector4 new_color) {
+  // This switch will be needed in other atrributtes that can only be set in specific material, 
+  // For example specular in phong will be needed, but not it default
+  
+  //switch (params_type_) {
+  //case Suffer::MaterialInstance::kParams_Default:
+  //  data_->color_ = new_color;
+  //  break;
+  //case Suffer::MaterialInstance::kParams_Phong:
+  //  data_->color_ = new_color;
+  //  break;
+  //case Suffer::MaterialInstance::kParams_NONE:
+  //  break;
+  //default:
+  //  break;
+  //}
+
+  data_->color_ = new_color;
 }
 
 // --------------------------------------------------- //
 
-void Suffer::Material::MaterialSettings::Params::PhongParams::SetColor(glm::vec4 new_color) {
-  color_ = new_color;
-}
-
-// --------------------------------------------------- //
-
-Suffer::Material::Material() {
+Suffer::MaterialInstance::MaterialInstance() {
 
 	data_ = new Data();
 
+  params_type_ = kParams_NONE;
+  
+  data_->color_ = mathmorra::Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 // --------------------------------------------------- //
 
-void Suffer::Material::SetMaterialType(MaterialType type){
-  material_type_ = type;
-}
-
-u32 Suffer::Material::GetMaterialType(){
-  return (u32)material_type_;
+void Suffer::MaterialInstance::SetMaterialParamsType(ParamsType type){
+  params_type_ = type;
+  switch (params_type_){
+  case Suffer::MaterialInstance::kParams_Default:
+    SetColor((1.0f, 0.0f, 0.0f, 1.0f));
+    break;
+  case Suffer::MaterialInstance::kParams_Phong:
+    SetColor((1.0f, 0.0f, 0.0f, 1.0f));
+    break;
+  case Suffer::MaterialInstance::kParams_NONE:
+    break;
+  default:
+    break;
+  }
 }
 
 // --------------------------------------------------- //
 
-Suffer::Material::~Material() {
+u32 Suffer::MaterialInstance::GetMaterialParamsType() const{
+  return params_type_;
+}
+
+// --------------------------------------------------- //
+
+Suffer::MaterialInstance::~MaterialInstance() {
 	if (!data_) return;
 	delete data_;
 	data_ = nullptr;
