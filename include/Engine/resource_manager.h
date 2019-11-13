@@ -45,11 +45,15 @@ namespace Suffer {
       enum VertexFormat {
         kVertexFormat_3P = 0,
         kVertexFormat_3P_3N = 1,
+        kVertexFormat_3P_3N_2UV = 2,
         kVertexFormat_Invalid
       };
 
       struct Vertex {
         Vertex() {}
+        Vertex(mathmorra::Vector3 vertex) {}
+        Vertex(mathmorra::Vector3 vertex, mathmorra::Vector3 normal) {}
+        Vertex(mathmorra::Vector3 vertex, mathmorra::Vector3 normal, mathmorra::Vector2 uv) {}
         ~Vertex() {}
 
         mathmorra::Vector3 vertices_;
@@ -69,6 +73,15 @@ namespace Suffer {
     public:
       IndexBuffer();
       ~IndexBuffer() {};
+
+      struct Triangle {
+        Triangle() {}
+        Triangle(u16 indices[3]) {}
+        ~Triangle() {}
+
+        u16 indices_[3];
+
+      };
 
     };
 
