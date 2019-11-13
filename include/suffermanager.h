@@ -5,6 +5,7 @@
 
 #include <ref_ptr.h>
 #include <render_manager.h>
+#include <resource_manager.h>
 #include <audio_manager.h>
 #include <scoped_array.h>
 #include <thread.h>
@@ -23,7 +24,6 @@ namespace Suffer {
 		friend class Audio3D;
 		friend class Audio2D;
 		friend class Interface;
-		friend class DrawGeometry;
 
 		static SufferManager& instance();
 
@@ -34,62 +34,12 @@ namespace Suffer {
 
 		double DeltaTime();
 
-		// Resources
-
-		class GPUResource : public Referenced {
-
-		public:
-			GPUResource();
-			~GPUResource();
-
-			enum ResourceType {
-				kVertexBuffer = 0,
-				kIndexBuffer,
-				kFrameBuffer,
-				kTexture,
-				kInvalid
-			};
-
-			s32 id_;
-
-			ResourceType type_;
-
-		};
-
-		class VertexBuffer : public GPUResource {
-		public:
-			friend class SufferManager;
-			enum VertexFormat {
-				kVertexFormat_3P = 0,
-				kVertexFormat_3P_3N = 1,
-				kVertexFormat_Invalid
-			};
-
-			VertexBuffer();
-			~VertexBuffer() {};
-      
-			VertexFormat format_;
-
-		};
-
-		class IndexBuffer : public GPUResource {
-		public:
-			IndexBuffer();
-			~IndexBuffer() {};
-
-		};
-
-		//Buffers
-		void UploadVertexData(const ref_ptr<VertexBuffer> buffer, Array<float> *data);
-		void UploadVertexData(const ref_ptr<VertexBuffer> buffer, float* data, u32 size);
-		void UploadIndexData(const ref_ptr<IndexBuffer> buffer, Array<u16> *data);
-		void UploadIndexData(const ref_ptr<IndexBuffer> buffer, u16* data, u32 size);
-
     mathmorra::Vector2 GetMousePosition();
 
 		// Subsystems
     AudioManager audio_manager_;
 		RenderManager render_manager_;
+		ResourceManager resource_manager_;
 
 	protected:
 

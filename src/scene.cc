@@ -1,7 +1,9 @@
 #include <scene.h>
 #include <game_object.h>
 #include <suffermanager.h>
+#include <resource_manager.h>
 #include <clear.h>
+#include "common_definitions.h"
 #include "draw_geometry.h"
 
 // --------------------------------------------------- //
@@ -26,10 +28,10 @@ Suffer::Scene::~Scene(){
 
 void Suffer::Scene::Init() {
 
-  ref_ptr<SufferManager::VertexBuffer> vert_buff_;
-  ref_ptr<SufferManager::IndexBuffer> ind_buff_;
+  ref_ptr<Suffer::ResourceManager::VertexBuffer> vert_buff_;
+  ref_ptr<Suffer::ResourceManager::IndexBuffer> ind_buff_;
   vert_buff_.alloc();
-  vert_buff_->format_ = SufferManager::VertexBuffer::kVertexFormat_3P_3N;
+  vert_buff_->format_ = Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N;
   ind_buff_.alloc();
 
 	float vertices[] = {
@@ -76,8 +78,8 @@ void Suffer::Scene::Init() {
         22, 21, 20, 20, 23, 22
   };
 
-	SufferManager::instance().UploadVertexData(vert_buff_, vertices, 144);
-	SufferManager::instance().UploadIndexData(ind_buff_, indices, 36);
+	suffer.resource_manager_.UploadVertexData(vert_buff_, vertices, 144);
+  suffer.resource_manager_.UploadIndexData(ind_buff_, indices, 36);
 
 	ref_ptr<Geometry> geometry;
 	geometry.alloc();
@@ -110,10 +112,10 @@ void Suffer::Scene::Init() {
 
 
 
-  ref_ptr<SufferManager::VertexBuffer> vert_buff_2;
-  ref_ptr<SufferManager::IndexBuffer> ind_buff_2;
+  ref_ptr<Suffer::ResourceManager::VertexBuffer> vert_buff_2;
+  ref_ptr<Suffer::ResourceManager::IndexBuffer> ind_buff_2;
   vert_buff_2.alloc();
-  vert_buff_2->format_ = SufferManager::VertexBuffer::kVertexFormat_3P;
+  vert_buff_2->format_ = Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P;
   ind_buff_2.alloc();
   
   float vertices2[] = {
@@ -124,8 +126,8 @@ void Suffer::Scene::Init() {
   
   u16 indices2[]{ 0, 2, 1};
   
-  SufferManager::instance().UploadVertexData(vert_buff_2, vertices2, 9);
-  SufferManager::instance().UploadIndexData(ind_buff_2, indices2, 3);
+  suffer.resource_manager_.UploadVertexData(vert_buff_2, vertices2, 9);
+  suffer.resource_manager_.UploadIndexData(ind_buff_2, indices2, 3);
   
   ref_ptr<Geometry> geometry2;
   geometry2.alloc();

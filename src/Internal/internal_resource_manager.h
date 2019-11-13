@@ -1,3 +1,5 @@
+// Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
+
 #ifndef __INTERNAL_RESOURCE_MANAGER_H__
 #define __INTERNAL_RESOURCE_MANAGER_H__
 

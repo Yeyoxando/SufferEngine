@@ -15,88 +15,6 @@
 
 // --------------------------------------------------------------//
 
-void Suffer::SufferManager::Data::InitInternalBuffers(){
-
-    internal_index_buffers_.alloc(MAX_BUFFERS);
-    internal_vertex_buffers_.alloc(MAX_BUFFERS);
-
-    number_of_index_buffers_ = 0;
-    number_of_vertex_buffers_ = 0;
-
-}
-
-// --------------------------------------------------------------//
-
-void Suffer::SufferManager::Data::InitInternalMaterials(){
-  internal_materials_.alloc(1);
-
-  // Default material
-  internal_materials_[number_of_materials_].id_handle_ = 0;
-
-  internal_materials_[number_of_materials_].vertex_shader_ = R"VSHADER(
-	
-	  #version 330
-	  layout(location = 0) in vec3 a_position;
-	  layout(location = 1) in vec3 a_normal;
-    
-    uniform mat4 u_m_matrix;
-    uniform mat4 u_v_matrix;
-    uniform mat4 u_p_matrix;
-    
-    out vec3 normal;
-
-	  void main(){
-      mat4 accum_matrix = u_p_matrix * u_v_matrix * u_m_matrix;
-      normal = normalize((accum_matrix * vec4(a_normal, 0.0))).xyz;
-		  gl_Position = accum_matrix * vec4(a_position, 1.0f);
-	  }
-
-	)VSHADER";
-
-  internal_materials_[number_of_materials_].fragment_shader_ = R"FSHADER(
-  
-    #version 330
-
-    out vec4 fragColor;
-    
-    uniform vec4 u_color;
-    in vec3 normal;
-    vec3 light_dir = vec3(0, 0, 1);
-    vec3 light_color = vec3(1, 1, 1);
-
-//---------------------------------------------------------------------------//
-
-vec3 CreateDiffuseLight(vec3 lightPos){
-
-	vec3 norm = normalize(normal);
-	float diffs = max(dot(norm, -lightPos), 0.0f);
-	vec3 diffuseLight = diffs * vec3(light_color) * 0.4;
-
-	return diffuseLight;
-}
-
-//---------------------------------------------------------------------------//
-
-    void main(){
-
-      //Ambient
-      vec3 ambient = 0.4 * light_color; // (0, 0.8, 0)
-      //Diffuse
-      float diff = max(dot(normalize(normal), normalize(-light_dir)), 0.0);
-      vec3 test = CreateDiffuseLight(light_dir);
-      vec3 colorResult = (ambient + test) * u_color.xyz;
-
-      //vec3 aux = u_color.xyz * (normal * 0.5 + 0.5);
-      fragColor = vec4(colorResult, 1.0f);
-    }
-  	
-  )FSHADER";
-
-  number_of_materials_++;
-}
-
-// --------------------------------------------------------------//
-
 Suffer::SufferManager::SufferManager(){
 
 	data_ = new Data();
@@ -143,6 +61,7 @@ bool Suffer::SufferManager::Init(){
 	//Subsystems init
   audio_manager_.StartUp();
   render_manager_.StartUp();
+  resource_manager_.StartUp();
 
 	// Threads Allocation
 	logic_.alloc();
@@ -150,8 +69,6 @@ bool Suffer::SufferManager::Init(){
 	audio_.alloc();
 
 
-	data_->InitInternalBuffers();
-	data_->InitInternalMaterials();
 
 	data_->window_should_close_ = false;
 
@@ -291,6 +208,7 @@ bool Suffer::SufferManager::Step(double time_step){
 
 bool Suffer::SufferManager::Finish(){
 
+  resource_manager_.ShutDown();
 	render_manager_.ShutDown();
   audio_manager_.ShutDown();
 
@@ -305,112 +223,6 @@ double Suffer::SufferManager::DeltaTime(){
 	assert(data_ && "\n Data is null.");
 #endif // ASSERT
 	return data_->delta_time_;
-
-}
-
-// --------------------------------------------------------------//
-
-Suffer::SufferManager::GPUResource::GPUResource() {
-
-    id_ = -1;
-    type_ = kInvalid;
-
-}
-
-// --------------------------------------------------------------//
-
-Suffer::SufferManager::GPUResource::~GPUResource() {
-
-}
-
-// --------------------------------------------------------------//
-
-Suffer::SufferManager::VertexBuffer::VertexBuffer() {
-
-    type_ = GPUResource::kVertexBuffer;
-    format_ = kVertexFormat_Invalid;
-    id_ = SufferManager::instance().data_->number_of_vertex_buffers_;
-    SufferManager::instance().data_->number_of_vertex_buffers_++;
-
-}
-
-// --------------------------------------------------------------//
-
-Suffer::SufferManager::IndexBuffer::IndexBuffer() {
-
-    type_ = GPUResource::kIndexBuffer;
-    id_ = SufferManager::instance().data_->number_of_index_buffers_;
-    SufferManager::instance().data_->number_of_index_buffers_++;
-
-}
-
-// --------------------------------------------------------------//
-
-void Suffer::SufferManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer, Array<float> *data){
-
-#ifdef ASSERT
-    assert(buffer.get() != nullptr && "Buffer is NULL!");
-    assert(buffer.get()->format_ != VertexBuffer::kVertexFormat_Invalid && "Vertex format is INVALID!");
-#endif
-
-	data_->internal_vertex_buffers_[buffer->id_].data_.copy(*data);
-    data_->internal_vertex_buffers_[buffer->id_].version_++;
-    data_->internal_vertex_buffers_[buffer->id_].id_handle_ = buffer->id_;
-
-}
-
-// --------------------------------------------------------------//
-
-void Suffer::SufferManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer, float* data, u32 size) {
-
-#ifdef ASSERT
-  assert(buffer.get() != nullptr && "Buffer is NULL!");
-  assert(data != nullptr && "Data is NULL!");
-  assert(buffer.get()->format_ != VertexBuffer::kVertexFormat_Invalid && "Vertex format is INVALID!");
-#endif
-
-  Array<float> vertices_;
-  vertices_.alloc(size);
-  for (u32 i = 0; i < size; ++i) {
-    vertices_[i] = data[i];
-  }
-
-  data_->internal_vertex_buffers_[buffer->id_].data_.copy(vertices_);
-  data_->internal_vertex_buffers_[buffer->id_].version_++;
-  data_->internal_vertex_buffers_[buffer->id_].id_handle_ = buffer->id_;
-}
-
-// --------------------------------------------------------------//
-
-void Suffer::SufferManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, Array<u16> *data){
-
-#ifdef ASSERT
-  assert(buffer.get() != nullptr && "Buffer is NULL!");
-#endif
-    data_->internal_index_buffers_[buffer->id_].data_.copy(*data);
-    data_->internal_index_buffers_[buffer->id_].version_++;
-    data_->internal_index_buffers_[buffer->id_].id_handle_ = buffer->id_;
-
-}
-
-// --------------------------------------------------------------//
-
-void Suffer::SufferManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, u16* data, u32 size){
-
-#ifdef ASSERT
-  assert(buffer.get() != nullptr && "Buffer is NULL!");
-  assert(data != nullptr && "Data is NULL!");
-#endif
-
-  Array<u16> indices_;
-  indices_.alloc(size);
-  for (u32 i = 0; i < size; ++i) {
-    indices_[i] = data[i];
-  }
-
-  data_->internal_index_buffers_[buffer->id_].data_.copy(indices_);
-  data_->internal_index_buffers_[buffer->id_].version_++;
-  data_->internal_index_buffers_[buffer->id_].id_handle_ = buffer->id_;
 
 }
 

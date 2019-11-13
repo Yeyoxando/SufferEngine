@@ -18,19 +18,19 @@ Suffer::Geometry::Geometry() {
 
 // --------------------------------------------------- //
 
-void Suffer::Geometry::SetIndexBuffer(ref_ptr<SufferManager::IndexBuffer> buffer){
+void Suffer::Geometry::SetIndexBuffer(ref_ptr<Suffer::ResourceManager::IndexBuffer> buffer){
 	index_buffer_ = buffer.get();
 }
 
 // --------------------------------------------------- //
 
-void Suffer::Geometry::SetVertexBuffer(ref_ptr<SufferManager::VertexBuffer> buffer){
+void Suffer::Geometry::SetVertexBuffer(ref_ptr<Suffer::ResourceManager::VertexBuffer> buffer){
 	vertex_buffer_ = buffer.get();
 }
 
 // --------------------------------------------------- //
 
-void Suffer::Geometry::SetBuffers(ref_ptr<SufferManager::VertexBuffer> vertex_buffer, ref_ptr<SufferManager::IndexBuffer> index_buffer) {
+void Suffer::Geometry::SetBuffers(ref_ptr<Suffer::ResourceManager::VertexBuffer> vertex_buffer, ref_ptr<Suffer::ResourceManager::IndexBuffer> index_buffer) {
 	vertex_buffer_ = vertex_buffer.get();
 	index_buffer_ = index_buffer.get();
 }

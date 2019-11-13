@@ -10,7 +10,7 @@
 #include <data_types.h>
 #include <referenced.h>
 #include <ref_ptr.h>
-#include <suffermanager.h>
+#include <resource_manager.h>
 
 namespace Suffer {
 
@@ -29,9 +29,9 @@ namespace Suffer {
 	    };
 		
 
-      void SetVertexBuffer(ref_ptr<SufferManager::VertexBuffer> buffer);
-      void SetIndexBuffer(ref_ptr<SufferManager::IndexBuffer> buffer);
-      void SetBuffers(ref_ptr<SufferManager::VertexBuffer> vertex_buffer, ref_ptr<SufferManager::IndexBuffer> index_buffer);
+      void SetVertexBuffer(ref_ptr<Suffer::ResourceManager::VertexBuffer> buffer);
+      void SetIndexBuffer(ref_ptr<Suffer::ResourceManager::IndexBuffer> buffer);
+      void SetBuffers(ref_ptr<Suffer::ResourceManager::VertexBuffer> vertex_buffer, ref_ptr<Suffer::ResourceManager::IndexBuffer> index_buffer);
 
     protected:
 	    virtual ~Geometry();
@@ -45,8 +45,8 @@ namespace Suffer {
       s32 index_buffer_id_;
       s32 vertex_buffer_id_;
 
-	  ref_ptr<SufferManager::IndexBuffer> index_buffer_;
-	  ref_ptr<SufferManager::VertexBuffer> vertex_buffer_;
+	  ref_ptr<Suffer::ResourceManager::IndexBuffer> index_buffer_;
+	  ref_ptr<Suffer::ResourceManager::VertexBuffer> vertex_buffer_;
 
 
 	    // Methods

@@ -12,6 +12,9 @@
 namespace Suffer {
 
   class ResourceManager {
+    friend class DrawGeometry;
+    friend class SufferManager;
+
   public:
     ResourceManager();
     ~ResourceManager();
@@ -83,6 +86,10 @@ namespace Suffer {
     void UploadIndexData(const ref_ptr<IndexBuffer> buffer, u16* data, u32 size);
 
   private:
+    void StartUp();
+    void ShutDown();
+
+
     struct ResourceData;
     ResourceData* data_;
 

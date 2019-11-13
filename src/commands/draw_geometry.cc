@@ -9,13 +9,14 @@
 #include <gl/glew.h>
 #include <data_types.h>
 #include <glm.hpp>
-#include "internal_suffermanager.h"
+#include "suffermanager.h"
+#include "internal_resource_manager.h"
 #include "common_definitions.h"
 
 struct Suffer::DrawGeometry::Data {
   // Geometry
-  const SufferManager::VertexBuffer* vertex_buffer_;
-  const SufferManager::IndexBuffer* index_buffer_;
+  const Suffer::ResourceManager::VertexBuffer* vertex_buffer_;
+  const Suffer::ResourceManager::IndexBuffer* index_buffer_;
 
 
   // Transform 
@@ -139,32 +140,32 @@ void Suffer::DrawGeometry::Execute() const {
 
     s32 id_vertex = data_->vertex_buffer_->id_;
 
-    if (suffer.data_->internal_vertex_buffers_[id_vertex].gpu_version_ == 0) {
-      glGenBuffers(1, &suffer.data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
+    if (suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].gpu_version_ == 0) {
+      glGenBuffers(1, &suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
       error = glGetError();
-      glBindBuffer(GL_ARRAY_BUFFER, suffer.data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
+      glBindBuffer(GL_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
       error = glGetError();
 
       glBufferData(GL_ARRAY_BUFFER,
-        suffer.data_->internal_vertex_buffers_[id_vertex].data_.sizeInBytes(),
-        suffer.data_->internal_vertex_buffers_[id_vertex].data_.get(),
+        suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].data_.sizeInBytes(),
+        suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].data_.get(),
         GL_STATIC_DRAW);
       error = glGetError();
 
-      suffer.data_->internal_vertex_buffers_[id_vertex].gpu_version_ = suffer.data_->internal_vertex_buffers_[id_vertex].version_;
+      suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].gpu_version_ = suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].version_;
     }
 
-    if (suffer.data_->internal_vertex_buffers_[id_vertex].gpu_version_ < suffer.data_->internal_vertex_buffers_[id_vertex].version_) {
-      glBindBuffer(GL_ARRAY_BUFFER, suffer.data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
+    if (suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].gpu_version_ < suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].version_) {
+      glBindBuffer(GL_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
       error = glGetError();
 
       glBufferData(GL_ARRAY_BUFFER,
-        suffer.data_->internal_vertex_buffers_[id_vertex].data_.sizeInBytes(),
-        suffer.data_->internal_vertex_buffers_[id_vertex].data_.get(),
+        suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].data_.sizeInBytes(),
+        suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].data_.get(),
         GL_STATIC_DRAW);
       error = glGetError();
 
-      suffer.data_->internal_vertex_buffers_[id_vertex].gpu_version_ = suffer.data_->internal_vertex_buffers_[id_vertex].version_;
+      suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].gpu_version_ = suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].version_;
     }
 
   }
@@ -182,31 +183,31 @@ void Suffer::DrawGeometry::Execute() const {
 #endif
     if (data_->index_buffer_->id_ < 0) return;
     s32 id_index = data_->index_buffer_->id_;
-    if (suffer.data_->internal_index_buffers_[id_index].gpu_version_ == 0) {
-      glGenBuffers(1, &suffer.data_->internal_index_buffers_[id_index].current_gl_buffer_);
+    if (suffer.resource_manager_.data_->internal_index_buffers_[id_index].gpu_version_ == 0) {
+      glGenBuffers(1, &suffer.resource_manager_.data_->internal_index_buffers_[id_index].current_gl_buffer_);
       error = glGetError();
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.data_->internal_index_buffers_[id_index].current_gl_buffer_);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_index_buffers_[id_index].current_gl_buffer_);
       error = glGetError();
 
       glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-        suffer.data_->internal_index_buffers_[id_index].data_.sizeInBytes(),
-        suffer.data_->internal_index_buffers_[id_index].data_.get(),
+        suffer.resource_manager_.data_->internal_index_buffers_[id_index].data_.sizeInBytes(),
+        suffer.resource_manager_.data_->internal_index_buffers_[id_index].data_.get(),
         GL_STATIC_DRAW);
       error = glGetError();
     }
 
-    if (suffer.data_->internal_index_buffers_[id_index].gpu_version_ < suffer.data_->internal_index_buffers_[id_index].version_) {
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.data_->internal_index_buffers_[id_index].current_gl_buffer_);
+    if (suffer.resource_manager_.data_->internal_index_buffers_[id_index].gpu_version_ < suffer.resource_manager_.data_->internal_index_buffers_[id_index].version_) {
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_index_buffers_[id_index].current_gl_buffer_);
       error = glGetError();
 
       glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-        suffer.data_->internal_index_buffers_[id_index].data_.sizeInBytes(),
-        suffer.data_->internal_index_buffers_[id_index].data_.get(),
+        suffer.resource_manager_.data_->internal_index_buffers_[id_index].data_.sizeInBytes(),
+        suffer.resource_manager_.data_->internal_index_buffers_[id_index].data_.get(),
         GL_STATIC_DRAW);
       error = glGetError();
     }
 
-    suffer.data_->internal_index_buffers_[id_index].gpu_version_ = suffer.data_->internal_index_buffers_[id_index].version_;
+    suffer.resource_manager_.data_->internal_index_buffers_[id_index].gpu_version_ = suffer.resource_manager_.data_->internal_index_buffers_[id_index].version_;
 
   }
 
@@ -221,60 +222,60 @@ void Suffer::DrawGeometry::Execute() const {
     u32 mat_id = data_->internal_material_id_;
 
     // If internal material is not created, creates it
-    if (!suffer.data_->internal_materials_[mat_id].is_created_) {
+    if (!suffer.resource_manager_.data_->internal_materials_[mat_id].is_created_) {
       // Create vertex shader
-      suffer.data_->internal_materials_[mat_id].vertex_shader_id_ =
+      suffer.resource_manager_.data_->internal_materials_[mat_id].vertex_shader_id_ =
         glCreateShader(GL_VERTEX_SHADER);
       error = glGetError();
 
       // Create fragment shader
-      suffer.data_->internal_materials_[mat_id].fragment_shader_id_ =
+      suffer.resource_manager_.data_->internal_materials_[mat_id].fragment_shader_id_ =
         glCreateShader(GL_FRAGMENT_SHADER);
       error = glGetError();
 
       // Get shaders length
-      const GLint vertex_size = strlen(suffer.data_->internal_materials_[mat_id].vertex_shader_);
-      const GLint fragment_size = strlen(suffer.data_->internal_materials_[mat_id].fragment_shader_);
+      const GLint vertex_size = strlen(suffer.resource_manager_.data_->internal_materials_[mat_id].vertex_shader_);
+      const GLint fragment_size = strlen(suffer.resource_manager_.data_->internal_materials_[mat_id].fragment_shader_);
 
       // Upload vertex shader data
-      glShaderSource(suffer.data_->internal_materials_[mat_id].vertex_shader_id_,
-        1, &suffer.data_->internal_materials_[mat_id].vertex_shader_,
+      glShaderSource(suffer.resource_manager_.data_->internal_materials_[mat_id].vertex_shader_id_,
+        1, &suffer.resource_manager_.data_->internal_materials_[mat_id].vertex_shader_,
         &vertex_size);
       error = glGetError();
 
       // Upload fragment shader data
-      glShaderSource(suffer.data_->internal_materials_[mat_id].fragment_shader_id_,
-        1, &suffer.data_->internal_materials_[mat_id].fragment_shader_, &fragment_size);
+      glShaderSource(suffer.resource_manager_.data_->internal_materials_[mat_id].fragment_shader_id_,
+        1, &suffer.resource_manager_.data_->internal_materials_[mat_id].fragment_shader_, &fragment_size);
       error = glGetError();
 
       // Compile vertex shader
-      glCompileShader(suffer.data_->internal_materials_[mat_id].vertex_shader_id_);
+      glCompileShader(suffer.resource_manager_.data_->internal_materials_[mat_id].vertex_shader_id_);
       error = glGetError();
 
       GLint status = 0;
-      glGetShaderiv(suffer.data_->internal_materials_[mat_id].vertex_shader_id_, GL_COMPILE_STATUS, &status);
+      glGetShaderiv(suffer.resource_manager_.data_->internal_materials_[mat_id].vertex_shader_id_, GL_COMPILE_STATUS, &status);
       GLint log_length = 0;
-      glGetShaderiv(suffer.data_->internal_materials_[mat_id].vertex_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
+      glGetShaderiv(suffer.resource_manager_.data_->internal_materials_[mat_id].vertex_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
       Array<char> info_log;
       info_log.alloc(log_length + 1);
       info_log[log_length] = '\0';
-      glGetShaderInfoLog(suffer.data_->internal_materials_[mat_id].vertex_shader_id_, log_length, &log_length, &info_log[0]);
+      glGetShaderInfoLog(suffer.resource_manager_.data_->internal_materials_[mat_id].vertex_shader_id_, log_length, &log_length, &info_log[0]);
 
       printf("\n\n%s", info_log.get());
       if (status == GL_FALSE)
         printf("\nERROR: vertex shader not compiled");
 
       // Compile fragment shader
-      glCompileShader(suffer.data_->internal_materials_[mat_id].fragment_shader_id_);
+      glCompileShader(suffer.resource_manager_.data_->internal_materials_[mat_id].fragment_shader_id_);
       error = glGetError();
       status = 0;
-      glGetShaderiv(suffer.data_->internal_materials_[mat_id].fragment_shader_id_, GL_COMPILE_STATUS, &status);
+      glGetShaderiv(suffer.resource_manager_.data_->internal_materials_[mat_id].fragment_shader_id_, GL_COMPILE_STATUS, &status);
       log_length = 0;
       info_log.release();
-      glGetShaderiv(suffer.data_->internal_materials_[mat_id].fragment_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
+      glGetShaderiv(suffer.resource_manager_.data_->internal_materials_[mat_id].fragment_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
       info_log.alloc(log_length + 1);
       info_log[log_length] = '\0';
-      glGetShaderInfoLog(suffer.data_->internal_materials_[mat_id].fragment_shader_id_, log_length, &log_length, &info_log[0]);
+      glGetShaderInfoLog(suffer.resource_manager_.data_->internal_materials_[mat_id].fragment_shader_id_, log_length, &log_length, &info_log[0]);
       printf("\n\n%s", info_log.get());
       if (status == GL_FALSE)
         printf("\nERROR: fragment shader not compiled");
@@ -282,24 +283,24 @@ void Suffer::DrawGeometry::Execute() const {
 
 
       // Create program
-      suffer.data_->internal_materials_[mat_id].current_program_ = glCreateProgram();
+      suffer.resource_manager_.data_->internal_materials_[mat_id].current_program_ = glCreateProgram();
       error = glGetError();
 
       // Attach shaders
-      glAttachShader(suffer.data_->internal_materials_[mat_id].current_program_,
-        suffer.data_->internal_materials_[mat_id].vertex_shader_id_);
+      glAttachShader(suffer.resource_manager_.data_->internal_materials_[mat_id].current_program_,
+        suffer.resource_manager_.data_->internal_materials_[mat_id].vertex_shader_id_);
       error = glGetError();
 
-      glAttachShader(suffer.data_->internal_materials_[mat_id].current_program_,
-        suffer.data_->internal_materials_[mat_id].fragment_shader_id_);
+      glAttachShader(suffer.resource_manager_.data_->internal_materials_[mat_id].current_program_,
+        suffer.resource_manager_.data_->internal_materials_[mat_id].fragment_shader_id_);
       error = glGetError();
 
       // Link program
-      glLinkProgram(suffer.data_->internal_materials_[mat_id].current_program_);
+      glLinkProgram(suffer.resource_manager_.data_->internal_materials_[mat_id].current_program_);
       error = glGetError();
 
       // Mark internal material as created
-      suffer.data_->internal_materials_[mat_id].is_created_ = true;
+      suffer.resource_manager_.data_->internal_materials_[mat_id].is_created_ = true;
     }
 
   }
@@ -310,7 +311,7 @@ void Suffer::DrawGeometry::Execute() const {
 
   // ------------------------------- Uniforms ------------------------------ //
 
-  u32 program_id = suffer.data_->internal_materials_[data_->internal_material_id_].current_program_;
+  u32 program_id = suffer.resource_manager_.data_->internal_materials_[data_->internal_material_id_].current_program_;
 
   {
 
@@ -380,14 +381,14 @@ void Suffer::DrawGeometry::Execute() const {
 
   {
 
-    glBindBuffer(GL_ARRAY_BUFFER, suffer.data_->internal_vertex_buffers_[data_->vertex_buffer_->id_].current_gl_buffer_);
+    glBindBuffer(GL_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_vertex_buffers_[data_->vertex_buffer_->id_].current_gl_buffer_);
 
     switch (data_->vertex_buffer_->format_) {
-    case SufferManager::VertexBuffer::kVertexFormat_3P:
+    case Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P:
       glEnableVertexAttribArray(0);
       glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
       break;
-    case SufferManager::VertexBuffer::kVertexFormat_3P_3N:
+    case Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N:
       glEnableVertexAttribArray(0);
       glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (6 * sizeof(float)), (GLvoid*)0);
       glEnableVertexAttribArray(1);
@@ -408,9 +409,9 @@ void Suffer::DrawGeometry::Execute() const {
 
   {
 
-    u32 number_elements = SufferManager::instance().data_->internal_index_buffers_[data_->index_buffer_->id_].data_.size();
+    u32 number_elements = suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_->id_].data_.size();
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.data_->internal_index_buffers_[data_->index_buffer_->id_].current_gl_buffer_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_->id_].current_gl_buffer_);
     error = glGetError();
     glDrawElements(GL_TRIANGLES, number_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
     error = glGetError();
