@@ -11,6 +11,7 @@
 #include <thread.h>
 #include <material.h>
 #include "vector2.h"
+#include "input.h"
 
 
 // --------------------------------------------------------------//
@@ -38,6 +39,7 @@ namespace Suffer {
 
 		// Subsystems
     AudioManager audio_manager_;
+    InputManager input_manager_;
 		RenderManager render_manager_;
 		ResourceManager resource_manager_;
 

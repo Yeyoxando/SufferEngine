@@ -235,7 +235,7 @@ void  Suffer::Interface::Update(){
 	DrawMenuBar();
 	CreateDock(&open);
 	OpenWindows();
-	ImGui::ShowDemoWindow(&open);
+	//ImGui::ShowDemoWindow(&open);
 	//ImGui::ShowMetricsWindow(&open);
 
 }

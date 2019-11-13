@@ -4,6 +4,7 @@
 
 #define MAX_BUFFERS 5
 #define MAX_AUDIO_SOURCES 10
+#define INPUT_BUFFER 60
 
 #define WINDOW_WIDTH  800
 #define WINDOW_HEIGHT 600

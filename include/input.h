@@ -10,10 +10,16 @@
 #include "vector2.h"
 #include "data_types.h"
 #include "referenced.h"
+#include "scoped_array.h"
+#include "common_definitions.h"
 
 namespace Suffer {
 
     class InputManager {
+
+        friend class SufferManager;
+
+    public:
 
         enum State {
             kState_Pressed          = 0x01, // 00000001 == 1
@@ -22,8 +28,18 @@ namespace Suffer {
             kState_RecentlyReleased = 0x04, // 00001000 == 8
         };
 
-    public:
-
+        struct Alternative {
+            Alternative() {
+                pressed_ = false;
+                released_ = false;
+                recently_pressed_ = false;
+                recently_released_ = false;
+            }
+            bool pressed_;
+            bool released_;
+            bool recently_pressed_;
+            bool recently_released_;
+        };
 
         enum Key {
             k_A = 0,
@@ -89,6 +105,9 @@ namespace Suffer {
             k_F12,
         };
 
+        void StartUp();
+        void ShutDown();
+
         bool IsKeyUp(Key key);
         bool IsKeyDown(Key key);
         bool IsKeyPressed(Key key);
@@ -101,6 +120,11 @@ namespace Suffer {
         mathmorra::Vector2 MousePosition();
         void MousePosition(mathmorra::Vector2& out);
 
+        struct KeyBuffer {
+            Suffer::InputManager::Alternative state_;
+        };
+        Array<KeyBuffer> input_events_;
+
     private:
 
         InputManager();
@@ -108,6 +132,8 @@ namespace Suffer {
 
         struct Data;
         Data* data_;
+
+
 
     };
 

@@ -62,6 +62,7 @@ bool Suffer::SufferManager::Init(){
   audio_manager_.StartUp();
   render_manager_.StartUp();
   resource_manager_.StartUp();
+  input_manager_.StartUp();
 
 	// Threads Allocation
 	logic_.alloc();
@@ -106,12 +107,14 @@ void Suffer::SufferManager::Draw() {
 void Suffer::SufferManager::Input() {
 
 		// Window Should Close
-		//if (Suffer::IsKeyDown(k_Escape)) {
-		//	data_->window_should_close_ = true;
-		//}
-  //  if (Suffer::IsKeyDown(k_F2)) {
-  //      data_->is_interface_active_ = !data_->is_interface_active_;
-  //  }
+    if (input_manager_.IsKeyDown(InputManager::k_Escape)) {
+        data_->window_should_close_ = true;
+    }
+
+    // Activate Interface
+    if (input_manager_.IsKeyDown(InputManager::k_F2)) {
+        data_->is_interface_active_ = !data_->is_interface_active_;
+    }
 
 }
 
@@ -119,15 +122,15 @@ void Suffer::SufferManager::Input() {
 
 bool Suffer::SufferManager::Run(){
 
-    //ref_ptr<Audio3D> audio_source_;
-    //audio_source_.alloc();
-    //audio_source_->Load("../../../resources/audio/plonk_dry.ogg");
-    //ref_ptr <AudioCommands::Play> play_command_;
-    //play_command_.alloc();
-    //play_command_->audio_3d_ = audio_source_.get();
-    //DisplayList audio_dl_;
-    //audio_dl_.addCommand(play_command_.get());
-    //audio_manager_.AddToAudioQueue(std::move(audio_dl_));
+  //ref_ptr<Audio3D> audio_source_;
+  //audio_source_.alloc();
+  //audio_source_->Load("../../../resources/audio/plonk_dry.ogg");
+  //ref_ptr <AudioCommands::Play> play_command_;
+  //play_command_.alloc();
+  //play_command_->audio_3d_ = audio_source_.get();
+  //DisplayList audio_dl_;
+  //audio_dl_.addCommand(play_command_.get());
+  //audio_manager_.AddToAudioQueue(std::move(audio_dl_));
 
   // Threads Function Assignment
   auto update_thread = [] { SufferManager::instance().Update(); };
@@ -199,6 +202,7 @@ bool Suffer::SufferManager::Finish(){
   resource_manager_.ShutDown();
 	render_manager_.ShutDown();
   audio_manager_.ShutDown();
+  input_manager_.ShutDown();
 
 	return true;
 }

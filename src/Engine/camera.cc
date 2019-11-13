@@ -272,9 +272,9 @@ Suffer::Camera::~Camera() {
 
 void Suffer::Camera::Update(){
 
-    //if (Suffer::IsKeyDown(k_F1)) {
-    //    fps_movement_ = !fps_movement_;
-    //}
+    if (suffer.input_manager_.IsKeyDown(InputManager::k_F1)) {
+        fps_movement_ = !fps_movement_;
+    }
 
     camera_right_ = mathmorra::Vector3::Normalized(
         mathmorra::Vector3::CrossProduct(camera_direction_, camera_up_)
