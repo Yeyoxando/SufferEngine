@@ -13,11 +13,11 @@
 #include <referenced.h>
 #include <ref_ptr.h>
 #include <command.h>
+#include "display_list.h"
 
 // Mathematic Headers
 #include <vector3.h>
 #include <matrix4.h>
-
 
 namespace Suffer {
 
@@ -58,7 +58,7 @@ namespace Suffer {
 		void SetMaterial(ref_ptr<MaterialInstance> new_material);
 		void SetGeometry(ref_ptr<Geometry> new_geometry);
 
-		ref_ptr<Command> GetDrawCommand();
+    void AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matrix4 view, mathmorra::Matrix4 projection);
 
 
     // Hierarchy Stuff
@@ -81,6 +81,7 @@ namespace Suffer {
 		virtual ~GameObject();
 
 	private:
+
 		// Attributes
 		Transform transform_;
 		ref_ptr<MaterialInstance> material_;

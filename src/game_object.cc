@@ -26,6 +26,14 @@ Suffer::GameObject::GameObject() {
 
 }
 
+// --------------------------------------------------- //
+
+Suffer::GameObject::~GameObject() {
+
+}
+
+// --------------------------------------------------- //
+
 bool Suffer::GameObject::operator!=(const GameObject& go){
 
     if (transform_.position_ !=  go.transform_.position_ ||
@@ -79,20 +87,21 @@ void Suffer::GameObject::SetGeometry(ref_ptr<Geometry> new_geometry) {
 	geometry_ = new_geometry;
 }
 
-Suffer::ref_ptr<Suffer::Command> Suffer::GameObject::GetDrawCommand(){
+// --------------------------------------------------- //
 
-	ref_ptr<DrawGeometry> draw_geometry;
+void Suffer::GameObject::AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matrix4 view, mathmorra::Matrix4 projection) {
+  ref_ptr<DrawGeometry> draw_geometry;
 
-	draw_geometry.alloc();
-	draw_geometry.get()->SetData(this);
+  draw_geometry.alloc();
+  draw_geometry.get()->SetData(this);
 
   mathmorra::Matrix4 model_matrix;
 
   mathmorra::Matrix4 translation_mat;
-  translation_mat = translation_mat.Translate(transform_.position_.x_, 
-                                              transform_.position_.y_, 
-                                              transform_.position_.z_);
-  
+  translation_mat = translation_mat.Translate(transform_.position_.x_,
+    transform_.position_.y_,
+    transform_.position_.z_);
+
   mathmorra::Matrix4 rotation_mat_x;
   mathmorra::Matrix4 rotation_mat_y;
   mathmorra::Matrix4 rotation_mat_z;
@@ -104,16 +113,18 @@ Suffer::ref_ptr<Suffer::Command> Suffer::GameObject::GetDrawCommand(){
   rotation_mat_z = rotation_mat_z.Multiply(rotation_mat_x);
 
   mathmorra::Matrix4 scale_mat;
-  scale_mat = scale_mat.Scale(transform_.scale_.x_, 
-                              transform_.scale_.y_, 
-                              transform_.scale_.z_);
-  
+  scale_mat = scale_mat.Scale(transform_.scale_.x_,
+    transform_.scale_.y_,
+    transform_.scale_.z_);
+
   model_matrix = translation_mat * rotation_mat_z * scale_mat;
 
   draw_geometry.get()->SetModelMatrix(model_matrix);
+  draw_geometry.get()->SetViewMatrix(view);
+  draw_geometry.get()->SetProjectionMatrix(projection);
 
+  dl.addCommand(draw_geometry.get());
 
-	return draw_geometry.get();
 }
 
 // --------------------------------------------------- //
@@ -176,12 +187,6 @@ void Suffer::GameObject::Translate(float x, float y, float z){
 
 Suffer::Transform Suffer::GameObject::GetTransform() {
 	return transform_;
-}
-
-// --------------------------------------------------- //
-
-Suffer::GameObject::~GameObject() {
-
 }
 
 // --------------------------------------------------- //

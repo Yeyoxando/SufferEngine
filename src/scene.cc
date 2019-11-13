@@ -152,6 +152,8 @@ void Suffer::Scene::Init() {
 
 }
 
+// --------------------------------------------------- //
+
 void Suffer::Scene::Step(float time_step){
 	// Logic
   main_camera_.get()->Update();
@@ -164,28 +166,24 @@ void Suffer::Scene::Step(float time_step){
 void Suffer::Scene::PrepareDraw(){
 
 	DisplayList frame_dl;
+
+  // Clear command
 	ref_ptr<Clear> clear_cmd;
 
 	clear_cmd.alloc();
 	clear_cmd.get()->SetClearColor(mathmorra::Vector4(0.8f));
 
-
 	frame_dl.addCommand(clear_cmd.get());
 
+
+  // Gameobject adds itself to displaylist
 	for (u32 i = 0; i < current_gameobjects_.size(); ++i) {
-		ref_ptr<Command> cmd = current_gameobjects_.at(i).get()->GetDrawCommand();
-
-    DrawGeometry* draw_cmd = reinterpret_cast<DrawGeometry*>(cmd.get());
-
-    draw_cmd->SetViewMatrix(main_camera_->ViewMatrix());
-    draw_cmd->SetProjectionMatrix(main_camera_->ProjectionMatrix());
-
-		frame_dl.addCommand(draw_cmd);
+    current_gameobjects_.at(i).get()->AddDrawCommand(frame_dl, main_camera_->ViewMatrix(), main_camera_->ProjectionMatrix());
 	}
 
 
-
-	SufferManager::instance().render_manager_.AddToRenderQueue(std::move(frame_dl));
+  // Send DL to render manager
+	suffer.render_manager_.AddToRenderQueue(std::move(frame_dl));
 
 }
 
