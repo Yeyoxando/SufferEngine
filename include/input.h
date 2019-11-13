@@ -21,15 +21,8 @@ namespace Suffer {
 
     public:
 
-        enum State {
-            kState_Pressed          = 0x01, // 00000001 == 1
-            kState_Released         = 0x02, // 00000010 == 2
-            kState_RecentlyPressed  = 0x03, // 00000100 == 4
-            kState_RecentlyReleased = 0x04, // 00001000 == 8
-        };
-
-        struct Alternative {
-            Alternative() {
+        struct State{
+            State() {
                 pressed_ = false;
                 released_ = false;
                 recently_pressed_ = false;
@@ -121,7 +114,7 @@ namespace Suffer {
         void MousePosition(mathmorra::Vector2& out);
 
         struct KeyBuffer {
-            Suffer::InputManager::Alternative state_;
+            Suffer::InputManager::State state_;
         };
         Array<KeyBuffer> input_events_;
 
@@ -132,6 +125,8 @@ namespace Suffer {
 
         struct Data;
         Data* data_;
+
+        void Update();
 
 
 

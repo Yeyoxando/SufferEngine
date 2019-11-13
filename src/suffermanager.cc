@@ -228,8 +228,8 @@ mathmorra::Vector2 Suffer::SufferManager::GetMousePosition(){
 
 void Suffer::SufferManager::SetMousePosition(){
 
-    //mouse_position_.x_ = Suffer::MousePositionX();
-    //mouse_position_.y_ = Suffer::MousePositionY();
+    mouse_position_.x_ = input_manager_.MousePositionX();
+    mouse_position_.y_ = input_manager_.MousePositionY();
 
 }
 

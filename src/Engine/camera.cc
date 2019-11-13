@@ -155,83 +155,83 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
 
 
     // FORWARD
-    //if (Suffer::InputManager::IsKeyPressed(k_S)) {
+    if (suffer.input_manager_.IsKeyPressed(InputManager::k_S)) {
 
-    //    mathmorra::Matrix4 translations = translations.Translate(
-    //        camera_forward_.x_ * camera_speed * time,
-    //        camera_forward_.y_ * camera_speed * time,
-    //        camera_forward_.z_ * camera_speed * time);
+        mathmorra::Matrix4 translations = translations.Translate(
+            camera_forward_.x_ * camera_speed * time,
+            camera_forward_.y_ * camera_speed * time,
+            camera_forward_.z_ * camera_speed * time);
 
-    //    //Transform Matrix4 / Vector3
-    //    camera_position_ = translations.Transpose() * camera_position_;
-    //}
+        //Transform Matrix4 / Vector3
+        camera_position_ = translations.Transpose() * camera_position_;
+    }
 
-    //// LEFT
-    //if (suffer.input_manager_.IsKeyPressed(InputManager::k_A)) {
+    // LEFT
+    if (suffer.input_manager_.IsKeyPressed(InputManager::k_A)) {
 
-    //    mathmorra::Vector3 left = right * -1.0f;
-    //    mathmorra::Matrix4 translations = translations.Translate(
-    //        left.x_ * camera_speed * time,
-    //        0.0f,
-    //        left.z_ * camera_speed * time);
+        mathmorra::Vector3 left = right * -1.0f;
+        mathmorra::Matrix4 translations = translations.Translate(
+            left.x_ * camera_speed * time,
+            0.0f,
+            left.z_ * camera_speed * time);
 
-    //    //Transform Matrix4 / Vector3
-    //    camera_position_ = translations.Transpose() * camera_position_ ;
-    //}
+        //Transform Matrix4 / Vector3
+        camera_position_ = translations.Transpose() * camera_position_ ;
+    }
 
-    //// RIGHT
-    //if (Suffer::IsKeyPressed(k_D)) {
+    // RIGHT
+    if (suffer.input_manager_.IsKeyPressed(InputManager::k_D)) {
 
-    //    mathmorra::Matrix4 translations = translations.Translate(
-    //        right.x_ * camera_speed * time,
-    //        0.0f,
-    //        right.z_ * camera_speed * time);
+        mathmorra::Matrix4 translations = translations.Translate(
+            right.x_ * camera_speed * time,
+            0.0f,
+            right.z_ * camera_speed * time);
 
-    //    //Transform Matrix4 / Vector3
-    //    camera_position_ = translations.Transpose() * camera_position_ ;
+        //Transform Matrix4 / Vector3
+        camera_position_ = translations.Transpose() * camera_position_ ;
 
-    //}
+    }
 
-    //// BACK
-    //if (Suffer::IsKeyPressed(k_W)) {
+    // BACK
+    if (suffer.input_manager_.IsKeyPressed(InputManager::k_W)) {
 
-    //    mathmorra::Vector3 back = camera_forward_ * -1.0f;
-    //    mathmorra::Matrix4 translations = translations.Translate(back.x_ * camera_speed * time,
-    //        back.y_ * camera_speed * time,
-    //        back.z_ * camera_speed * time);
+        mathmorra::Vector3 back = camera_forward_ * -1.0f;
+        mathmorra::Matrix4 translations = translations.Translate(back.x_ * camera_speed * time,
+            back.y_ * camera_speed * time,
+            back.z_ * camera_speed * time);
 
-    //    //Transform Matrix4 / Vector3
-    //    camera_position_ = translations.Transpose() * camera_position_ ;
+        //Transform Matrix4 / Vector3
+        camera_position_ = translations.Transpose() * camera_position_ ;
 
-    //}
+    }
 
-    ////UP
-    //if (Suffer::IsKeyPressed(k_E)) {
+    //UP
+    if (suffer.input_manager_.IsKeyPressed(InputManager::k_E)) {
 
-    //    mathmorra::Matrix4 translations = translations.Translate(
-    //        0.0f,
-    //        up.y_ * camera_speed * time,
-    //        0.0f);
+        mathmorra::Matrix4 translations = translations.Translate(
+            0.0f,
+            up.y_ * camera_speed * time,
+            0.0f);
 
-    //    //Transform Matrix4 / Vector3
-    //    camera_position_ = translations.Transpose() * camera_position_ ;
+        //Transform Matrix4 / Vector3
+        camera_position_ = translations.Transpose() * camera_position_ ;
 
-    //}
+    }
 
-    ////DOWN
-    //if (Suffer::IsKeyPressed(k_Q)) {
+    //DOWN
+    if (suffer.input_manager_.IsKeyPressed(InputManager::k_Q)) {
 
-    //    mathmorra::Vector3 down = up * -1.0f;
+        mathmorra::Vector3 down = up * -1.0f;
 
-    //    mathmorra::Matrix4 translations = translations.Translate(
-    //        0.0f,
-    //        down.y_ * speed_ * time,
-    //        0.0f);
+        mathmorra::Matrix4 translations = translations.Translate(
+            0.0f,
+            down.y_ * speed_ * time,
+            0.0f);
 
-    //    //Transform Matrix4 / Vector3
-    //    camera_position_ = translations.Transpose() * camera_position_;
+        //Transform Matrix4 / Vector3
+        camera_position_ = translations.Transpose() * camera_position_;
 
-    //}
+    }
 
     float pos[3] = { camera_position_.x_, camera_position_.y_, camera_position_.z_ };
     camera->SetPosition(pos);

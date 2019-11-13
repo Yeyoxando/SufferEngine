@@ -14,14 +14,7 @@
 
 struct Suffer::InputManager::Data {
 
-    u32 key_;
-    u32 action_;
-
-    bool init = false;
-
-
     u32 GetGLFWKey(Suffer::InputManager::Key key);
-    //static Suffer::InputManager::Key GetKey(u32 glfw_key);
     void Callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 };
@@ -306,6 +299,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     if (action == GLFW_RELEASE) {
         state->released_ = true;
         state->recently_released_ = true;
+        state->pressed_ = false;
     }
 
     if (action == GLFW_PRESS) {
@@ -331,9 +325,14 @@ Suffer::InputManager::~InputManager(){
 
 // --------------------------------------------------- //
 
-void Suffer::InputManager::Data::Callback(GLFWwindow* window, int key, int scancode, int action, int mods){
-
-    Suffer::InputManager::Key key_event = GetKey(key);
+void Suffer::InputManager::Update(){
+    
+    // This function will be called at the end of the frame.
+    for (int i = 0; i < INPUT_BUFFER; ++i) {
+        input_events_[i].state_.recently_pressed_ = false;
+        input_events_[i].state_.recently_released_ = false;
+        input_events_[i].state_.released_ = false;
+    }
 
 }
 
@@ -378,7 +377,8 @@ bool Suffer::InputManager::IsKeyUp(Key key){
 	
     auto state = &suffer.input_manager_.input_events_[(u32)key].state_;
     if (state->released_) {
-        state->released_ = false;
+        state->released_ = true;
+        state->pressed_ = false;
         return true;
     }
 
@@ -390,39 +390,9 @@ bool Suffer::InputManager::IsKeyUp(Key key){
 
 bool Suffer::InputManager::IsKeyPressed(Key key){
 
-    
-  static bool is_key_down = false;
-  static int key_pressed = 0;
-
-  if (is_key_down) {
-    if (data_->GetGLFWKey(key) != data_->key_) return false;
-  }
-
-  if (data_->key_ == data_->GetGLFWKey(key) && data_->action_ == GLFW_PRESS) {
-    is_key_down = true;
-    key_pressed = data_->key_;
-  }
-
-
-  if (is_key_down) {
-      if (IsKeyUp(key)) {
-          is_key_down = false;
-          return false;
-      }
-      return true;
-  }
-    
-
-	//static bool is_key_down = false;
-
-	//if (IsKeyDown(key) || is_key_down) {
-	//	is_key_down = true;
-	//	if (IsKeyUp(key)) {
-	//		is_key_down = false;
-	//		return false;
-	//	}
-	//	return true;
-	//}
+    auto state = &suffer.input_manager_.input_events_[(u32)key].state_;
+    if (state->pressed_) return true;
+    return false;
 
 }
 
