@@ -31,7 +31,7 @@ void Suffer::Scene::Init() {
   ref_ptr<Suffer::ResourceManager::VertexBuffer> vert_buff_;
   ref_ptr<Suffer::ResourceManager::IndexBuffer> ind_buff_;
   vert_buff_.alloc();
-  vert_buff_->format_ = Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
+  vert_buff_->format_ = Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N;
   ind_buff_.alloc();
 
 	float vertices[] = {

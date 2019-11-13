@@ -5,7 +5,9 @@
 #include "internal_resource_manager.h"
 #include "common_definitions.h"
 #include "suffermanager.h"
-//#include "stb_image.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 Suffer::ResourceManager::ResourceManager(){
 
@@ -119,10 +121,10 @@ void Suffer::ResourceManager::LoadTextureData(const ref_ptr<Texture> texture, co
   assert(file != nullptr && "File is NULL!");
 #endif
 
-  unsigned char* data; /*= stbi_load(file,
+  unsigned char* data = stbi_load(file,
     (int*)&data_->internal_textures_[texture->id_].width_,
     (int*)&data_->internal_textures_[texture->id_].height_,
-    (int*)&data_->internal_textures_[texture->id_].number_channels_, 0);*/
+    (int*)&data_->internal_textures_[texture->id_].number_channels_, 0);
 
 
   data_->internal_textures_[texture->id_].data_.copy(data, data + sizeof(data));
@@ -214,6 +216,8 @@ void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
 
 void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   internal_materials_.alloc(1);
+
+  number_of_materials_ = 0;
 
   // Default material
   internal_materials_[number_of_materials_].id_handle_ = 0;
