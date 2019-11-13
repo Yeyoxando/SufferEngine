@@ -7,6 +7,9 @@
 #include "GL/glew.h"
 
 struct Suffer::ResourceManager::ResourceData {
+  ResourceData();
+  ~ResourceData();
+
   struct InternalVertexBuffer {
 
     InternalVertexBuffer() { id_handle_ = -1; version_ = 0; gpu_version_ = 0; };
@@ -33,6 +36,23 @@ struct Suffer::ResourceManager::ResourceData {
 
   };
 
+  struct InternalTexture {
+
+    InternalTexture() { id_handle_ = -1; version_ = 0; gpu_version_ = 0; };
+    ~InternalTexture() {};
+
+    Array<u8> data_;
+    s32 id_handle_;
+    u32 version_;
+    u32 gpu_version_;
+
+    u32 width_;
+    u32 height_;
+    u32 number_channels_;
+    GLuint current_texture_id_;
+
+  };
+
   struct InternalMaterial {
     InternalMaterial() { id_handle_ = -1; is_created_ = false; };
     ~InternalMaterial() {};
@@ -48,14 +68,17 @@ struct Suffer::ResourceManager::ResourceData {
 
   Array<InternalVertexBuffer> internal_vertex_buffers_;
   Array<InternalIndexBuffer> internal_index_buffers_;
+  Array<InternalTexture> internal_textures_;
   Array<InternalMaterial> internal_materials_;
 
   u32 number_of_vertex_buffers_;
   u32 number_of_index_buffers_;
+  u32 number_of_textures_;
   u32 number_of_materials_;
 
   void InitInternalBuffers();
   void InitInternalMaterials();
+  void InitInternalTextures();
 
 };
 

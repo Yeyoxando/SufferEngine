@@ -97,6 +97,8 @@ namespace Suffer {
     void UploadVertexData(const ref_ptr<VertexBuffer> buffer, float* data, u32 size);
     void UploadIndexData(const ref_ptr<IndexBuffer> buffer, Array<u16> *data);
     void UploadIndexData(const ref_ptr<IndexBuffer> buffer, u16* data, u32 size);
+    
+    void LoadTextureData(const ref_ptr<Texture> texture, const char* file);
 
   private:
     void StartUp();

@@ -5,15 +5,20 @@
 #include "internal_resource_manager.h"
 #include "common_definitions.h"
 #include "suffermanager.h"
+//#include "stb_image.h"
 
 Suffer::ResourceManager::ResourceManager(){
+
   // Empty
+
 }
 
 // --------------------------------------------------------------//
 
 Suffer::ResourceManager::~ResourceManager(){
+
   // Empty
+
 }
 
 // --------------------------------------------------------------//
@@ -22,6 +27,7 @@ void Suffer::ResourceManager::StartUp() {
   data_ = new ResourceData();
 
   data_->InitInternalBuffers();
+  data_->InitInternalTextures();
   data_->InitInternalMaterials();
 }
 
@@ -106,6 +112,28 @@ void Suffer::ResourceManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer,
 
 // --------------------------------------------------------------//
 
+void Suffer::ResourceManager::LoadTextureData(const ref_ptr<Texture> texture, const char * file){
+
+#ifdef ASSERT
+  assert(texture.get() != nullptr && "Texture is NULL!");
+  assert(file != nullptr && "File is NULL!");
+#endif
+
+  unsigned char* data; /*= stbi_load(file,
+    (int*)&data_->internal_textures_[texture->id_].width_,
+    (int*)&data_->internal_textures_[texture->id_].height_,
+    (int*)&data_->internal_textures_[texture->id_].number_channels_, 0);*/
+
+
+  data_->internal_textures_[texture->id_].data_.copy(data, data + sizeof(data));
+
+  data_->internal_textures_[texture->id_].version_++;
+  data_->internal_textures_[texture->id_].id_handle_ = texture->id_;
+
+}
+
+// --------------------------------------------------------------//
+
 Suffer::ResourceManager::GPUResource::GPUResource() {
 
   id_ = -1;
@@ -143,6 +171,20 @@ Suffer::ResourceManager::IndexBuffer::IndexBuffer() {
 // --------------------------------------------------------------//
 
 Suffer::ResourceManager::Texture::Texture(){
+  type_ = GPUResource::kTexture;
+  id_ = suffer.resource_manager_.data_->number_of_textures_;
+  suffer.resource_manager_.data_->number_of_textures_++;
+}
+
+// --------------------------------------------------------------//
+
+Suffer::ResourceManager::ResourceData::ResourceData(){
+
+}
+
+// --------------------------------------------------------------//
+
+Suffer::ResourceManager::ResourceData::~ResourceData(){
 
 }
 
@@ -155,6 +197,16 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
   number_of_index_buffers_ = 0;
   number_of_vertex_buffers_ = 0;
+
+}
+
+// --------------------------------------------------------------//
+
+void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
+
+  internal_textures_.alloc(MAX_TEXTURES);
+
+  number_of_textures_ = 0;
 
 }
 

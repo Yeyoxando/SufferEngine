@@ -31,16 +31,16 @@ void Suffer::Scene::Init() {
   ref_ptr<Suffer::ResourceManager::VertexBuffer> vert_buff_;
   ref_ptr<Suffer::ResourceManager::IndexBuffer> ind_buff_;
   vert_buff_.alloc();
-  vert_buff_->format_ = Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N;
+  vert_buff_->format_ = Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
   ind_buff_.alloc();
 
 	float vertices[] = {
     //Vertex
        //Face1
-       1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,//0, 1, 2  
-       1.0f, -1.0f,  1.0f,    1.0f,  0.0f,  0.0f,//3, 4, 5  
-       1.0f, -1.0f, -1.0f,    1.0f,  0.0f,  0.0f,//6, 7, 8  
-       1.0f,  1.0f, -1.0f,    1.0f,  0.0f,  0.0f,//9, 10, 11
+       1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,   //0, 1, 2  
+       1.0f, -1.0f,  1.0f,    1.0f,  0.0f,  0.0f,   //3, 4, 5  
+       1.0f, -1.0f, -1.0f,    1.0f,  0.0f,  0.0f,   //6, 7, 8  
+       1.0f,  1.0f, -1.0f,    1.0f,  0.0f,  0.0f,   //9, 10, 11
       //Face2
       -1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,//12, 13, 14
       -1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,//15, 16, 17
@@ -121,7 +121,7 @@ void Suffer::Scene::Init() {
   float vertices2[] = {
       0.0f,  0.5f, -1.0f,
       0.5f, -0.5f, -1.0f,
-     -0.5f, -0.5f, -1.0f
+     -0.5f, -0.5f, -1.0f,
   };
   
   u16 indices2[]{ 0, 2, 1};
