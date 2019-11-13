@@ -7,95 +7,109 @@
 #ifndef __INPUT_H__
 #define __INPUT_H__
 
-#include <glm.hpp>
+#include "vector2.h"
+#include "data_types.h"
+#include "referenced.h"
 
 namespace Suffer {
 
-	enum Key {
-		k_A = 0,
-		k_B,
-		k_C,
-		k_D,
-		k_E,
-		k_F,
-		k_G,
-		k_H,
-		k_I,
-		k_J,
-		k_K,
-		k_L,
-		k_M,
-		k_N,
-		k_O,
-		k_P,
-		k_Q,
-		k_R,
-		k_S,
-		k_T,
-		k_U,
-		k_V,
-		k_W,
-		k_X,
-		k_Y,
-		k_Z,
-		k_Space,
-		k_Enter,
-		k_Tab,
-		k_Escape,
-		k_Delete,
-		k_Backspace,
-		k_Up,
-		k_Down,
-		k_Right,
-		k_Left,
-		k_Control,
-		k_Alt,
-		k_Shift,
-		k_Keypad_0,
-		k_Keypad_1,
-		k_Keypad_2,
-		k_Keypad_3,
-		k_Keypad_4,
-		k_Keypad_5,
-		k_Keypad_6,
-		k_Keypad_7,
-		k_Keypad_8,
-		k_Keypad_9,
-		k_F1,
-		k_F2,
-		k_F3,
-		k_F4,
-		k_F5,
-		k_F6,
-		k_F7,
-		k_F8,
-		k_F9,
-		k_F10,
-		k_F11,
-		k_F12,
-	};
+    class InputManager {
 
-	void InitInput();
+        enum State {
+            kState_Pressed          = 0x01, // 00000001 == 1
+            kState_Released         = 0x02, // 00000010 == 2
+            kState_RecentlyPressed  = 0x03, // 00000100 == 4
+            kState_RecentlyReleased = 0x04, // 00001000 == 8
+        };
+
+    public:
 
 
-// --------------------------------- KEYBOARD ----------------------------------- //
+        enum Key {
+            k_A = 0,
+            k_B,
+            k_C,
+            k_D,
+            k_E,
+            k_F,
+            k_G,
+            k_H,
+            k_I,
+            k_J,
+            k_K,
+            k_L,
+            k_M,
+            k_N,
+            k_O,
+            k_P,
+            k_Q,
+            k_R,
+            k_S,
+            k_T,
+            k_U,
+            k_V,
+            k_W,
+            k_X,
+            k_Y,
+            k_Z,
+            k_Space,
+            k_Enter,
+            k_Tab,
+            k_Escape,
+            k_Delete,
+            k_Backspace,
+            k_Up,
+            k_Down,
+            k_Right,
+            k_Left,
+            k_Control,
+            k_Alt,
+            k_Shift,
+            k_Keypad_0,
+            k_Keypad_1,
+            k_Keypad_2,
+            k_Keypad_3,
+            k_Keypad_4,
+            k_Keypad_5,
+            k_Keypad_6,
+            k_Keypad_7,
+            k_Keypad_8,
+            k_Keypad_9,
+            k_F1,
+            k_F2,
+            k_F3,
+            k_F4,
+            k_F5,
+            k_F6,
+            k_F7,
+            k_F8,
+            k_F9,
+            k_F10,
+            k_F11,
+            k_F12,
+        };
 
-	bool IsKeyUp(Key key);
-	bool IsKeyDown(Key key);
-	bool IsKeyPressed(Key key);
+        bool IsKeyUp(Key key);
+        bool IsKeyDown(Key key);
+        bool IsKeyPressed(Key key);
 
-// ----------------------------------- MOUSE ------------------------------------ //
+        // 0 = left  1 = right
+        bool MouseButtonDown(int id);
 
-	// 0 = left  1 = right
-	bool MouseButtonDown(int id);
+        double MousePositionX();
+        double MousePositionY();
+        mathmorra::Vector2 MousePosition();
+        void MousePosition(mathmorra::Vector2& out);
 
-	double MousePositionX();
-	double MousePositionY();
-	glm::vec2 MousePosition();
-	void MousePosition(glm::vec2& out);
+    private:
 
+        InputManager();
+        ~InputManager();
 
+        struct Data;
+        Data* data_;
 
+    };
 
 }
 
