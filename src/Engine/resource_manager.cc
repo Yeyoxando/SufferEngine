@@ -6,14 +6,21 @@
 #include "common_definitions.h"
 #include "suffermanager.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 Suffer::ResourceManager::ResourceManager(){
+
   // Empty
+
 }
 
 // --------------------------------------------------------------//
 
 Suffer::ResourceManager::~ResourceManager(){
+
   // Empty
+
 }
 
 // --------------------------------------------------------------//
@@ -22,6 +29,7 @@ void Suffer::ResourceManager::StartUp() {
   data_ = new ResourceData();
 
   data_->InitInternalBuffers();
+  data_->InitInternalTextures();
   data_->InitInternalMaterials();
 }
 
@@ -106,6 +114,37 @@ void Suffer::ResourceManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer,
 
 // --------------------------------------------------------------//
 
+void Suffer::ResourceManager::LoadTextureData(const ref_ptr<Texture> texture, const char * file){
+
+#ifdef ASSERT
+  assert(texture.get() != nullptr && "Texture is NULL!");
+  assert(file != nullptr && "File is NULL!");
+#endif
+
+  unsigned char* data = stbi_load(file,
+    (int*)&data_->internal_textures_[texture->id_].width_,
+    (int*)&data_->internal_textures_[texture->id_].height_,
+    (int*)&data_->internal_textures_[texture->id_].number_channels_, 0);
+
+  if (!data) {
+    printf("\n Can't load texture: %s", file);
+    return;
+  }
+
+  u32 data_size = data_->internal_textures_[texture->id_].width_ * 
+    data_->internal_textures_[texture->id_].height_ *
+    data_->internal_textures_[texture->id_].number_channels_;
+
+  data_->internal_textures_[texture->id_].data_.copy(data, data + data_size);
+
+  data_->internal_textures_[texture->id_].version_++;
+  data_->internal_textures_[texture->id_].id_handle_ = texture->id_;
+
+  stbi_image_free(data);
+}
+
+// --------------------------------------------------------------//
+
 Suffer::ResourceManager::GPUResource::GPUResource() {
 
   id_ = -1;
@@ -143,6 +182,20 @@ Suffer::ResourceManager::IndexBuffer::IndexBuffer() {
 // --------------------------------------------------------------//
 
 Suffer::ResourceManager::Texture::Texture(){
+  type_ = GPUResource::kTexture;
+  id_ = suffer.resource_manager_.data_->number_of_textures_;
+  suffer.resource_manager_.data_->number_of_textures_++;
+}
+
+// --------------------------------------------------------------//
+
+Suffer::ResourceManager::ResourceData::ResourceData(){
+
+}
+
+// --------------------------------------------------------------//
+
+Suffer::ResourceManager::ResourceData::~ResourceData(){
 
 }
 
@@ -160,8 +213,20 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
 // --------------------------------------------------------------//
 
+void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
+
+  internal_textures_.alloc(MAX_TEXTURES);
+
+  number_of_textures_ = 0;
+
+}
+
+// --------------------------------------------------------------//
+
 void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   internal_materials_.alloc(1);
+
+  number_of_materials_ = 0;
 
   // Default material
   internal_materials_[number_of_materials_].id_handle_ = 0;
@@ -171,16 +236,19 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
 	  #version 330
 	  layout(location = 0) in vec3 a_position;
 	  layout(location = 1) in vec3 a_normal;
+	  layout(location = 2) in vec2 a_uvs;
     
     uniform mat4 u_m_matrix;
     uniform mat4 u_v_matrix;
     uniform mat4 u_p_matrix;
     
     out vec3 normal;
+    out vec2 uvs;
 
 	  void main(){
       mat4 accum_matrix = u_p_matrix * u_v_matrix * u_m_matrix;
       normal = normalize((accum_matrix * vec4(a_normal, 0.0))).xyz;
+      uvs = a_uvs;
 		  gl_Position = accum_matrix * vec4(a_position, 1.0f);
 	  }
 
@@ -193,7 +261,10 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
     out vec4 fragColor;
     
     uniform vec4 u_color;
+    uniform sampler2D u_albedo;
+
     in vec3 normal;
+    in vec2 uvs;
     vec3 light_dir = vec3(0, 0, 1);
     vec3 light_color = vec3(1, 1, 1);
 
@@ -211,15 +282,18 @@ vec3 CreateDiffuseLight(vec3 lightPos){
 //---------------------------------------------------------------------------//
 
     void main(){
+      
+      // Texture
+      vec4 tex_color = texture(u_albedo, uvs) * u_color;
 
-      //Ambient
-      vec3 ambient = 0.4 * light_color; // (0, 0.8, 0)
-      //Diffuse
+      // Ambient
+      vec3 ambient = 0.4 * light_color; 
+
+      // Diffuse
       float diff = max(dot(normalize(normal), normalize(-light_dir)), 0.0);
       vec3 test = CreateDiffuseLight(light_dir);
-      vec3 colorResult = (ambient + test) * u_color.xyz;
+      vec3 colorResult = (ambient + test) * tex_color.xyz;
 
-      //vec3 aux = u_color.xyz * (normal * 0.5 + 0.5);
       fragColor = vec4(colorResult, 1.0f);
     }
   	

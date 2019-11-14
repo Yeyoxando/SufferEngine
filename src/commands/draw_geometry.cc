@@ -26,7 +26,9 @@ struct Suffer::DrawGeometry::Data {
 
   // Material 
   struct DefaultParams {
-
+    //Common parameters
+    float color_[4];
+    u32 albedo_texture_id_;
   };
 
   struct PhongParams {
@@ -38,8 +40,6 @@ struct Suffer::DrawGeometry::Data {
     DefaultParams default_params_;
     PhongParams phong_params_;
 
-    //Common parameters
-    float color_[4];
   };
 
   u32 internal_material_id_;
@@ -100,11 +100,12 @@ void Suffer::DrawGeometry::SetMaterial(const ref_ptr<MaterialInstance> mat) {
   data_->internal_material_id_ = (u32)mat->params_type_;
 
 
-  memcpy(data_->material_params_.color_, mat->GetColor(), sizeof(float) * 4);
+  float* values = mat->GetColor();
 
   switch (mat->params_type_) {
   case MaterialInstance::ParamsType::kParams_Default:
-    //data_->material_params_.default_params_.
+    memcpy(data_->material_params_.default_params_.color_, values, sizeof(float) * 4);
+    data_->material_params_.default_params_.albedo_texture_id_ = mat->GetAlbedoTexture();
     break;
   case MaterialInstance::ParamsType::kParams_Phong:
     //Other parameters for phong
@@ -118,8 +119,6 @@ void Suffer::DrawGeometry::SetMaterial(const ref_ptr<MaterialInstance> mat) {
   default:
     break;
   }
-
-  //data_->material_ = mat.get();
 
 }
 
@@ -212,6 +211,81 @@ void Suffer::DrawGeometry::Execute() const {
   }
 
   // ----------------------- IsBufferCreated (Index) ----------------------- //
+
+  // ----------------------------------------------------------------------- //
+
+  // --------------------------- IsTextureCreated -------------------------- //
+
+  {
+  
+    if (data_->material_params_.default_params_.albedo_texture_id_ < 0) return;
+    s32 id_texture = data_->material_params_.default_params_.albedo_texture_id_;
+    if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ == 0) {
+      glGenTextures(1, &suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
+      error = glGetError();
+
+      glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
+      error = glGetError();
+
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+      error = glGetError();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+      error = glGetError();
+
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      error = glGetError();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      error = glGetError();
+
+      switch (suffer.resource_manager_.data_->internal_textures_[id_texture].number_channels_){
+      case 3:
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+          suffer.resource_manager_.data_->internal_textures_[id_texture].width_,
+          suffer.resource_manager_.data_->internal_textures_[id_texture].height_,
+          0, GL_RGB, GL_UNSIGNED_BYTE,
+          suffer.resource_manager_.data_->internal_textures_[id_texture].data_.get());
+        error = glGetError();
+        break;
+      case 4:
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+          suffer.resource_manager_.data_->internal_textures_[id_texture].width_,
+          suffer.resource_manager_.data_->internal_textures_[id_texture].height_,
+          0, GL_RGBA, GL_UNSIGNED_BYTE,
+          suffer.resource_manager_.data_->internal_textures_[id_texture].data_.get());
+        error = glGetError();
+        break;
+      default:
+        break;
+      }
+
+      
+      glGenerateMipmap(GL_TEXTURE_2D);
+      error = glGetError();
+
+      suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ = suffer.resource_manager_.data_->internal_textures_[id_texture].version_;
+    }
+
+    if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ < suffer.resource_manager_.data_->internal_textures_[id_texture].version_) {
+      
+      glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
+      error = glGetError();
+
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+        suffer.resource_manager_.data_->internal_textures_[id_texture].width_,
+        suffer.resource_manager_.data_->internal_textures_[id_texture].height_,
+        0, GL_RGB, GL_UNSIGNED_BYTE,
+        suffer.resource_manager_.data_->internal_textures_[id_texture].data_.get());
+      error = glGetError();
+
+      glGenerateMipmap(GL_TEXTURE_2D);
+      error = glGetError();
+
+      suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ = suffer.resource_manager_.data_->internal_textures_[id_texture].version_;
+    }
+  
+  }
+
+  // --------------------------- IsTextureCreated -------------------------- //
 
   // ----------------------------------------------------------------------- //
 
@@ -321,17 +395,34 @@ void Suffer::DrawGeometry::Execute() const {
     s32 u_pos = -1;
 
     // MaterialInstance setting uniforms
+
+    mathmorra::Vector4 color(data_->material_params_.default_params_.color_);
+    u_pos = glGetUniformLocation(program_id, "u_color");
+    if (u_pos < 0) {
+      printf("\nERROR: u_color uniform not exists.");
+      //return;
+    }
+
+    glUniform4f(u_pos, color.x_, color.y_, color.z_, color.w_);
+    u_pos = -1;
+
+    // Texture
+    u_pos = glGetUniformLocation(program_id, "u_albedo");
+    if (u_pos < 0) {
+      printf("\nERROR: u_albedo uniform not exists.");
+      //return;
+    }
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[data_->material_params_.default_params_.albedo_texture_id_].current_texture_id_);
+
+    glUniform1i(u_pos, 0);
+    u_pos = -1;
+
+
+    // Specific material settings
     switch (data_->internal_material_id_) {
     case MaterialInstance::kParams_Default: {
-      mathmorra::Vector4 color(data_->material_params_.color_);
-      u_pos = glGetUniformLocation(program_id, "u_color");
-      if (u_pos < 0) {
-        printf("\nERROR: u_color uniform not exists.");
-        //return;
-      }
-
-      glUniform4f(u_pos, color.x_, color.y_, color.z_, color.w_);
-      u_pos = -1;
     }
     break;
     case MaterialInstance::kParams_Phong:

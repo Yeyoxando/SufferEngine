@@ -31,41 +31,41 @@ void Suffer::Scene::Init() {
   ref_ptr<Suffer::ResourceManager::VertexBuffer> vert_buff_;
   ref_ptr<Suffer::ResourceManager::IndexBuffer> ind_buff_;
   vert_buff_.alloc();
-  vert_buff_->format_ = Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N;
+  vert_buff_->format_ = Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
   ind_buff_.alloc();
 
 	float vertices[] = {
-    //Vertex
+    //Vertex                  //Normals              //Uvs
        //Face1
-       1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,//0, 1, 2  
-       1.0f, -1.0f,  1.0f,    1.0f,  0.0f,  0.0f,//3, 4, 5  
-       1.0f, -1.0f, -1.0f,    1.0f,  0.0f,  0.0f,//6, 7, 8  
-       1.0f,  1.0f, -1.0f,    1.0f,  0.0f,  0.0f,//9, 10, 11
-      //Face2
-      -1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,//12, 13, 14
-      -1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,//15, 16, 17
-       1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,//18, 19, 20
-       1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,//21, 22, 23
+       1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 1.0f,// 0
+       1.0f, -1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 0.0f,// 1
+       1.0f, -1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 0.0f,// 2
+       1.0f,  1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 1.0f,// 3
+      //Face2                                    
+      -1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     0.0f, 1.0f,// 4
+      -1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     0.0f, 0.0f,// 5
+       1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 0.0f,// 6
+       1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 1.0f,// 7
       //Face3
-      -1.0f,  1.0f,  1.0f,    -1.0f,  0.0f,  0.0f,//0, 1, 2
-      -1.0f, -1.0f,  1.0f,    -1.0f,  0.0f,  0.0f,//6, 7, 8
-      -1.0f, -1.0f, -1.0f,    -1.0f,  0.0f,  0.0f,//12, 13, 14
-      -1.0f,  1.0f, -1.0f,    -1.0f,  0.0f,  0.0f,//18, 19, 20
+      -1.0f,  1.0f,  1.0f,    -1.0f,  0.0f,  0.0f,    0.0f, 1.0f,// 8
+      -1.0f, -1.0f,  1.0f,    -1.0f,  0.0f,  0.0f,    0.0f, 0.0f,// 9
+      -1.0f, -1.0f, -1.0f,    -1.0f,  0.0f,  0.0f,    1.0f, 0.0f,// 10
+      -1.0f,  1.0f, -1.0f,    -1.0f,  0.0f,  0.0f,    1.0f, 1.0f,// 11
       //Face4
-      -1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,//24, 25, 26
-      -1.0f, -1.0f,  1.0f,    0.0f,  0.0f,  1.0f,//30, 31, 32
-       1.0f, -1.0f,  1.0f,    0.0f,  0.0f,  1.0f,//36, 37, 38
-       1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,//42, 43, 44
+      -1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     0.0f, 1.0f,// 12
+      -1.0f, -1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     0.0f, 0.0f,// 13
+       1.0f, -1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 0.0f,// 14
+       1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 1.0f,// 15
       //Face5
-      -1.0f,  1.0f, -1.0f,    0.0f,  1.0f,  0.0f,//0, 1, 2
-      -1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,//3, 4, 5
-       1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,//6, 7, 8
-       1.0f,  1.0f, -1.0f,    0.0f,  1.0f,  0.0f,//9, 10, 11
+      -1.0f,  1.0f, -1.0f,    0.0f,  1.0f,  0.0f,     0.0f, 1.0f,// 16
+      -1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,     0.0f, 0.0f,// 17
+       1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 0.0f,// 18
+       1.0f,  1.0f, -1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 1.0f,// 19
       //Face6
-      -1.0f, -1.0f, -1.0f,    0.0f, -1.0f,  0.0f,//12, 13, 14
-      -1.0f, -1.0f,  1.0f,    0.0f, -1.0f,  0.0f,//15, 16, 17
-       1.0f, -1.0f,  1.0f,    0.0f, -1.0f,  0.0f,//18, 19, 20
-       1.0f, -1.0f, -1.0f,    0.0f, -1.0f,  0.0f,//21, 22, 23
+      -1.0f, -1.0f, -1.0f,    0.0f, -1.0f,  0.0f,     0.0f, 1.0f,// 20
+      -1.0f, -1.0f,  1.0f,    0.0f, -1.0f,  0.0f,     0.0f, 0.0f,// 21
+       1.0f, -1.0f,  1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 0.0f,// 22
+       1.0f, -1.0f, -1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 1.0f,// 23
 
 	};
 
@@ -78,18 +78,22 @@ void Suffer::Scene::Init() {
         22, 21, 20, 20, 23, 22
   };
 
-	suffer.resource_manager_.UploadVertexData(vert_buff_, vertices, 144);
+	suffer.resource_manager_.UploadVertexData(vert_buff_, vertices, 192);
   suffer.resource_manager_.UploadIndexData(ind_buff_, indices, 36);
 
 	ref_ptr<Geometry> geometry;
 	geometry.alloc();
 	geometry->SetBuffers(vert_buff_, ind_buff_);
 	
+  ref_ptr < ResourceManager::Texture> albedo_texture;
+  albedo_texture.alloc();
+  suffer.resource_manager_.LoadTextureData(albedo_texture, "../../../resources/images/test.jpg");
 	
 	ref_ptr<MaterialInstance> material;
 	material.alloc();
   material->SetMaterialParamsType(MaterialInstance::kParams_Default);
-  material->SetColor(mathmorra::Vector4( 0.5, 0.0f, 1.0f, 1.0f ));
+  material->SetColor(mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f ));
+  material->SetAlbedoTexture(albedo_texture);
 
 	ref_ptr<GameObject> go;
 	go.alloc();
@@ -115,29 +119,34 @@ void Suffer::Scene::Init() {
   ref_ptr<Suffer::ResourceManager::VertexBuffer> vert_buff_2;
   ref_ptr<Suffer::ResourceManager::IndexBuffer> ind_buff_2;
   vert_buff_2.alloc();
-  vert_buff_2->format_ = Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P;
+  vert_buff_2->format_ = Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
   ind_buff_2.alloc();
   
   float vertices2[] = {
-      0.0f,  0.5f, -1.0f,
-      0.5f, -0.5f, -1.0f,
-     -0.5f, -0.5f, -1.0f
+      0.0f,  0.5f, -1.0f,  0.0f, 0.0f, 1.0f,   0.5f, 1.0f,
+      0.5f, -0.5f, -1.0f,  0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
+     -0.5f, -0.5f, -1.0f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
   };
   
   u16 indices2[]{ 0, 2, 1};
   
-  suffer.resource_manager_.UploadVertexData(vert_buff_2, vertices2, 9);
+  suffer.resource_manager_.UploadVertexData(vert_buff_2, vertices2, 24);
   suffer.resource_manager_.UploadIndexData(ind_buff_2, indices2, 3);
   
   ref_ptr<Geometry> geometry2;
   geometry2.alloc();
   geometry2->SetBuffers(vert_buff_2, ind_buff_2);
-  
+
+
+  ref_ptr < ResourceManager::Texture> albedo_texture2;
+  albedo_texture2.alloc();
+  suffer.resource_manager_.LoadTextureData(albedo_texture2, "../../../resources/images/supercube.png");
   
   ref_ptr<MaterialInstance> material2;
   material2.alloc();
   material2->SetMaterialParamsType(MaterialInstance::kParams_Default);
   material2->SetColor(mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+  material2->SetAlbedoTexture(albedo_texture2);
   
   
   ref_ptr<GameObject> go2;
