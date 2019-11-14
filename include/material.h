@@ -39,15 +39,15 @@ namespace Suffer {
     // ------------------------------ Getters ------------------------------ //
 
     /**
-       * @return:
+       * @return: color of the object
        */
     float* GetColor() const;
     /**
-       * @return: 
+       * @return: albedo texture id 
        */
     u32 GetAlbedoTexture() const;
     /**
-       * @return:
+       * @return: Material params kind
        */
     u32 GetMaterialParamsType() const;
 
@@ -55,17 +55,20 @@ namespace Suffer {
     // ------------------------------ Getters ------------------------------ //
 
     /**
-       * @return:
+       * @brief: sets object color
+       * @param: new_color of the object  
        */
     void SetColor(mathmorra::Vector4 new_color);
 
     /**
-       * @return:
+       * @brief: sets object albedo texture
+       * @param: previously created and loaded texture
        */
     void SetAlbedoTexture(ref_ptr<ResourceManager::Texture> texture);
 
     /**
-       * @return:
+       * @brief: sets the way that material should render and indicates which parameters could get
+       * @param: type to set
        */
     void SetMaterialParamsType(ParamsType type);
 

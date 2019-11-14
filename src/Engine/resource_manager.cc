@@ -1,6 +1,5 @@
 // Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
 
-
 #include "resource_manager.h"
 #include "internal_resource_manager.h"
 #include "common_definitions.h"
@@ -9,13 +8,15 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+// ------------------------------------------------------------------------- //
+
 Suffer::ResourceManager::ResourceManager(){
 
   // Empty
 
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 Suffer::ResourceManager::~ResourceManager(){
 
@@ -23,7 +24,7 @@ Suffer::ResourceManager::~ResourceManager(){
 
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 void Suffer::ResourceManager::StartUp() {
   data_ = new ResourceData();
@@ -33,7 +34,7 @@ void Suffer::ResourceManager::StartUp() {
   data_->InitInternalMaterials();
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 void Suffer::ResourceManager::ShutDown() {
   if (data_ == nullptr) return;
@@ -42,7 +43,7 @@ void Suffer::ResourceManager::ShutDown() {
 
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 void Suffer::ResourceManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer, Array<float> *data) {
 
@@ -57,7 +58,7 @@ void Suffer::ResourceManager::UploadVertexData(const ref_ptr<VertexBuffer> buffe
 
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 void Suffer::ResourceManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer, float* data, u32 size) {
 
@@ -78,7 +79,7 @@ void Suffer::ResourceManager::UploadVertexData(const ref_ptr<VertexBuffer> buffe
   data_->internal_vertex_buffers_[buffer->id_].id_handle_ = buffer->id_;
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 void Suffer::ResourceManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, Array<u16> *data) {
 
@@ -91,7 +92,7 @@ void Suffer::ResourceManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer,
 
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 void Suffer::ResourceManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, u16* data, u32 size) {
 
@@ -112,7 +113,7 @@ void Suffer::ResourceManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer,
 
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 void Suffer::ResourceManager::LoadTextureData(const ref_ptr<Texture> texture, const char * file){
 
@@ -143,7 +144,7 @@ void Suffer::ResourceManager::LoadTextureData(const ref_ptr<Texture> texture, co
   stbi_image_free(data);
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 Suffer::ResourceManager::GPUResource::GPUResource() {
 
@@ -152,13 +153,13 @@ Suffer::ResourceManager::GPUResource::GPUResource() {
 
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 Suffer::ResourceManager::GPUResource::~GPUResource() {
 
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 Suffer::ResourceManager::VertexBuffer::VertexBuffer() {
 
@@ -169,7 +170,7 @@ Suffer::ResourceManager::VertexBuffer::VertexBuffer() {
 
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 Suffer::ResourceManager::IndexBuffer::IndexBuffer() {
 
@@ -179,7 +180,7 @@ Suffer::ResourceManager::IndexBuffer::IndexBuffer() {
 
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 Suffer::ResourceManager::Texture::Texture(){
   type_ = GPUResource::kTexture;
@@ -187,19 +188,19 @@ Suffer::ResourceManager::Texture::Texture(){
   suffer.resource_manager_.data_->number_of_textures_++;
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 Suffer::ResourceManager::ResourceData::ResourceData(){
 
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 Suffer::ResourceManager::ResourceData::~ResourceData(){
 
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
@@ -211,7 +212,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
 
@@ -221,22 +222,26 @@ void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
 
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
 
 void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
+  
   internal_materials_.alloc(1);
-
   number_of_materials_ = 0;
 
-  // Default material
-  internal_materials_[number_of_materials_].id_handle_ = 0;
 
-  internal_materials_[number_of_materials_].vertex_shader_ = R"VSHADER(
+  // -------------------------- DefaultMaterial ---------------------------- //
+
+  {
+
+    internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
+
+    internal_materials_[number_of_materials_].vertex_shader_ = R"VSHADER(
 	
-	  #version 330
-	  layout(location = 0) in vec3 a_position;
-	  layout(location = 1) in vec3 a_normal;
-	  layout(location = 2) in vec2 a_uvs;
+    #version 330
+    layout(location = 0) in vec3 a_position;
+    layout(location = 1) in vec3 a_normal;
+    layout(location = 2) in vec2 a_uvs;
     
     uniform mat4 u_m_matrix;
     uniform mat4 u_v_matrix;
@@ -245,16 +250,18 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
     out vec3 normal;
     out vec2 uvs;
 
-	  void main(){
+    void main(){
       mat4 accum_matrix = u_p_matrix * u_v_matrix * u_m_matrix;
       normal = normalize((accum_matrix * vec4(a_normal, 0.0))).xyz;
       uvs = a_uvs;
-		  gl_Position = accum_matrix * vec4(a_position, 1.0f);
-	  }
+	    gl_Position = accum_matrix * vec4(a_position, 1.0f);
+    }
 
-	)VSHADER";
+    )VSHADER";
 
-  internal_materials_[number_of_materials_].fragment_shader_ = R"FSHADER(
+
+
+    internal_materials_[number_of_materials_].fragment_shader_ = R"FSHADER(
   
     #version 330
 
@@ -268,18 +275,18 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
     vec3 light_dir = vec3(0, 0, 1);
     vec3 light_color = vec3(1, 1, 1);
 
-//---------------------------------------------------------------------------//
+    // --------------------------------------------------------------------- //
 
-vec3 CreateDiffuseLight(vec3 lightPos){
+    vec3 CreateDiffuseLight(vec3 lightPos){
 
-	vec3 norm = normalize(normal);
-	float diffs = max(dot(norm, -lightPos), 0.0f);
-	vec3 diffuseLight = diffs * vec3(light_color) * 0.4;
+    vec3 norm = normalize(normal);
+    float diffs = max(dot(norm, -lightPos), 0.0f);
+    vec3 diffuseLight = diffs * vec3(light_color) * 0.4;
 
-	return diffuseLight;
-}
+    return diffuseLight;
+    }
 
-//---------------------------------------------------------------------------//
+    // --------------------------------------------------------------------- //
 
     void main(){
       
@@ -297,9 +304,57 @@ vec3 CreateDiffuseLight(vec3 lightPos){
       fragColor = vec4(colorResult, 1.0f);
     }
   	
-  )FSHADER";
+    )FSHADER";
+  
+    number_of_materials_++;
+  
+  }
 
-  number_of_materials_++;
+  // -------------------------- DefaultMaterial ---------------------------- //
+
+  // ---------------------------- NewMaterial ------------------------------ //
+
+  //{
+  //
+  //  internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
+  //
+  //  internal_materials_[number_of_materials_].vertex_shader_ = R"VSHADER(
+	//
+  //  #version 330
+  //  layout(location = 0) in vec3 a_position;
+  //  
+  //  uniform mat4 u_m_matrix;
+  //  uniform mat4 u_v_matrix;
+  //  uniform mat4 u_p_matrix;
+  //
+  //  void main(){
+  //    mat4 accum_matrix = u_p_matrix * u_v_matrix * u_m_matrix;
+	//    gl_Position = accum_matrix * vec4(a_position, 1.0f);
+  //  }
+  //
+  //  )VSHADER";
+  //
+  //
+  //
+  //  internal_materials_[number_of_materials_].fragment_shader_ = R"FSHADER(
+  //
+  //  #version 330
+  //
+  //  void main(){
+  //
+  //    fragColor = vec4(colorResult, 1.0f);
+  //  }
+  //	
+  //  )FSHADER";
+  //
+  //  number_of_materials_++;
+  //
+  //}
+
+  // ---------------------------- NewMaterial ------------------------------ //
+
 }
 
-// --------------------------------------------------------------//
+// ------------------------------------------------------------------------- //
+
+

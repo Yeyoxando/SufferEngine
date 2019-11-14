@@ -24,16 +24,17 @@ struct Suffer::DrawGeometry::Data {
   mathmorra::Matrix4 view_matrix_;
   mathmorra::Matrix4 projection_matrix_;
 
-  // Material 
+  // Material specific parameters 
   struct DefaultParams {
-    //Common parameters
-    float color_[4];
-    u32 albedo_texture_id_;
   };
 
   struct PhongParams {
 
   };
+
+  //Common parameters
+  float color_[4];
+  u32 albedo_texture_id_;
 
   union Params {
 
@@ -97,19 +98,20 @@ void Suffer::DrawGeometry::SetGeometry(const ref_ptr<Geometry> geo) {
 // --------------------------------------------------- //
 
 void Suffer::DrawGeometry::SetMaterial(const ref_ptr<MaterialInstance> mat) {
+
   data_->internal_material_id_ = (u32)mat->params_type_;
 
-
+  // Common attributtes
   float* values = mat->GetColor();
+  memcpy(data_->color_, values, sizeof(float) * 4);
+  data_->albedo_texture_id_ = mat->GetAlbedoTexture();
 
   switch (mat->params_type_) {
   case MaterialInstance::ParamsType::kParams_Default:
-    memcpy(data_->material_params_.default_params_.color_, values, sizeof(float) * 4);
-    data_->material_params_.default_params_.albedo_texture_id_ = mat->GetAlbedoTexture();
+    //Specific parameters for default
     break;
   case MaterialInstance::ParamsType::kParams_Phong:
-    //Other parameters for phong
-    //data_->material_params_.phong_params_.
+    // Specific parameters for phong
     break;
   case MaterialInstance::ParamsType::kParams_NONE:
 #ifdef ASSERT
@@ -218,8 +220,8 @@ void Suffer::DrawGeometry::Execute() const {
 
   {
   
-    if (data_->material_params_.default_params_.albedo_texture_id_ < 0) return;
-    s32 id_texture = data_->material_params_.default_params_.albedo_texture_id_;
+    if (data_->albedo_texture_id_ < 0) return;
+    s32 id_texture = data_->albedo_texture_id_;
     if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ == 0) {
       glGenTextures(1, &suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
       error = glGetError();
@@ -394,19 +396,19 @@ void Suffer::DrawGeometry::Execute() const {
 
     s32 u_pos = -1;
 
-    // MaterialInstance setting uniforms
+    // MaterialInstance setting common uniforms
 
-    mathmorra::Vector4 color(data_->material_params_.default_params_.color_);
+    // Color
     u_pos = glGetUniformLocation(program_id, "u_color");
     if (u_pos < 0) {
       printf("\nERROR: u_color uniform not exists.");
       //return;
     }
 
-    glUniform4f(u_pos, color.x_, color.y_, color.z_, color.w_);
+    glUniform4f(u_pos, data_->color_[0], data_->color_[1], data_->color_[2], data_->color_[3]);
     u_pos = -1;
 
-    // Texture
+    // Albedo Texture
     u_pos = glGetUniformLocation(program_id, "u_albedo");
     if (u_pos < 0) {
       printf("\nERROR: u_albedo uniform not exists.");
@@ -414,7 +416,7 @@ void Suffer::DrawGeometry::Execute() const {
     }
     
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[data_->material_params_.default_params_.albedo_texture_id_].current_texture_id_);
+    glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[data_->albedo_texture_id_].current_texture_id_);
 
     glUniform1i(u_pos, 0);
     u_pos = -1;
@@ -422,11 +424,11 @@ void Suffer::DrawGeometry::Execute() const {
 
     // Specific material settings
     switch (data_->internal_material_id_) {
-    case MaterialInstance::kParams_Default: {
-    }
-    break;
+    case MaterialInstance::kParams_Default: 
+      // Set specific default uniforms
+      break;
     case MaterialInstance::kParams_Phong:
-
+      // Set specific phong uniforms
       break;
     case MaterialInstance::kParams_NONE:
       break;
