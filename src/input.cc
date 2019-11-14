@@ -295,6 +295,7 @@ u32 Suffer::InputManager::Data::GetGLFWKey(Suffer::InputManager::Key key) {
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
     Suffer::InputManager::Key key_event = GetKey(key);
+    if (key_event > INPUT_BUFFER) return;
     auto state = &suffer.input_manager_.input_events_[(u32)key_event].state_;
 
     if (action == GLFW_RELEASE) {
