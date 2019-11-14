@@ -15,16 +15,26 @@
 namespace Suffer {
 
     class AudioManager {
+
         friend class SufferManager;
         friend class Audio3D;
 
     public:
+
+        /**
+         * @brief: moves the DL calculated by the logic to the audio DL
+         * @param: the DL calculated by the logic
+         */
         void AddToAudioQueue(DisplayList&& audio_dl_by_logic_);
+
+        /**
+         * @brief: executes the audio DisplayList
+         */
         void DoAudio();
 
     private:
-        void StartUp();
-        void ShutDown();
+        void StartUp();  // a.k.a Init()
+        void ShutDown(); // a.k.a End()
 
         AudioManager();
         ~AudioManager();
