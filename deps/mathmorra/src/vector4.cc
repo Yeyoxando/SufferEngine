@@ -396,7 +396,8 @@ mathmorra::Vector4 mathmorra::Vector4::Projection(mathmorra::Vector4 a,
 //---------------------------------------------------------------------------//
 
 float* mathmorra::Vector4::GetValues(){
-    return &x_;
+  float value[] = {x_, y_, z_, w_};
+    return value;
 }
 
 //---------------------------------------------------------------------------//

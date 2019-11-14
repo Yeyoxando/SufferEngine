@@ -10,6 +10,7 @@
 #include <data_types.h>
 #include <referenced.h>
 #include <ref_ptr.h>
+#include "resource_manager.h"
 #include "vector4.h"
 
 namespace Suffer {
@@ -31,9 +32,11 @@ namespace Suffer {
 
     // Getters
     float* GetColor() const;
+    u32 GetAlbedoTexture() const;
 
     // Setters
     void SetColor(mathmorra::Vector4 new_color);
+    void SetAlbedoTexture(ref_ptr<ResourceManager::Texture> texture);
 
 
     void SetMaterialParamsType(ParamsType type);

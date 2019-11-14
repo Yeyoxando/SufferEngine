@@ -8,52 +8,35 @@ struct Suffer::MaterialInstance::Data {
 
   //Material values
   mathmorra::Vector4 color_;
+  u32 albedo_texture_id_;
 };
 
 // --------------------------------------------------- //
 
 float* Suffer::MaterialInstance::GetColor() const{
- // This switch will be needed in other atrributtes that can only be set in specific material, 
-  // For example specular in phong will be needed, but not it default
-  
-  //mathmorra::Vector4 color;
- //switch (params_type_) {
- //case Suffer::MaterialInstance::kParams_Default:
- //  color = data_->color_;
- //  break;
- //case Suffer::MaterialInstance::kParams_Phong:
- //  color = data_->color_;
- //  break;
- //case Suffer::MaterialInstance::kParams_NONE:
- //  break;
- //default:
- //  break;
- //}
-
 
   return data_->color_.GetValues();
+
+}
+
+// --------------------------------------------------- //
+
+u32 Suffer::MaterialInstance::GetAlbedoTexture() const{
+  return data_->albedo_texture_id_;
 }
 
 // --------------------------------------------------- //
 
 void Suffer::MaterialInstance::SetColor(mathmorra::Vector4 new_color) {
-  // This switch will be needed in other atrributtes that can only be set in specific material, 
-  // For example specular in phong will be needed, but not it default
-  
-  //switch (params_type_) {
-  //case Suffer::MaterialInstance::kParams_Default:
-  //  data_->color_ = new_color;
-  //  break;
-  //case Suffer::MaterialInstance::kParams_Phong:
-  //  data_->color_ = new_color;
-  //  break;
-  //case Suffer::MaterialInstance::kParams_NONE:
-  //  break;
-  //default:
-  //  break;
-  //}
 
   data_->color_ = new_color;
+
+}
+
+// --------------------------------------------------- //
+
+void Suffer::MaterialInstance::SetAlbedoTexture(ref_ptr<ResourceManager::Texture> texture){
+  data_->albedo_texture_id_ = texture->id_;
 }
 
 // --------------------------------------------------- //
