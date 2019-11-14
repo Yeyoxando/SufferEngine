@@ -18,7 +18,7 @@ namespace Suffer {
 	// --------------------------------------------------- //
 
   /**
-    * @brief:
+    * @brief: contain the material kind and the attributes to render with it
     */
 	class MaterialInstance : public Referenced {
 
@@ -28,7 +28,7 @@ namespace Suffer {
 		MaterialInstance();
 
     /**
-    * @brief:
+    * @brief: Indicates which type of material is it
     */
     enum ParamsType {
       kParams_Default = 0,
@@ -82,7 +82,7 @@ namespace Suffer {
 		struct Data;
 		Data* data_;
 
-		// Methods
+
 		MaterialInstance(const MaterialInstance&);
 	};
 }
