@@ -21,8 +21,8 @@ Suffer::Camera::Camera() {
 
     camera_position_ = mathmorra::Vector3(0.0f, 0.0f, -15.0f);
 
-    camera_up_ = mathmorra::Vector3(0.0f, -1.0f, 0.0f);
-    camera_right_ = mathmorra::Vector3(-1.0f, 0.0f, 0.0f);
+    camera_up_ = mathmorra::Vector3(0.0f, 1.0f, 0.0f);
+    camera_right_ = mathmorra::Vector3(1.0f, 0.0f, 0.0f);
     //camera_forward_ = mathmorra::Vector3(0.0f, 0.0f, -1.0f);
     camera_direction_ = mathmorra::Vector3(0.0f, 0.0f, 1.0f);
 
@@ -162,8 +162,8 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
     mathmorra::Vector2 last_position;
 
     // CAMERA UTILS
-    camera_right_ = mathmorra::Vector3::CrossProduct(camera_direction_, camera_up_);
-    camera_up_ = mathmorra::Vector3::CrossProduct(camera_right_, camera_direction_);
+    camera_right_ = -mathmorra::Vector3::CrossProduct(camera_direction_, camera_up_);
+    camera_up_ = -mathmorra::Vector3::CrossProduct(camera_right_, camera_direction_);
 
     // FORWARD
     if (suffer.input_manager_.IsKeyPressed(InputManager::k_W)) {
@@ -274,7 +274,7 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
     mathmorra::Vector3 x = mathmorra::Vector3(1.0f, 0.0f, 0.0f);
     mathmorra::Vector3 y = mathmorra::Vector3(0.0f, 1.0f, 0.0f);
     
-    mathmorra::Quaternion q = q.EulerAngles(x, -angleY);
+    mathmorra::Quaternion q = q.EulerAngles(x, angleY);
     mathmorra::Quaternion p = p.EulerAngles(y, -angleX);
     mathmorra::Quaternion quaternion = quaternion.Multiply(p, q);
     quaternion.Normalize();
