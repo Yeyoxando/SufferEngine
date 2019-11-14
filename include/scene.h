@@ -29,6 +29,7 @@ namespace Suffer {
   private:
 		// Attributes
 		std::vector<ref_ptr<GameObject>> current_gameobjects_;
+
     ref_ptr<Camera> main_camera_;
 
 	};
