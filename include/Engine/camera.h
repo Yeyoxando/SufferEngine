@@ -16,7 +16,7 @@
 namespace Suffer {
 
     class Camera : public virtual Referenced {
-
+        friend class Scene;
     public:
         Camera();
         Camera(const Camera& copy);
@@ -87,8 +87,6 @@ namespace Suffer {
 
         bool FPS();
 
-        // TODO: This will be private
-        void Update();
 
     protected:
         virtual ~Camera();
@@ -96,9 +94,7 @@ namespace Suffer {
 
     private:
         mathmorra::Vector3 camera_position_;
-        mathmorra::Vector3 camera_target_;
-        mathmorra::Vector3 camera_direction_;
-
+        mathmorra::Vector3 camera_forward_;
         mathmorra::Vector3 camera_up_;
         mathmorra::Vector3 camera_right_;
 
@@ -106,6 +102,8 @@ namespace Suffer {
         mathmorra::Matrix4 projection_matrix_;
 
         float field_of_view_; // FOV
+
+        void Update();
 
         // Movement attributes
         float speed_;

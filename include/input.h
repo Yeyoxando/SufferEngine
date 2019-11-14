@@ -129,8 +129,9 @@ namespace Suffer {
         struct KeyBuffer {
             Suffer::InputManager::State state_;
         };
-        Array<KeyBuffer> input_events_;
         mathmorra::Vector2 mouse_;
+
+        Array<KeyBuffer> input_events_;
 
     private:
 

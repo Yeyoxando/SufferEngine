@@ -16,7 +16,8 @@
 struct Suffer::InputManager::Data {
 
     u32 GetGLFWKey(Suffer::InputManager::Key key);
-    void Callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void Callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    void Test();
 
 };
 
@@ -290,6 +291,25 @@ u32 Suffer::InputManager::Data::GetGLFWKey(Suffer::InputManager::Key key) {
 
 }
 
+void Suffer::InputManager::Data::Callback(GLFWwindow* window, int key, int scancode, int action, int mods){
+
+    Suffer::InputManager::Key key_event = GetKey(key);
+    if (key_event > INPUT_BUFFER) return;
+    auto state = &suffer.input_manager_.input_events_[(u32)key_event].state_;
+
+    if (action == GLFW_RELEASE) {
+        state->released_ = true;
+        state->recently_released_ = true;
+        state->pressed_ = false;
+    }
+
+    if (action == GLFW_PRESS) {
+        state->pressed_ = true;
+        state->recently_pressed_ = true;
+    }
+
+}
+
 // --------------------------------------------------- //
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -365,7 +385,7 @@ void Suffer::InputManager::StartUp(){
 
     data_ = new Data();
     input_events_.alloc(INPUT_BUFFER);
-    
+     
     // Set callbacks
     glfwSetKeyCallback(glfwGetCurrentContext(), KeyCallback);
     glfwSetCursorPosCallback(glfwGetCurrentContext(), MouseCallback);

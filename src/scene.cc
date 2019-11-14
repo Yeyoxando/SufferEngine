@@ -157,7 +157,7 @@ void Suffer::Scene::Init() {
   go2->SetName("Triangle");
   
   
-  AddGameObject(go2);
+  //AddGameObject(go2);
 
 }
 
