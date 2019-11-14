@@ -1,3 +1,5 @@
+// Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
+
 #ifndef __SCENE_H__
 #define __SCENE_H__
 
@@ -9,6 +11,9 @@
 
 namespace Suffer {
 
+  /**
+    * @brief:
+    */
 	class Scene : public Referenced {
       friend class Camera;
       friend class Interface;
@@ -18,11 +23,26 @@ namespace Suffer {
 		Scene(const Scene&);
 		virtual ~Scene();
 
+    /**
+    * @brief:
+    */
 		void Init();
-		void Step(float time_step);
+    
+    /**
+    * @brief:
+    * @param:
+    */
+    void Step(float time_step);
+    
+    /**
+    * @brief:
+    */
 		void PrepareDraw();
 
-		// Methods
+    /**
+    * @brief:
+    * @param:
+    */
     void AddGameObject(ref_ptr<GameObject> gameobject);
 
 

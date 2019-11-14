@@ -13,18 +13,28 @@ namespace Suffer {
 
 	// --------------------------------------------------- //
 
+  /**
+    * @brief:
+    */
 	class Command : public virtual Referenced {
 
 	public:
 		virtual void Execute() const = 0;
 
+    /**
+    * @brief:
+    */
 		enum CommandType {
 			kRender = 0,
 			kAudio = 1,
 			kNONE = 20 // MAX for enum.
 		};
 
+    /**
+    * @return:
+    */
 		CommandType GetCommandType() const { return cmd_type_; }
+
 	protected:
 		CommandType cmd_type_;
 

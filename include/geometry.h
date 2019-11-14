@@ -21,6 +21,9 @@ namespace Suffer {
 
 	    Geometry();
 
+      /**
+      * @brief:
+      */
 	    enum BasicShapes {
 		    kBasicShapes_Triangle = 0,
 		    kBasicShapes_Quad,

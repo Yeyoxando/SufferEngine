@@ -15,15 +15,26 @@
 
 namespace Suffer {
 
+  /**
+    * @brief:
+    */
 	class Clear : public Command {
 
 	public:
 		Clear();
 		~Clear();
 
+    /**
+    * @brief:
+    * @param:
+    */
 		void SetClearColor(mathmorra::Vector4 color) { color_ = color; }
 
 	protected:
+
+    /**
+    * @brief:
+    */
 		virtual void Execute() const override;
 
 

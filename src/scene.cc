@@ -1,3 +1,5 @@
+// Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
+
 #include <scene.h>
 #include <game_object.h>
 #include <suffermanager.h>

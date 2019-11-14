@@ -17,6 +17,9 @@ namespace Suffer {
 
 	// --------------------------------------------------- //
 
+  /**
+    * @brief:
+    */
 	class MaterialInstance : public Referenced {
 
 	public:
@@ -24,23 +27,47 @@ namespace Suffer {
 
 		MaterialInstance();
 
+    /**
+    * @brief:
+    */
     enum ParamsType {
       kParams_Default = 0,
       kParams_Phong,
       kParams_NONE = 20
     };
 
-    // Getters
-    float* GetColor() const;
-    u32 GetAlbedoTexture() const;
+    // ------------------------------ Getters ------------------------------ //
 
-    // Setters
+    /**
+       * @return:
+       */
+    float* GetColor() const;
+    /**
+       * @return: 
+       */
+    u32 GetAlbedoTexture() const;
+    /**
+       * @return:
+       */
+    u32 GetMaterialParamsType() const;
+
+
+    // ------------------------------ Getters ------------------------------ //
+
+    /**
+       * @return:
+       */
     void SetColor(mathmorra::Vector4 new_color);
+
+    /**
+       * @return:
+       */
     void SetAlbedoTexture(ref_ptr<ResourceManager::Texture> texture);
 
-
+    /**
+       * @return:
+       */
     void SetMaterialParamsType(ParamsType type);
-    u32 GetMaterialParamsType() const;
 
 
 	protected:

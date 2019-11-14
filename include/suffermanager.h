@@ -19,6 +19,10 @@
 namespace Suffer {
 
   class Scene;
+
+  /**
+    * @brief:
+    */
 	class SufferManager {
 
 	public:
@@ -26,15 +30,43 @@ namespace Suffer {
 		friend class Audio2D;
 		friend class Interface;
 
+    /**
+    * @return:
+    */
 		static SufferManager& instance();
 
+    /**
+    * @brief:
+    * @return:
+    */
 		bool Init();
-		bool Run();
-		bool Step(double time_step);
-		bool Finish();
+    
+    /**
+    * @brief:
+    * @return:
+    */
+    bool Run();
+    
+    /**
+    * @brief:
+    * @return:
+    */
+    bool Step(double time_step);
+    
+    /**
+    * @brief:
+    * @return:
+    */
+    bool Finish();
 
+    /**
+    * @return:
+    */
 		double DeltaTime();
 
+    /**
+    * @brief:
+    */
     mathmorra::Vector2 GetMousePosition();
 
 		// Subsystems
@@ -52,16 +84,44 @@ namespace Suffer {
 
 		SufferManager(const SufferManager&);
 
+    /**
+    * @brief:
+    */
 		void Input();
-		void Update();
-		void Draw();
+		
+    /**
+    * @brief:
+    */
+    void Update();
+		
+    /**
+    * @brief:
+    */
+    void Draw();
 
-		// DisplayLists Stuff
-		void Audio();
-		void PrepareAudio();
 
+
+		// Move this functions to AudioManager like in RenderManager
+    /**
+    * @brief:
+    */
+    void Audio();
+    /**
+    * @brief:
+    */
+    void PrepareAudio();
+    // Move this functions to AudioManager like in RenderManager
+
+
+
+    /**
+    * @brief:
+    */
     void SetMousePosition();
 
+    /**
+    * @return:
+    */
     Scene* GetCurrentScene();
 
 		// Threads

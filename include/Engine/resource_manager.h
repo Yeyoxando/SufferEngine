@@ -11,6 +11,9 @@
 
 namespace Suffer {
 
+  /**
+    * @brief:
+    */
   class ResourceManager {
     friend class DrawGeometry;
     friend class SufferManager;
@@ -19,12 +22,18 @@ namespace Suffer {
     ResourceManager();
     ~ResourceManager();
 
+    /**
+    * @brief:
+    */
     class GPUResource : public Referenced {
 
     public:
       GPUResource();
       ~GPUResource();
 
+      /**
+      * @brief:
+      */
       enum ResourceType {
         kVertexBuffer = 0,
         kIndexBuffer,
@@ -39,9 +48,19 @@ namespace Suffer {
 
     };
 
+
+    // ----------------------------- VertexBuffer -------------------------- //
+
+    /**
+    * @brief: 
+    */
     class VertexBuffer : public GPUResource {
     public:
       friend class SufferManager;
+
+      /**
+      * @brief:
+      */
       enum VertexFormat {
         kVertexFormat_3P = 0,
         kVertexFormat_3P_3N = 1,
@@ -49,6 +68,9 @@ namespace Suffer {
         kVertexFormat_Invalid
       };
 
+      /**
+      * @brief:
+      */
       struct Vertex {
         Vertex() {}
         Vertex(mathmorra::Vector3 vertex) {}
@@ -69,11 +91,38 @@ namespace Suffer {
 
     };
 
+    /**
+       * @brief:
+       * @param:
+       * @param:
+       */
+    void UploadVertexData(const ref_ptr<VertexBuffer> buffer, Array<float> *data);
+
+    /**
+       * @brief:
+       * @param:
+       * @param:
+       * @param:
+       */
+    void UploadVertexData(const ref_ptr<VertexBuffer> buffer, float* data, u32 size);
+
+    // ----------------------------- VertexBuffer -------------------------- //
+
+
+
+    // ----------------------------- IndexBuffer --------------------------- //
+
+    /**
+    * @brief:
+    */
     class IndexBuffer : public GPUResource {
     public:
       IndexBuffer();
       ~IndexBuffer() {};
 
+      /**
+      * @brief:
+      */
       struct Triangle {
         Triangle() {}
         Triangle(u16 indices[3]) {}
@@ -85,24 +134,51 @@ namespace Suffer {
 
     };
 
+    /**
+       * @brief:
+       * @param:
+       * @param:
+       */
+    void UploadIndexData(const ref_ptr<IndexBuffer> buffer, Array<u16> *data);
+
+    /**
+       * @brief:
+       * @param:
+       * @param:
+       * @param:
+       */
+    void UploadIndexData(const ref_ptr<IndexBuffer> buffer, u16* data, u32 size);
+
+    // ----------------------------- IndexBuffer --------------------------- //
+
+
+
+    // ------------------------------- Texture ----------------------------- //
+
+    /**
+    * @brief:
+    */
     class Texture : public GPUResource {
     public:
       Texture();
       ~Texture() {};
 
     };
-
-    //Buffers
-    void UploadVertexData(const ref_ptr<VertexBuffer> buffer, Array<float> *data);
-    void UploadVertexData(const ref_ptr<VertexBuffer> buffer, float* data, u32 size);
-    void UploadIndexData(const ref_ptr<IndexBuffer> buffer, Array<u16> *data);
-    void UploadIndexData(const ref_ptr<IndexBuffer> buffer, u16* data, u32 size);
     
+
+    /**
+       * @brief:
+       * @param:
+       * @param:
+       */
     void LoadTextureData(const ref_ptr<Texture> texture, const char* file);
 
+    // ------------------------------- Texture ----------------------------- //
+
+
   private:
-    void StartUp();
-    void ShutDown();
+    void StartUp(); // a.k.a Init()
+    void ShutDown(); // a.k.a End()
 
 
     struct ResourceData;

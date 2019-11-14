@@ -1,3 +1,5 @@
+// Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
+
 #include <window.h>
 #include <GL/glew.h>
 #include <glfw3.h>

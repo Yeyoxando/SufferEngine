@@ -9,16 +9,26 @@
 
 namespace Suffer {
 
+  /**
+   * @brief:
+   */
 	class RenderManager {
 		friend class SufferManager;
 
 	public:
+    /**
+     * @brief:
+     * @param:
+     */
 		void AddToRenderQueue(DisplayList&& logic_dl);
+    /**
+     * @brief:
+     */
 		void DoRender();
 	
 	private:
-		void StartUp();
-		void ShutDown();
+    void StartUp(); // a.k.a Init()
+    void ShutDown(); // a.k.a End()
 
 		RenderManager();
 		~RenderManager();
