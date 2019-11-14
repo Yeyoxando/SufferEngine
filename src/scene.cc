@@ -87,7 +87,7 @@ void Suffer::Scene::Init() {
 	
   ref_ptr < ResourceManager::Texture> albedo_texture;
   albedo_texture.alloc();
-  suffer.resource_manager_.LoadTextureData(albedo_texture, "../../../resources/images/test.jpg");
+  suffer.resource_manager_.LoadTextureData(albedo_texture, "../../../resources/images/box.jpg");
 	
 	ref_ptr<MaterialInstance> material;
 	material.alloc();
