@@ -98,25 +98,39 @@ namespace Suffer {
             k_F12,
         };
 
-        void StartUp();
-        void ShutDown();
+        void StartUp();  // a.k.a Init()
+        void ShutDown(); // a.k.a End()
 
+        /**
+         * @returns: returns if the key passed by parameter is released
+         */
         bool IsKeyUp(Key key);
+
+        /**
+         * @returns: returns if the key passed by parameter is pressed
+         */
         bool IsKeyDown(Key key);
+
+        /**
+         * @returns: returns if the key passed by parameter is still pressed
+         */
         bool IsKeyPressed(Key key);
 
         // 0 = left  1 = right
         bool MouseButtonDown(int id);
 
+        /**
+         * @returns: returns the mouse position
+         */
         double MousePositionX();
         double MousePositionY();
         mathmorra::Vector2 MousePosition();
-        void MousePosition(mathmorra::Vector2& out);
 
         struct KeyBuffer {
             Suffer::InputManager::State state_;
         };
         Array<KeyBuffer> input_events_;
+        mathmorra::Vector2 mouse_;
 
     private:
 
@@ -127,6 +141,7 @@ namespace Suffer {
         Data* data_;
 
         void Update();
+
 
 
 

@@ -8,7 +8,8 @@
 #include <glfw3.h>
 #include <assert.h>
 #include "suffermanager.h"
-
+#include "math_utils.h"
+#include "common_definitions.h"
 
 // --------------------------------------------------- //
 
@@ -338,12 +339,37 @@ void Suffer::InputManager::Update(){
 
 // --------------------------------------------------- //
 
+void MouseCallback(GLFWwindow* window, double xpos, double ypos) {
+    // TODO: Fill this
+    suffer.input_manager_.mouse_.x_ = xpos;
+    suffer.input_manager_.mouse_.y_ = ypos;
+
+}
+
+// --------------------------------------------------- //
+
+void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+    // TODO: Fill this
+}
+
+// --------------------------------------------------- //
+
+void ErrorCallback(int error, const char* description){
+    printf("Error: %s\n", description);
+}
+
+// --------------------------------------------------- //
+
 void Suffer::InputManager::StartUp(){
 
     data_ = new Data();
     input_events_.alloc(INPUT_BUFFER);
-
+    
+    // Set callbacks
     glfwSetKeyCallback(glfwGetCurrentContext(), KeyCallback);
+    glfwSetCursorPosCallback(glfwGetCurrentContext(), MouseCallback);
+    glfwSetScrollCallback(glfwGetCurrentContext(), ScrollCallback);
+    glfwSetErrorCallback(ErrorCallback);
 
 }
 
@@ -377,8 +403,8 @@ bool Suffer::InputManager::IsKeyUp(Key key){
 	
     auto state = &suffer.input_manager_.input_events_[(u32)key].state_;
     if (state->released_) {
-        state->released_ = true;
         state->pressed_ = false;
+        state->released_ = false;
         return true;
     }
 
@@ -431,9 +457,7 @@ bool Suffer::InputManager::MouseButtonDown(int id){
 
 double Suffer::InputManager::MousePositionX(){
 
-	double x, y;
-	glfwGetCursorPos(glfwGetCurrentContext(), &x, &y);
-	return x;
+	return mouse_.x_;
 
 }
 
@@ -441,9 +465,7 @@ double Suffer::InputManager::MousePositionX(){
 
 double Suffer::InputManager::MousePositionY(){
 
-	double x, y;
-	glfwGetCursorPos(glfwGetCurrentContext(), &x, &y);
-	return y;
+	return mouse_.y_;
 
 }
 
@@ -451,29 +473,7 @@ double Suffer::InputManager::MousePositionY(){
 
 mathmorra::Vector2 Suffer::InputManager::MousePosition(){
 
-    mathmorra::Vector2 result = mathmorra::Vector2(0.0f, 0.0f);
-
-	double x, y;
-	glfwGetCursorPos(glfwGetCurrentContext(), &x, &y);
-
-	result.x_ = x;
-	result.y_ = y;
-
-	return result;
-
-}
-
-// --------------------------------------------------- //
-
-void Suffer::InputManager::MousePosition(mathmorra::Vector2& out){
-
-    mathmorra::Vector2 result = mathmorra::Vector2(0.0f, 0.0f);
-
-	double x, y;
-	glfwGetCursorPos(glfwGetCurrentContext(), &x, &y);
-
-  out.x_ = x;
-  out.y_ = y;
+	return mouse_;
 
 }
 

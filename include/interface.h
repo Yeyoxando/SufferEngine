@@ -48,11 +48,21 @@ namespace Suffer {
 		void ChangeEditorStyle();
 
 		// Engine Interface Structure
-		void Hierarchy(Scene* current_scene_);
-		void Log();
-		void Inspector();
-		void Project();
+		void Hierarchy(Scene* current_scene_); // Hierarchy window
+		void Log();                            // LOG engine window
+		void Inspector();                      // GameObjects inspector
+		void Project();                        // Project folder
+
+    /**
+     * @brief: Processes the sound passed by parameter in the interface
+     * @param: the audio source that will be processed.
+     */
 		void Audio(Audio3D* sound);
+
+    /**
+     * @brief: render the texture in the Game window in the interface
+     * @param: the texture that will be rendered
+     */
 		void Game(s8 tex);
 
 		// Windows that can be opened

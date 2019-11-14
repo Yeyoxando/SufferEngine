@@ -28,9 +28,26 @@ namespace Suffer {
 		    kBasicShapes_NONE = 20
 	    };
 		
-
+      /**
+       * @brief: Assigns the vertex buffer passed by parameter
+       *         to the current GameObject Geometry.
+       * @param: the vertex buffer.
+       */
       void SetVertexBuffer(ref_ptr<Suffer::ResourceManager::VertexBuffer> buffer);
+
+      /**
+       * @brief: Assigns the index buffer passed by parameter
+       *         to the current GameObject Geometry.
+       * @param: the index buffer.
+       */
       void SetIndexBuffer(ref_ptr<Suffer::ResourceManager::IndexBuffer> buffer);
+
+      /**
+       * @brief: Assigns the vertex and the index buffer passed by 
+       *         parameter to the current GameObject Geometry.
+       * @param: the vertex buffer.
+       * @param: the index buffer.
+       */
       void SetBuffers(ref_ptr<Suffer::ResourceManager::VertexBuffer> vertex_buffer, ref_ptr<Suffer::ResourceManager::IndexBuffer> index_buffer);
 
     protected:
