@@ -17,14 +17,32 @@ namespace Suffer {
     public:
 	    Thread();
 
+      /*
+       * @brief: launches a new task on the current thread.
+       * @param: the function pointer to execute.
+       */
 	    void NewTask(Task t);
+
+      /*
+       * @brief: wait for a thread to finish.
+       * @param: the thread that is being waited
+       */ 
 	    void WaitFor(Thread* thread);
 
       void WaitMe();
 
+      /*
+       * @brief: sleeps the current thread and stops his execution.
+       */
 	    void Sleep();
+
+      /*
+       * @brief: awakes the current thread and begins his execution.
+       */
 	    void Awake();
 
+
+      // DEPRECATED: will be removed
 	    bool Finished();
 
 

@@ -87,7 +87,7 @@ void Suffer::Scene::Init() {
 	
   ref_ptr < ResourceManager::Texture> albedo_texture;
   albedo_texture.alloc();
-  suffer.resource_manager_.LoadTextureData(albedo_texture, "../../../resources/images/test.jpg");
+  suffer.resource_manager_.LoadTextureData(albedo_texture, "../../../resources/images/box.jpg");
 	
 	ref_ptr<MaterialInstance> material;
 	material.alloc();
@@ -166,7 +166,7 @@ void Suffer::Scene::Init() {
 void Suffer::Scene::Step(float time_step){
 	// Logic
   main_camera_.get()->Update();
-  if(main_camera_->fps_movement_) main_camera_->CameraMovement(main_camera_);
+  if(main_camera_->FPS()) main_camera_->CameraMovement(main_camera_);
 	PrepareDraw();
 }
 

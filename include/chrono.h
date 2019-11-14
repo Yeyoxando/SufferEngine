@@ -16,7 +16,14 @@ namespace Suffer {
         Chrono();
         ~Chrono();
 
+        /**
+         * @brief: returns the current time
+         */
         double Now();
+
+        /**
+         * @brief: calculates the difference between two time values.
+         */
         double Difference(const double end, const double start);
 
         // Converters

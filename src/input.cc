@@ -8,20 +8,14 @@
 #include <glfw3.h>
 #include <assert.h>
 #include "suffermanager.h"
-
+#include "math_utils.h"
+#include "common_definitions.h"
 
 // --------------------------------------------------- //
 
 struct Suffer::InputManager::Data {
 
-    u32 key_;
-    u32 action_;
-
-    bool init = false;
-
-
     u32 GetGLFWKey(Suffer::InputManager::Key key);
-    //static Suffer::InputManager::Key GetKey(u32 glfw_key);
     void Callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 };
@@ -301,11 +295,13 @@ u32 Suffer::InputManager::Data::GetGLFWKey(Suffer::InputManager::Key key) {
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
     Suffer::InputManager::Key key_event = GetKey(key);
+    if (key_event > INPUT_BUFFER) return;
     auto state = &suffer.input_manager_.input_events_[(u32)key_event].state_;
 
     if (action == GLFW_RELEASE) {
         state->released_ = true;
         state->recently_released_ = true;
+        state->pressed_ = false;
     }
 
     if (action == GLFW_PRESS) {
@@ -331,10 +327,36 @@ Suffer::InputManager::~InputManager(){
 
 // --------------------------------------------------- //
 
-void Suffer::InputManager::Data::Callback(GLFWwindow* window, int key, int scancode, int action, int mods){
+void Suffer::InputManager::Update(){
+    
+    // This function will be called at the end of the frame.
+    for (int i = 0; i < INPUT_BUFFER; ++i) {
+        input_events_[i].state_.recently_pressed_ = false;
+        input_events_[i].state_.recently_released_ = false;
+        input_events_[i].state_.released_ = false;
+    }
 
-    Suffer::InputManager::Key key_event = GetKey(key);
+}
 
+// --------------------------------------------------- //
+
+void MouseCallback(GLFWwindow* window, double xpos, double ypos) {
+    // TODO: Fill this
+    suffer.input_manager_.mouse_.x_ = xpos;
+    suffer.input_manager_.mouse_.y_ = ypos;
+
+}
+
+// --------------------------------------------------- //
+
+void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+    // TODO: Fill this
+}
+
+// --------------------------------------------------- //
+
+void ErrorCallback(int error, const char* description){
+    printf("Error: %s\n", description);
 }
 
 // --------------------------------------------------- //
@@ -343,8 +365,12 @@ void Suffer::InputManager::StartUp(){
 
     data_ = new Data();
     input_events_.alloc(INPUT_BUFFER);
-
+    
+    // Set callbacks
     glfwSetKeyCallback(glfwGetCurrentContext(), KeyCallback);
+    glfwSetCursorPosCallback(glfwGetCurrentContext(), MouseCallback);
+    glfwSetScrollCallback(glfwGetCurrentContext(), ScrollCallback);
+    glfwSetErrorCallback(ErrorCallback);
 
 }
 
@@ -378,6 +404,7 @@ bool Suffer::InputManager::IsKeyUp(Key key){
 	
     auto state = &suffer.input_manager_.input_events_[(u32)key].state_;
     if (state->released_) {
+        state->pressed_ = false;
         state->released_ = false;
         return true;
     }
@@ -390,39 +417,9 @@ bool Suffer::InputManager::IsKeyUp(Key key){
 
 bool Suffer::InputManager::IsKeyPressed(Key key){
 
-    
-  static bool is_key_down = false;
-  static int key_pressed = 0;
-
-  if (is_key_down) {
-    if (data_->GetGLFWKey(key) != data_->key_) return false;
-  }
-
-  if (data_->key_ == data_->GetGLFWKey(key) && data_->action_ == GLFW_PRESS) {
-    is_key_down = true;
-    key_pressed = data_->key_;
-  }
-
-
-  if (is_key_down) {
-      if (IsKeyUp(key)) {
-          is_key_down = false;
-          return false;
-      }
-      return true;
-  }
-    
-
-	//static bool is_key_down = false;
-
-	//if (IsKeyDown(key) || is_key_down) {
-	//	is_key_down = true;
-	//	if (IsKeyUp(key)) {
-	//		is_key_down = false;
-	//		return false;
-	//	}
-	//	return true;
-	//}
+    auto state = &suffer.input_manager_.input_events_[(u32)key].state_;
+    if (state->pressed_) return true;
+    return false;
 
 }
 
@@ -461,9 +458,7 @@ bool Suffer::InputManager::MouseButtonDown(int id){
 
 double Suffer::InputManager::MousePositionX(){
 
-	double x, y;
-	glfwGetCursorPos(glfwGetCurrentContext(), &x, &y);
-	return x;
+	return mouse_.x_;
 
 }
 
@@ -471,9 +466,7 @@ double Suffer::InputManager::MousePositionX(){
 
 double Suffer::InputManager::MousePositionY(){
 
-	double x, y;
-	glfwGetCursorPos(glfwGetCurrentContext(), &x, &y);
-	return y;
+	return mouse_.y_;
 
 }
 
@@ -481,29 +474,7 @@ double Suffer::InputManager::MousePositionY(){
 
 mathmorra::Vector2 Suffer::InputManager::MousePosition(){
 
-    mathmorra::Vector2 result = mathmorra::Vector2(0.0f, 0.0f);
-
-	double x, y;
-	glfwGetCursorPos(glfwGetCurrentContext(), &x, &y);
-
-	result.x_ = x;
-	result.y_ = y;
-
-	return result;
-
-}
-
-// --------------------------------------------------- //
-
-void Suffer::InputManager::MousePosition(mathmorra::Vector2& out){
-
-    mathmorra::Vector2 result = mathmorra::Vector2(0.0f, 0.0f);
-
-	double x, y;
-	glfwGetCursorPos(glfwGetCurrentContext(), &x, &y);
-
-  out.x_ = x;
-  out.y_ = y;
+	return mouse_;
 
 }
 

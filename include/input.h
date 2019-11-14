@@ -21,15 +21,8 @@ namespace Suffer {
 
     public:
 
-        enum State {
-            kState_Pressed          = 0x01, // 00000001 == 1
-            kState_Released         = 0x02, // 00000010 == 2
-            kState_RecentlyPressed  = 0x03, // 00000100 == 4
-            kState_RecentlyReleased = 0x04, // 00001000 == 8
-        };
-
-        struct Alternative {
-            Alternative() {
+        struct State{
+            State() {
                 pressed_ = false;
                 released_ = false;
                 recently_pressed_ = false;
@@ -105,25 +98,39 @@ namespace Suffer {
             k_F12,
         };
 
-        void StartUp();
-        void ShutDown();
+        void StartUp();  // a.k.a Init()
+        void ShutDown(); // a.k.a End()
 
+        /**
+         * @returns: returns if the key passed by parameter is released
+         */
         bool IsKeyUp(Key key);
+
+        /**
+         * @returns: returns if the key passed by parameter is pressed
+         */
         bool IsKeyDown(Key key);
+
+        /**
+         * @returns: returns if the key passed by parameter is still pressed
+         */
         bool IsKeyPressed(Key key);
 
         // 0 = left  1 = right
         bool MouseButtonDown(int id);
 
+        /**
+         * @returns: returns the mouse position
+         */
         double MousePositionX();
         double MousePositionY();
         mathmorra::Vector2 MousePosition();
-        void MousePosition(mathmorra::Vector2& out);
 
         struct KeyBuffer {
-            Suffer::InputManager::Alternative state_;
+            Suffer::InputManager::State state_;
         };
         Array<KeyBuffer> input_events_;
+        mathmorra::Vector2 mouse_;
 
     private:
 
@@ -132,6 +139,9 @@ namespace Suffer {
 
         struct Data;
         Data* data_;
+
+        void Update();
+
 
 
 

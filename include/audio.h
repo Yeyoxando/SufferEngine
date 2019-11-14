@@ -21,13 +21,21 @@ namespace Suffer {
         Audio3D();
 		    Audio3D(const Audio3D& copy);
 
+        /**
+         * @brief: loads an audio file. 
+         * @param: the path of the file in the explorer.
+         */
 		    bool Load(char* file);
+
+        // Plays the audio source
 		    bool Play3D(mathmorra::Vector3 velocity = mathmorra::Vector3(0, 0, 0));
 
 		    void SetPaused(const bool paused);
 		    void SetGain(const float newGain = 1.0f);
-		    void SetPitch(const float newPitch = 1.0f);
+		    void SetPitch(const float newPitch = 1.0f); // a.k.a reproduce speed
 		    void SetLooping(const bool looping = false);
+
+        // Sets the velocity of the audio source, not his reproduce speed.
 		    void SetVelocity(const mathmorra::Vector3 newVelocity = mathmorra::Vector3(0, 0, 0));
 		    void SetGlobalVolume(const float newVolume = 1.0f);
 
