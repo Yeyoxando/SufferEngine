@@ -11,12 +11,12 @@
 #include "vector4.h"
 #include <glm.hpp>
 
-// --------------------------------------------------- //
+// ------------------------------------------------------------------------- //
 
 namespace Suffer {
 
   /**
-    * @brief:
+    * @brief: Command to clear screen
     */
 	class Clear : public Command {
 
@@ -25,15 +25,15 @@ namespace Suffer {
 		~Clear();
 
     /**
-    * @brief:
-    * @param:
+    * @brief: Set color to clear screen
+    * @param: clear color
     */
 		void SetClearColor(mathmorra::Vector4 color) { color_ = color; }
 
 	protected:
 
     /**
-    * @brief:
+    * @brief: Executes the command to clear screen
     */
 		virtual void Execute() const override;
 
@@ -43,6 +43,7 @@ namespace Suffer {
 	};
 
 }
-// --------------------------------------------------- //
+
+// ------------------------------------------------------------------------- //
 
 #endif // __CLEAR_H__

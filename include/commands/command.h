@@ -11,10 +11,10 @@
 
 namespace Suffer {
 
-	// --------------------------------------------------- //
+  // ------------------------------------------------------------------------- //
 
   /**
-    * @brief:
+    * @brief: parent class to inherit to create new Commands for Render or Audio
     */
 	class Command : public virtual Referenced {
 
@@ -22,7 +22,7 @@ namespace Suffer {
 		virtual void Execute() const = 0;
 
     /**
-    * @brief:
+    * @brief: identifies the kind of the command
     */
 		enum CommandType {
 			kRender = 0,
@@ -30,9 +30,7 @@ namespace Suffer {
 			kNONE = 20 // MAX for enum.
 		};
 
-    /**
-    * @return:
-    */
+
 		CommandType GetCommandType() const { return cmd_type_; }
 
 	protected:
@@ -40,9 +38,11 @@ namespace Suffer {
 
 		Command();
 		virtual ~Command();
+
 	};
 
 }
-// --------------------------------------------------- //
+
+// ------------------------------------------------------------------------- //
 
 #endif // __COMMAND_H__

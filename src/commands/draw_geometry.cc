@@ -4,7 +4,6 @@
  * Draw Geometry command Header
  */
 
-
 #include <draw_geometry.h>
 #include <gl/glew.h>
 #include <data_types.h>
@@ -12,6 +11,8 @@
 #include "suffermanager.h"
 #include "internal_resource_manager.h"
 #include "common_definitions.h"
+
+// ------------------------------------------------------------------------- //
 
 struct Suffer::DrawGeometry::Data {
   // Geometry
@@ -45,86 +46,95 @@ struct Suffer::DrawGeometry::Data {
 
   u32 internal_material_id_;
   Params material_params_;
+
 };
 
-// --------------------------------------------------- //
+// ------------------------------------------------------------------------- //
 
 Suffer::DrawGeometry::DrawGeometry() {
+
   cmd_type_ = Command::kRender;
   data_ = new Data();
+
 }
 
-// --------------------------------------------------- //
+// ------------------------------------------------------------------------- //
 
 Suffer::DrawGeometry::~DrawGeometry() {
+
   if (!data_) return;
 
   delete data_;
   data_ = nullptr;
+
 }
 
-// --------------------------------------------------- //
+// ------------------------------------------------------------------------- //
 
 void Suffer::DrawGeometry::SetData(GameObject* go) {
-  SetGeometry(go->GetGeometry());
-  SetMaterial(go->GetMaterial());
+
+  // ---------------------------- SetGeometry ------------------------------ //
+
+  {
+  
+    data_->vertex_buffer_ = go->GetGeometry()->vertex_buffer_.get();
+    data_->index_buffer_ = go->GetGeometry()->index_buffer_.get();
+  
+  }
+
+  // ---------------------------- SetGeometry ------------------------------ //
+
+
+  // ---------------------------- SetMaterial ------------------------------ //
+
+  {
+  
+    data_->internal_material_id_ = (u32)go->GetMaterial()->params_type_;
+
+    // Common attributtes
+    float* values = go->GetMaterial()->GetColor();
+    memcpy(data_->color_, values, sizeof(float) * 4);
+    data_->albedo_texture_id_ = go->GetMaterial()->GetAlbedoTexture();
+
+    switch (go->GetMaterial()->params_type_) {
+    case MaterialInstance::ParamsType::kParams_Default:
+      //Specific parameters for default
+      break;
+    case MaterialInstance::ParamsType::kParams_Phong:
+      // Specific parameters for phong
+      break;
+    case MaterialInstance::ParamsType::kParams_NONE:
+      assert(go->GetMaterial()->params_type_ != MaterialInstance::kParams_NONE && "MaterialInstance type not set");
+      break;
+    default:
+      break;
+    }
+  
+  }
+
+  // ---------------------------- SetMaterial ------------------------------ //
+
 }
 
-// --------------------------------------------------- //
+// ------------------------------------------------------------------------- //
 
 void Suffer::DrawGeometry::SetModelMatrix(mathmorra::Matrix4 model) {
   data_->model_matrix_ = model;
 }
 
-// --------------------------------------------------- //
+// ------------------------------------------------------------------------- //
 
 void Suffer::DrawGeometry::SetViewMatrix(mathmorra::Matrix4 view) {
   data_->view_matrix_ = view;
 }
 
-// --------------------------------------------------- //
+// ------------------------------------------------------------------------- //
 
 void Suffer::DrawGeometry::SetProjectionMatrix(mathmorra::Matrix4 projection) {
   data_->projection_matrix_ = projection;
 }
 
-// --------------------------------------------------- //
-
-void Suffer::DrawGeometry::SetGeometry(const ref_ptr<Geometry> geo) {
-  data_->vertex_buffer_ = geo.get()->vertex_buffer_.get();
-  data_->index_buffer_ = geo.get()->index_buffer_.get();
-}
-
-// --------------------------------------------------- //
-
-void Suffer::DrawGeometry::SetMaterial(const ref_ptr<MaterialInstance> mat) {
-
-  data_->internal_material_id_ = (u32)mat->params_type_;
-
-  // Common attributtes
-  float* values = mat->GetColor();
-  memcpy(data_->color_, values, sizeof(float) * 4);
-  data_->albedo_texture_id_ = mat->GetAlbedoTexture();
-
-  switch (mat->params_type_) {
-  case MaterialInstance::ParamsType::kParams_Default:
-    //Specific parameters for default
-    break;
-  case MaterialInstance::ParamsType::kParams_Phong:
-    // Specific parameters for phong
-    break;
-  case MaterialInstance::ParamsType::kParams_NONE:
-#ifdef ASSERT
-    assert(mat->params_type_ != MaterialInstance::kParams_NONE && "MaterialInstance type not set");
-#endif
-    break;
-  default:
-    break;
-  }
-
-}
-
-// --------------------------------------------------- //
+// ------------------------------------------------------------------------- //
 
 void Suffer::DrawGeometry::Execute() const {
 
@@ -134,9 +144,8 @@ void Suffer::DrawGeometry::Execute() const {
 
   {
 
-#ifdef ASSERT
     assert(data_->vertex_buffer_ != nullptr);
-#endif
+
     if (data_->vertex_buffer_->id_ < 0) return;
 
     s32 id_vertex = data_->vertex_buffer_->id_;
@@ -144,16 +153,7 @@ void Suffer::DrawGeometry::Execute() const {
     if (suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].gpu_version_ == 0) {
       glGenBuffers(1, &suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
       error = glGetError();
-      glBindBuffer(GL_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
-      error = glGetError();
 
-      glBufferData(GL_ARRAY_BUFFER,
-        suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].data_.sizeInBytes(),
-        suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].data_.get(),
-        GL_STATIC_DRAW);
-      error = glGetError();
-
-      suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].gpu_version_ = suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].version_;
     }
 
     if (suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].gpu_version_ < suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].version_) {
@@ -179,22 +179,14 @@ void Suffer::DrawGeometry::Execute() const {
 
   {
   
-#ifdef ASSERT
     assert(data_->index_buffer_ != nullptr);
-#endif
+
     if (data_->index_buffer_->id_ < 0) return;
     s32 id_index = data_->index_buffer_->id_;
     if (suffer.resource_manager_.data_->internal_index_buffers_[id_index].gpu_version_ == 0) {
       glGenBuffers(1, &suffer.resource_manager_.data_->internal_index_buffers_[id_index].current_gl_buffer_);
       error = glGetError();
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_index_buffers_[id_index].current_gl_buffer_);
-      error = glGetError();
-
-      glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-        suffer.resource_manager_.data_->internal_index_buffers_[id_index].data_.sizeInBytes(),
-        suffer.resource_manager_.data_->internal_index_buffers_[id_index].data_.get(),
-        GL_STATIC_DRAW);
-      error = glGetError();
+    
     }
 
     if (suffer.resource_manager_.data_->internal_index_buffers_[id_index].gpu_version_ < suffer.resource_manager_.data_->internal_index_buffers_[id_index].version_) {
@@ -206,9 +198,10 @@ void Suffer::DrawGeometry::Execute() const {
         suffer.resource_manager_.data_->internal_index_buffers_[id_index].data_.get(),
         GL_STATIC_DRAW);
       error = glGetError();
-    }
 
-    suffer.resource_manager_.data_->internal_index_buffers_[id_index].gpu_version_ = suffer.resource_manager_.data_->internal_index_buffers_[id_index].version_;
+      suffer.resource_manager_.data_->internal_index_buffers_[id_index].gpu_version_ = suffer.resource_manager_.data_->internal_index_buffers_[id_index].version_;
+
+    }
 
   }
 
@@ -222,6 +215,7 @@ void Suffer::DrawGeometry::Execute() const {
   
     if (data_->albedo_texture_id_ < 0) return;
     s32 id_texture = data_->albedo_texture_id_;
+
     if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ == 0) {
       glGenTextures(1, &suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
       error = glGetError();
@@ -238,8 +232,15 @@ void Suffer::DrawGeometry::Execute() const {
       error = glGetError();
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       error = glGetError();
+    
+    }
 
-      switch (suffer.resource_manager_.data_->internal_textures_[id_texture].number_channels_){
+    if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ < suffer.resource_manager_.data_->internal_textures_[id_texture].version_) {
+      
+      glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
+      error = glGetError();
+
+      switch (suffer.resource_manager_.data_->internal_textures_[id_texture].number_channels_) {
       case 3:
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
           suffer.resource_manager_.data_->internal_textures_[id_texture].width_,
@@ -259,25 +260,6 @@ void Suffer::DrawGeometry::Execute() const {
       default:
         break;
       }
-
-      
-      glGenerateMipmap(GL_TEXTURE_2D);
-      error = glGetError();
-
-      suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ = suffer.resource_manager_.data_->internal_textures_[id_texture].version_;
-    }
-
-    if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ < suffer.resource_manager_.data_->internal_textures_[id_texture].version_) {
-      
-      glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
-      error = glGetError();
-
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
-        suffer.resource_manager_.data_->internal_textures_[id_texture].width_,
-        suffer.resource_manager_.data_->internal_textures_[id_texture].height_,
-        0, GL_RGB, GL_UNSIGNED_BYTE,
-        suffer.resource_manager_.data_->internal_textures_[id_texture].data_.get());
-      error = glGetError();
 
       glGenerateMipmap(GL_TEXTURE_2D);
       error = glGetError();

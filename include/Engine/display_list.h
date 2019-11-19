@@ -16,7 +16,7 @@
 namespace Suffer {
 
   /**
-    * @brief:
+    * @brief: List of commands to allow execution from different threads
     */
 class DisplayList : public Referenced {
 	friend class RenderManager;
@@ -24,7 +24,7 @@ class DisplayList : public Referenced {
 
 public:
   /**
-    * @brief:
+    * @brief: Identifies for what its going to be used this DisplayList
     */
 	enum DisplayListType {
 		kDisplayListType_Render = 0,
@@ -40,44 +40,38 @@ public:
 	DisplayList(const DisplayList&) = delete;
 
   /**
-    * @brief:
+    * @brief: rvalue constructor to allow std::move semantics
     */
 	DisplayList(DisplayList&& d)
 		: dl_commands_(std::move(d.dl_commands_)) {
 		dl_type_ = std::move(d.dl_type_);
 	}
+
   /**
-    * @brief:
+    * @brief: rvalue operator= to allow std::semantics
     */
 	DisplayList& operator=(DisplayList&& d);
 	
 	// DL Functions
   /**
-    * @brief:
+    * @brief: leaves the DisplayList like if was created right now
     */
 	void reset();
   /**
-    * @brief:
+    * @brief: removes all the content from the DisplayList
     */
 	void clear();
   /**
-    * @return:
+    * @return: return number of commands that DisplayList has currently
     */
 	u32 size();
 
-  /**
-    * @brief:
-    * @param:
-    */
 	void SetDisplayListType(DisplayListType dl_type);
-  /**
-    * @return:
-    */
 	DisplayListType GetDisplayListType();
 
   /**
-    * @brief:
-    * @param:
+    * @brief: Add a new command at the last position of the DisplayList
+    * @param: command to add
     */
 	void addCommand(const ref_ptr<Command> cmd);
 

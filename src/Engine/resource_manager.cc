@@ -47,10 +47,8 @@ void Suffer::ResourceManager::ShutDown() {
 
 void Suffer::ResourceManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer, Array<float> *data) {
 
-#ifdef ASSERT
   assert(buffer.get() != nullptr && "Buffer is NULL!");
   assert(buffer.get()->format_ != VertexBuffer::kVertexFormat_Invalid && "Vertex format is INVALID!");
-#endif
 
   data_->internal_vertex_buffers_[buffer->id_].data_.copy(*data);
   data_->internal_vertex_buffers_[buffer->id_].version_++;
@@ -62,11 +60,10 @@ void Suffer::ResourceManager::UploadVertexData(const ref_ptr<VertexBuffer> buffe
 
 void Suffer::ResourceManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer, float* data, u32 size) {
 
-#ifdef ASSERT
   assert(buffer.get() != nullptr && "Buffer is NULL!");
   assert(data != nullptr && "Data is NULL!");
   assert(buffer.get()->format_ != VertexBuffer::kVertexFormat_Invalid && "Vertex format is INVALID!");
-#endif
+
 
   Array<float> vertices_;
   vertices_.alloc(size);
@@ -83,9 +80,8 @@ void Suffer::ResourceManager::UploadVertexData(const ref_ptr<VertexBuffer> buffe
 
 void Suffer::ResourceManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, Array<u16> *data) {
 
-#ifdef ASSERT
   assert(buffer.get() != nullptr && "Buffer is NULL!");
-#endif
+
   data_->internal_index_buffers_[buffer->id_].data_.copy(*data);
   data_->internal_index_buffers_[buffer->id_].version_++;
   data_->internal_index_buffers_[buffer->id_].id_handle_ = buffer->id_;
@@ -96,10 +92,8 @@ void Suffer::ResourceManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer,
 
 void Suffer::ResourceManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, u16* data, u32 size) {
 
-#ifdef ASSERT
   assert(buffer.get() != nullptr && "Buffer is NULL!");
   assert(data != nullptr && "Data is NULL!");
-#endif
 
   Array<u16> indices_;
   indices_.alloc(size);
@@ -117,10 +111,8 @@ void Suffer::ResourceManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer,
 
 void Suffer::ResourceManager::LoadTextureData(const ref_ptr<Texture> texture, const char * file){
 
-#ifdef ASSERT
   assert(texture.get() != nullptr && "Texture is NULL!");
   assert(file != nullptr && "File is NULL!");
-#endif
 
   unsigned char* data = stbi_load(file,
     (int*)&data_->internal_textures_[texture->id_].width_,
