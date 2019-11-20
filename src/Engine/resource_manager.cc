@@ -45,12 +45,54 @@ void Suffer::ResourceManager::ShutDown() {
 
 // ------------------------------------------------------------------------- //
 
-void Suffer::ResourceManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer, Array<float> *data) {
+void Suffer::ResourceManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer, VertexBuffer::Vertex* data, u32 size) {
 
   assert(buffer.get() != nullptr && "Buffer is NULL!");
   assert(buffer.get()->format_ != VertexBuffer::kVertexFormat_Invalid && "Vertex format is INVALID!");
 
-  data_->internal_vertex_buffers_[buffer->id_].data_.copy(*data);
+  switch (buffer.get()->format_){
+  case VertexBuffer::kVertexFormat_3P:
+    data_->internal_vertex_buffers_[buffer->id_].data_.alloc(size * 3);
+    //Set contiguous memory
+    for (u32 i = 0; i < size; ++i) {
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 3) + 0] = data[i].vertices_.x_;
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 3) + 1] = data[i].vertices_.y_;
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 3) + 2] = data[i].vertices_.z_;
+    }
+    break;
+  case VertexBuffer::kVertexFormat_3P_3N:
+    data_->internal_vertex_buffers_[buffer->id_].data_.alloc(size * 6);
+    //Set contiguous memory
+    for (u32 i = 0; i < size; ++i) {
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 6) + 0] = data[i].vertices_.x_;
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 6) + 1] = data[i].vertices_.y_;
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 6) + 2] = data[i].vertices_.z_;
+      
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 6) + 3] = data[i].normals_.x_;
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 6) + 4] = data[i].normals_.y_;
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 6) + 5] = data[i].normals_.z_;
+    }
+    break;
+  case VertexBuffer::kVertexFormat_3P_3N_2UV:
+    data_->internal_vertex_buffers_[buffer->id_].data_.alloc(size * 8);
+    //Set contiguous memory
+    for (u32 i = 0; i < size; ++i) {
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 8) + 0] = data[i].vertices_.x_;
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 8) + 1] = data[i].vertices_.y_;
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 8) + 2] = data[i].vertices_.z_;
+
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 8) + 3] = data[i].normals_.x_;
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 8) + 4] = data[i].normals_.y_;
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 8) + 5] = data[i].normals_.z_;
+
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 8) + 6] = data[i].uvs_.x_;
+      data_->internal_vertex_buffers_[buffer->id_].data_[(i * 8) + 7] = data[i].uvs_.y_;
+    }
+    break;
+  default:
+    break;
+  }
+
   data_->internal_vertex_buffers_[buffer->id_].version_++;
   data_->internal_vertex_buffers_[buffer->id_].id_handle_ = buffer->id_;
 
@@ -78,11 +120,19 @@ void Suffer::ResourceManager::UploadVertexData(const ref_ptr<VertexBuffer> buffe
 
 // ------------------------------------------------------------------------- //
 
-void Suffer::ResourceManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, Array<u16> *data) {
+void Suffer::ResourceManager::UploadIndexData(const ref_ptr<IndexBuffer> buffer, IndexBuffer::Triangle* data, u32 size) {
 
   assert(buffer.get() != nullptr && "Buffer is NULL!");
+  assert(data != nullptr && "Data is NULL!");
 
-  data_->internal_index_buffers_[buffer->id_].data_.copy(*data);
+  data_->internal_index_buffers_[buffer->id_].data_.alloc(size * 3);
+  //Set contiguous memory
+  for (u32 i = 0; i < size; ++i) {
+    data_->internal_index_buffers_[buffer->id_].data_[(i * 3) + 0] = data[i].indices_[0];
+    data_->internal_index_buffers_[buffer->id_].data_[(i * 3) + 1] = data[i].indices_[1];
+    data_->internal_index_buffers_[buffer->id_].data_[(i * 3) + 2] = data[i].indices_[2];
+  }
+
   data_->internal_index_buffers_[buffer->id_].version_++;
   data_->internal_index_buffers_[buffer->id_].id_handle_ = buffer->id_;
 
@@ -373,4 +423,39 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
 
 // ------------------------------------------------------------------------- //
 
+Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(float vertex_x, float vertex_y, float vertex_z){
 
+  vertices_ = mathmorra::Vector3(vertex_x, vertex_y, vertex_z);
+
+}
+
+// ------------------------------------------------------------------------- //
+
+Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(float vertex_x, float vertex_y, float vertex_z, float normal_x, float normal_y, float normal_z){
+
+  vertices_ = mathmorra::Vector3(vertex_x, vertex_y, vertex_z);
+  normals_ = mathmorra::Vector3(normal_x, normal_y, normal_z);
+
+}
+
+// ------------------------------------------------------------------------- //
+
+Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(float vertex_x, float vertex_y, float vertex_z, float normal_x, float normal_y, float normal_z, float uv_x, float uv_y){
+
+  vertices_ = mathmorra::Vector3(vertex_x, vertex_y, vertex_z);
+  normals_ = mathmorra::Vector3(normal_x, normal_y, normal_z);
+  uvs_ = mathmorra::Vector2(uv_x, uv_y);
+
+}
+
+// ------------------------------------------------------------------------- //
+
+Suffer::ResourceManager::IndexBuffer::Triangle::Triangle(u16 index1, u16 index2, u16 index3){
+
+  indices_[0] = index1;
+  indices_[1] = index2;
+  indices_[2] = index3;
+
+}
+
+// ------------------------------------------------------------------------- //

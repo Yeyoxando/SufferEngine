@@ -8,6 +8,9 @@
 #include "common_definitions.h"
 #include "draw_geometry.h"
 
+#define vertex_buffer ResourceManager::VertexBuffer
+#define index_buffer ResourceManager::IndexBuffer
+
 // --------------------------------------------------- //
 
 Suffer::Scene::Scene(){
@@ -30,58 +33,64 @@ Suffer::Scene::~Scene(){
 
 void Suffer::Scene::Init() {
 
-  ref_ptr<Suffer::ResourceManager::VertexBuffer> vert_buff_;
-  ref_ptr<Suffer::ResourceManager::IndexBuffer> ind_buff_;
+  ref_ptr<vertex_buffer> vert_buff_;
+  ref_ptr<index_buffer> ind_buff_;
   vert_buff_.alloc();
-  vert_buff_->format_ = Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
+  vert_buff_->format_ = vertex_buffer::kVertexFormat_3P_3N_2UV;
   ind_buff_.alloc();
 
-	float vertices[] = {
-    //Vertex                  //Normals              //Uvs
-       //Face1
-       1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 1.0f,// 0
-       1.0f, -1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 0.0f,// 1
-       1.0f, -1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 0.0f,// 2
-       1.0f,  1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 1.0f,// 3
-      //Face2                                    
-      -1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     0.0f, 1.0f,// 4
-      -1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     0.0f, 0.0f,// 5
-       1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 0.0f,// 6
-       1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 1.0f,// 7
-      //Face3
-      -1.0f,  1.0f,  1.0f,    -1.0f,  0.0f,  0.0f,    0.0f, 1.0f,// 8
-      -1.0f, -1.0f,  1.0f,    -1.0f,  0.0f,  0.0f,    0.0f, 0.0f,// 9
-      -1.0f, -1.0f, -1.0f,    -1.0f,  0.0f,  0.0f,    1.0f, 0.0f,// 10
-      -1.0f,  1.0f, -1.0f,    -1.0f,  0.0f,  0.0f,    1.0f, 1.0f,// 11
-      //Face4
-      -1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     0.0f, 1.0f,// 12
-      -1.0f, -1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     0.0f, 0.0f,// 13
-       1.0f, -1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 0.0f,// 14
-       1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 1.0f,// 15
-      //Face5
-      -1.0f,  1.0f, -1.0f,    0.0f,  1.0f,  0.0f,     0.0f, 1.0f,// 16
-      -1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,     0.0f, 0.0f,// 17
-       1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 0.0f,// 18
-       1.0f,  1.0f, -1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 1.0f,// 19
-      //Face6
-      -1.0f, -1.0f, -1.0f,    0.0f, -1.0f,  0.0f,     0.0f, 1.0f,// 20
-      -1.0f, -1.0f,  1.0f,    0.0f, -1.0f,  0.0f,     0.0f, 0.0f,// 21
-       1.0f, -1.0f,  1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 0.0f,// 22
-       1.0f, -1.0f, -1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 1.0f,// 23
+  vertex_buffer::Vertex vertices[] = {
+                            //Vertex               //Normals              //Uvs
+      //Face1 
+      vertex_buffer::Vertex(1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 1.0f),// 0  
+      vertex_buffer::Vertex(1.0f, -1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 0.0f),// 1
+      vertex_buffer::Vertex(1.0f, -1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 0.0f),// 2
+      vertex_buffer::Vertex(1.0f,  1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 1.0f),// 3
+      //Face2                                                                        
+      vertex_buffer::Vertex(-1.0f,  1.0f, -1.0f,   0.0f,  0.0f, -1.0f,     0.0f, 1.0f),// 4
+      vertex_buffer::Vertex(-1.0f, -1.0f, -1.0f,   0.0f,  0.0f, -1.0f,     0.0f, 0.0f),// 5
+      vertex_buffer::Vertex(1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 0.0f),// 6
+      vertex_buffer::Vertex(1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 1.0f),// 7
+      //Face3                                                                       
+      vertex_buffer::Vertex(-1.0f,  1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,     0.0f, 1.0f),// 8
+      vertex_buffer::Vertex(-1.0f, -1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,     0.0f, 0.0f),// 9
+      vertex_buffer::Vertex(-1.0f, -1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,     1.0f, 0.0f),// 10
+      vertex_buffer::Vertex(-1.0f,  1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,     1.0f, 1.0f),// 11
+      //Face4                                                                        
+      vertex_buffer::Vertex(-1.0f,  1.0f,  1.0f,   0.0f,  0.0f,  1.0f,     0.0f, 1.0f),// 12
+      vertex_buffer::Vertex(-1.0f, -1.0f,  1.0f,   0.0f,  0.0f,  1.0f,     0.0f, 0.0f),// 13
+      vertex_buffer::Vertex(1.0f, -1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 0.0f),// 14
+      vertex_buffer::Vertex(1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 1.0f),// 15
+      //Face5                                                                       
+      vertex_buffer::Vertex(-1.0f,  1.0f, -1.0f,   0.0f,  1.0f,  0.0f,     0.0f, 1.0f),// 16
+      vertex_buffer::Vertex(-1.0f,  1.0f,  1.0f,   0.0f,  1.0f,  0.0f,     0.0f, 0.0f),// 17
+      vertex_buffer::Vertex(1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 0.0f),// 18
+      vertex_buffer::Vertex(1.0f,  1.0f, -1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 1.0f),// 19
+      //Face6                                                                       
+      vertex_buffer::Vertex(-1.0f, -1.0f, -1.0f,   0.0f, -1.0f,  0.0f,     0.0f, 1.0f),// 20
+      vertex_buffer::Vertex(-1.0f, -1.0f,  1.0f,   0.0f, -1.0f,  0.0f,     0.0f, 0.0f),// 21
+      vertex_buffer::Vertex(1.0f, -1.0f,  1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 0.0f),// 22
+      vertex_buffer::Vertex(1.0f, -1.0f, -1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 1.0f),// 23
 
 	};
 
-  u16 indices[]{ 			
-         0,  1,  2,  2,  3,  0,
-         6,  5,  4,  4,  7,  6,
-        10,  9,  8,  8, 11, 10,
-        12, 13, 14, 14, 15, 12,
-        16, 17, 18, 18, 19, 16,
-        22, 21, 20, 20, 23, 22
+  index_buffer::Triangle indices[]{
+    // Face 1
+    index_buffer::Triangle(0,  1,  2),  index_buffer::Triangle(2,  3,  0),
+    // Face 2
+    index_buffer::Triangle(6,  5,  4),  index_buffer::Triangle(4,  7,  6),
+    // Face 3
+    index_buffer::Triangle(10,  9,  8), index_buffer::Triangle(8, 11, 10),
+    // Face 4
+    index_buffer::Triangle(12, 13, 14), index_buffer::Triangle(14, 15, 12),
+    // Face 5
+    index_buffer::Triangle(16, 17, 18), index_buffer::Triangle(18, 19, 16),
+    // Face 6
+    index_buffer::Triangle(22, 21, 20), index_buffer::Triangle(20, 23, 22),
   };
 
-	suffer.resource_manager_.UploadVertexData(vert_buff_, vertices, 192);
-  suffer.resource_manager_.UploadIndexData(ind_buff_, indices, 36);
+	suffer.resource_manager_.UploadVertexData(vert_buff_, vertices, 24);
+  suffer.resource_manager_.UploadIndexData(ind_buff_, indices, 12);
 
 	ref_ptr<Geometry> geometry;
 	geometry.alloc();

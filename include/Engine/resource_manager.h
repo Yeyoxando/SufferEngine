@@ -73,9 +73,12 @@ namespace Suffer {
       */
       struct Vertex {
         Vertex() {}
-        Vertex(mathmorra::Vector3 vertex) {}
-        Vertex(mathmorra::Vector3 vertex, mathmorra::Vector3 normal) {}
-        Vertex(mathmorra::Vector3 vertex, mathmorra::Vector3 normal, mathmorra::Vector2 uv) {}
+        Vertex(float vertex_x, float vertex_y, float vertex_z);
+        Vertex(float vertex_x, float vertex_y, float vertex_z,
+          float normal_x, float normal_y, float normal_z);
+        Vertex(float vertex_x, float vertex_y, float vertex_z, 
+          float normal_x, float normal_y, float normal_z, 
+          float uv_x, float uv_y);
         ~Vertex() {}
 
         mathmorra::Vector3 vertices_;
@@ -95,8 +98,9 @@ namespace Suffer {
        * @brief:
        * @param:
        * @param:
+       * @param:
        */
-    void UploadVertexData(const ref_ptr<VertexBuffer> buffer, Array<float> *data);
+    void UploadVertexData(const ref_ptr<VertexBuffer> buffer, VertexBuffer::Vertex* data, u32 size);
 
     /**
        * @brief:
@@ -125,7 +129,7 @@ namespace Suffer {
       */
       struct Triangle {
         Triangle() {}
-        Triangle(u16 indices[3]) {}
+        Triangle(u16 index1, u16 index2, u16 index3);
         ~Triangle() {}
 
         u16 indices_[3];
@@ -139,7 +143,7 @@ namespace Suffer {
        * @param:
        * @param:
        */
-    void UploadIndexData(const ref_ptr<IndexBuffer> buffer, Array<u16> *data);
+    void UploadIndexData(const ref_ptr<IndexBuffer> buffer, IndexBuffer::Triangle* data, u32 size);
 
     /**
        * @brief:
