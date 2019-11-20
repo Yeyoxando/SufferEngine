@@ -175,9 +175,33 @@ Suffer::ResourceManager::IndexBuffer::IndexBuffer() {
 // ------------------------------------------------------------------------- //
 
 Suffer::ResourceManager::Texture::Texture(){
+
   type_ = GPUResource::kTexture;
   id_ = suffer.resource_manager_.data_->number_of_textures_;
   suffer.resource_manager_.data_->number_of_textures_++;
+  suffer.resource_manager_.data_->internal_textures_[id_].wrap_s_ = kTextureWrap_Repeat;
+  suffer.resource_manager_.data_->internal_textures_[id_].wrap_t_ = kTextureWrap_Repeat;
+  suffer.resource_manager_.data_->internal_textures_[id_].min_filter_ = kTextureFilter_Linear;
+  suffer.resource_manager_.data_->internal_textures_[id_].mag_filter_ = kTextureFilter_Linear;
+
+}
+
+// ------------------------------------------------------------------------- //
+
+void Suffer::ResourceManager::Texture::SetTextureWrap(TextureWrap wrap_s, TextureWrap wrap_t) {
+
+  suffer.resource_manager_.data_->internal_textures_[id_].wrap_s_ = wrap_s;
+  suffer.resource_manager_.data_->internal_textures_[id_].wrap_t_ = wrap_t;
+
+}
+
+// ------------------------------------------------------------------------- //
+
+void Suffer::ResourceManager::Texture::SetTextureFilter(TextureFilter min_filter, TextureFilter mag_filter) {
+
+  suffer.resource_manager_.data_->internal_textures_[id_].min_filter_ = min_filter;
+  suffer.resource_manager_.data_->internal_textures_[id_].mag_filter_ = mag_filter;
+
 }
 
 // ------------------------------------------------------------------------- //

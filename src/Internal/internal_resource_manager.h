@@ -49,6 +49,10 @@ struct Suffer::ResourceManager::ResourceData {
     u32 width_;
     u32 height_;
     u32 number_channels_;
+    Texture::TextureWrap wrap_s_;
+    Texture::TextureWrap wrap_t_;
+    Texture::TextureFilter min_filter_;
+    Texture::TextureFilter mag_filter_;
     GLuint current_texture_id_;
 
   };

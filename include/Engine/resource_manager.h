@@ -163,6 +163,20 @@ namespace Suffer {
       Texture();
       ~Texture() {};
 
+      enum TextureWrap {
+        kTextureWrap_Repeat = 0,
+        kTextureWrap_MirroredRepeat,
+        kTextureWrap_ClampToEdge,
+      };
+
+      enum TextureFilter {
+        kTextureFilter_Linear = 0,
+        kTextureFilter_Nearest,
+      };
+
+      void SetTextureWrap(TextureWrap wrap_s, TextureWrap wrap_t);
+      void SetTextureFilter(TextureFilter min_filter, TextureFilter mag_filter);
+
     };
     
 

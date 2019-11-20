@@ -41,7 +41,7 @@ namespace Suffer {
     /**
        * @return: color of the object
        */
-    float* GetColor() const;
+    mathmorra::Vector4 GetColor() const;
     /**
        * @return: albedo texture id 
        */

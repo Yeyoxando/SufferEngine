@@ -7,7 +7,7 @@
 #include <draw_geometry.h>
 #include <gl/glew.h>
 #include <data_types.h>
-#include <glm.hpp>
+#include "vector4.h"
 #include "suffermanager.h"
 #include "internal_resource_manager.h"
 #include "common_definitions.h"
@@ -33,10 +33,6 @@ struct Suffer::DrawGeometry::Data {
 
   };
 
-  //Common parameters
-  float color_[4];
-  u32 albedo_texture_id_;
-
   union Params {
 
     DefaultParams default_params_;
@@ -45,6 +41,10 @@ struct Suffer::DrawGeometry::Data {
   };
 
   u32 internal_material_id_;
+
+  //Common parameters
+  float color_[4];
+  u32 albedo_texture_id_;
   Params material_params_;
 
 };
@@ -92,7 +92,8 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
     data_->internal_material_id_ = (u32)go->GetMaterial()->params_type_;
 
     // Common attributtes
-    float* values = go->GetMaterial()->GetColor();
+    mathmorra::Vector4 aux_color = go->GetMaterial()->GetColor();
+    float values[4] = { aux_color.x_, aux_color.y_, aux_color.z_, aux_color.w_ };
     memcpy(data_->color_, values, sizeof(float) * 4);
     data_->albedo_texture_id_ = go->GetMaterial()->GetAlbedoTexture();
 
@@ -219,27 +220,71 @@ void Suffer::DrawGeometry::Execute() const {
     if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ == 0) {
       glGenTextures(1, &suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
       error = glGetError();
-
-      glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
-      error = glGetError();
-
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-      error = glGetError();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-      error = glGetError();
-
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      error = glGetError();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      error = glGetError();
-    
     }
 
     if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ < suffer.resource_manager_.data_->internal_textures_[id_texture].version_) {
-      
       glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
       error = glGetError();
 
+      // WRAP S
+      switch (suffer.resource_manager_.data_->internal_textures_[id_texture].wrap_s_) {
+      case ResourceManager::Texture::kTextureWrap_Repeat:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        break;
+      case ResourceManager::Texture::kTextureWrap_MirroredRepeat:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+        break;
+      case ResourceManager::Texture::kTextureWrap_ClampToEdge:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        break;
+      default:
+        break;
+      }
+      error = glGetError();
+
+      // WRAP T
+      switch (suffer.resource_manager_.data_->internal_textures_[id_texture].wrap_t_) {
+      case ResourceManager::Texture::kTextureWrap_Repeat:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        break;
+      case ResourceManager::Texture::kTextureWrap_MirroredRepeat:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+        break;
+      case ResourceManager::Texture::kTextureWrap_ClampToEdge:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        break;
+      default:
+        break;
+      }
+      error = glGetError();
+
+      // MIN FILTER
+      switch (suffer.resource_manager_.data_->internal_textures_[id_texture].min_filter_) {
+      case ResourceManager::Texture::kTextureFilter_Linear:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        break;
+      case ResourceManager::Texture::kTextureFilter_Nearest:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        break;
+      default:
+        break;
+      }
+      error = glGetError();
+
+      // MAG FILTER
+      switch (suffer.resource_manager_.data_->internal_textures_[id_texture].mag_filter_) {
+      case ResourceManager::Texture::kTextureFilter_Linear:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        break;
+      case ResourceManager::Texture::kTextureFilter_Nearest:
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        break;
+      default:
+        break;
+      }
+      error = glGetError();
+
+      // UPLOAD DATA DEPENDING ON NUMBER CHANNELS
       switch (suffer.resource_manager_.data_->internal_textures_[id_texture].number_channels_) {
       case 3:
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
@@ -258,6 +303,7 @@ void Suffer::DrawGeometry::Execute() const {
         error = glGetError();
         break;
       default:
+        assert(1 && "\n Not contemplated number of channels.");
         break;
       }
 

@@ -15,9 +15,9 @@ struct Suffer::MaterialInstance::Data {
 
 // --------------------------------------------------- //
 
-float* Suffer::MaterialInstance::GetColor() const{
+mathmorra::Vector4 Suffer::MaterialInstance::GetColor() const{
 
-  return data_->color_.GetValues();
+  return data_->color_;
 
 }
 

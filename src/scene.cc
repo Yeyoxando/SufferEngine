@@ -89,6 +89,8 @@ void Suffer::Scene::Init() {
 	
   ref_ptr < ResourceManager::Texture> albedo_texture;
   albedo_texture.alloc();
+  albedo_texture->SetTextureFilter(ResourceManager::Texture::kTextureFilter_Nearest, ResourceManager::Texture::kTextureFilter_Nearest);
+  albedo_texture->SetTextureWrap(ResourceManager::Texture::kTextureWrap_ClampToEdge, ResourceManager::Texture::kTextureWrap_ClampToEdge);
   suffer.resource_manager_.LoadTextureData(albedo_texture, "../../../resources/images/box.jpg");
 	
 	ref_ptr<MaterialInstance> material;
