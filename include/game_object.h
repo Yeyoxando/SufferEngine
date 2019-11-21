@@ -78,6 +78,8 @@ namespace Suffer {
     void Rotate(float x, float y, float z);
     void Translate(float x, float y, float z);
     void Translate(mathmorra::Vector3 position);
+    void Scale(mathmorra::Vector3 scale);
+    void Scale(float x, float y, float z);
 
     const char* Name();
     void SetName(const char* name);

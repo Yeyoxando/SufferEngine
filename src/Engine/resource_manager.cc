@@ -314,6 +314,8 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
       internal_index_buffers_[number_of_index_buffers_].version_++;
       internal_vertex_buffers_[number_of_vertex_buffers_].version_++;
 
+      internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
+
       internal_index_buffers_[number_of_index_buffers_].id_handle_ = 0;
       internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 0;
 
@@ -323,8 +325,42 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
   // QUAD
   {
+      float quad[] = {
+          // Positions             Normals            UV's
+          0.5f, -0.5f, -1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
+          0.5f,  0.5f, -1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+         -0.5f,  0.5f, -1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+         -0.5f, -0.5f, -1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
+      };
+
+      Array<u16> quad_indices;
+      quad_indices.alloc(6);
+      quad_indices[0] = { 0 };
+      quad_indices[1] = { 1 };
+      quad_indices[2] = { 2 };
+      quad_indices[3] = { 0 };
+      quad_indices[4] = { 2 };
+      quad_indices[5] = { 3 };
+
+      Array<float> vertices_;
+      vertices_.alloc(sizeof(quad) / sizeof(float));
+      for (u32 i = 0; i < 32; ++i) {
+          vertices_[i] = quad[i];
+      }
+
+      internal_index_buffers_[number_of_index_buffers_].data_.copy(quad_indices);
+      internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(vertices_);
+
+      internal_index_buffers_[number_of_index_buffers_].version_++;
+      internal_vertex_buffers_[number_of_vertex_buffers_].version_++;
+
+      internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
+
       internal_index_buffers_[number_of_index_buffers_].id_handle_ = 1;
       internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 1;
+
+      ++number_of_index_buffers_;
+      ++number_of_vertex_buffers_;
 
   }
 
@@ -332,36 +368,35 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
   {
 
       float cube[] = {
-             //Vertex                Normals               UV's
-         1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 1.0f,
-         1.0f, -1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 0.0f,
-         1.0f, -1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 0.0f,
-         1.0f,  1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 1.0f,
-
+        1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 1.0f,
+        1.0f, -1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 0.0f,
+        1.0f, -1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 0.0f,
+        1.0f,  1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 1.0f,
+                                                                 
         -1.0f,  1.0f, -1.0f,   0.0f,  0.0f, -1.0f,     0.0f, 1.0f,
         -1.0f, -1.0f, -1.0f,   0.0f,  0.0f, -1.0f,     0.0f, 0.0f,
-         1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 0.0f,
-         1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 1.0f,
-
+        1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 0.0f,
+        1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 1.0f,
+                                                                 
         -1.0f,  1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,     0.0f, 1.0f,
         -1.0f, -1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,     0.0f, 0.0f,
         -1.0f, -1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,     1.0f, 0.0f,
         -1.0f,  1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,     1.0f, 1.0f,
-
+                                                                 
         -1.0f,  1.0f,  1.0f,   0.0f,  0.0f,  1.0f,     0.0f, 1.0f,
         -1.0f, -1.0f,  1.0f,   0.0f,  0.0f,  1.0f,     0.0f, 0.0f,
-         1.0f, -1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 0.0f,
-         1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 1.0f,
-
+        1.0f, -1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 0.0f,
+        1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 1.0f,
+                                                                 
         -1.0f,  1.0f, -1.0f,   0.0f,  1.0f,  0.0f,     0.0f, 1.0f,
         -1.0f,  1.0f,  1.0f,   0.0f,  1.0f,  0.0f,     0.0f, 0.0f,
-         1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 0.0f,
-         1.0f,  1.0f, -1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 1.0f,
-
+        1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 0.0f,
+        1.0f,  1.0f, -1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 1.0f,
+                                                                 
         -1.0f, -1.0f, -1.0f,   0.0f, -1.0f,  0.0f,     0.0f, 1.0f,
         -1.0f, -1.0f,  1.0f,   0.0f, -1.0f,  0.0f,     0.0f, 0.0f,
-         1.0f, -1.0f,  1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 0.0f,
-         1.0f, -1.0f, -1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 1.0f,
+        1.0f, -1.0f,  1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 0.0f,
+        1.0f, -1.0f, -1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 1.0f
 
       };
 
@@ -382,8 +417,8 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
       }
 
       Array<float> vertices_;
-      vertices_.alloc(sizeof(cube) / sizeof(float));
-      for (u32 i = 0; i < 24; ++i) {
+      vertices_.alloc(192);
+      for (u32 i = 0; i < 192; ++i) {
           vertices_[i] = cube[i];
       }
 
@@ -395,6 +430,8 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
       internal_index_buffers_[number_of_index_buffers_].id_handle_ = 2;
       internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 2;
+      
+      internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
 
       ++number_of_index_buffers_;
       ++number_of_vertex_buffers_;
@@ -405,90 +442,88 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
   {
 
 
-      //// SPHERE STUFF
-      //const int number_points = 25, number_revolutions = 25;
+      // SPHERE STUFF
+      const int number_points = 25, number_revolutions = 25;
 
-      //ref_ptr<Suffer::ResourceManager::VertexBuffer> vert_buff_2;
-      //ref_ptr<Suffer::ResourceManager::IndexBuffer> ind_buff_2;
-      //vert_buff_2.alloc();
-      //ind_buff_2.alloc();
+      Array<u16> sphere_indices;
+      Array<mathmorra::Vector3> normals;
+      Array<mathmorra::Vector3> sphere_points;
 
-      //vert_buff_2->SetVertexFormat(ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV);
+      normals.alloc(number_points * number_revolutions);
+      sphere_points.alloc(number_points * number_revolutions);
+      sphere_indices.alloc((number_points - 1) * (number_revolutions - 1) * 6);
 
-      //Array<u16> sphere_indices;
-      //Array<mathmorra::Vector3> normals;
-      //Array<mathmorra::Vector3> sphere_points;
+      int index = 0;
+      int radius = 1.0f;
 
+      vertex_buffer::Vertex sphere_vertices[(number_revolutions * number_points)];
 
+      for (int i = 0; i < number_points; ++i) {
 
-      //normals.alloc(number_points* number_revolutions);
-      //sphere_points.alloc(number_points* number_revolutions);
-      //sphere_indices.alloc((number_points - 1)* (number_revolutions - 1) * 6);
+          float latitude = ThiefUtils::Math::Map(i, 0, number_revolutions - 1, -ThiefUtils::Math::fPI / 2, ThiefUtils::Math::fPI / 2);
 
-      //int index = 0;
-      //int radius = 1.0f;
+          for (int j = 0; j < number_revolutions; ++j) {
 
-      //vertex_buffer::Vertex sphere_vertices[(number_revolutions * number_points)];
+              float longitude = ThiefUtils::Math::Map(j, 0, number_revolutions - 1, -ThiefUtils::Math::fPI, ThiefUtils::Math::fPI);
 
-      //for (int i = 0; i < number_points; ++i) {
+              sphere_points[i * number_revolutions + j].x_ = radius * cos(longitude) * cos(latitude);
+              sphere_points[i * number_revolutions + j].y_ = radius * sin(longitude) * cos(latitude);
+              sphere_points[i * number_revolutions + j].z_ = radius * sin(latitude);
 
-      //    float latitude = ThiefUtils::Math::Map(i, 0, number_revolutions - 1, -ThiefUtils::Math::fPI / 2, ThiefUtils::Math::fPI / 2);
+              normals[i * number_revolutions + j] = sphere_points[i * number_revolutions + j];
+              normals[i * number_revolutions + j].Normalize();
 
-      //    for (int j = 0; j < number_revolutions; ++j) {
+              mathmorra::Vector2 uv;
 
-      //        float longitude = ThiefUtils::Math::Map(j, 0, number_revolutions - 1, -ThiefUtils::Math::fPI, ThiefUtils::Math::fPI);
+              uv.x_ = (float)j / number_revolutions;
+              uv.y_ = (float)i / number_points;
 
-      //        sphere_points[i * number_revolutions + j].x_ = radius * cos(longitude) * cos(latitude);
-      //        sphere_points[i * number_revolutions + j].y_ = radius * sin(longitude) * cos(latitude);
-      //        sphere_points[i * number_revolutions + j].z_ = radius * sin(latitude);
+              sphere_vertices[(i * number_revolutions + j)] = vertex_buffer::Vertex(
+                  sphere_points[i * number_revolutions + j].x_,
+                  sphere_points[i * number_revolutions + j].y_,
+                  sphere_points[i * number_revolutions + j].z_,
+                  normals[i * number_revolutions + j].x_,
+                  normals[i * number_revolutions + j].y_,
+                  normals[i * number_revolutions + j].z_,
+                  uv.x_,
+                  uv.y_);
 
-      //        normals[i * number_revolutions + j] = sphere_points[i * number_revolutions + j];
-      //        normals[i * number_revolutions + j].Normalize();
+          }
 
-      //        mathmorra::Vector2 uv;
-
-      //        uv.x_ = (float)j / number_revolutions;
-      //        uv.y_ = (float)i / number_points;
-
-      //        sphere_vertices[(i * number_revolutions + j)] = vertex_buffer::Vertex(
-      //            sphere_points[i * number_revolutions + j].x_,
-      //            sphere_points[i * number_revolutions + j].y_,
-      //            sphere_points[i * number_revolutions + j].z_,
-      //            normals[i * number_revolutions + j].x_,
-      //            normals[i * number_revolutions + j].y_,
-      //            normals[i * number_revolutions + j].z_,
-      //            uv.x_,
-      //            uv.y_);
-
-      //    }
-
-      //}
+      }
 
 
-      //for (int i = 0; i < number_points - 1; ++i) {
+      for (int i = 0; i < number_points - 1; ++i) {
 
-      //    for (int j = 0; j < number_revolutions - 1; ++j) {
+          for (int j = 0; j < number_revolutions - 1; ++j) {
 
-      //        sphere_indices[index++] = i * number_revolutions + j;
-      //        sphere_indices[index++] = (i + 1) * number_revolutions + j;
-      //        sphere_indices[index++] = i * number_revolutions + j + 1;
+              sphere_indices[index++] = i * number_revolutions + j;
+              sphere_indices[index++] = (i + 1) * number_revolutions + j;
+              sphere_indices[index++] = i * number_revolutions + j + 1;
 
-      //        sphere_indices[index++] = i * number_revolutions + j + 1;
-      //        sphere_indices[index++] = (i + 1) * number_revolutions + j;
-      //        sphere_indices[index++] = (i + 1) * number_revolutions + j + 1;
+              sphere_indices[index++] = i * number_revolutions + j + 1;
+              sphere_indices[index++] = (i + 1) * number_revolutions + j;
+              sphere_indices[index++] = (i + 1) * number_revolutions + j + 1;
 
-      //    }
+          }
 
-      //}
+      }
 
-      ////internal_index_buffers_[number_of_index_buffers_].data_.copy(sphere_indices);
-      ////internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(sphere_points);
 
-      //++number_of_index_buffers_;
-      //++number_of_vertex_buffers_;
 
-      //internal_index_buffers_[number_of_index_buffers_].id_handle_ = 3;
-      //internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 3;
+      internal_index_buffers_[number_of_index_buffers_].data_.copy(sphere_indices);
+      internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(&sphere_vertices[0].vertices_.x_, &sphere_vertices[(number_points * number_revolutions) - 1].vertices_.z_);
+
+      internal_index_buffers_[number_of_index_buffers_].version_++;
+      internal_vertex_buffers_[number_of_vertex_buffers_].version_++;
+
+      internal_index_buffers_[number_of_index_buffers_].id_handle_ = 3;
+      internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 3;
+
+      internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
+
+      ++number_of_index_buffers_;
+      ++number_of_vertex_buffers_;
 
   }
 

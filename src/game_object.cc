@@ -99,8 +99,8 @@ void Suffer::GameObject::AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matr
 
   mathmorra::Matrix4 translation_mat;
   translation_mat = translation_mat.Translate(transform_.position_.x_,
-    transform_.position_.y_,
-    transform_.position_.z_);
+                                              transform_.position_.y_,
+                                              transform_.position_.z_).Transpose();
 
   mathmorra::Matrix4 rotation_mat_x;
   mathmorra::Matrix4 rotation_mat_y;
@@ -117,7 +117,7 @@ void Suffer::GameObject::AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matr
     transform_.scale_.y_,
     transform_.scale_.z_);
 
-  model_matrix = translation_mat * rotation_mat_z * scale_mat;
+  model_matrix = scale_mat * rotation_mat_z * translation_mat;
 
   draw_geometry.get()->SetModelMatrix(model_matrix);
   draw_geometry.get()->SetViewMatrix(view);
@@ -132,6 +132,18 @@ void Suffer::GameObject::AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matr
 void Suffer::GameObject::Translate(mathmorra::Vector3 position){
   transform_.position_ = position;
 }
+
+void Suffer::GameObject::Scale(mathmorra::Vector3 scale){
+    transform_.scale_ = scale;
+}
+
+// --------------------------------------------------- //
+
+void Suffer::GameObject::Scale(float x, float y, float z){
+    transform_.scale_ = { x, y, z };
+}
+
+// --------------------------------------------------- //
 
 const char* Suffer::GameObject::Name(){
     return name_;
