@@ -24,42 +24,15 @@ Suffer::Geometry::Geometry() {
 // --------------------------------------------------- //
 
 void Suffer::Geometry::SetIndexBuffer(ref_ptr<Suffer::ResourceManager::IndexBuffer> buffer){
-	index_buffer_ = buffer.get();
+	index_buffer_id_ = buffer.get()->id_;
 }
 
 // --------------------------------------------------- //
 
 void Suffer::Geometry::CreateGeometryWithShape(BasicShapes shape){
 
-    switch (shape){
-        case Suffer::Geometry::kBasicShapes_Triangle: {
-
-
-        }
-            break;
-        case Suffer::Geometry::kBasicShapes_Quad: {
-
-
-        }
-            break;
-        case Suffer::Geometry::kBasicShapes_Cube: {
-
-
-        }
-            break;
-        case Suffer::Geometry::kBasicShapes_Sphere: {
-
-
-        }
-            break;
-        case Suffer::Geometry::kBasicShapes_NONE: {
-
-
-        }
-            break;
-        default: assert(false);
-            break;
-    }
+   vertex_buffer_id_ = suffer.resource_manager_.data_->internal_vertex_buffers_[shape].id_handle_;
+   index_buffer_id_ = suffer.resource_manager_.data_->internal_index_buffers_[shape].id_handle_;
 
 }
 
@@ -78,14 +51,14 @@ Suffer::Geometry::DrawMode Suffer::Geometry::GetDrawMode(){
 // --------------------------------------------------- //
 
 void Suffer::Geometry::SetVertexBuffer(ref_ptr<Suffer::ResourceManager::VertexBuffer> buffer){
-	vertex_buffer_ = buffer.get();
+	vertex_buffer_id_ = buffer.get()->id_;
 }
 
 // --------------------------------------------------- //
 
 void Suffer::Geometry::SetBuffers(ref_ptr<Suffer::ResourceManager::VertexBuffer> vertex_buffer, ref_ptr<Suffer::ResourceManager::IndexBuffer> index_buffer) {
-	vertex_buffer_ = vertex_buffer.get();
-	index_buffer_ = index_buffer.get();
+	vertex_buffer_id_ = vertex_buffer.get()->id_;
+	index_buffer_id_ = index_buffer.get()->id_;
 }
 
 // --------------------------------------------------- //

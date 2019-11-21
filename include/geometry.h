@@ -36,7 +36,6 @@ namespace Suffer {
       */
 	    enum BasicShapes {
         kBasicShapes_Invalid = -1,
-        kBasicShapes_Custom = 0,
 		    kBasicShapes_Triangle,
 		    kBasicShapes_Quad,
 		    kBasicShapes_Cube,
@@ -83,10 +82,6 @@ namespace Suffer {
 	    BasicShapes shape_;
       s32 index_buffer_id_;
       s32 vertex_buffer_id_;
-
-      ref_ptr<Suffer::ResourceManager::IndexBuffer> index_buffer_;
-      ref_ptr<Suffer::ResourceManager::VertexBuffer> vertex_buffer_;
-
 
 	    // Methods
 	    Geometry(const Geometry&);

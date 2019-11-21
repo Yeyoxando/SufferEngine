@@ -37,7 +37,7 @@ void Suffer::Scene::Init() {
   ref_ptr<vertex_buffer> vert_buff_;
   ref_ptr<index_buffer> ind_buff_;
   vert_buff_.alloc();
-  vert_buff_->format_ = vertex_buffer::kVertexFormat_3P_3N_2UV;
+  vert_buff_->SetVertexFormat(ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV);
   ind_buff_.alloc();
 
   vertex_buffer::Vertex vertices[] = {
@@ -137,7 +137,7 @@ void Suffer::Scene::Init() {
   vert_buff_2.alloc();
   ind_buff_2.alloc();
 
-  vert_buff_2->format_ = Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
+  vert_buff_2->SetVertexFormat(ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV);
 
   Array<u16> sphere_indices;
   Array<mathmorra::Vector3> normals;
@@ -227,14 +227,14 @@ void Suffer::Scene::Init() {
   ref_ptr<GameObject> go2;
   go2.alloc();
   go2->SetGeometry(geometry2);
-  go2->GetGeometry()->SetDrawMode(Geometry::kDrawMode_Triangles);
+  go2->GetGeometry()->SetDrawMode(Geometry::kDrawMode_Lines);
   go2->SetMaterial(material2);
   go2->Translate(mathmorra::Vector3(0.0f, 0.0f, -0.1f));
   go2->SetName("Triangle");
-  //go2->GetGeometry()->CreateGeometryWithShape(Geometry::kBasicShapes_Triangle);
+  go2->GetGeometry()->CreateGeometryWithShape(Geometry::kBasicShapes_Cube);
   
   
-  //AddGameObject(go2);
+  AddGameObject(go2);
 
 }
 

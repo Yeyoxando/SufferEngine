@@ -91,7 +91,7 @@ namespace Suffer {
       VertexBuffer();
       ~VertexBuffer() {};
 
-      VertexFormat format_;
+      void SetVertexFormat(VertexFormat newFormat);
 
     };
 

@@ -16,8 +16,8 @@
 
 struct Suffer::DrawGeometry::Data {
   // Geometry
-  const Suffer::ResourceManager::VertexBuffer* vertex_buffer_;
-  const Suffer::ResourceManager::IndexBuffer* index_buffer_;
+  s32 vertex_buffer_id_;
+  s32 index_buffer_id_;
   GLenum draw_mode_;
 
 
@@ -78,8 +78,8 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
 
   {
   
-    data_->vertex_buffer_ = go->GetGeometry()->vertex_buffer_.get();
-    data_->index_buffer_ = go->GetGeometry()->index_buffer_.get();
+    data_->vertex_buffer_id_ = go->GetGeometry()->vertex_buffer_id_;
+    data_->index_buffer_id_ = go->GetGeometry()->index_buffer_id_;
     Suffer::Geometry::DrawMode mode_ = go->GetGeometry()->mode_;
 
     switch (mode_){
@@ -173,11 +173,11 @@ void Suffer::DrawGeometry::Execute() const {
 
   {
 
-    assert(data_->vertex_buffer_ != nullptr);
+    assert(data_->vertex_buffer_id_ >= 0);
 
-    if (data_->vertex_buffer_->id_ < 0) return;
+    if (data_->vertex_buffer_id_ < 0) return;
 
-    s32 id_vertex = data_->vertex_buffer_->id_;
+    s32 id_vertex = data_->vertex_buffer_id_;
 
     if (suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].gpu_version_ == 0) {
       glGenBuffers(1, &suffer.resource_manager_.data_->internal_vertex_buffers_[id_vertex].current_gl_buffer_);
@@ -208,10 +208,10 @@ void Suffer::DrawGeometry::Execute() const {
 
   {
   
-    assert(data_->index_buffer_ != nullptr);
+    assert(data_->index_buffer_id_ >= 0);
 
-    if (data_->index_buffer_->id_ < 0) return;
-    s32 id_index = data_->index_buffer_->id_;
+    if (data_->index_buffer_id_ < 0) return;
+    s32 id_index = data_->index_buffer_id_;
     if (suffer.resource_manager_.data_->internal_index_buffers_[id_index].gpu_version_ == 0) {
       glGenBuffers(1, &suffer.resource_manager_.data_->internal_index_buffers_[id_index].current_gl_buffer_);
       error = glGetError();
@@ -530,9 +530,9 @@ void Suffer::DrawGeometry::Execute() const {
 
   {
 
-    glBindBuffer(GL_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_vertex_buffers_[data_->vertex_buffer_->id_].current_gl_buffer_);
+    glBindBuffer(GL_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_vertex_buffers_[data_->vertex_buffer_id_].current_gl_buffer_);
 
-    switch (data_->vertex_buffer_->format_) {
+    switch (suffer.resource_manager_.data_->internal_vertex_buffers_[data_->vertex_buffer_id_].vertex_format_) {
     case Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P:
       glEnableVertexAttribArray(0);
       glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
@@ -567,9 +567,9 @@ void Suffer::DrawGeometry::Execute() const {
 
   {
 
-    u32 number_elements = suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_->id_].data_.size();
+    u32 number_elements = suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_id_].data_.size();
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_->id_].current_gl_buffer_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_id_].current_gl_buffer_);
     error = glGetError();
     glDrawElements(data_->draw_mode_, number_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
     error = glGetError();

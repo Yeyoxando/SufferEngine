@@ -17,6 +17,7 @@ struct Suffer::ResourceManager::ResourceData {
 
     Array<float> data_;
     s32 id_handle_;
+    s32 vertex_format_;
     u32 version_;
     u32 gpu_version_;
     GLuint current_gl_buffer_;

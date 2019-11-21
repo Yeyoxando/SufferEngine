@@ -4,9 +4,14 @@
 #include "internal_resource_manager.h"
 #include "common_definitions.h"
 #include "suffermanager.h"
+#include "math_utils.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
+
+#define vertex_buffer ResourceManager::VertexBuffer
+#define index_buffer ResourceManager::IndexBuffer
 
 // ------------------------------------------------------------------------- //
 
@@ -48,9 +53,9 @@ void Suffer::ResourceManager::ShutDown() {
 void Suffer::ResourceManager::UploadVertexData(const ref_ptr<VertexBuffer> buffer, VertexBuffer::Vertex* data, u32 size) {
 
   assert(buffer.get() != nullptr && "Buffer is NULL!");
-  assert(buffer.get()->format_ != VertexBuffer::kVertexFormat_Invalid && "Vertex format is INVALID!");
+  assert(suffer.resource_manager_.data_->internal_vertex_buffers_[buffer->id_].vertex_format_ != VertexBuffer::kVertexFormat_Invalid && "Vertex format is INVALID!");
 
-  switch (buffer.get()->format_){
+  switch (suffer.resource_manager_.data_->internal_vertex_buffers_[buffer->id_].vertex_format_){
   case VertexBuffer::kVertexFormat_3P:
     data_->internal_vertex_buffers_[buffer->id_].data_.alloc(size * 3);
     //Set contiguous memory
@@ -104,7 +109,7 @@ void Suffer::ResourceManager::UploadVertexData(const ref_ptr<VertexBuffer> buffe
 
   assert(buffer.get() != nullptr && "Buffer is NULL!");
   assert(data != nullptr && "Data is NULL!");
-  assert(buffer.get()->format_ != VertexBuffer::kVertexFormat_Invalid && "Vertex format is INVALID!");
+  assert(suffer.resource_manager_.data_->internal_vertex_buffers_[buffer->id_].vertex_format_ != VertexBuffer::kVertexFormat_Invalid && "Vertex format is INVALID!");
 
 
   Array<float> vertices_;
@@ -206,10 +211,16 @@ Suffer::ResourceManager::GPUResource::~GPUResource() {
 Suffer::ResourceManager::VertexBuffer::VertexBuffer() {
 
   type_ = GPUResource::kVertexBuffer;
-  format_ = kVertexFormat_Invalid;
   id_ = suffer.resource_manager_.data_->number_of_vertex_buffers_;
   suffer.resource_manager_.data_->number_of_vertex_buffers_++;
+  SetVertexFormat(kVertexFormat_Invalid);
 
+}
+
+// ------------------------------------------------------------------------- //
+
+void Suffer::ResourceManager::VertexBuffer::SetVertexFormat(VertexFormat newFormat){
+    suffer.resource_manager_.data_->internal_vertex_buffers_[id_].vertex_format_ = (s32)newFormat;
 }
 
 // ------------------------------------------------------------------------- //
@@ -300,12 +311,20 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
       internal_index_buffers_[number_of_index_buffers_].data_.copy(triangle_indices);
       internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(vertices_);
 
+      internal_index_buffers_[number_of_index_buffers_].version_++;
+      internal_vertex_buffers_[number_of_vertex_buffers_].version_++;
+
+      internal_index_buffers_[number_of_index_buffers_].id_handle_ = 0;
+      internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 0;
+
       ++number_of_index_buffers_;
       ++number_of_vertex_buffers_;
   }
 
   // QUAD
   {
+      internal_index_buffers_[number_of_index_buffers_].id_handle_ = 1;
+      internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 1;
 
   }
 
@@ -319,28 +338,28 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
          1.0f, -1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 0.0f,
          1.0f,  1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 1.0f,
 
-        -1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     0.0f, 1.0f,
-        -1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     0.0f, 0.0f,
+        -1.0f,  1.0f, -1.0f,   0.0f,  0.0f, -1.0f,     0.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f,   0.0f,  0.0f, -1.0f,     0.0f, 0.0f,
          1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 0.0f,
          1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 1.0f,
 
-        -1.0f,  1.0f,  1.0f,    -1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
-        -1.0f, -1.0f,  1.0f,    -1.0f,  0.0f,  0.0f,    0.0f, 0.0f,
-        -1.0f, -1.0f, -1.0f,    -1.0f,  0.0f,  0.0f,    1.0f, 0.0f,
-        -1.0f,  1.0f, -1.0f,    -1.0f,  0.0f,  0.0f,    1.0f, 1.0f,
+        -1.0f,  1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,     0.0f, 1.0f,
+        -1.0f, -1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,     0.0f, 0.0f,
+        -1.0f, -1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,     1.0f, 0.0f,
+        -1.0f,  1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,     1.0f, 1.0f,
 
-        -1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     0.0f, 1.0f,
-        -1.0f, -1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     0.0f, 0.0f,
+        -1.0f,  1.0f,  1.0f,   0.0f,  0.0f,  1.0f,     0.0f, 1.0f,
+        -1.0f, -1.0f,  1.0f,   0.0f,  0.0f,  1.0f,     0.0f, 0.0f,
          1.0f, -1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 0.0f,
          1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 1.0f,
 
-        -1.0f,  1.0f, -1.0f,    0.0f,  1.0f,  0.0f,     0.0f, 1.0f,
-        -1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,     0.0f, 0.0f,
+        -1.0f,  1.0f, -1.0f,   0.0f,  1.0f,  0.0f,     0.0f, 1.0f,
+        -1.0f,  1.0f,  1.0f,   0.0f,  1.0f,  0.0f,     0.0f, 0.0f,
          1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 0.0f,
          1.0f,  1.0f, -1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 1.0f,
 
-        -1.0f, -1.0f, -1.0f,    0.0f, -1.0f,  0.0f,     0.0f, 1.0f,
-        -1.0f, -1.0f,  1.0f,    0.0f, -1.0f,  0.0f,     0.0f, 0.0f,
+        -1.0f, -1.0f, -1.0f,   0.0f, -1.0f,  0.0f,     0.0f, 1.0f,
+        -1.0f, -1.0f,  1.0f,   0.0f, -1.0f,  0.0f,     0.0f, 0.0f,
          1.0f, -1.0f,  1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 0.0f,
          1.0f, -1.0f, -1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 1.0f,
 
@@ -371,6 +390,12 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
       internal_index_buffers_[number_of_index_buffers_].data_.copy(cube_indices);
       internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(vertices_);
 
+      internal_index_buffers_[number_of_index_buffers_].version_++;
+      internal_vertex_buffers_[number_of_vertex_buffers_].version_++;
+
+      internal_index_buffers_[number_of_index_buffers_].id_handle_ = 2;
+      internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 2;
+
       ++number_of_index_buffers_;
       ++number_of_vertex_buffers_;
 
@@ -378,6 +403,92 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
   // SPHERE
   {
+
+
+      //// SPHERE STUFF
+      //const int number_points = 25, number_revolutions = 25;
+
+      //ref_ptr<Suffer::ResourceManager::VertexBuffer> vert_buff_2;
+      //ref_ptr<Suffer::ResourceManager::IndexBuffer> ind_buff_2;
+      //vert_buff_2.alloc();
+      //ind_buff_2.alloc();
+
+      //vert_buff_2->SetVertexFormat(ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV);
+
+      //Array<u16> sphere_indices;
+      //Array<mathmorra::Vector3> normals;
+      //Array<mathmorra::Vector3> sphere_points;
+
+
+
+      //normals.alloc(number_points* number_revolutions);
+      //sphere_points.alloc(number_points* number_revolutions);
+      //sphere_indices.alloc((number_points - 1)* (number_revolutions - 1) * 6);
+
+      //int index = 0;
+      //int radius = 1.0f;
+
+      //vertex_buffer::Vertex sphere_vertices[(number_revolutions * number_points)];
+
+      //for (int i = 0; i < number_points; ++i) {
+
+      //    float latitude = ThiefUtils::Math::Map(i, 0, number_revolutions - 1, -ThiefUtils::Math::fPI / 2, ThiefUtils::Math::fPI / 2);
+
+      //    for (int j = 0; j < number_revolutions; ++j) {
+
+      //        float longitude = ThiefUtils::Math::Map(j, 0, number_revolutions - 1, -ThiefUtils::Math::fPI, ThiefUtils::Math::fPI);
+
+      //        sphere_points[i * number_revolutions + j].x_ = radius * cos(longitude) * cos(latitude);
+      //        sphere_points[i * number_revolutions + j].y_ = radius * sin(longitude) * cos(latitude);
+      //        sphere_points[i * number_revolutions + j].z_ = radius * sin(latitude);
+
+      //        normals[i * number_revolutions + j] = sphere_points[i * number_revolutions + j];
+      //        normals[i * number_revolutions + j].Normalize();
+
+      //        mathmorra::Vector2 uv;
+
+      //        uv.x_ = (float)j / number_revolutions;
+      //        uv.y_ = (float)i / number_points;
+
+      //        sphere_vertices[(i * number_revolutions + j)] = vertex_buffer::Vertex(
+      //            sphere_points[i * number_revolutions + j].x_,
+      //            sphere_points[i * number_revolutions + j].y_,
+      //            sphere_points[i * number_revolutions + j].z_,
+      //            normals[i * number_revolutions + j].x_,
+      //            normals[i * number_revolutions + j].y_,
+      //            normals[i * number_revolutions + j].z_,
+      //            uv.x_,
+      //            uv.y_);
+
+      //    }
+
+      //}
+
+
+      //for (int i = 0; i < number_points - 1; ++i) {
+
+      //    for (int j = 0; j < number_revolutions - 1; ++j) {
+
+      //        sphere_indices[index++] = i * number_revolutions + j;
+      //        sphere_indices[index++] = (i + 1) * number_revolutions + j;
+      //        sphere_indices[index++] = i * number_revolutions + j + 1;
+
+      //        sphere_indices[index++] = i * number_revolutions + j + 1;
+      //        sphere_indices[index++] = (i + 1) * number_revolutions + j;
+      //        sphere_indices[index++] = (i + 1) * number_revolutions + j + 1;
+
+      //    }
+
+      //}
+
+      ////internal_index_buffers_[number_of_index_buffers_].data_.copy(sphere_indices);
+      ////internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(sphere_points);
+
+      //++number_of_index_buffers_;
+      //++number_of_vertex_buffers_;
+
+      //internal_index_buffers_[number_of_index_buffers_].id_handle_ = 3;
+      //internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 3;
 
   }
 
