@@ -17,6 +17,7 @@ namespace Suffer {
   class ResourceManager {
     friend class DrawGeometry;
     friend class SufferManager;
+    friend class Geometry;
 
   public:
     ResourceManager();

@@ -36,12 +36,15 @@ namespace Suffer {
       */
 	    enum BasicShapes {
         kBasicShapes_Invalid = -1,
-		    kBasicShapes_Triangle = 0,
+        kBasicShapes_Custom = 0,
+		    kBasicShapes_Triangle,
 		    kBasicShapes_Quad,
 		    kBasicShapes_Cube,
         kBasicShapes_Sphere,
 		    kBasicShapes_NONE = 20
 	    };
+
+      void CreateGeometryWithShape(BasicShapes shape);
 
       void SetDrawMode(DrawMode newMode);
       DrawMode GetDrawMode();

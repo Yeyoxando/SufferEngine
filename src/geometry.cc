@@ -1,5 +1,8 @@
 #include <geometry.h>
 #include <GL/glew.h>
+#include "internal_suffermanager.h"
+#include "internal_resource_manager.h"
+#include "common_definitions.h"
 
 // --------------------------------------------------- //
 
@@ -22,6 +25,42 @@ Suffer::Geometry::Geometry() {
 
 void Suffer::Geometry::SetIndexBuffer(ref_ptr<Suffer::ResourceManager::IndexBuffer> buffer){
 	index_buffer_ = buffer.get();
+}
+
+// --------------------------------------------------- //
+
+void Suffer::Geometry::CreateGeometryWithShape(BasicShapes shape){
+
+    switch (shape){
+        case Suffer::Geometry::kBasicShapes_Triangle: {
+
+
+        }
+            break;
+        case Suffer::Geometry::kBasicShapes_Quad: {
+
+
+        }
+            break;
+        case Suffer::Geometry::kBasicShapes_Cube: {
+
+
+        }
+            break;
+        case Suffer::Geometry::kBasicShapes_Sphere: {
+
+
+        }
+            break;
+        case Suffer::Geometry::kBasicShapes_NONE: {
+
+
+        }
+            break;
+        default: assert(false);
+            break;
+    }
+
 }
 
 // --------------------------------------------------- //

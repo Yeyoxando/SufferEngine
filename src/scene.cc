@@ -231,9 +231,10 @@ void Suffer::Scene::Init() {
   go2->SetMaterial(material2);
   go2->Translate(mathmorra::Vector3(0.0f, 0.0f, -0.1f));
   go2->SetName("Triangle");
+  //go2->GetGeometry()->CreateGeometryWithShape(Geometry::kBasicShapes_Triangle);
   
   
-  AddGameObject(go2);
+  //AddGameObject(go2);
 
 }
 

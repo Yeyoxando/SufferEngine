@@ -276,6 +276,112 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
   number_of_index_buffers_ = 0;
   number_of_vertex_buffers_ = 0;
 
+  // TRIANGLE
+  {
+      float triangle[] = {
+        // Positions             Normals            UV's
+        0.0f,  0.5f, -1.0f,  0.0f, 0.0f, 1.0f,   0.5f, 1.0f,
+        0.5f, -0.5f, -1.0f,  0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
+       -0.5f, -0.5f, -1.0f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
+      };
+
+      Array<u16> triangle_indices;
+      triangle_indices.alloc(3);
+      triangle_indices[0] = { 0 };
+      triangle_indices[1] = { 2 };
+      triangle_indices[2] = { 1 };
+
+      Array<float> vertices_;
+      vertices_.alloc(sizeof(triangle) / sizeof(float));
+      for (u32 i = 0; i < 24; ++i) {
+          vertices_[i] = triangle[i];
+      }
+
+      internal_index_buffers_[number_of_index_buffers_].data_.copy(triangle_indices);
+      internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(vertices_);
+
+      ++number_of_index_buffers_;
+      ++number_of_vertex_buffers_;
+  }
+
+  // QUAD
+  {
+
+  }
+
+  // CUBE
+  {
+
+      float cube[] = {
+             //Vertex                Normals               UV's
+         1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 0.0f,
+         1.0f, -1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 0.0f,
+         1.0f,  1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 1.0f,
+
+        -1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     0.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     0.0f, 0.0f,
+         1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 0.0f,
+         1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 1.0f,
+
+        -1.0f,  1.0f,  1.0f,    -1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
+        -1.0f, -1.0f,  1.0f,    -1.0f,  0.0f,  0.0f,    0.0f, 0.0f,
+        -1.0f, -1.0f, -1.0f,    -1.0f,  0.0f,  0.0f,    1.0f, 0.0f,
+        -1.0f,  1.0f, -1.0f,    -1.0f,  0.0f,  0.0f,    1.0f, 1.0f,
+
+        -1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     0.0f, 1.0f,
+        -1.0f, -1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 1.0f,
+
+        -1.0f,  1.0f, -1.0f,    0.0f,  1.0f,  0.0f,     0.0f, 1.0f,
+        -1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,     0.0f, 0.0f,
+         1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 0.0f,
+         1.0f,  1.0f, -1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 1.0f,
+
+        -1.0f, -1.0f, -1.0f,    0.0f, -1.0f,  0.0f,     0.0f, 1.0f,
+        -1.0f, -1.0f,  1.0f,    0.0f, -1.0f,  0.0f,     0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 0.0f,
+         1.0f, -1.0f, -1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 1.0f,
+
+      };
+
+      u16 cube_indices2[]{
+           0,  1,  2,  2,  3,  0,
+           6,  5,  4,  4,  7,  6,
+          10,  9,  8,  8, 11, 10,
+          12, 13, 14, 14, 15, 12,
+          16, 17, 18, 18, 19, 16,
+          22, 21, 20, 20, 23, 22
+      };
+
+      Array<u16> cube_indices;
+      cube_indices.alloc(36);
+
+      for (int i = 0; i < 36; ++i) {
+          cube_indices[i] = cube_indices2[i];
+      }
+
+      Array<float> vertices_;
+      vertices_.alloc(sizeof(cube) / sizeof(float));
+      for (u32 i = 0; i < 24; ++i) {
+          vertices_[i] = cube[i];
+      }
+
+      internal_index_buffers_[number_of_index_buffers_].data_.copy(cube_indices);
+      internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(vertices_);
+
+      ++number_of_index_buffers_;
+      ++number_of_vertex_buffers_;
+
+  }
+
+  // SPHERE
+  {
+
+  }
+
+
 }
 
 // ------------------------------------------------------------------------- //
