@@ -5,6 +5,7 @@
 
 struct Suffer::Geometry::Data {
 
+
 };
 
 // --------------------------------------------------- //
@@ -12,14 +13,27 @@ struct Suffer::Geometry::Data {
 Suffer::Geometry::Geometry() {
 
 	data_ = new Data();
-
+  mode_ = kDrawMode_Triangles;
 	shape_ = kBasicShapes_NONE;
+
 }
 
 // --------------------------------------------------- //
 
 void Suffer::Geometry::SetIndexBuffer(ref_ptr<Suffer::ResourceManager::IndexBuffer> buffer){
 	index_buffer_ = buffer.get();
+}
+
+// --------------------------------------------------- //
+
+void Suffer::Geometry::SetDrawMode(DrawMode newMode){
+    mode_ = newMode;
+}
+
+// --------------------------------------------------- //
+
+Suffer::Geometry::DrawMode Suffer::Geometry::GetDrawMode(){
+    return mode_;
 }
 
 // --------------------------------------------------- //

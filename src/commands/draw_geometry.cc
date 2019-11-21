@@ -18,6 +18,7 @@ struct Suffer::DrawGeometry::Data {
   // Geometry
   const Suffer::ResourceManager::VertexBuffer* vertex_buffer_;
   const Suffer::ResourceManager::IndexBuffer* index_buffer_;
+  GLenum draw_mode_;
 
 
   // Transform 
@@ -79,6 +80,33 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
   
     data_->vertex_buffer_ = go->GetGeometry()->vertex_buffer_.get();
     data_->index_buffer_ = go->GetGeometry()->index_buffer_.get();
+    Suffer::Geometry::DrawMode mode_ = go->GetGeometry()->mode_;
+
+    switch (mode_){
+
+        case Suffer::Geometry::kDrawMode_Invalid:
+            data_->draw_mode_ = GL_NONE;
+            break;
+        case Suffer::Geometry::kDrawMode_Triangles:
+            data_->draw_mode_ = GL_TRIANGLES;
+            break;
+        case Suffer::Geometry::kDrawMode_Lines:
+            data_->draw_mode_ = GL_LINES;
+            break;
+        case Suffer::Geometry::kDrawMode_LineLoop:
+            data_->draw_mode_ = GL_LINE_LOOP;
+            break;
+        case Suffer::Geometry::kDrawMode_LineStrip:
+            data_->draw_mode_ = GL_LINE_STRIP;
+            break;
+        case Suffer::Geometry::kDrawMode_Points:
+            data_->draw_mode_ = GL_POINTS;
+            break;
+        case Suffer::Geometry::kDrawMode_Patches:
+            data_->draw_mode_ = GL_PATCHES;
+        default:
+            break;
+    }
   
   }
 
@@ -543,7 +571,7 @@ void Suffer::DrawGeometry::Execute() const {
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_->id_].current_gl_buffer_);
     error = glGetError();
-    glDrawElements(GL_TRIANGLES, number_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
+    glDrawElements(data_->draw_mode_, number_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
     error = glGetError();
 
   }

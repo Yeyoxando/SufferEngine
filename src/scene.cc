@@ -6,6 +6,7 @@
 #include <resource_manager.h>
 #include <clear.h>
 #include "common_definitions.h"
+#include "math_utils.h"
 #include "draw_geometry.h"
 
 #define vertex_buffer ResourceManager::VertexBuffer
@@ -111,10 +112,11 @@ void Suffer::Scene::Init() {
 	ref_ptr<GameObject> go;
 	go.alloc();
 	go->SetGeometry(geometry);
+  go->GetGeometry()->SetDrawMode(Geometry::kDrawMode_LineStrip);
 	go->SetMaterial(material);
   go->SetName("Cube");
 	
-	AddGameObject(go);
+	//AddGameObject(go);
 
 
 
@@ -127,24 +129,84 @@ void Suffer::Scene::Init() {
 
 
 
-
+  // SPHERE STUFF
+  const int number_points = 25, number_revolutions = 25;
 
   ref_ptr<Suffer::ResourceManager::VertexBuffer> vert_buff_2;
   ref_ptr<Suffer::ResourceManager::IndexBuffer> ind_buff_2;
   vert_buff_2.alloc();
-  vert_buff_2->format_ = Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
   ind_buff_2.alloc();
-  
-  float vertices2[] = {
-      0.0f,  0.5f, -1.0f,  0.0f, 0.0f, 1.0f,   0.5f, 1.0f,
-      0.5f, -0.5f, -1.0f,  0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
-     -0.5f, -0.5f, -1.0f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
-  };
-  
-  u16 indices2[]{ 0, 2, 1};
-  
-  suffer.resource_manager_.UploadVertexData(vert_buff_2, vertices2, 24);
-  suffer.resource_manager_.UploadIndexData(ind_buff_2, indices2, 3);
+
+  vert_buff_2->format_ = Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
+
+  Array<u16> sphere_indices;
+  Array<mathmorra::Vector3> normals;
+  Array<mathmorra::Vector3> sphere_points;
+
+
+
+  normals.alloc(number_points* number_revolutions);
+  sphere_points.alloc(number_points* number_revolutions);
+  sphere_indices.alloc((number_points - 1)* (number_revolutions - 1) * 6);
+
+  int index = 0;
+  int radius = 1.0f;
+
+  vertex_buffer::Vertex sphere_vertices[(number_revolutions * number_points)];
+
+  for (int i = 0; i < number_points; ++i) {
+
+      float latitude = ThiefUtils::Math::Map(i, 0, number_revolutions - 1, -ThiefUtils::Math::fPI / 2, ThiefUtils::Math::fPI / 2);
+
+      for (int j = 0; j < number_revolutions; ++j) {
+
+          float longitude = ThiefUtils::Math::Map(j, 0, number_revolutions - 1, -ThiefUtils::Math::fPI, ThiefUtils::Math::fPI);
+
+          sphere_points[i * number_revolutions + j].x_ = radius * cos(longitude) * cos(latitude);
+          sphere_points[i * number_revolutions + j].y_ = radius * sin(longitude) * cos(latitude);
+          sphere_points[i * number_revolutions + j].z_ = radius * sin(latitude);
+
+          normals[i * number_revolutions + j] = sphere_points[i * number_revolutions + j];
+          normals[i * number_revolutions + j].Normalize();
+
+          mathmorra::Vector2 uv;
+
+          uv.x_ = (float)j / number_revolutions;
+          uv.y_ = (float)i / number_points;
+
+          sphere_vertices[(i * number_revolutions + j)] = vertex_buffer::Vertex(
+              sphere_points[i * number_revolutions + j].x_,
+              sphere_points[i * number_revolutions + j].y_,
+              sphere_points[i * number_revolutions + j].z_, 
+              normals[i * number_revolutions + j].x_,
+              normals[i * number_revolutions + j].y_,
+              normals[i * number_revolutions + j].z_,
+              uv.x_,
+              uv.y_);
+
+      }
+
+  }
+
+
+  for (int i = 0; i < number_points - 1; ++i) {
+
+      for (int j = 0; j < number_revolutions - 1; ++j) {
+
+          sphere_indices[index++] = i * number_revolutions + j;
+          sphere_indices[index++] = (i + 1) * number_revolutions + j;
+          sphere_indices[index++] = i * number_revolutions + j + 1;
+
+          sphere_indices[index++] = i * number_revolutions + j + 1;
+          sphere_indices[index++] = (i + 1) * number_revolutions + j;
+          sphere_indices[index++] = (i + 1) * number_revolutions + j + 1;
+
+      }
+
+  }
+
+  suffer.resource_manager_.UploadVertexData(vert_buff_2, sphere_vertices, (number_revolutions * number_points));
+  suffer.resource_manager_.UploadIndexData(ind_buff_2, &sphere_indices[0], sphere_indices.sizeInBytes());
   
   ref_ptr<Geometry> geometry2;
   geometry2.alloc();
@@ -153,7 +215,7 @@ void Suffer::Scene::Init() {
 
   ref_ptr < ResourceManager::Texture> albedo_texture2;
   albedo_texture2.alloc();
-  suffer.resource_manager_.LoadTextureData(albedo_texture2, "../../../resources/images/supercube.png");
+  suffer.resource_manager_.LoadTextureData(albedo_texture2, "../../../resources/images/earth.jpg");
   
   ref_ptr<MaterialInstance> material2;
   material2.alloc();
@@ -165,6 +227,7 @@ void Suffer::Scene::Init() {
   ref_ptr<GameObject> go2;
   go2.alloc();
   go2->SetGeometry(geometry2);
+  go2->GetGeometry()->SetDrawMode(Geometry::kDrawMode_Triangles);
   go2->SetMaterial(material2);
   go2->Translate(mathmorra::Vector3(0.0f, 0.0f, -0.1f));
   go2->SetName("Triangle");

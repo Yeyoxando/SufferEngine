@@ -5,6 +5,7 @@
 #include <suffermanager.h>
 #include <glfw3.h>
 #include <audio.h>
+#include "chrono.h"
 
 // --------------------------------------------------------------//
 

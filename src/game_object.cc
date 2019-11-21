@@ -58,13 +58,13 @@ Suffer::GameObject::GameObject(const GameObject& go) {
 
 // --------------------------------------------------- //
 
-const Suffer::ref_ptr<Suffer::MaterialInstance> Suffer::GameObject::GetMaterial() {
+Suffer::ref_ptr<Suffer::MaterialInstance> Suffer::GameObject::GetMaterial() {
 	return material_;
 }
 
 // --------------------------------------------------- //
 
-const Suffer::ref_ptr<Suffer::Geometry> Suffer::GameObject::GetGeometry() {
+Suffer::ref_ptr<Suffer::Geometry> Suffer::GameObject::GetGeometry() {
 	return geometry_;
 }
 

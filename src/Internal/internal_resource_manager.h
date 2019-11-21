@@ -20,6 +20,7 @@ struct Suffer::ResourceManager::ResourceData {
     u32 version_;
     u32 gpu_version_;
     GLuint current_gl_buffer_;
+    GLenum draw_mode_;
 
   };
 
