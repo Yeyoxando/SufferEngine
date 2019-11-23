@@ -53,7 +53,7 @@ bool Suffer::SufferManager::Init(){
 
 	assert(data_ && "\n Data is null.");
 
-	data_->wind_.init(WINDOW_WIDTH, WINDOW_HEIGHT);
+	data_->wind_.Open(WINDOW_WIDTH, WINDOW_HEIGHT);
 	data_->interface_.Init();
   data_->is_interface_active_ = false;
 	data_->window_should_close_ = false;
@@ -88,7 +88,7 @@ void Suffer::SufferManager::Draw() {
       ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   }
 
-	data_->wind_.swapBuffers();
+	data_->wind_.SwapBuffers();
 
 }
 
@@ -135,7 +135,7 @@ void Suffer::SufferManager::Run(){
     mouse_position_.y_ = input_manager_.MousePositionY();
 
 		data_->current_time_ = Suffer::RawTime();
-		data_->wind_.processEvents();
+		data_->wind_.ProcessEvents();
 		
     // TODO: remove this thread
 		input_->NewTask(input_thread);
@@ -196,11 +196,13 @@ void Suffer::SufferManager::Step(){
 // --------------------------------------------------------------//
 
 bool Suffer::SufferManager::Finish(){
-
+  
   resource_manager_.ShutDown();
 	render_manager_.ShutDown();
   audio_manager_.ShutDown();
   input_manager_.ShutDown();
+
+  data_->wind_.Close();
 
 	return true;
 }

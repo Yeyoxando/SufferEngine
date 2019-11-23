@@ -12,9 +12,9 @@
 #include <ref_ptr.h>
 #include "matrix4.h"
 
- // ------------------------------------------------------------------------- //
-
 namespace Suffer {
+
+  // ----------------------------------------------------------------------- //
 
   /**
     * @brief: Command to draw GameObjects with Geometry and Material
@@ -59,10 +59,10 @@ namespace Suffer {
 		struct Data;
 		Data* data_;
 
-	};
+  };
 
-}
+  // ----------------------------------------------------------------------- //
 
-// ------------------------------------------------------------------------- //
+} // End of Suffer namespace
 
 #endif // __DRAW_GEOMETRY_H__

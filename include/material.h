@@ -15,7 +15,7 @@
 
 namespace Suffer {
 
-	// --------------------------------------------------- //
+  // ----------------------------------------------------------------------- //
 
   /**
     * @brief: contain the material kind and the attributes to render with it
@@ -85,8 +85,9 @@ namespace Suffer {
 
 		MaterialInstance(const MaterialInstance&);
 	};
-}
 
-// --------------------------------------------------- //
+  // ----------------------------------------------------------------------- //
+
+} // End of Suffer namespace
 
 #endif // __MATERIAL_H__

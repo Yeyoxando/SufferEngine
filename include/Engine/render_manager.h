@@ -9,6 +9,8 @@
 
 namespace Suffer {
 
+  // ----------------------------------------------------------------------- //
+
   /**
    * @brief:
    */
@@ -37,9 +39,10 @@ namespace Suffer {
 		DisplayList render_dl_;
 		std::list<DisplayList> list_of_dl_;
 		Mutex dl_mutex_;
-	};
+  };
 
+  // ----------------------------------------------------------------------- //
 
-}
+} // End of Suffer namespace
 
 #endif //__RENDER_MANAGER_H__

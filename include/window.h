@@ -4,38 +4,50 @@
 #define WINDOW_H
 
 namespace Suffer {
+
+  // ----------------------------------------------------------------------- //
+
   /**
-    * @brief:
+    * @brief: Manages the Engine Window 
     */
 	class Window {
     friend class SufferManager;
+
 	private:
 		Window();
 		~Window();
 
     /**
-    * @brief:
-    * @param:
-    * @param:
-    */
-		bool init(int width, int height);
+     * @brief: Open and initializes all the necessary dependencies to create a window context
+     * @param: width of the window
+     * @param: height of the window
+     * @return: true if all is initialized successful
+     */
+		bool Open(int width, int height);
 		
     /**
-    * @brief:
+    * @brief: processes all the window events
     */
-    bool processEvents();
+    void ProcessEvents();
 		
     /**
-    * @brief:
+    * @brief: swap the two buffers used to render 
     */
-    void swapBuffers();
+    void SwapBuffers();
 		
     /**
-    * @brief:
+    * @brief: closes and destroy the window context
     */
-    void finish();
+    void Close();
 
-	};
-};
+
+    struct Data;
+    Data* data_;
+
+  };
+
+  // ----------------------------------------------------------------------- //
+
+} // End of Suffer namespace
 
 #endif // WINDOW_H

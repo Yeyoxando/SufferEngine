@@ -15,6 +15,8 @@
 
 namespace Suffer {
 
+  // ----------------------------------------------------------------------- //
+
   /**
     * @brief: List of commands to allow execution from different threads
     */
@@ -75,12 +77,14 @@ public:
     */
 	void addCommand(const ref_ptr<Command> cmd);
 
+  private:
+    DisplayListType dl_type_;
+    std::vector<ref_ptr<Command>> dl_commands_;
 
-private:
-	DisplayListType dl_type_;
-	std::vector<ref_ptr<Command>> dl_commands_;
+  };
 
-};
+  // ----------------------------------------------------------------------- //
 
-}
+} // End of Suffer namespace
+
 #endif // __DISPLAY_LIST_H__
