@@ -14,8 +14,8 @@ namespace Suffer {
   // ----------------------------------------------------------------------- //
 
   /**
-    * @brief:
-    */
+   * @brief: Manages all the resources used in the Engine.
+   */
   class ResourceManager {
     friend class DrawGeometry;
     friend class SufferManager;
@@ -25,9 +25,11 @@ namespace Suffer {
     ResourceManager();
     ~ResourceManager();
 
+    // ------------------------------ GPUResource --------------------------- //
+
     /**
-    * @brief:
-    */
+     * @brief: Basic class from which all gpu resources will inherit.
+     */
     class GPUResource : public Referenced {
 
     public:
@@ -35,8 +37,8 @@ namespace Suffer {
       ~GPUResource();
 
       /**
-      * @brief:
-      */
+       * @brief: Indicates which kind of resource is
+       */
       enum ResourceType {
         kVertexBuffer = 0,
         kIndexBuffer,
@@ -51,19 +53,23 @@ namespace Suffer {
 
     };
 
+    // ------------------------------ GPUResource --------------------------- //
+
+
 
     // ----------------------------- VertexBuffer -------------------------- //
 
     /**
-    * @brief: 
-    */
+     * @brief: Contain the vertexes information of a geometry to later use them
+     *         to form triangles.
+     */
     class VertexBuffer : public GPUResource {
     public:
       friend class SufferManager;
 
       /**
-      * @brief:
-      */
+       * @brief: Indicates which attributes contain the vertexes to upload.
+       */
       enum VertexFormat {
         kVertexFormat_3P = 0,
         kVertexFormat_3P_3N = 1,
@@ -72,16 +78,21 @@ namespace Suffer {
       };
 
       /**
-      * @brief:
-      */
+       * @brief: struct to represent a vertex, compound by vertex position,
+       *         vertex normals, and vertex uvs.
+       */
       struct Vertex {
         Vertex() {}
+
         Vertex(float vertex_x, float vertex_y, float vertex_z);
+
         Vertex(float vertex_x, float vertex_y, float vertex_z,
           float normal_x, float normal_y, float normal_z);
+
         Vertex(float vertex_x, float vertex_y, float vertex_z, 
           float normal_x, float normal_y, float normal_z, 
           float uv_x, float uv_y);
+
         ~Vertex() {}
 
         mathmorra::Vector3 vertices_;
@@ -93,25 +104,27 @@ namespace Suffer {
       VertexBuffer();
       ~VertexBuffer() {};
 
-      void SetVertexFormat(VertexFormat newFormat);
+      /**
+       * @brief: Indicates on which format are the uploaded vertex.
+       * @param: format of the vertexes.
+       */
+      void SetVertexFormat(VertexFormat new_format);
+
+      /**
+       * @brief: Upload data to fill the buffer.
+       * @param: array of vertex struct that form the geometry points.
+       * @param: number of vertex to upload.
+       */
+      void UploadVertexData(VertexBuffer::Vertex* data, u32 size);
+
+      /**
+       * @brief: Upload data to fill the buffer.
+       * @param: raw array of vertex data.
+       * @param: number of floats, vertex * 3 floats, normals * 3 floats, uvs * 2 floats.
+       */
+      void UploadVertexData(float* data, u32 size);
 
     };
-
-    /**
-       * @brief:
-       * @param:
-       * @param:
-       * @param:
-       */
-    void UploadVertexData(const ref_ptr<VertexBuffer> buffer, VertexBuffer::Vertex* data, u32 size);
-
-    /**
-       * @brief:
-       * @param:
-       * @param:
-       * @param:
-       */
-    void UploadVertexData(const ref_ptr<VertexBuffer> buffer, float* data, u32 size);
 
     // ----------------------------- VertexBuffer -------------------------- //
 
@@ -120,41 +133,42 @@ namespace Suffer {
     // ----------------------------- IndexBuffer --------------------------- //
 
     /**
-    * @brief:
-    */
+     * @brief: Contain the information to form the triangles of a geometry using indexes.
+     */
     class IndexBuffer : public GPUResource {
     public:
       IndexBuffer();
       ~IndexBuffer() {};
 
       /**
-      * @brief:
-      */
+       * @brief: Triangle structure formed by 3 indexes.
+       */
       struct Triangle {
         Triangle() {}
+
         Triangle(u16 index1, u16 index2, u16 index3);
+
         ~Triangle() {}
 
         u16 indices_[3];
 
       };
 
+      /**
+       * @brief: Upload data to fill the buffer.
+       * @param: Pointer to array of triangles that forms geometry indexes.
+       * @param: number of triangles.
+       */
+      void UploadIndexData(IndexBuffer::Triangle* data, u32 size);
+
+      /**
+       * @brief: Upload data to fill the buffer.
+       * @param: raw array of index data.
+       * @param: number of indices.
+       */
+      void UploadIndexData(u16* data, u32 size);
+
     };
-
-    /**
-       * @brief:
-       * @param:
-       * @param:
-       */
-    void UploadIndexData(const ref_ptr<IndexBuffer> buffer, IndexBuffer::Triangle* data, u32 size);
-
-    /**
-       * @brief:
-       * @param:
-       * @param:
-       * @param:
-       */
-    void UploadIndexData(const ref_ptr<IndexBuffer> buffer, u16* data, u32 size);
 
     // ----------------------------- IndexBuffer --------------------------- //
 
@@ -163,43 +177,58 @@ namespace Suffer {
     // ------------------------------- Texture ----------------------------- //
 
     /**
-    * @brief:
-    */
+     * @brief: Texture to draw with different materials.
+     */
     class Texture : public GPUResource {
     public:
       Texture();
       ~Texture() {};
 
+      /**
+       * @brief: Possible s and t Wraps for a texture.
+       */
       enum TextureWrap {
         kTextureWrap_Repeat = 0,
         kTextureWrap_MirroredRepeat,
         kTextureWrap_ClampToEdge,
       };
 
+      /**
+       * @brief: Possible min and mag filters for a texture.
+       */
       enum TextureFilter {
         kTextureFilter_Linear = 0,
         kTextureFilter_Nearest,
       };
 
+      /**
+       * @brief: Sets the texture wrap options.
+       * @param: wrap for horizontal axis (U of UVs).
+       * @param: wrap for vertical axis (V of UVs).
+       */
       void SetTextureWrap(TextureWrap wrap_s, TextureWrap wrap_t);
+      /**.
+       * @brief: Sets the texture filters 
+       * @param: min_filter to use when minification is needed.
+       * @param: mag_filter to use when magnification is needed.
+       */
       void SetTextureFilter(TextureFilter min_filter, TextureFilter mag_filter);
+      
+      /**
+       * @brief: Loads an image from disk.
+       * @param: file to read.
+       */
+      void LoadTextureData(const char* file);
 
     };
-    
-
-    /**
-       * @brief:
-       * @param:
-       * @param:
-       */
-    void LoadTextureData(const ref_ptr<Texture> texture, const char* file);
 
     // ------------------------------- Texture ----------------------------- //
 
 
+
   private:
-    void StartUp(); // a.k.a Init()
-    void ShutDown(); // a.k.a End()
+    void StartUp(); // a.k.a Init().
+    void ShutDown(); // a.k.a End().
 
 
     struct ResourceData;

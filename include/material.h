@@ -18,8 +18,8 @@ namespace Suffer {
   // ----------------------------------------------------------------------- //
 
   /**
-    * @brief: contain the material kind and the attributes to render with it
-    */
+   * @brief: contain the material kind and the attributes to render with it
+   */
 	class MaterialInstance : public Referenced {
 
 	public:
@@ -28,8 +28,8 @@ namespace Suffer {
 		MaterialInstance();
 
     /**
-    * @brief: Indicates which type of material is it
-    */
+     * @brief: Indicates which type of material is it
+     */
     enum ParamsType {
       kParams_Default = 0,
       kParams_Phong,
@@ -39,39 +39,38 @@ namespace Suffer {
     // ------------------------------ Getters ------------------------------ //
 
     /**
-       * @return: color of the object
-       */
+     * @return: color of the object
+     */
     mathmorra::Vector4 GetColor() const;
     /**
-       * @return: albedo texture id 
-       */
+     * @return: albedo texture id 
+     */
     u32 GetAlbedoTexture() const;
     /**
-       * @return: Material params kind
-       */
+     * @return: Material params kind
+     */
     u32 GetMaterialParamsType() const;
 
 
     // ------------------------------ Getters ------------------------------ //
 
     /**
-       * @brief: sets object color
-       * @param: new_color of the object  
-       */
+     * @brief: sets object color
+     * @param: new_color of the object  
+     */
     void SetColor(mathmorra::Vector4 new_color);
 
     /**
-       * @brief: sets object albedo texture
-       * @param: previously created and loaded texture
-       */
+     * @brief: sets object albedo texture
+     * @param: previously created and loaded texture
+     */
     void SetAlbedoTexture(ref_ptr<ResourceManager::Texture> texture);
 
     /**
-       * @brief: sets the way that material should render and indicates which parameters could get
-       * @param: type to set
-       */
+     * @brief: sets the way that material should render and indicates which parameters could get
+     * @param: type to set
+     */
     void SetMaterialParamsType(ParamsType type);
-
 
 	protected:
 		virtual ~MaterialInstance();
@@ -82,8 +81,6 @@ namespace Suffer {
 		struct Data;
 		Data* data_;
 
-
-		MaterialInstance(const MaterialInstance&);
 	};
 
   // ----------------------------------------------------------------------- //

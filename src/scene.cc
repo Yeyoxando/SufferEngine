@@ -15,7 +15,9 @@
 // --------------------------------------------------- //
 
 Suffer::Scene::Scene(){
+
   current_gameobjects_ = std::vector<ref_ptr<GameObject>>(0);
+
 }
 
 // --------------------------------------------------- //
@@ -41,7 +43,7 @@ void Suffer::Scene::Init() {
   albedo_texture.alloc();
   albedo_texture->SetTextureFilter(ResourceManager::Texture::kTextureFilter_Nearest, ResourceManager::Texture::kTextureFilter_Nearest);
   albedo_texture->SetTextureWrap(ResourceManager::Texture::kTextureWrap_ClampToEdge, ResourceManager::Texture::kTextureWrap_ClampToEdge);
-  suffer.resource_manager_.LoadTextureData(albedo_texture, "../../../resources/images/box.jpg");
+  albedo_texture->LoadTextureData("../../../resources/images/box.jpg");
 	
 	ref_ptr<MaterialInstance> material;
 	material.alloc();
@@ -71,10 +73,13 @@ void Suffer::Scene::Init() {
 
   ref_ptr < ResourceManager::Texture> albedo_texture2;
   albedo_texture2.alloc();
-  suffer.resource_manager_.LoadTextureData(albedo_texture2, "../../../resources/images/earth.jpg");
+  albedo_texture2->SetTextureFilter(ResourceManager::Texture::kTextureFilter_Linear, ResourceManager::Texture::kTextureFilter_Linear);
+  albedo_texture2->SetTextureWrap(ResourceManager::Texture::kTextureWrap_ClampToEdge, ResourceManager::Texture::kTextureWrap_ClampToEdge);
+  albedo_texture2->LoadTextureData("../../../resources/images/earth.jpg");
   
   ref_ptr<MaterialInstance> material2;
   material2.alloc();
+  material2->SetMaterialParamsType(MaterialInstance::kParams_Default);
   material2->SetMaterialParamsType(MaterialInstance::kParams_Default);
   material2->SetColor(mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f));
   material2->SetAlbedoTexture(albedo_texture2);
@@ -100,10 +105,12 @@ void Suffer::Scene::Init() {
 // --------------------------------------------------- //
 
 void Suffer::Scene::Step(float time_step){
+
 	// Logic
   main_camera_.get()->Update();
   if(main_camera_->FPS()) main_camera_->CameraMovement(main_camera_);
 	PrepareDraw();
+
 }
 
 // --------------------------------------------------- //
@@ -133,7 +140,9 @@ void Suffer::Scene::PrepareDraw(){
 }
 
 void Suffer::Scene::AddGameObject(ref_ptr<GameObject> gameobject){
+
   current_gameobjects_.push_back(gameobject);
+
 }
 
 // --------------------------------------------------- //

@@ -85,7 +85,9 @@ struct Suffer::ResourceManager::ResourceData {
   void InitInternalBuffers();
   void InitInternalMaterials();
   void InitInternalTextures();
-
+  
 };
+
+
 
 #endif //__INTERNAL_RESOURCE_MANAGER_H__
