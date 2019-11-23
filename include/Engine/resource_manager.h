@@ -22,8 +22,6 @@ namespace Suffer {
     friend class Geometry;
 
   public:
-    ResourceManager();
-    ~ResourceManager();
 
     // ------------------------------ GPUResource --------------------------- //
 
@@ -227,9 +225,11 @@ namespace Suffer {
 
 
   private:
+    ResourceManager();
+    ~ResourceManager();
+
     void StartUp(); // a.k.a Init().
     void ShutDown(); // a.k.a End().
-
 
     struct ResourceData;
     ResourceData* data_;

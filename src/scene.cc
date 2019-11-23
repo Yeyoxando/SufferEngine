@@ -1,10 +1,10 @@
 // Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
 
-#include <scene.h>
-#include <game_object.h>
-#include <suffermanager.h>
-#include <resource_manager.h>
-#include <clear.h>
+#include "scene.h"
+#include "game_object.h"
+#include "suffermanager.h"
+#include "resource_manager.h"
+#include "clear.h"
 #include "common_definitions.h"
 #include "math_utils.h"
 #include "draw_geometry.h"
@@ -35,6 +35,8 @@ Suffer::Scene::~Scene(){
 // --------------------------------------------------- //
 
 void Suffer::Scene::Init() {
+
+  // Move this to a test file, whis will be only neccesary things as the camera or a directional light.
 
 	ref_ptr<Geometry> geometry;
 	geometry.alloc();
@@ -132,7 +134,6 @@ void Suffer::Scene::PrepareDraw(){
 	for (u32 i = 0; i < current_gameobjects_.size(); ++i) {
     current_gameobjects_.at(i).get()->AddDrawCommand(frame_dl, main_camera_->ViewMatrix(), main_camera_->ProjectionMatrix());
 	}
-
 
   // Send DL to render manager
 	suffer.render_manager_.AddToRenderQueue(std::move(frame_dl));

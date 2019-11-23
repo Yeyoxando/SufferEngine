@@ -1,3 +1,9 @@
+/*
+* Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
+* Date: 10-12-2019
+* MaterialInstance Source
+*/
+
 #include <material.h>
 #include <GL/glew.h>
 

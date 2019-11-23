@@ -1,3 +1,9 @@
+/*
+ * Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
+ * Date: 15-10-2019
+ * Clear Command Source
+ */
+
 #include <clear.h>
 #include <glfw3.h>
 
