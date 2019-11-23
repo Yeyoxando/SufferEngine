@@ -63,7 +63,7 @@ bool Suffer::Window::Open(int width, int height){
 	io.Fonts->Build();
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-  // Substitute this by our methods
+  // TODO: Substitute this by our methods
 	ImGui_ImplGlfw_InitForOpenGL(glfwGetCurrentContext(), true);
 	ImGui_ImplOpenGL3_Init("#version 130");
 
@@ -95,3 +95,5 @@ void Suffer::Window::Close(){
   glfwTerminate();
 
 }
+
+// --------------------------------------------------------------//

@@ -205,7 +205,7 @@ namespace Suffer {
        * @param: wrap for vertical axis (V of UVs).
        */
       void SetTextureWrap(TextureWrap wrap_s, TextureWrap wrap_t);
-      /**.
+      /**
        * @brief: Sets the texture filters 
        * @param: min_filter to use when minification is needed.
        * @param: mag_filter to use when magnification is needed.

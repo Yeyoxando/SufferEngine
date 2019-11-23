@@ -26,18 +26,18 @@ namespace Suffer {
 		bool Open(int width, int height);
 		
     /**
-    * @brief: processes all the window events
-    */
+     * @brief: processes all the window events
+     */
     void ProcessEvents();
 		
     /**
-    * @brief: swap the two buffers used to render 
-    */
+     * @brief: swap the two buffers used to render 
+     */
     void SwapBuffers();
 		
     /**
-    * @brief: closes and destroy the window context
-    */
+     * @brief: closes and destroy the window context
+     */
     void Close();
 
 
