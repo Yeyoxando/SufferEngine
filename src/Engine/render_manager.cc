@@ -50,14 +50,14 @@ void Suffer::RenderManager::DoRender(){
     
 
 
-  u32 size = render_dl_.size();
+  u32 size = render_dl_.Size();
 
   for (int i = 0; i < size; ++i) {
     const Command* cmd = render_dl_.dl_commands_[i].get();
     cmd->Execute();
   }
 
-  render_dl_.clear();
+  render_dl_.Clear();
 
 }
 

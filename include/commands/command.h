@@ -14,16 +14,19 @@ namespace Suffer {
   // ----------------------------------------------------------------------- //
 
   /**
-    * @brief: parent class to inherit to create new Commands for Render or Audio
-    */
+   * @brief: parent class for inherit and create new Commands for Render or Audio.
+   */
 	class Command : public virtual Referenced {
 
 	public:
+    /**
+     * @brief: Method to override and create custom commands with different behaviors.
+     */
 		virtual void Execute() const = 0;
 
     /**
-    * @brief: identifies the kind of the command
-    */
+     * @brief: identifies the kind of the command.
+     */
 		enum CommandType {
 			kRender = 0,
 			kAudio = 1,

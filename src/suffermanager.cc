@@ -175,7 +175,7 @@ void Suffer::SufferManager::Audio() {
 
 void Suffer::SufferManager::PrepareAudio() {
 	
-  if (audio_manager_.audio_dl_.size() > 0) {
+  if (audio_manager_.audio_dl_.Size() > 0) {
     auto audio_thread = [] { SufferManager::instance().Audio(); };
     audio_->NewTask(audio_thread);
   }

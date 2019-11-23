@@ -123,7 +123,7 @@ void Suffer::GameObject::AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matr
   draw_geometry.get()->SetViewMatrix(view);
   draw_geometry.get()->SetProjectionMatrix(projection);
 
-  dl.addCommand(draw_geometry.get());
+  dl.AddCommand(draw_geometry.get());
 
 }
 

@@ -7,79 +7,78 @@
 #ifndef __DISPLAY_LIST_H__
 #define __DISPLAY_LIST_H__
 
-#include <referenced.h>
-#include <audio.h>
-#include <ref_ptr.h>
-#include <command.h>
 #include <vector>
+#include "referenced.h"
+#include "ref_ptr.h"
+#include "command.h"
 
 namespace Suffer {
 
   // ----------------------------------------------------------------------- //
 
   /**
-    * @brief: List of commands to allow execution from different threads
-    */
-class DisplayList : public Referenced {
-	friend class RenderManager;
-  friend class AudioManager;
+   * @brief: List of commands to allow execution from different threads.
+   */
+  class DisplayList : public Referenced {
+	  friend class RenderManager;
+    friend class AudioManager;
 
-public:
-  /**
-    * @brief: Identifies for what its going to be used this DisplayList
-    */
-	enum DisplayListType {
-		kDisplayListType_Render = 0,
-		kDisplayListType_Audio = 1,
-		kDisplayListType_NONE = 20 // MAX for enum.
-	};
+  public:
+    /**
+     * @brief: Identifies for what its going to be used this DisplayList.
+     */
+	  enum DisplayListType {
+		  kDisplayListType_Render = 0,
+		  kDisplayListType_Audio = 1,
+		  kDisplayListType_NONE = 20 // MAX for enum.
+	  };
 
-	// Constructors
-	DisplayList();
-	~DisplayList();
+	  // Constructors
+	  DisplayList();
+	  ~DisplayList();
 	
-	// Copy-Constructors
-	DisplayList(const DisplayList&) = delete;
+	  // Copy-Constructors
+	  DisplayList(const DisplayList&) = delete;
 
-  /**
-    * @brief: rvalue constructor to allow std::move semantics
-    */
-	DisplayList(DisplayList&& d)
-		: dl_commands_(std::move(d.dl_commands_)) {
-		dl_type_ = std::move(d.dl_type_);
-	}
+    /**
+     * @brief: rvalue constructor to allow std::move semantics.
+     */
+	  DisplayList(DisplayList&& d)
+		  : dl_commands_(std::move(d.dl_commands_)) {
+		  dl_type_ = std::move(d.dl_type_);
+	  }
 
-  /**
-    * @brief: rvalue operator= to allow std::semantics
-    */
-	DisplayList& operator=(DisplayList&& d);
+    /**
+     * @brief: rvalue operator= to allow std::semantics.
+     */
+    DisplayList& operator=(DisplayList&& d);
+
+    void SetDisplayListType(DisplayListType dl_type);
+    DisplayListType GetDisplayListType();
 	
-	// DL Functions
-  /**
-    * @brief: leaves the DisplayList like if was created right now
-    */
-	void reset();
-  /**
-    * @brief: removes all the content from the DisplayList
-    */
-	void clear();
-  /**
-    * @return: return number of commands that DisplayList has currently
-    */
-	u32 size();
+	  // DL Functions
+    /**
+     * @brief: leaves the DisplayList like if was created right now.
+     */
+	  void Reset();
+    /**
+     * @brief: removes all the content from the DisplayList
+     */
+	  void Clear();
+    /**
+     * @return: return number of commands that DisplayList has currently
+     */
+	  u32 Size();
 
-	void SetDisplayListType(DisplayListType dl_type);
-	DisplayListType GetDisplayListType();
+    /**
+     * @brief: Add a new command at the last position of the DisplayList
+     * @param: command to add
+     */
+	  void AddCommand(const ref_ptr<Command> cmd);
 
-  /**
-    * @brief: Add a new command at the last position of the DisplayList
-    * @param: command to add
-    */
-	void addCommand(const ref_ptr<Command> cmd);
-
-  private:
-    DisplayListType dl_type_;
-    std::vector<ref_ptr<Command>> dl_commands_;
+    private:
+      DisplayListType dl_type_;
+      std::vector<ref_ptr<Command>> dl_commands_;
 
   };
 

@@ -118,7 +118,7 @@ void Suffer::Scene::PrepareDraw(){
 	clear_cmd.alloc();
 	clear_cmd.get()->SetClearColor(mathmorra::Vector4(0.8f));
 
-	frame_dl.addCommand(clear_cmd.get());
+	frame_dl.AddCommand(clear_cmd.get());
 
 
   // Gameobject adds itself to displaylist
