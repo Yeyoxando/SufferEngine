@@ -27,11 +27,6 @@ namespace Suffer {
 		virtual ~Scene();
 
     /**
-     * @brief: Initialize all the necessary to use the Scene.
-     */
-		void Init();
-
-    /**
      * @brief: Add a new GameObject to the scene.
      * @param: GameObject to add.
      */

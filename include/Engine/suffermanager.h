@@ -8,7 +8,7 @@
 #include <resource_manager.h>
 #include <audio_manager.h>
 #include <scoped_array.h>
-#include <thread.h>
+#include "thread.h"
 #include "vector2.h"
 #include "input.h"
 
@@ -94,13 +94,6 @@ namespace Suffer {
      *         Executed on main thread.
      */
     void Draw();
-
-
-    /**
-     * @brief: Executes the DisplayList of Audio commands when the logic awakes the audio thread..
-     *         Executed in audio thread.
-     */
-    void Audio();
 
     /**
      * @brief: If the DisplayList of Audio Commands is not empty awakes the audio thread to 
