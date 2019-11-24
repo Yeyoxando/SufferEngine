@@ -6,6 +6,8 @@
 #include "resource_manager.h"
 #include "GL/glew.h"
 
+// ------------------------------------------------------------------------- //
+
 struct Suffer::ResourceManager::ResourceData {
   ResourceData();
   ~ResourceData();
@@ -64,12 +66,13 @@ struct Suffer::ResourceManager::ResourceData {
     ~InternalMaterial() {};
 
     s32 id_handle_;
-    char* vertex_shader_;
-    char* fragment_shader_;
+    const char* vertex_shader_;
+    const char* fragment_shader_;
     GLuint current_program_;
     GLuint vertex_shader_id_;
     GLuint fragment_shader_id_;
     bool is_created_;
+
   };
 
   Array<InternalVertexBuffer> internal_vertex_buffers_;
@@ -85,9 +88,9 @@ struct Suffer::ResourceManager::ResourceData {
   void InitInternalBuffers();
   void InitInternalMaterials();
   void InitInternalTextures();
-  
+
 };
 
-
+// ------------------------------------------------------------------------- //
 
 #endif //__INTERNAL_RESOURCE_MANAGER_H__

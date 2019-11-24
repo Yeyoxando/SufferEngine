@@ -76,8 +76,9 @@ Suffer::MaterialInstance::BaseParams* Suffer::MaterialInstance::GetMaterialParam
 void Suffer::MaterialInstance::SetDefaultParams(ref_ptr<DefaultParams> params){
 
   assert(params.get() != nullptr && "Error: params is null");
+  assert(params->params_type_ != kParams_NONE && "Error: params has no type");
 
-  params->params_type_ = kParams_Default;
+  // Store current params
   data_->current_params_ = params.get();
 
 }
@@ -87,8 +88,9 @@ void Suffer::MaterialInstance::SetDefaultParams(ref_ptr<DefaultParams> params){
 void Suffer::MaterialInstance::SetPhongParams(ref_ptr<PhongParams> params){
 
   assert(params.get() != nullptr && "Error: params is null");
+  assert(params->params_type_ != kParams_NONE && "Error: params has no type");
 
-  params->params_type_ = kParams_Phong;
+  // Store current params
   data_->current_params_ = params.get();
 
 }
@@ -115,6 +117,17 @@ Suffer::MaterialInstance::BaseParams::BaseParams(){
 
 Suffer::MaterialInstance::DefaultParams::DefaultParams(){
 
+  params_type_ = kParams_Default;
+  color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+  albedo_texture_id_ = -1;
+
+}
+
+// --------------------------------------------------- //
+
+Suffer::MaterialInstance::PhongParams::PhongParams(){
+
+  params_type_ = kParams_Phong;
   color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   albedo_texture_id_ = -1;
 
