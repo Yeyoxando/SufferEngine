@@ -288,9 +288,8 @@ u32 Suffer::InputManager::Data::GetGLFWKey(Suffer::InputManager::Key key) {
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
     auto key_event = GetKey(key);
-    if (key_event > INPUT_BUFFER) return;
     auto state = suffer.input_manager_.GetState(key_event);
-
+    if (state == nullptr) return;
     if (action == GLFW_RELEASE) {
         state->released_ = true;
         state->recently_released_ = true;
@@ -354,6 +353,12 @@ void ErrorCallback(int error, const char* description){
 
 // --------------------------------------------------- //
 
+void WindowResizeCallback(GLFWwindow* window, int width, int height) {
+    // TODO: Fill this
+}
+
+// --------------------------------------------------- //
+
 void Suffer::InputManager::StartUp(){
 
     data_ = new Data();
@@ -364,6 +369,7 @@ void Suffer::InputManager::StartUp(){
     glfwSetCursorPosCallback(glfwGetCurrentContext(), MouseCallback);
     glfwSetScrollCallback(glfwGetCurrentContext(), ScrollCallback);
     glfwSetErrorCallback(ErrorCallback);
+    glfwSetWindowSizeCallback(glfwGetCurrentContext(), WindowResizeCallback);
 
 }
 
@@ -382,6 +388,7 @@ void Suffer::InputManager::ShutDown(){
 bool Suffer::InputManager::IsKeyDown(Key key){
 
     auto state = GetState(key);
+    if (state == nullptr) return false;
     if (state->pressed_) {
         state->pressed_ = false;
         return true;
@@ -474,6 +481,8 @@ mathmorra::Vector2 Suffer::InputManager::MousePosition(){
 // --------------------------------------------------- //
 
 Suffer::InputManager::State* Suffer::InputManager::GetState(InputManager::Key state){
+    if (state > INPUT_BUFFER) return nullptr;
+    if (state < 0) return nullptr;
     return &suffer.input_manager_.data_->input_events_[(u32)state].state_;
 }
 

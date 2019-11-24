@@ -17,8 +17,8 @@
 Suffer::Camera::Camera() {
 
     field_of_view_ = 50.0f;
-    speed_ = 1.0f;
-    sensibility_ = 0.5f;
+    speed_ = 0.5f;
+    sensibility_ = 1.0f;
 
     camera_target_ = mathmorra::Vector3(0.0f, 0.0f, 0.0f);
     camera_position_ = mathmorra::Vector3(0.0f, 0.0f, 15.0f);
@@ -326,6 +326,12 @@ void Suffer::Camera::Update(){
 
     if (suffer.input_manager_.IsKeyDown(InputManager::k_F1)) {
         fps_movement_ = !fps_movement_;
+    }
+
+    if (suffer.input_manager_.IsKeyPressed(InputManager::k_Shift)) {
+        speed_ = 1.5f;
+    }else{
+        speed_ = 0.5f;
     }
 
     SetupPerspective(field_of_view_, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.01f, 150.0f);
