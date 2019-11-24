@@ -11,6 +11,10 @@
 #include "suffermanager.h"
 #include "internal_resource_manager.h"
 #include "common_definitions.h"
+#include <string>
+
+#define MAX_USED_TEXTURES 5
+#define MAX_USED_VEC4DATA 13
 
 // ------------------------------------------------------------------------- //
 
@@ -22,7 +26,12 @@ struct Suffer::DrawGeometry::Data {
   GLenum draw_mode_;
 
   // Contains the model, view and projections matrixes + 1 color Vector4 (13 Vector4 in total)
-  float u_data_[13 * 4];
+  float u_data_[MAX_USED_VEC4DATA * 4];
+
+  // Textures has to be separated
+  s32 texture_ids_[MAX_USED_TEXTURES];
+  u32 current_used_textures_;
+
   u32 material_type_;
 
 };
@@ -33,6 +42,13 @@ Suffer::DrawGeometry::DrawGeometry() {
 
   cmd_type_ = Command::kRender;
   data_ = new Data();
+  data_->current_used_textures_ = 0;
+
+  for (u32 i = 0; i < MAX_USED_TEXTURES; ++i) {
+    data_->texture_ids_[i] = -1;
+  }
+
+  data_->material_type_ = MaterialInstance::kParams_NONE;
 
 }
 
@@ -112,16 +128,20 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
       MaterialInstance::DefaultParams* default_params_;
       default_params_ = reinterpret_cast<MaterialInstance::DefaultParams*>(params);
 
-      //data_->material_params_.default_params_.albedo_texture_id_ = params_->albedo_texture_id_;
+      data_->texture_ids_[0] = default_params_->albedo_texture_id_;
+      data_->current_used_textures_ = 1;
     }
       break;
     case MaterialInstance::ParamsType::kParams_Phong: {
       MaterialInstance::PhongParams* phong_params_;
       phong_params_ = reinterpret_cast<MaterialInstance::PhongParams*>(params);
 
-      //data_->material_params_.default_params_.albedo_texture_id_ = params_->albedo_texture_id_;
+      data_->texture_ids_[0] = phong_params_->albedo_texture_id_;
+      //data_->texture_ids_[1] = phong_params_->whatever_texture_id_;
+      //data_->texture_ids_[2] = phong_params_->whatever_texture_id_;
+      data_->current_used_textures_ = 1;
+      //data_->current_used_textures_ = Whatever;
     }
-      // Specific parameters for phong
       break;
     case MaterialInstance::ParamsType::kParams_NONE:
       assert(data_->material_type_ != MaterialInstance::kParams_NONE && "MaterialInstance type not set");
@@ -129,8 +149,6 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
     default:
       break;
     }
-  
-    // Set textures
 
   }
 
@@ -239,100 +257,103 @@ void Suffer::DrawGeometry::Execute() const {
 
   // --------------------------- IsTextureCreated -------------------------- //
 
-  //{
-  //
-  //  // TODO: need a switch and a loop initializing all required textures in material
-  //  if (data_->material_params_.default_params_.albedo_texture_id_ < 0) return;
-  //  s32 id_texture = data_->material_params_.default_params_.albedo_texture_id_;
-  //
-  //  if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ == 0) {
-  //    glGenTextures(1, &suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
-  //  }
-  //
-  //  if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ < suffer.resource_manager_.data_->internal_textures_[id_texture].version_) {
-  //    glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
-  //
-  //    // WRAP S
-  //    switch (suffer.resource_manager_.data_->internal_textures_[id_texture].wrap_s_) {
-  //    case ResourceManager::Texture::kTextureWrap_Repeat:
-  //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  //      break;
-  //    case ResourceManager::Texture::kTextureWrap_MirroredRepeat:
-  //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-  //      break;
-  //    case ResourceManager::Texture::kTextureWrap_ClampToEdge:
-  //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  //      break;
-  //    default:
-  //      break;
-  //    }
-  //
-  //    // WRAP T
-  //    switch (suffer.resource_manager_.data_->internal_textures_[id_texture].wrap_t_) {
-  //    case ResourceManager::Texture::kTextureWrap_Repeat:
-  //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  //      break;
-  //    case ResourceManager::Texture::kTextureWrap_MirroredRepeat:
-  //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-  //      break;
-  //    case ResourceManager::Texture::kTextureWrap_ClampToEdge:
-  //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  //      break;
-  //    default:
-  //      break;
-  //    }
-  //
-  //    // MIN FILTER
-  //    switch (suffer.resource_manager_.data_->internal_textures_[id_texture].min_filter_) {
-  //    case ResourceManager::Texture::kTextureFilter_Linear:
-  //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  //      break;
-  //    case ResourceManager::Texture::kTextureFilter_Nearest:
-  //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  //      break;
-  //    default:
-  //      break;
-  //    }
-  //
-  //    // MAG FILTER
-  //    switch (suffer.resource_manager_.data_->internal_textures_[id_texture].mag_filter_) {
-  //    case ResourceManager::Texture::kTextureFilter_Linear:
-  //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  //      break;
-  //    case ResourceManager::Texture::kTextureFilter_Nearest:
-  //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  //      break;
-  //    default:
-  //      break;
-  //    }
-  //
-  //    // UPLOAD DATA DEPENDING ON NUMBER CHANNELS
-  //    switch (suffer.resource_manager_.data_->internal_textures_[id_texture].number_channels_) {
-  //    case 3:
-  //      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
-  //        suffer.resource_manager_.data_->internal_textures_[id_texture].width_,
-  //        suffer.resource_manager_.data_->internal_textures_[id_texture].height_,
-  //        0, GL_RGB, GL_UNSIGNED_BYTE,
-  //        suffer.resource_manager_.data_->internal_textures_[id_texture].data_.get());
-  //      break;
-  //    case 4:
-  //      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-  //        suffer.resource_manager_.data_->internal_textures_[id_texture].width_,
-  //        suffer.resource_manager_.data_->internal_textures_[id_texture].height_,
-  //        0, GL_RGBA, GL_UNSIGNED_BYTE,
-  //        suffer.resource_manager_.data_->internal_textures_[id_texture].data_.get());
-  //      break;
-  //    default:
-  //      assert(1 && "\n Not contemplated number of channels.");
-  //      break;
-  //    }
-  //
-  //    glGenerateMipmap(GL_TEXTURE_2D);
-  //
-  //    suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ = suffer.resource_manager_.data_->internal_textures_[id_texture].version_;
-  //  }
-  //
-  //}
+  {
+
+    for (u32 i = 0; i < data_->current_used_textures_; ++i) {
+
+      if (data_->texture_ids_[i] < 0) return;
+      s32 id_texture = data_->texture_ids_[i];
+
+      if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ == 0) {
+        glGenTextures(1, &suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
+      }
+
+      if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ < suffer.resource_manager_.data_->internal_textures_[id_texture].version_) {
+        glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
+
+        // WRAP S
+        switch (suffer.resource_manager_.data_->internal_textures_[id_texture].wrap_s_) {
+        case ResourceManager::Texture::kTextureWrap_Repeat:
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+          break;
+        case ResourceManager::Texture::kTextureWrap_MirroredRepeat:
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+          break;
+        case ResourceManager::Texture::kTextureWrap_ClampToEdge:
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+          break;
+        default:
+          break;
+        }
+
+        // WRAP T
+        switch (suffer.resource_manager_.data_->internal_textures_[id_texture].wrap_t_) {
+        case ResourceManager::Texture::kTextureWrap_Repeat:
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+          break;
+        case ResourceManager::Texture::kTextureWrap_MirroredRepeat:
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+          break;
+        case ResourceManager::Texture::kTextureWrap_ClampToEdge:
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+          break;
+        default:
+          break;
+        }
+
+        // MIN FILTER
+        switch (suffer.resource_manager_.data_->internal_textures_[id_texture].min_filter_) {
+        case ResourceManager::Texture::kTextureFilter_Linear:
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+          break;
+        case ResourceManager::Texture::kTextureFilter_Nearest:
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+          break;
+        default:
+          break;
+        }
+
+        // MAG FILTER
+        switch (suffer.resource_manager_.data_->internal_textures_[id_texture].mag_filter_) {
+        case ResourceManager::Texture::kTextureFilter_Linear:
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+          break;
+        case ResourceManager::Texture::kTextureFilter_Nearest:
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+          break;
+        default:
+          break;
+        }
+
+        // UPLOAD DATA DEPENDING ON NUMBER CHANNELS
+        switch (suffer.resource_manager_.data_->internal_textures_[id_texture].number_channels_) {
+        case 3:
+          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+            suffer.resource_manager_.data_->internal_textures_[id_texture].width_,
+            suffer.resource_manager_.data_->internal_textures_[id_texture].height_,
+            0, GL_RGB, GL_UNSIGNED_BYTE,
+            suffer.resource_manager_.data_->internal_textures_[id_texture].data_.get());
+          break;
+        case 4:
+          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+            suffer.resource_manager_.data_->internal_textures_[id_texture].width_,
+            suffer.resource_manager_.data_->internal_textures_[id_texture].height_,
+            0, GL_RGBA, GL_UNSIGNED_BYTE,
+            suffer.resource_manager_.data_->internal_textures_[id_texture].data_.get());
+          break;
+        default:
+          assert(1 && "\n Not contemplated number of channels.");
+          break;
+        }
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ = suffer.resource_manager_.data_->internal_textures_[id_texture].version_;
+      }
+    
+    }
+
+  }
 
   // --------------------------- IsTextureCreated -------------------------- //
 
@@ -432,7 +453,7 @@ void Suffer::DrawGeometry::Execute() const {
     
     s32 u_pos = -1;
 
-    // Uniform Block
+    // -- Uniform Block --
     u_pos = glGetUniformLocation(program_id, "u_data");
     if (u_pos < 0) {
       printf("\nERROR: u_data uniform not exists.");
@@ -441,20 +462,29 @@ void Suffer::DrawGeometry::Execute() const {
 
     glUniform4fv(u_pos, 13, data_->u_data_);
     u_pos = -1;
-    // TODO: pass the textures
   
-//// Albedo Texture
-//  u_pos = glGetUniformLocation(program_id, "u_albedo");
-//  if (u_pos < 0) {
-//    printf("\nERROR: u_albedo uniform not exists.");
-//    //return;
-//  }
-//  
-//  glActiveTexture(GL_TEXTURE0);
-//  glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[data_->material_params_.default_params_.albedo_texture_id_].current_texture_id_);
-//
-//  glUniform1i(u_pos, 0);
-//  u_pos = -1;
+
+
+    // -- Textures --
+    std::string base_tex_name = "u_tex";
+
+    for (int i = 0; i < data_->current_used_textures_; ++i) {
+      
+      std::string tex_name = base_tex_name + std::to_string(i);
+      const char* str = tex_name.c_str();
+      u_pos = glGetUniformLocation(program_id, str);
+      if (u_pos < 0) {
+        printf("\nERROR: texture %d uniform not exists.", i);
+        //return;
+      }
+
+      glActiveTexture(GL_TEXTURE0 + i);
+      glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[data_->texture_ids_[i]].current_texture_id_);
+
+      glUniform1i(u_pos, i);
+      u_pos = -1;
+    
+    }
 
   }
 

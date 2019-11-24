@@ -628,8 +628,13 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
 
     out vec4 fragColor;
     
-    uniform sampler2D u_albedo;
+    uniform sampler2D u_tex0;
+    //uniform sampler2D u_tex1;
+    //uniform sampler2D u_tex2;
+    //uniform sampler2D u_texn;
     
+    #define u_albedo u_tex0
+
     in vec4 color;
     in vec3 normal;
     in vec2 uvs;
@@ -653,7 +658,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
     void main(){
       
       // Texture
-      vec4 tex_color = /*texture(u_albedo, uvs) * */color;
+      vec4 tex_color = texture(u_albedo, uvs) * color;
 
       // Ambient
       vec3 ambient = 0.4 * light_color; 
