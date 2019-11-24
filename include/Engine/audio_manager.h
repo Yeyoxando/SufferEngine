@@ -16,38 +16,38 @@ namespace Suffer {
 
     class AudioManager {
 
-        friend class SufferManager;
-        friend class Audio3D;
+    friend class SufferManager;
+    friend class Audio3D;
 
-    public:
+public:
 
-        /**
-         * @brief: moves the DL calculated by the logic to the audio DL
-         * @param: the DL calculated by the logic
-         */
-        void AddToAudioQueue(DisplayList&& audio_dl_by_logic_);
+    /**
+        * @brief: moves the DL calculated by the logic to the audio DL
+        * @param: the DL calculated by the logic
+        */
+    void AddToAudioQueue(DisplayList&& audio_dl_by_logic_);
 
-        /**
-         * @brief: executes the audio DisplayList
-         */
-        void DoAudio();
+    /**
+        * @brief: executes the audio DisplayList
+        */
+    void DoAudio();
 
-    private:
-        void StartUp();  // a.k.a Init()
-        void ShutDown(); // a.k.a End()
+private:
+    void StartUp();  // a.k.a Init()
+    void ShutDown(); // a.k.a End()
 
-        AudioManager();
-        ~AudioManager();
+    AudioManager();
+    ~AudioManager();
 
-        u32 max_audio_sources_;
-        u32 audio_sources_;
-        Mutex dl_mutex_;
-        DisplayList audio_dl_;
-        std::vector<ref_ptr<Audio3D>> audio_container_;
-        
-    };
+    u32 max_audio_sources_;
+    u32 audio_sources_;
+    Mutex dl_mutex_;
+    DisplayList audio_dl_;
+    std::vector<ref_ptr<Audio3D>> audio_container_;
+
+};
 
 
 }
 
-#endif //__AUDIO_MANAGER_H__
+#endif //AUDIO_MANAGER_H

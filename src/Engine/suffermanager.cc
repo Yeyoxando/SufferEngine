@@ -109,16 +109,6 @@ void Suffer::SufferManager::Input() {
 
 void Suffer::SufferManager::Run(){
 
-  //ref_ptr<Audio3D> audio_source_;
-  //audio_source_.alloc();
-  //audio_source_->Load("../../../resources/audio/plonk_dry.ogg");
-  //ref_ptr <AudioCommands::Play> play_command_;
-  //play_command_.alloc();
-  //play_command_->audio_3d_ = audio_source_.get();
-  //DisplayList audio_dl_;
-  //audio_dl_.addCommand(play_command_.get());
-  //audio_manager_.AddToAudioQueue(std::move(audio_dl_));
-
   // Threads Function Assignment
   auto update_thread = [] { SufferManager::instance().Step(); };
   auto input_thread = [] { SufferManager::instance().Input(); };
@@ -159,21 +149,13 @@ void Suffer::SufferManager::SetScene(ref_ptr<Scene> scene){
   data_->scene_context_ = scene;
 
 }
-
-// --------------------------------------------------------------//
-
-void Suffer::SufferManager::Audio() {
-
-  audio_manager_.DoAudio();
-
-}
-
+  
 // --------------------------------------------------------------//
 
 void Suffer::SufferManager::PrepareAudio() {
 	
   if (audio_manager_.audio_dl_.Size() > 0) {
-    auto audio_thread = [] { SufferManager::instance().Audio(); };
+    auto audio_thread = [] { suffer.audio_manager_.DoAudio(); };
     audio_->NewTask(audio_thread);
   }
 
