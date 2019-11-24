@@ -342,7 +342,11 @@ void MouseCallback(GLFWwindow* window, double xpos, double ypos) {
 // --------------------------------------------------- //
 
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
-    // TODO: Fill this
+
+    float current_fov = suffer.GetCurrentScene()->GetMainCamera()->Fov();
+    current_fov += (yoffset * 0.2f);
+    suffer.GetCurrentScene()->GetMainCamera()->SetFOV(current_fov);
+
 }
 
 // --------------------------------------------------- //

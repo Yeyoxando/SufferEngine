@@ -32,6 +32,12 @@ namespace Suffer {
      */
     void AddGameObject(ref_ptr<GameObject> gameobject);
 
+    /**
+     * @brief: Get the main camera of the current scene.
+     * @return: a pointer to the main camera.
+     */
+    Camera* GetMainCamera();
+
   private:
 
     /**

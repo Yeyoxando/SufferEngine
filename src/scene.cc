@@ -69,6 +69,14 @@ void Suffer::Scene::PrepareDraw(){
 
 }
 
+// --------------------------------------------------- //
+
+Suffer::Camera* Suffer::Scene::GetMainCamera(){
+    return main_camera_.get();
+}
+
+// --------------------------------------------------- //
+
 void Suffer::Scene::AddGameObject(ref_ptr<GameObject> gameobject){
 
   current_gameobjects_.push_back(gameobject);
