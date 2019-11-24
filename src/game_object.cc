@@ -7,7 +7,13 @@
 #include <game_object.h>
 #include <draw_geometry.h>
 #include <matrix4.h>
+#include <imgui.h>
+#include "interface.h"
 #include <suffermanager.h>
+
+struct ExampleAppLog {
+    void    AddLog(const char* fmt, ...) IM_FMTARGS(2);
+};
 
 // --------------------------------------------------- //
 
@@ -188,13 +194,6 @@ void Suffer::GameObject::StartUp(const char* luaCodeFile){
 
 // --------------------------------------------------- //
 
-void Suffer::GameObject::CheckLuaError(int status){
-    if (status) {
-        const char* error = lua_tostring(_script, -1);
-        printf("LUA ERRROR %s\n", error);
-        assert(true);
-    }
-}
 
 // --------------------------------------------------- //
 
@@ -261,4 +260,49 @@ void Suffer::GameObject::Destroy(){
     
 }
 
-// --------------------------------------------------- //
+// --------------------------------------------------------------- //
+// ------------------------ LUA FUNCTIONS  ----------------------- //
+// --------------------------------------------------------------- //
+
+int Suffer::GameObject::lua_Rotate(lua_State* L) {
+    // This receives a stack with values...
+    int args = lua_gettop(L);
+    if (args != 3) {
+        return luaL_error(L, "Invalid call expected three argument");
+    }
+    float x = lua_tonumber(L, 1);
+    float y = lua_tonumber(L, 2);
+    float z = lua_tonumber(L, 3);
+    GetReference(L)->RotateL(x, y, z);
+    lua_pop(L, 1);
+    return 0;
+}
+
+// --------------------------------------------------------------- //
+
+int Suffer::GameObject::lua_Translate(lua_State* L){
+    return 0;
+}
+
+// --------------------------------------------------------------- //
+
+void Suffer::GameObject::CheckLuaError(int status) {
+    if (status) {
+        const char* error = lua_tostring(_script, -1);
+        Interface::log.AddLog("\n[" _error_ "] [%s]", error);
+    }
+}
+
+// --------------------------------------------------------------- //
+
+void Suffer::GameObject::RotateL(float x, float y, float z) {
+    static float x_ = x;
+    static float y_ = y;
+    static float z_ = z;
+    x_ += x;
+    y_ += y;
+    z_ += z;
+    Rotate(x_, y_, z_);
+}
+
+// --------------------------------------------------------------- //
