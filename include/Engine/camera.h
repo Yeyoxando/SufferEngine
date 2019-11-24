@@ -104,6 +104,7 @@ namespace Suffer {
 
         mathmorra::Matrix4 view_matrix_;
         mathmorra::Matrix4 projection_matrix_;
+        mathmorra::Matrix4 look_at_matrix_;
 
         float field_of_view_; // FOV
 
