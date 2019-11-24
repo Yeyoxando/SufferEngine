@@ -3,10 +3,11 @@
 #ifndef __INTERNAL_SUFFERMANAGER_H__
 #define __INTERNAL_SUFFERMANAGER_H__
 
-
 #include "suffermanager.h"
 #include "window.h"
 #include "interface.h"
+
+// ------------------------------------------------------------------------- //
 
 struct Suffer::SufferManager::Data {
 
@@ -23,5 +24,7 @@ struct Suffer::SufferManager::Data {
     bool window_should_close_;
 
 };
+
+// ------------------------------------------------------------------------- //
 
 #endif //__INTERNAL_SUFFERMANAGER_H__

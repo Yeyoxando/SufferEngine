@@ -33,50 +33,74 @@ namespace Suffer {
     enum ParamsType {
       kParams_Default = 0,
       kParams_Phong,
-      kParams_NONE = 20
+      kParams_NONE = 20,
     };
 
-    // ------------------------------ Getters ------------------------------ //
 
     /**
-     * @return: color of the object
+     * @brief: BaseParams class from which inherit the rest of material params.
+     *         If an attributte is needed in all the rest of material params it will be here.
      */
-    mathmorra::Vector4 GetColor() const;
-    /**
-     * @return: albedo texture id 
-     */
-    u32 GetAlbedoTexture() const;
-    /**
-     * @return: Material params kind
-     */
-    u32 GetMaterialParamsType() const;
+    struct BaseParams : public Referenced {    
+      friend class MaterialInstance;
+    public:
+      mathmorra::Vector4 color_;
 
+    protected:
+      BaseParams();
+      ~BaseParams() {}
 
-    // ------------------------------ Getters ------------------------------ //
+      ParamsType params_type_;
 
-    /**
-     * @brief: sets object color
-     * @param: new_color of the object  
-     */
-    void SetColor(mathmorra::Vector4 new_color);
+    };
 
     /**
-     * @brief: sets object albedo texture
-     * @param: previously created and loaded texture
+     * @brief: Saves default material specific parameters.
      */
-    void SetAlbedoTexture(ref_ptr<ResourceManager::Texture> texture);
+    struct DefaultParams : public BaseParams {
+    public:
+      DefaultParams();
+      ~DefaultParams() {}
+
+      s32 albedo_texture_id_;
+
+    };
 
     /**
-     * @brief: sets the way that material should render and indicates which parameters could get
-     * @param: type to set
+     * @brief: Saves phong material specific parameters.
      */
-    void SetMaterialParamsType(ParamsType type);
+    struct PhongParams : public BaseParams {
+    public:
+      PhongParams();
+      ~PhongParams() {}
+
+      s32 albedo_texture_id_;
+
+    };
+
+    //struct ...Params : public BaseParams {};
+
+    // ------------------------------ Setters ------------------------------ //
+
+    /**
+     * @brief: sets material instance default material parameters. Converts the material to a default type.
+     * @param: default params for the object.
+     */
+    void SetDefaultParams(ref_ptr<DefaultParams> params);
+
+    /**
+     * @brief: sets material instance phong material parameters. Converts the material to a phong type.
+     * @param: phong params for the object.
+     */
+    void SetPhongParams(ref_ptr<PhongParams> params);
+
 
 	protected:
 		virtual ~MaterialInstance();
 
-	private:
-    ParamsType params_type_;
+  private:
+    u32 GetMaterialParamsType() const;
+    BaseParams* GetMaterialParams();
 
 		struct Data;
 		Data* data_;
