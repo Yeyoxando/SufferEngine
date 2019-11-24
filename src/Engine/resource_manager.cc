@@ -560,6 +560,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
 
 void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   
+  // Increase the number if you create a new one
   internal_materials_.alloc(1);
   number_of_materials_ = 0;
 
