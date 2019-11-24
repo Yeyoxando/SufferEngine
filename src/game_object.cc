@@ -10,10 +10,8 @@
 #include <imgui.h>
 #include "interface.h"
 #include <suffermanager.h>
-
-struct ExampleAppLog {
-    void    AddLog(const char* fmt, ...) IM_FMTARGS(2);
-};
+#include "internal_interface.h"
+#include "internal_game_object.h"
 
 // --------------------------------------------------- //
 
@@ -28,15 +26,19 @@ Suffer::GameObject::GameObject() {
   transform_.forward_ = mathmorra::Vector3::CrossProduct(transform_.up_, 
                                                          transform_.right_);
 
+  data_ = new Data();
+
   name_ = "GameObject";
-  StartUp("../../../src/lua/lua_code.txt");
+  data_->lua_error_ = false;
 
 }
 
 // --------------------------------------------------- //
 
 Suffer::GameObject::~GameObject() {
-
+    if (data_ == nullptr) return;
+    delete data_;
+    data_ = nullptr;
 }
 
 // --------------------------------------------------- //
@@ -162,34 +164,45 @@ void Suffer::GameObject::SetName(const char* name){
     name_ = (char*)name;
 }
 
-Suffer::GameObject* Suffer::GameObject::GetReference(lua_State* L) {
+Suffer::GameObject* Suffer::GameObject::Data::GetReference(lua_State* L) {
     
     lua_pushstring(L, "THIS");
     lua_gettable(L, LUA_REGISTRYINDEX);
     const void* raw_ptr = lua_topointer(L, -1);
     
     GameObject* ptr = reinterpret_cast<GameObject*>(const_cast<void*>(raw_ptr));
+    if (ptr->data_ == nullptr) return nullptr;
     return ptr;
 }
 
 // --------------------------------------------------- //
 
-void Suffer::GameObject::StartUp(const char* luaCodeFile){
+void Suffer::GameObject::StartUpLUA(const char* luaCodeFile){
 
-    assert(_script == nullptr && "Invalid script");
-    _script = luaL_newstate();
+    data_->lua_file_ = (char*)luaCodeFile;
+    assert(data_->_script == nullptr && "Invalid script");
+    data_->_script = luaL_newstate();
 
-    luaL_openlibs(_script);
+    luaL_openlibs(data_->_script);
 
-    lua_pushcfunction(_script, lua_Rotate); // +1
-    lua_setglobal(_script, "RotateL");       // -1
+    // PUSH FUNCTIONS FOR LUA
+    lua_pushcfunction(data_->_script, data_->lua_Rotate);    // +1
+    lua_setglobal(data_->_script, "Rotate");          // -1
 
-    lua_pushstring(_script, "THIS");
-    lua_pushlightuserdata(_script, this);
-    lua_settable(_script, LUA_REGISTRYINDEX);
+    lua_pushcfunction(data_->_script, data_->lua_Translate); // +1
+    lua_setglobal(data_->_script, "Translate");       // -1
 
-    int status = luaL_dofile(_script, luaCodeFile);
-    CheckLuaError(status);
+    lua_pushcfunction(data_->_script, data_->lua_Scale);     // +1
+    lua_setglobal(data_->_script, "Scale");           // -1
+
+
+
+    lua_pushstring(data_->_script, "THIS");
+    lua_pushlightuserdata(data_->_script, this);
+    lua_settable(data_->_script, LUA_REGISTRYINDEX);
+
+    data_->reference = data_->GetReference(data_->_script);
+
 }
 
 // --------------------------------------------------- //
@@ -246,8 +259,10 @@ Suffer::Transform Suffer::GameObject::GetTransform() {
 void Suffer::GameObject::Step(float delta_time){
 
     // Updates
-    int status = luaL_dofile(_script, "../../../src/lua/lua_code.txt");
-    CheckLuaError(status);
+    if (!data_->lua_error_) {
+      int status = luaL_dofile(data_->_script, data_->lua_file_);
+      data_->CheckLuaError(status);
+    }
 
     // Logic
 
@@ -264,45 +279,86 @@ void Suffer::GameObject::Destroy(){
 // ------------------------ LUA FUNCTIONS  ----------------------- //
 // --------------------------------------------------------------- //
 
-int Suffer::GameObject::lua_Rotate(lua_State* L) {
-    // This receives a stack with values...
+int Suffer::GameObject::Data::lua_Rotate(lua_State* L) {
+
     int args = lua_gettop(L);
     if (args != 3) {
-        return luaL_error(L, "Invalid call expected three argument");
+        return luaL_error(L, "Invalid call expected three argument.");
     }
     float x = lua_tonumber(L, 1);
     float y = lua_tonumber(L, 2);
     float z = lua_tonumber(L, 3);
-    GetReference(L)->RotateL(x, y, z);
+    GetReference(L)->data_->RotateL(x, y, z);
     lua_pop(L, 1);
     return 0;
+
 }
 
 // --------------------------------------------------------------- //
 
-int Suffer::GameObject::lua_Translate(lua_State* L){
+int Suffer::GameObject::Data::lua_Translate(lua_State* L){
+
+    int args = lua_gettop(L);
+    if (args != 3) {
+        return luaL_error(L, "Invalid call, expected three arguments.");
+    }
+    float x = lua_tonumber(L, 1);
+    float y = lua_tonumber(L, 2);
+    float z = lua_tonumber(L, 3);
+    GetReference(L)->data_->TranslateL(x, y, z);
+    lua_pop(L, 1);
     return 0;
+
 }
 
 // --------------------------------------------------------------- //
 
-void Suffer::GameObject::CheckLuaError(int status) {
+int Suffer::GameObject::Data::lua_Scale(lua_State* L){
+
+    int arguments = lua_gettop(L);
+    if (arguments != 3) {
+        return luaL_error(L, "Invalid call, expected three arguments");
+    }
+
+    float x = lua_tonumber(L, 1);
+    float y = lua_tonumber(L, 2);
+    float z = lua_tonumber(L, 3);
+    GetReference(L)->Scale(mathmorra::Vector3(x, y, z));
+    lua_pop(L, 1);
+    return 0;
+
+}
+
+// --------------------------------------------------------------- //
+
+void Suffer::GameObject::Data::CheckLuaError(int status) {
+
     if (status) {
         const char* error = lua_tostring(_script, -1);
         Interface::log.AddLog("\n[" _error_ "] [%s]", error);
+        lua_error_ = true;
     }
+
 }
 
 // --------------------------------------------------------------- //
 
-void Suffer::GameObject::RotateL(float x, float y, float z) {
-    static float x_ = x;
-    static float y_ = y;
-    static float z_ = z;
-    x_ += x;
-    y_ += y;
-    z_ += z;
-    Rotate(x_, y_, z_);
+void Suffer::GameObject::Data::RotateL(float x, float y, float z) {
+
+  reference->Rotate(reference->transform_.rotation_.x_ + x, 
+                    reference->transform_.rotation_.y_ + y,
+                    reference->transform_.rotation_.z_ + z);
+
+}
+
+// --------------------------------------------------------------- //
+
+void Suffer::GameObject::Data::TranslateL(float x, float y, float z){
+
+    reference->Translate(reference->transform_.position_.x_ + x,
+                         reference->transform_.position_.y_ + y,
+                         reference->transform_.position_.z_ + z);
+
 }
 
 // --------------------------------------------------------------- //

@@ -1,4 +1,6 @@
 #include "audio_manager.h"
+#include "audio_commands.h"
+#include "suffermanager.h"
 #include "common_definitions.h"
 
 Suffer::AudioManager::AudioManager() {

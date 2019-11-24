@@ -15,11 +15,6 @@
 #include <command.h>
 #include "display_list.h"
 
-// LUA
-#include "lua.hpp"
-#include <cstdlib>
-#include <cassert>
-
 // Mathematic Headers
 #include <vector3.h>
 #include <matrix4.h>
@@ -83,6 +78,7 @@ namespace Suffer {
 
     const char* Name();
     void SetName(const char* name);
+    void StartUpLUA(const char* luaCodeFile);
 
 	protected:
 		virtual ~GameObject();
@@ -100,14 +96,9 @@ namespace Suffer {
     void Step(float delta_time);
     void Destroy();
 
-    // LUA Stuff
-    lua_State* _script = nullptr;
-    static GameObject* GetReference(lua_State* L);
-    void StartUp(const char* luaCodeFile);
-    void CheckLuaError(int status);
-    void RotateL(float x, float y, float z);
-    static int lua_Rotate(lua_State* L);
-    static int lua_Translate(lua_State* L);
+
+    struct Data;
+    Data* data_;
 
 	};
 

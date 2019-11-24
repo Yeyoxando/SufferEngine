@@ -37,6 +37,7 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::GameObject> go_cube;
   go_cube.alloc();
+  go_cube->StartUpLUA("../../../src/lua/lua_code_cube.txt");
   go_cube->SetGeometry(geometry);
   go_cube->GetGeometry()->SetDrawMode(Suffer::Geometry::kDrawMode_Triangles);
   go_cube->SetMaterial(material);
@@ -65,6 +66,7 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::GameObject> go_sphere;
   go_sphere.alloc();
+  go_sphere->StartUpLUA("../../../src/lua/lua_code_sphere.txt");
   go_sphere->SetGeometry(geometry2);
   go_sphere->GetGeometry()->SetDrawMode(Suffer::Geometry::kDrawMode_Triangles);
 

@@ -45,7 +45,7 @@ struct Suffer::Audio3D::Data {
 Suffer::Audio3D::Audio3D(){
 
 #ifdef ASSERT
- assert(SufferManager::instance().audio_manager_.audio_sources_ <
+    assert(SufferManager::instance().audio_manager_.audio_sources_ <
         SufferManager::instance().audio_manager_.max_audio_sources_
         && "Too many audio sources!");
 #endif
