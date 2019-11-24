@@ -68,6 +68,8 @@ Suffer::Interface::Interface(){
 	options_window_ = false;
 	style_ = kRed;
 
+
+
 	is_log_opened_ = true;
 	is_hierarchy_opened_ = true;
 	is_inspector_opened_ = true;

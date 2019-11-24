@@ -10,22 +10,26 @@
 #include "common_definitions.h"
 #include "math_utils.h"
 #include "GL/glew.h"
+#include "glm.hpp"
 
 // --------------------------------------------------- //
 
 Suffer::Camera::Camera() {
 
     field_of_view_ = 50.0f;
-    speed_ = 1.0f;
+    speed_ = 0.5f;
     sensibility_ = 1.0f;
 
-    camera_position_ = mathmorra::Vector3(0.0f, 0.0f, -15.0f);
+    camera_target_ = mathmorra::Vector3(0.0f, 0.0f, 0.0f);
+    camera_position_ = mathmorra::Vector3(0.0f, 0.0f, 15.0f);
+    camera_direction_ = camera_position_ - camera_target_;
+    camera_direction_.Normalize();
 
-    camera_up_ = mathmorra::Vector3(0.0f, 1.0f, 0.0f);
-    camera_right_ = mathmorra::Vector3(1.0f, 0.0f, 0.0f);
-    //camera_forward_ = mathmorra::Vector3(0.0f, 0.0f, -1.0f);
-    camera_direction_ = mathmorra::Vector3(0.0f, 0.0f, 1.0f);
+    camera_right_ = mathmorra::Vector3::CrossProduct(mathmorra::Vector3(0.0f, 1.0f, 0.0f), camera_direction_);
+    camera_right_.Normalize();
 
+    camera_up_ = mathmorra::Vector3::CrossProduct(camera_direction_, camera_right_);
+    camera_up_.Normalize();
 
     fps_movement_ = false;
 
@@ -162,16 +166,22 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
     mathmorra::Vector2 last_position;
 
     // CAMERA UTILS
-    camera_right_ = -mathmorra::Vector3::CrossProduct(camera_direction_, camera_up_);
-    camera_up_ = -mathmorra::Vector3::CrossProduct(camera_right_, camera_direction_);
+    camera_direction_ = camera_position_ - camera_target_;
+    camera_direction_.Normalize();
+
+    camera_right_ = mathmorra::Vector3::CrossProduct(mathmorra::Vector3(0.0f, 1.0f, 0.0f), camera_direction_);
+    camera_right_.Normalize();
+
+    camera_up_ = mathmorra::Vector3::CrossProduct(camera_direction_, camera_right_);
+    camera_up_.Normalize();
 
     // FORWARD
     if (suffer.input_manager_.IsKeyPressed(InputManager::k_W)) {
 
         mathmorra::Matrix4 translations = translations.Translate(
-            camera_direction_.x_ * camera_speed * time,
-            camera_direction_.y_ * camera_speed * time,
-            camera_direction_.z_ * camera_speed * time);
+            -camera_direction_.x_ * camera_speed * time,
+            -camera_direction_.y_ * camera_speed * time,
+            -camera_direction_.z_ * camera_speed * time);
 
         //Transform Matrix4 / Vector3
         camera_position_ = translations * camera_position_;
@@ -207,9 +217,9 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
     if (suffer.input_manager_.IsKeyPressed(InputManager::k_S)) {
 
         mathmorra::Matrix4 translations = translations.Translate(
-            -camera_direction_.x_ * camera_speed * time,
-            -camera_direction_.y_ * camera_speed * time,
-            -camera_direction_.z_ * camera_speed * time);
+            camera_direction_.x_ * camera_speed * time,
+            camera_direction_.y_ * camera_speed * time,
+            camera_direction_.z_ * camera_speed * time);
 
         //Transform Matrix4 / Vector3
         camera_position_ = translations * camera_position_ ;
@@ -261,33 +271,28 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
 
     camera->SetPosition(camera_position_);
 
-    mathmorra::Vector2 mouse = SufferManager::instance().GetMousePosition();
+    mathmorra::Vector2 mouse = suffer.GetMousePosition();
 
     float angleX = (mouse.x_ / (WINDOW_WIDTH)) * 6.28f;
     float angleY = (mouse.y_ / (WINDOW_HEIGHT)) * 6.28f;
-    
-    angleX *= sensibility_;
-    angleY *= sensibility_;
     
     
     //MOUSE CONTROL - QUATERNIONS
     mathmorra::Vector3 x = mathmorra::Vector3(1.0f, 0.0f, 0.0f);
     mathmorra::Vector3 y = mathmorra::Vector3(0.0f, 1.0f, 0.0f);
-    
-    mathmorra::Quaternion q = q.EulerAngles(x, angleY);
-    mathmorra::Quaternion p = p.EulerAngles(y, -angleX);
+
+    mathmorra::Quaternion q = q.EulerAngles(x, -angleY);
+    mathmorra::Quaternion p = p.EulerAngles(y, angleX);
     mathmorra::Quaternion quaternion = quaternion.Multiply(p, q);
+
     quaternion.Normalize();
-    
+
     mathmorra::Vector3 back;
     back = { 0.0f, 0.0f, -1.0f };
     back = quaternion.RotateVectorByQuaternion(back, quaternion);
-
     back.Normalize();
-    camera_right_.Normalize();
-    camera_up_.Normalize();
 
-    camera_direction_ = -(back);
+    camera_target_ = -(back);
 
 }
 
@@ -323,20 +328,23 @@ void Suffer::Camera::Update(){
         fps_movement_ = !fps_movement_;
     }
 
+    if (suffer.input_manager_.IsKeyPressed(InputManager::k_Shift)) {
+        speed_ = 1.5f;
+    }else{
+        speed_ = 0.5f;
+    }
+
     SetupPerspective(field_of_view_, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.01f, 150.0f);
 
     view_matrix_ = mathmorra::Matrix4(
         mathmorra::Vector4(camera_right_, 0.0f),
         mathmorra::Vector4(camera_up_, 0.0f),
-        mathmorra::Vector4(-camera_direction_, 0.0f),
+        mathmorra::Vector4(camera_target_, 0.0f),
         mathmorra::Vector4(camera_position_, 1.0f)
     );
 
-    //camera_position_ = mathmorra::Matrix4::RotateZ(0.0f) * camera_position_;
-
-    //printf("UP: %f, %f, %f\n", camera_up_.x_, camera_up_.y_, camera_up_.z_);
-
     view_matrix_.GetInverse(&view_matrix_);
+
 }
 
 // --------------------------------------------------- //
