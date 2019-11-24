@@ -23,6 +23,7 @@ Suffer::GameObject::GameObject() {
                                                          transform_.right_);
 
   name_ = "GameObject";
+  StartUp("../../../src/lua/lua_code.txt");
 
 }
 
@@ -155,6 +156,46 @@ void Suffer::GameObject::SetName(const char* name){
     name_ = (char*)name;
 }
 
+Suffer::GameObject* Suffer::GameObject::GetReference(lua_State* L) {
+    
+    lua_pushstring(L, "THIS");
+    lua_gettable(L, LUA_REGISTRYINDEX);
+    const void* raw_ptr = lua_topointer(L, -1);
+    
+    GameObject* ptr = reinterpret_cast<GameObject*>(const_cast<void*>(raw_ptr));
+    return ptr;
+}
+
+// --------------------------------------------------- //
+
+void Suffer::GameObject::StartUp(const char* luaCodeFile){
+
+    assert(_script == nullptr && "Invalid script");
+    _script = luaL_newstate();
+
+    luaL_openlibs(_script);
+
+    lua_pushcfunction(_script, lua_Rotate); // +1
+    lua_setglobal(_script, "RotateL");       // -1
+
+    lua_pushstring(_script, "THIS");
+    lua_pushlightuserdata(_script, this);
+    lua_settable(_script, LUA_REGISTRYINDEX);
+
+    int status = luaL_dofile(_script, luaCodeFile);
+    CheckLuaError(status);
+}
+
+// --------------------------------------------------- //
+
+void Suffer::GameObject::CheckLuaError(int status){
+    if (status) {
+        const char* error = lua_tostring(_script, -1);
+        printf("LUA ERRROR %s\n", error);
+        assert(true);
+    }
+}
+
 // --------------------------------------------------- //
 
 Suffer::GameObject* Suffer::GameObject::GetChild(u32 child){
@@ -206,7 +247,8 @@ Suffer::Transform Suffer::GameObject::GetTransform() {
 void Suffer::GameObject::Step(float delta_time){
 
     // Updates
-    
+    int status = luaL_dofile(_script, "../../../src/lua/lua_code.txt");
+    CheckLuaError(status);
 
     // Logic
 

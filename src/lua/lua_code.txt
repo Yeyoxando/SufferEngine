@@ -1,1 +1,1 @@
-print "HELLO from file"
+RotateL(1, 0, 0)

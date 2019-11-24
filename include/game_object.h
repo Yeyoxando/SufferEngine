@@ -44,7 +44,7 @@ namespace Suffer {
 	// --------------------------------------------------- //
 
 	class GameObject : public virtual Referenced {
-
+      friend class Scene;
 	public:
 
 		GameObject();
@@ -84,8 +84,35 @@ namespace Suffer {
     const char* Name();
     void SetName(const char* name);
 
+    // LUA Stuff
     lua_State* _script = nullptr;
+    static GameObject* GetReference(lua_State* L);
+    void StartUp(const char* luaCodeFile);
+    void CheckLuaError(int status);
 
+    void RotateL(int x, int y, int z) {
+        static float x_ = x;
+        static float y_ = y;
+        static float z_ = z;
+        x_ += (0.02f) * x;
+        y_ += (0.02f) * y;
+        z_ += (0.02f) * z;
+        Rotate(x_, y_, z_);
+    }
+
+    static int lua_Rotate(lua_State* L) {
+        // This receives a stack with values...
+        int args = lua_gettop(L);
+        if (args != 3) {
+            return luaL_error(L, "Invalid call expected three argument");
+        }
+        float x = lua_tonumber(L, 1);
+        float y = lua_tonumber(L, 2);
+        float z = lua_tonumber(L, 3);
+        GetReference(L)->RotateL(x, y, z);
+        lua_pop(L, 1);
+        return 0;
+    }
 
 	protected:
 		virtual ~GameObject();
