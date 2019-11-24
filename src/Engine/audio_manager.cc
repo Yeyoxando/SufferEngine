@@ -35,7 +35,7 @@ void Suffer::AudioManager::AddToAudioQueue(DisplayList&& audio_dl_by_logic_){
 
 	// Moves given DL to current DL with std::move
 	if (audio_dl_by_logic_.GetDisplayListType() == DisplayList::kDisplayListType_Audio) {
-    u32 size = audio_dl_by_logic_.size();
+    u32 size = audio_dl_by_logic_.Size();
     for (u32 i = 0; i < size; ++i) {
         audio_dl_.dl_commands_.push_back(std::move(audio_dl_by_logic_.dl_commands_[i]));
     }
@@ -53,14 +53,14 @@ void Suffer::AudioManager::DoAudio(){
 
 	dl_mutex_.lock();
 
-	u32 size = audio_dl_.size();
+	u32 size = audio_dl_.Size();
 	
 	for (u32 i = 0; i < size; ++i) {
 		const Command* cmd = audio_dl_.dl_commands_[i].get();
 		cmd->Execute();
 	}
 	
-  audio_dl_.clear();
+  audio_dl_.Clear();
 
 	dl_mutex_.unlock();
 

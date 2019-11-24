@@ -1,15 +1,14 @@
 solution ("SufferEngine")
 	configurations { "Debug", "Release" }
 	platforms { "x32", "x64" }
-	language "C++"
 	location ("build")	
 	
-	projects = { "SufferCore" }
+	projects = { "SufferCore", "LUA" }
 
 	for i, prj in ipairs(projects) do 
 		project (prj)
 		targetname (prj)
-		language "C++"
+		
 		prj_path = "./build/" .. prj
 
 		location (prj_path .. "/" .. _ACTION)
@@ -36,11 +35,32 @@ solution ("SufferEngine")
 
 	end
 
+
+
+  project "LUA"
+
+  language "C"
+  kind "StaticLib"
+
+  files{
+    --LUA
+      "./src/deps/lua/*.c",
+      "./src/deps/lua/*.h",
+  }
+  includedirs{
+    "./src/deps/lua/",
+  }
+
+
 project "SufferCore"
 
+  language "C++"
 	kind "ConsoleApp"
 	
+  links { "LUA" }
+
 	includedirs{
+    "./src/deps/lua/",
 		"./src/Internal/",
 		"./src/deps/GLFW/include/GLFW/",
 		"./src/deps/GLFW/include/",
@@ -48,6 +68,7 @@ project "SufferCore"
 		"./src/deps/glew/include/",
 		"./src/deps/imgui/",
 		"./include/",
+		"./src/deps/lua/",
 		"./include/Memory_Management/",
 		"./include/commands/",
 		"./include/Engine/",
@@ -80,7 +101,7 @@ project "SufferCore"
 		"./src/commands/*.cc",
 		"./src/Engine/*.cc",
 		"./src/Internal/*.h",
-		"./tests/*.cc",
+		"./tests/*.cc", 
 
 		--GLFW
 		"./src/deps/GLFW/src/context.c",

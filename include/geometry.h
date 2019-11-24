@@ -21,12 +21,32 @@ namespace Suffer {
 
 	    Geometry();
 
+      enum DrawMode {
+          kDrawMode_Invalid   = -1,
+          kDrawMode_Triangles = 0,
+          kDrawMode_Lines,
+          kDrawMode_LineLoop,
+          kDrawMode_LineStrip,
+          kDrawMode_Patches,
+          kDrawMode_Points,
+      };
+
+      /**
+      * @brief:
+      */
 	    enum BasicShapes {
-		    kBasicShapes_Triangle = 0,
+        kBasicShapes_Invalid = -1,
+		    kBasicShapes_Triangle,
 		    kBasicShapes_Quad,
 		    kBasicShapes_Cube,
+        kBasicShapes_Sphere,
 		    kBasicShapes_NONE = 20
 	    };
+
+      void CreateGeometryWithShape(BasicShapes shape);
+
+      void SetDrawMode(DrawMode newMode);
+      DrawMode GetDrawMode();
 		
       /**
        * @brief: Assigns the vertex buffer passed by parameter
@@ -58,13 +78,10 @@ namespace Suffer {
 	    struct Data;
 	    Data* data_;
 
+      DrawMode mode_;
 	    BasicShapes shape_;
       s32 index_buffer_id_;
       s32 vertex_buffer_id_;
-
-	  ref_ptr<Suffer::ResourceManager::IndexBuffer> index_buffer_;
-	  ref_ptr<Suffer::ResourceManager::VertexBuffer> vertex_buffer_;
-
 
 	    // Methods
 	    Geometry(const Geometry&);

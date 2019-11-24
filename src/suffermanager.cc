@@ -25,9 +25,11 @@ Suffer::SufferManager::SufferManager(){
 // --------------------------------------------------------------//
 
 Suffer::SufferManager::~SufferManager(){
+
 	if (!data_) return;
 	delete data_;
 	data_ = nullptr;
+
 }
 
 // --------------------------------------------------------------//
@@ -49,14 +51,12 @@ Suffer::SufferManager& Suffer::SufferManager::instance() {
 
 bool Suffer::SufferManager::Init(){
 
-#ifdef ASSERT
 	assert(data_ && "\n Data is null.");
-#endif // ASSERT
 
-	data_->wind_.init(WINDOW_WIDTH, WINDOW_HEIGHT);
-	//Suffer::InitInput();
+	data_->wind_.Open(WINDOW_WIDTH, WINDOW_HEIGHT);
 	data_->interface_.Init();
   data_->is_interface_active_ = false;
+	data_->window_should_close_ = false;
 
 	//Subsystems init
   audio_manager_.StartUp();
@@ -70,19 +70,9 @@ bool Suffer::SufferManager::Init(){
 	audio_.alloc();
 
 
-
-	data_->window_should_close_ = false;
-
 	data_->scene_context_->Init();
 
 	return true;
-}
-
-// --------------------------------------------------------------//
-
-void Suffer::SufferManager::Update() {
-
-    Step(data_->delta_time_);
 
 }
 
@@ -98,7 +88,7 @@ void Suffer::SufferManager::Draw() {
       ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   }
 
-	data_->wind_.swapBuffers();
+	data_->wind_.SwapBuffers();
 
 }
 
@@ -106,21 +96,21 @@ void Suffer::SufferManager::Draw() {
 
 void Suffer::SufferManager::Input() {
 
-		// Window Should Close
-    if (input_manager_.IsKeyDown(InputManager::k_Escape)) {
-        data_->window_should_close_ = true;
-    }
+	// Window Should Close
+  if (input_manager_.IsKeyDown(InputManager::k_Escape)) {
+      data_->window_should_close_ = true;
+  }
 
-    // Activate Interface
-    if (input_manager_.IsKeyDown(InputManager::k_F2)) {
-        data_->is_interface_active_ = !data_->is_interface_active_;
-    }
+  // Activate Interface
+  if (input_manager_.IsKeyDown(InputManager::k_F2)) {
+      data_->is_interface_active_ = !data_->is_interface_active_;
+  }
 
 }
 
 // --------------------------------------------------------------//
 
-bool Suffer::SufferManager::Run(){
+void Suffer::SufferManager::Run(){
 
   //ref_ptr<Audio3D> audio_source_;
   //audio_source_.alloc();
@@ -133,7 +123,7 @@ bool Suffer::SufferManager::Run(){
   //audio_manager_.AddToAudioQueue(std::move(audio_dl_));
 
   // Threads Function Assignment
-  auto update_thread = [] { SufferManager::instance().Update(); };
+  auto update_thread = [] { SufferManager::instance().Step(); };
   auto input_thread = [] { SufferManager::instance().Input(); };
 
   logic_->NewTask(update_thread);
@@ -141,10 +131,11 @@ bool Suffer::SufferManager::Run(){
 	while (!data_->window_should_close_) {
 
     // TODO: remove from here
-    SetMousePosition();
+    mouse_position_.x_ = input_manager_.MousePositionX();
+    mouse_position_.y_ = input_manager_.MousePositionY();
 
 		data_->current_time_ = Suffer::RawTime();
-		data_->wind_.processEvents();
+		data_->wind_.ProcessEvents();
 		
     // TODO: remove this thread
 		input_->NewTask(input_thread);
@@ -160,7 +151,15 @@ bool Suffer::SufferManager::Run(){
 
 	}
 
-	return true;
+}
+
+// --------------------------------------------------------------//
+
+void Suffer::SufferManager::SetScene(ref_ptr<Scene> scene){
+
+  assert(scene.get() && "\n Scene is null.");
+
+  data_->scene_context_ = scene;
 
 }
 
@@ -168,7 +167,7 @@ bool Suffer::SufferManager::Run(){
 
 void Suffer::SufferManager::Audio() {
 
-    audio_manager_.DoAudio();
+  audio_manager_.DoAudio();
 
 }
 
@@ -176,33 +175,34 @@ void Suffer::SufferManager::Audio() {
 
 void Suffer::SufferManager::PrepareAudio() {
 	
-    if (audio_manager_.audio_dl_.size() > 0) {
-        auto audio_thread = [] { SufferManager::instance().Audio(); };
-        audio_->NewTask(audio_thread);
-    }
+  if (audio_manager_.audio_dl_.Size() > 0) {
+    auto audio_thread = [] { SufferManager::instance().Audio(); };
+    audio_->NewTask(audio_thread);
+  }
 
 }
 
 // --------------------------------------------------------------//
 
-bool Suffer::SufferManager::Step(double time_step){
+void Suffer::SufferManager::Step(){
 
-	data_->scene_context_->Step(time_step);
+	data_->scene_context_->Step(data_->delta_time_);
 
 	// This will be the last function in UPDATE
 	PrepareAudio();
 
-	return true;
 }
 
 // --------------------------------------------------------------//
 
 bool Suffer::SufferManager::Finish(){
-
+  
   resource_manager_.ShutDown();
 	render_manager_.ShutDown();
   audio_manager_.ShutDown();
   input_manager_.ShutDown();
+
+  data_->wind_.Close();
 
 	return true;
 }
@@ -211,9 +211,8 @@ bool Suffer::SufferManager::Finish(){
 
 double Suffer::SufferManager::DeltaTime(){
 
-#ifdef ASSERT
 	assert(data_ && "\n Data is null.");
-#endif // ASSERT
+
 	return data_->delta_time_;
 
 }
@@ -221,22 +220,17 @@ double Suffer::SufferManager::DeltaTime(){
 // --------------------------------------------------------------//
 
 mathmorra::Vector2 Suffer::SufferManager::GetMousePosition(){
+
     return mouse_position_;
-}
-
-// --------------------------------------------------------------//
-
-void Suffer::SufferManager::SetMousePosition(){
-
-    mouse_position_.x_ = input_manager_.MousePositionX();
-    mouse_position_.y_ = input_manager_.MousePositionY();
 
 }
 
 // --------------------------------------------------------------//
 
 Suffer::Scene* Suffer::SufferManager::GetCurrentScene() {
+
     return data_->scene_context_.get();
+
 }
 
 // --------------------------------------------------------------//

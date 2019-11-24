@@ -9,16 +9,20 @@
 #include <audio_manager.h>
 #include <scoped_array.h>
 #include <thread.h>
-#include <material.h>
 #include "vector2.h"
 #include "input.h"
 
-
-// --------------------------------------------------------------//
-
 namespace Suffer {
 
+  // ----------------------------------------------------------------------- //
+
   class Scene;
+
+  /**
+   * @brief: Executes Suffer Engine with all the functionality divided in subsystems.
+   *         Call Init, Run and Finish in your code to execute the Engine.
+   *         You could create an Scene, set it and the Engine will execute it.
+   */
 	class SufferManager {
 
 	public:
@@ -26,13 +30,34 @@ namespace Suffer {
 		friend class Audio2D;
 		friend class Interface;
 
+    /**
+     * @brief: static instance of the Engine
+     */
 		static SufferManager& instance();
 
-		bool Init();
-		bool Run();
-		bool Step(double time_step);
-		bool Finish();
 
+    /**
+     * @brief: Initializes all the required dependencies for the Engine in order 
+     * @return: true if all has started successful
+     */
+		bool Init();
+    
+    /**
+     * @brief: Main loop of the Engine, executes all needed to use the Engine
+     */
+    void Run();
+    
+    /**
+     * @brief: Shuts down the Engine
+     * @return: true if all has finished successful
+     */
+    bool Finish();
+
+    // Scene management
+    void SetScene(ref_ptr<Scene> scene);
+    Scene* GetCurrentScene();
+
+    // Misc getters
 		double DeltaTime();
 
     mathmorra::Vector2 GetMousePosition();
@@ -52,17 +77,38 @@ namespace Suffer {
 
 		SufferManager(const SufferManager&);
 
-		void Input();
-		void Update();
-		void Draw();
+    /**
+     * @brief: Process and catch all the Input 
+     */
+    void Input();
+    
+    /**
+     * @brief: Updates all the GameObjects of the current Scene
+     *         and fills a DisplayList with Render commands.
+     *         Executed in logic thread.
+     */
+    void Step();
+		
+    /**
+     * @brief: Renders the DisplayList calculated from the logic thread.
+     *         Executed on main thread.
+     */
+    void Draw();
 
-		// DisplayLists Stuff
-		void Audio();
-		void PrepareAudio();
 
-    void SetMousePosition();
+    /**
+     * @brief: Executes the DisplayList of Audio commands when the logic awakes the audio thread..
+     *         Executed in audio thread.
+     */
+    void Audio();
 
-    Scene* GetCurrentScene();
+    /**
+     * @brief: If the DisplayList of Audio Commands is not empty awakes the audio thread to 
+     *         process the DisplayList.
+     *         Executed in logic thread.
+     */
+    void PrepareAudio();
+
 
 		// Threads
 		ref_ptr<Thread> logic_;
@@ -73,11 +119,11 @@ namespace Suffer {
 
 		struct Data;
 		Data* data_;
+
 	};
 
-}
+  // ----------------------------------------------------------------------- //
 
-// --------------------------------------------------------------//
-
+} // End of Suffer namespace
 
 #endif // __SUFFER_MANAGER_H__

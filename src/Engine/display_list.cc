@@ -16,28 +16,35 @@ Suffer::DisplayList::DisplayList(){
 
 // --------------------------------------------------------------//
 
-void Suffer::DisplayList::reset() {
-	clear();
+void Suffer::DisplayList::Reset() {
+
+	Clear();
 	dl_type_ = kDisplayListType_NONE;
+
 }
 
 // --------------------------------------------------------------//
 
-void Suffer::DisplayList::clear(){
+void Suffer::DisplayList::Clear(){
+
 	if (dl_commands_.empty()) return;
 
 	dl_commands_.clear();
+
 }
 
 // --------------------------------------------------------------//
 
-u32 Suffer::DisplayList::size(){
+u32 Suffer::DisplayList::Size(){
+
 	return dl_commands_.size();
+
 }
 
 // --------------------------------------------------------------//
 
 void Suffer::DisplayList::SetDisplayListType(DisplayListType dl_type) {
+
 	if (dl_commands_.empty()){
 		dl_type_ = dl_type;
 	}
@@ -47,18 +54,22 @@ void Suffer::DisplayList::SetDisplayListType(DisplayListType dl_type) {
 #endif
 		return;
 	}
+
 }
 
 // --------------------------------------------------------------//
 
 Suffer::DisplayList::DisplayListType Suffer::DisplayList::GetDisplayListType(){
+
 	return dl_type_;
+
 }
 
 // --------------------------------------------------------------//
 
-void Suffer::DisplayList::addCommand(const ref_ptr<Command> cmd){
-	if (!cmd) return;
+void Suffer::DisplayList::AddCommand(const ref_ptr<Command> cmd){
+	
+  assert(cmd.get() != nullptr && "Command is null");
 
 	if (dl_type_ = kDisplayListType_NONE) {
 		switch (cmd->GetCommandType()) {
@@ -96,17 +107,20 @@ void Suffer::DisplayList::addCommand(const ref_ptr<Command> cmd){
 	}
 
 	dl_commands_.push_back(cmd);
+
 }
 
 // --------------------------------------------------------------//
 
 Suffer::DisplayList & Suffer::DisplayList::operator=(DisplayList && d){
-	// swap pointers to pass values without creating a real copy
+
+	// swap pointers to pass values without creating a copy
 	std::swap(dl_commands_, d.dl_commands_);
 	dl_type_ = d.dl_type_;
 	d.dl_type_ = kDisplayListType_NONE;
 
 	return *this;
+
 }
 
 // --------------------------------------------------------------//

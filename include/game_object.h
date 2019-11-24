@@ -15,6 +15,11 @@
 #include <command.h>
 #include "display_list.h"
 
+// LUA
+#include "lua.hpp"
+#include <cstdlib>
+#include <cassert>
+
 // Mathematic Headers
 #include <vector3.h>
 #include <matrix4.h>
@@ -51,8 +56,8 @@ namespace Suffer {
 
 		// Getters
 		Transform GetTransform();
-		const ref_ptr<MaterialInstance> GetMaterial();
-		const ref_ptr<Geometry> GetGeometry();
+		ref_ptr<MaterialInstance> GetMaterial();
+		ref_ptr<Geometry> GetGeometry();
 
 		// Setters
 		void SetMaterial(ref_ptr<MaterialInstance> new_material);
@@ -73,9 +78,14 @@ namespace Suffer {
     void Rotate(float x, float y, float z);
     void Translate(float x, float y, float z);
     void Translate(mathmorra::Vector3 position);
+    void Scale(mathmorra::Vector3 scale);
+    void Scale(float x, float y, float z);
 
     const char* Name();
     void SetName(const char* name);
+
+    lua_State* _script = nullptr;
+
 
 	protected:
 		virtual ~GameObject();

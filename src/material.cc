@@ -1,28 +1,38 @@
+/*
+* Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
+* Date: 10-12-2019
+* MaterialInstance Source
+*/
+
 #include <material.h>
 #include <GL/glew.h>
 
 // --------------------------------------------------- //
 
 struct Suffer::MaterialInstance::Data {
+
 	GLuint program_ID;
 
   //Material values
   mathmorra::Vector4 color_;
   u32 albedo_texture_id_;
+
 };
 
 // --------------------------------------------------- //
 
-float* Suffer::MaterialInstance::GetColor() const{
+mathmorra::Vector4 Suffer::MaterialInstance::GetColor() const{
 
-  return data_->color_.GetValues();
+  return data_->color_;
 
 }
 
 // --------------------------------------------------- //
 
 u32 Suffer::MaterialInstance::GetAlbedoTexture() const{
+
   return data_->albedo_texture_id_;
+
 }
 
 // --------------------------------------------------- //
@@ -36,7 +46,9 @@ void Suffer::MaterialInstance::SetColor(mathmorra::Vector4 new_color) {
 // --------------------------------------------------- //
 
 void Suffer::MaterialInstance::SetAlbedoTexture(ref_ptr<ResourceManager::Texture> texture){
+
   data_->albedo_texture_id_ = texture->id_;
+
 }
 
 // --------------------------------------------------- //
@@ -48,38 +60,49 @@ Suffer::MaterialInstance::MaterialInstance() {
   params_type_ = kParams_NONE;
   
   data_->color_ = mathmorra::Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+
 }
 
 // --------------------------------------------------- //
 
 void Suffer::MaterialInstance::SetMaterialParamsType(ParamsType type){
+
   params_type_ = type;
+
+  SetColor((1.0f, 0.0f, 0.0f, 1.0f));
+  data_->albedo_texture_id_ = -1;
+
   switch (params_type_){
   case Suffer::MaterialInstance::kParams_Default:
-    SetColor((1.0f, 0.0f, 0.0f, 1.0f));
+    
     break;
   case Suffer::MaterialInstance::kParams_Phong:
-    SetColor((1.0f, 0.0f, 0.0f, 1.0f));
+    
     break;
   case Suffer::MaterialInstance::kParams_NONE:
     break;
   default:
     break;
   }
+
 }
 
 // --------------------------------------------------- //
 
 u32 Suffer::MaterialInstance::GetMaterialParamsType() const{
+
   return params_type_;
+
 }
 
 // --------------------------------------------------- //
 
 Suffer::MaterialInstance::~MaterialInstance() {
+
 	if (!data_) return;
 	delete data_;
 	data_ = nullptr;
+
 }
 
 // --------------------------------------------------- //

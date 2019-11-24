@@ -57,3 +57,7 @@ float ThiefUtils::Math::Floor(float value){
   return floor(value);
 }
 
+float ThiefUtils::Math::Map(float value, float start, float stop, float start2, float stop2){
+  return start2 + (stop2 - start2) * ((value - start) / (stop - start));
+}
+

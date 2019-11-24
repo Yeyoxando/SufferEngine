@@ -50,6 +50,8 @@ namespace ThiefUtils {
     static float Ceil(float value);
     static float Floor(float value);
 
+    static float Map(float value, float start, float stop, float start2, float stop2);
+
     // Attributes
     static float fPI;
     static double dPI;

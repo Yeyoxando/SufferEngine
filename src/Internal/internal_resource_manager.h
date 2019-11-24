@@ -17,9 +17,11 @@ struct Suffer::ResourceManager::ResourceData {
 
     Array<float> data_;
     s32 id_handle_;
+    s32 vertex_format_;
     u32 version_;
     u32 gpu_version_;
     GLuint current_gl_buffer_;
+    GLenum draw_mode_;
 
   };
 
@@ -49,6 +51,10 @@ struct Suffer::ResourceManager::ResourceData {
     u32 width_;
     u32 height_;
     u32 number_channels_;
+    Texture::TextureWrap wrap_s_;
+    Texture::TextureWrap wrap_t_;
+    Texture::TextureFilter min_filter_;
+    Texture::TextureFilter mag_filter_;
     GLuint current_texture_id_;
 
   };
@@ -79,7 +85,9 @@ struct Suffer::ResourceManager::ResourceData {
   void InitInternalBuffers();
   void InitInternalMaterials();
   void InitInternalTextures();
-
+  
 };
+
+
 
 #endif //__INTERNAL_RESOURCE_MANAGER_H__
