@@ -10,15 +10,8 @@
 #include "suffermanager.h"
 #include "math_utils.h"
 #include "common_definitions.h"
-
-// --------------------------------------------------- //
-
-struct Suffer::InputManager::Data {
-
-    u32 GetGLFWKey(Suffer::InputManager::Key key);
-    void Callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-
-};
+#include "internal_suffermanager.h"
+#include "internal_input_manager.h"
 
 // --------------------------------------------------- //
 
@@ -294,16 +287,16 @@ u32 Suffer::InputManager::Data::GetGLFWKey(Suffer::InputManager::Key key) {
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
-    Suffer::InputManager::Key key_event = GetKey(key);
+    auto key_event = GetKey(key);
     if (key_event > INPUT_BUFFER) return;
-    auto state = &suffer.input_manager_.input_events_[(u32)key_event].state_;
+    auto state = suffer.input_manager_.GetState(key_event);
 
     if (action == GLFW_RELEASE) {
         state->released_ = true;
         state->recently_released_ = true;
         state->pressed_ = false;
     }
-
+    
     if (action == GLFW_PRESS) {
         state->pressed_ = true;
         state->recently_pressed_ = true;
@@ -331,9 +324,9 @@ void Suffer::InputManager::Update(){
     
     // This function will be called at the end of the frame.
     for (int i = 0; i < INPUT_BUFFER; ++i) {
-        input_events_[i].state_.recently_pressed_ = false;
-        input_events_[i].state_.recently_released_ = false;
-        input_events_[i].state_.released_ = false;
+        data_->input_events_[i].state_.recently_pressed_ = false;
+        data_->input_events_[i].state_.recently_released_ = false;
+        data_->input_events_[i].state_.released_ = false;
     }
 
 }
@@ -364,7 +357,7 @@ void ErrorCallback(int error, const char* description){
 void Suffer::InputManager::StartUp(){
 
     data_ = new Data();
-    input_events_.alloc(INPUT_BUFFER);
+    data_->input_events_.alloc(INPUT_BUFFER);
     
     // Set callbacks
     glfwSetKeyCallback(glfwGetCurrentContext(), KeyCallback);
@@ -388,7 +381,7 @@ void Suffer::InputManager::ShutDown(){
 
 bool Suffer::InputManager::IsKeyDown(Key key){
 
-    auto state = &suffer.input_manager_.input_events_[(u32)key].state_;
+    auto state = GetState(key);
     if (state->pressed_) {
         state->pressed_ = false;
         return true;
@@ -402,7 +395,7 @@ bool Suffer::InputManager::IsKeyDown(Key key){
 
 bool Suffer::InputManager::IsKeyUp(Key key){
 	
-    auto state = &suffer.input_manager_.input_events_[(u32)key].state_;
+    auto state = &suffer.input_manager_.data_->input_events_[(u32)key].state_;
     if (state->released_) {
         state->pressed_ = false;
         state->released_ = false;
@@ -417,7 +410,7 @@ bool Suffer::InputManager::IsKeyUp(Key key){
 
 bool Suffer::InputManager::IsKeyPressed(Key key){
 
-    auto state = &suffer.input_manager_.input_events_[(u32)key].state_;
+    auto state = &suffer.input_manager_.data_->input_events_[(u32)key].state_;
     if (state->pressed_) return true;
     return false;
 
@@ -476,6 +469,12 @@ mathmorra::Vector2 Suffer::InputManager::MousePosition(){
 
 	return mouse_;
 
+}
+
+// --------------------------------------------------- //
+
+Suffer::InputManager::State* Suffer::InputManager::GetState(InputManager::Key state){
+    return &suffer.input_manager_.data_->input_events_[(u32)state].state_;
 }
 
 // --------------------------------------------------- //

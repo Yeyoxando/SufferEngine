@@ -96,6 +96,8 @@ namespace Suffer {
             k_F10,
             k_F11,
             k_F12,
+            k_MouseRight,
+            k_MouseLeft
         };
 
         void StartUp();  // a.k.a Init()
@@ -126,10 +128,8 @@ namespace Suffer {
         double MousePositionY();
         mathmorra::Vector2 MousePosition();
 
-        struct KeyBuffer {
-            Suffer::InputManager::State state_;
-        };
-        Array<KeyBuffer> input_events_;
+        State *GetState(InputManager::Key state);
+
         mathmorra::Vector2 mouse_;
 
     private:
