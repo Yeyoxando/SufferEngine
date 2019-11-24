@@ -30,10 +30,12 @@ int main(int argc, char* argv[]) {
   albedo_texture->LoadTextureData("../../../resources/images/box.jpg");
 
   Suffer::ref_ptr<Suffer::MaterialInstance> material;
+  Suffer::ref_ptr<Suffer::MaterialInstance::DefaultParams> material_params;
   material.alloc();
-  material->SetMaterialParamsType(Suffer::MaterialInstance::kParams_Default);
-  material->SetColor(mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-  material->SetAlbedoTexture(albedo_texture);
+  material_params.alloc();
+  material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+  material_params->albedo_texture_id_ = albedo_texture->id_;
+  material->SetDefaultParams(material_params);
 
   Suffer::ref_ptr<Suffer::GameObject> go_cube;
   go_cube.alloc();
@@ -57,11 +59,12 @@ int main(int argc, char* argv[]) {
   albedo_texture2->LoadTextureData("../../../resources/images/earth.jpg");
 
   Suffer::ref_ptr<Suffer::MaterialInstance> material2;
+  Suffer::ref_ptr<Suffer::MaterialInstance::DefaultParams> material_params2;
   material2.alloc();
-  material2->SetMaterialParamsType(Suffer::MaterialInstance::kParams_Default);
-  material2->SetMaterialParamsType(Suffer::MaterialInstance::kParams_Default);
-  material2->SetColor(mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-  material2->SetAlbedoTexture(albedo_texture2);
+  material_params2.alloc();
+  material_params2->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+  material_params2->albedo_texture_id_ = albedo_texture2->id_;
+  material2->SetDefaultParams(material_params2);
 
   Suffer::ref_ptr<Suffer::GameObject> go_sphere;
   go_sphere.alloc();

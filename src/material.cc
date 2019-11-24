@@ -4,86 +4,48 @@
 * MaterialInstance Source
 */
 
-#include <material.h>
-#include <GL/glew.h>
+#include "material.h"
+#include "internal_material.h"
 
 // --------------------------------------------------- //
 
-struct Suffer::MaterialInstance::Data {
-
-	GLuint program_ID;
-
-  //Material values
-  mathmorra::Vector4 color_;
-  u32 albedo_texture_id_;
-
-};
-
-// --------------------------------------------------- //
-
-mathmorra::Vector4 Suffer::MaterialInstance::GetColor() const{
-
-  return data_->color_;
-
-}
+//mathmorra::Vector4 Suffer::MaterialInstance::GetColor() const{
+//
+//  return data_->color_;
+//
+//}
+//
+//// --------------------------------------------------- //
+//
+//u32 Suffer::MaterialInstance::GetAlbedoTexture() const{
+//
+//  return data_->albedo_texture_id_;
+//
+//}
 
 // --------------------------------------------------- //
 
-u32 Suffer::MaterialInstance::GetAlbedoTexture() const{
-
-  return data_->albedo_texture_id_;
-
-}
-
-// --------------------------------------------------- //
-
-void Suffer::MaterialInstance::SetColor(mathmorra::Vector4 new_color) {
-
-  data_->color_ = new_color;
-
-}
-
-// --------------------------------------------------- //
-
-void Suffer::MaterialInstance::SetAlbedoTexture(ref_ptr<ResourceManager::Texture> texture){
-
-  data_->albedo_texture_id_ = texture->id_;
-
-}
-
+//void Suffer::MaterialInstance::SetColor(mathmorra::Vector4 new_color) {
+//
+//  data_->color_ = new_color;
+//
+//}
+//
+//// --------------------------------------------------- //
+//
+//void Suffer::MaterialInstance::SetAlbedoTexture(ref_ptr<ResourceManager::Texture> texture){
+//
+//  data_->albedo_texture_id_ = texture->id_;
+//
+//}
+//
 // --------------------------------------------------- //
 
 Suffer::MaterialInstance::MaterialInstance() {
 
 	data_ = new Data();
-
-  params_type_ = kParams_NONE;
   
-  data_->color_ = mathmorra::Vector4(0.0f, 0.0f, 0.0f, 1.0f);
-
-}
-
-// --------------------------------------------------- //
-
-void Suffer::MaterialInstance::SetMaterialParamsType(ParamsType type){
-
-  params_type_ = type;
-
-  SetColor((1.0f, 0.0f, 0.0f, 1.0f));
-  data_->albedo_texture_id_ = -1;
-
-  switch (params_type_){
-  case Suffer::MaterialInstance::kParams_Default:
-    
-    break;
-  case Suffer::MaterialInstance::kParams_Phong:
-    
-    break;
-  case Suffer::MaterialInstance::kParams_NONE:
-    break;
-  default:
-    break;
-  }
+  data_->current_params_ = nullptr;
 
 }
 
@@ -91,7 +53,43 @@ void Suffer::MaterialInstance::SetMaterialParamsType(ParamsType type){
 
 u32 Suffer::MaterialInstance::GetMaterialParamsType() const{
 
-  return params_type_;
+  if(data_->current_params_)
+    return data_->current_params_->params_type_;
+
+  return kParams_NONE;
+
+}
+
+// --------------------------------------------------- //
+
+Suffer::MaterialInstance::BaseParams* Suffer::MaterialInstance::GetMaterialParams(){
+  
+  if(data_->current_params_ != nullptr)
+    return data_->current_params_;
+
+  return nullptr;
+
+}
+
+// --------------------------------------------------- //
+
+void Suffer::MaterialInstance::SetDefaultParams(ref_ptr<DefaultParams> params){
+
+  assert(params.get() != nullptr && "Error: params is null");
+
+  params->params_type_ = kParams_Default;
+  data_->current_params_ = params.get();
+
+}
+
+// --------------------------------------------------- //
+
+void Suffer::MaterialInstance::SetPhongParams(ref_ptr<PhongParams> params){
+
+  assert(params.get() != nullptr && "Error: params is null");
+
+  params->params_type_ = kParams_Phong;
+  data_->current_params_ = params.get();
 
 }
 
@@ -102,6 +100,23 @@ Suffer::MaterialInstance::~MaterialInstance() {
 	if (!data_) return;
 	delete data_;
 	data_ = nullptr;
+
+}
+
+// --------------------------------------------------- //
+
+Suffer::MaterialInstance::BaseParams::BaseParams(){
+
+  params_type_ = kParams_NONE;
+
+}
+
+// --------------------------------------------------- //
+
+Suffer::MaterialInstance::DefaultParams::DefaultParams(){
+
+  color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+  albedo_texture_id_ = -1;
 
 }
 
