@@ -69,9 +69,6 @@ bool Suffer::SufferManager::Init(){
 	input_.alloc();
 	audio_.alloc();
 
-
-	data_->scene_context_->Init();
-
 	return true;
 
 }
