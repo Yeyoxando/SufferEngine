@@ -209,8 +209,6 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 
     float current_fov = suffer.GetCurrentScene()->GetMainCamera()->Fov();
     current_fov += (yoffset * 0.1f);
-    current_fov = ThiefUtils::Math::Clamp(current_fov, 48.5f, 50.0f);
-    printf("FOV: %f\n", current_fov);
     suffer.GetCurrentScene()->GetMainCamera()->SetFOV(current_fov);
 
 }
