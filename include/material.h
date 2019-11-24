@@ -42,6 +42,9 @@ namespace Suffer {
      */
     struct BaseParams : public Referenced {    
       friend class MaterialInstance;
+    public:
+      mathmorra::Vector4 color_;
+
     protected:
       BaseParams();
       ~BaseParams() {}
@@ -58,7 +61,6 @@ namespace Suffer {
       DefaultParams();
       ~DefaultParams() {}
 
-      mathmorra::Vector4 color_;
       s32 albedo_texture_id_;
 
     };
@@ -70,6 +72,8 @@ namespace Suffer {
     public:
       PhongParams() {}
       ~PhongParams() {}
+
+      s32 albedo_texture_id_;
 
     };
 
