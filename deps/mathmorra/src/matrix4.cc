@@ -456,9 +456,9 @@ void mathmorra::Matrix4::operator*=(const Matrix4& b){
 
   Matrix4  result = result.Identity();
 
-  result.m[3] = x;
-  result.m[7] = y;
-  result.m[11] = z;
+  result.m[12] = x;
+  result.m[13] = y;
+  result.m[14] = z;
 
   return result;
 

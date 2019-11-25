@@ -90,7 +90,7 @@ namespace Suffer {
 		ref_ptr<MaterialInstance> material_;
 		ref_ptr<Geometry> geometry_;
 
-    char* name_;
+    const char* name_;
 
 		// Methods
     void Step(float delta_time);

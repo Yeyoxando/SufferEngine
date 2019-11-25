@@ -99,6 +99,7 @@ void Suffer::GameObject::SetGeometry(ref_ptr<Geometry> new_geometry) {
 // --------------------------------------------------- //
 
 void Suffer::GameObject::AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matrix4 view, mathmorra::Matrix4 projection) {
+  
   ref_ptr<DrawGeometry> draw_geometry;
 
   draw_geometry.alloc();
@@ -109,7 +110,7 @@ void Suffer::GameObject::AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matr
   mathmorra::Matrix4 translation_mat;
   translation_mat = translation_mat.Translate(transform_.position_.x_,
                                               transform_.position_.y_,
-                                              transform_.position_.z_).Transpose();
+                                              transform_.position_.z_);
 
   mathmorra::Matrix4 rotation_mat_x;
   mathmorra::Matrix4 rotation_mat_y;
@@ -142,6 +143,8 @@ void Suffer::GameObject::Translate(mathmorra::Vector3 position){
   transform_.position_ = position;
 }
 
+// --------------------------------------------------- //
+
 void Suffer::GameObject::Scale(mathmorra::Vector3 scale){
     transform_.scale_ = scale;
 }
@@ -164,6 +167,8 @@ void Suffer::GameObject::SetName(const char* name){
     name_ = (char*)name;
 }
 
+// --------------------------------------------------- //
+
 Suffer::GameObject* Suffer::GameObject::Data::GetReference(lua_State* L) {
     
     lua_pushstring(L, "THIS");
@@ -173,6 +178,7 @@ Suffer::GameObject* Suffer::GameObject::Data::GetReference(lua_State* L) {
     GameObject* ptr = reinterpret_cast<GameObject*>(const_cast<void*>(raw_ptr));
     if (ptr->data_ == nullptr) return nullptr;
     return ptr;
+
 }
 
 // --------------------------------------------------- //
@@ -185,6 +191,7 @@ void Suffer::GameObject::StartUpLUA(const char* luaCodeFile){
 
     luaL_openlibs(data_->_script);
 
+
     // PUSH FUNCTIONS FOR LUA
     lua_pushcfunction(data_->_script, data_->lua_Rotate);    // +1
     lua_setglobal(data_->_script, "Rotate");                 // -1
@@ -195,11 +202,11 @@ void Suffer::GameObject::StartUpLUA(const char* luaCodeFile){
     lua_pushcfunction(data_->_script, data_->lua_Scale);     // +1
     lua_setglobal(data_->_script, "Scale");                  // -1
 
-    lua_pushcfunction(data_->_script, data_->lua_SetPredefinedGeometry);     // +1
-    lua_setglobal(data_->_script, "SetPredefinedGeometry");                  // -1
-
     lua_pushcfunction(data_->_script, data_->lua_SetDrawMode);     // +1
     lua_setglobal(data_->_script, "SetDrawMode");                  // -1
+
+    lua_pushcfunction(data_->_script, data_->lua_SetPredefinedGeometry);     // +1
+    lua_setglobal(data_->_script, "SetPredefinedGeometry");                  // -1
 
 
 
