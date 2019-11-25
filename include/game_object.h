@@ -96,7 +96,6 @@ namespace Suffer {
     void Step(float delta_time);
     void Destroy();
 
-
     struct Data;
     Data* data_;
 

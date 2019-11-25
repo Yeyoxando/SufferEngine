@@ -187,13 +187,19 @@ void Suffer::GameObject::StartUpLUA(const char* luaCodeFile){
 
     // PUSH FUNCTIONS FOR LUA
     lua_pushcfunction(data_->_script, data_->lua_Rotate);    // +1
-    lua_setglobal(data_->_script, "Rotate");          // -1
+    lua_setglobal(data_->_script, "Rotate");                 // -1
 
     lua_pushcfunction(data_->_script, data_->lua_Translate); // +1
-    lua_setglobal(data_->_script, "Translate");       // -1
+    lua_setglobal(data_->_script, "Translate");              // -1
 
     lua_pushcfunction(data_->_script, data_->lua_Scale);     // +1
-    lua_setglobal(data_->_script, "Scale");           // -1
+    lua_setglobal(data_->_script, "Scale");                  // -1
+
+    lua_pushcfunction(data_->_script, data_->lua_SetPredefinedGeometry);     // +1
+    lua_setglobal(data_->_script, "SetPredefinedGeometry");                  // -1
+
+    lua_pushcfunction(data_->_script, data_->lua_SetDrawMode);     // +1
+    lua_setglobal(data_->_script, "SetDrawMode");                  // -1
 
 
 
@@ -272,23 +278,31 @@ void Suffer::GameObject::Step(float delta_time){
 
 void Suffer::GameObject::Destroy(){
     // Destroy Himself
-    
 }
 
 // --------------------------------------------------------------- //
-// ------------------------ LUA FUNCTIONS  ----------------------- //
+/*
+           _     _   _  ___         _____ _          __  __
+          | |   | | | |/ _ \       /  ___| |        / _|/ _|
+          | |   | | | / /_\ \      \ `--.| |_ _   _| |_| |_
+          | |   | | | |  _  |       `--. \ __| | | |  _|  _|
+          | |___| |_| | | | |      /\__/ / |_| |_| | | | |
+          \_____/\___/\_| |_/      \____/ \__|\__,_|_| |_|
+*/
 // --------------------------------------------------------------- //
 
 int Suffer::GameObject::Data::lua_Rotate(lua_State* L) {
 
-    int args = lua_gettop(L);
-    if (args != 3) {
+    int arguments = lua_gettop(L);
+    if (arguments != 3) {
         return luaL_error(L, "Invalid call expected three argument.");
     }
     float x = lua_tonumber(L, 1);
     float y = lua_tonumber(L, 2);
     float z = lua_tonumber(L, 3);
+
     GetReference(L)->data_->RotateL(x, y, z);
+
     lua_pop(L, 1);
     return 0;
 
@@ -298,14 +312,16 @@ int Suffer::GameObject::Data::lua_Rotate(lua_State* L) {
 
 int Suffer::GameObject::Data::lua_Translate(lua_State* L){
 
-    int args = lua_gettop(L);
-    if (args != 3) {
+    int arguments = lua_gettop(L);
+    if (arguments != 3) {
         return luaL_error(L, "Invalid call, expected three arguments.");
     }
     float x = lua_tonumber(L, 1);
     float y = lua_tonumber(L, 2);
     float z = lua_tonumber(L, 3);
+
     GetReference(L)->data_->TranslateL(x, y, z);
+
     lua_pop(L, 1);
     return 0;
 
@@ -324,6 +340,56 @@ int Suffer::GameObject::Data::lua_Scale(lua_State* L){
     float y = lua_tonumber(L, 2);
     float z = lua_tonumber(L, 3);
     GetReference(L)->Scale(mathmorra::Vector3(x, y, z));
+    lua_pop(L, 1);
+    return 0;
+
+}
+
+// --------------------------------------------------------------- //
+
+int Suffer::GameObject::Data::lua_SetPredefinedGeometry(lua_State* L){
+
+    int arguments = lua_gettop(L);
+    if (arguments != 1) {
+        return luaL_error(L, "Invalid call, expected one argument");
+    }
+
+    const char* x = lua_tostring(L, 1);
+
+    Geometry::BasicShapes new_shape = Geometry::BasicShapes::kBasicShapes_Triangle;
+    
+    if (!strcmp(x, "Triangle")) new_shape = Geometry::BasicShapes::kBasicShapes_Triangle;
+    if (!strcmp(x, "Quad"))     new_shape = Geometry::BasicShapes::kBasicShapes_Quad;
+    if (!strcmp(x, "Cube"))     new_shape = Geometry::BasicShapes::kBasicShapes_Cube;
+    if (!strcmp(x, "Sphere"))   new_shape = Geometry::BasicShapes::kBasicShapes_Sphere;
+
+    GetReference(L)->GetGeometry()->CreateGeometryWithShape(new_shape);
+
+    lua_pop(L, 1);
+    return 0;
+
+}
+
+// --------------------------------------------------------------- //
+
+int Suffer::GameObject::Data::lua_SetDrawMode(lua_State* L){
+
+    int arguments = lua_gettop(L);
+    if (arguments != 1) {
+        return luaL_error(L, "Invalid call, expected one argument");
+    }
+
+    const char* x = lua_tostring(L, 1);
+
+    Geometry::DrawMode draw_mode = Geometry::DrawMode::kDrawMode_Lines;
+
+    if (!strcmp(x, "Lines"))     draw_mode = Geometry::DrawMode::kDrawMode_Lines;
+    if (!strcmp(x, "LineLoop"))  draw_mode = Geometry::DrawMode::kDrawMode_LineLoop;
+    if (!strcmp(x, "Points"))    draw_mode = Geometry::DrawMode::kDrawMode_Points;
+    if (!strcmp(x, "Triangles")) draw_mode = Geometry::DrawMode::kDrawMode_Triangles;
+
+    GetReference(L)->GetGeometry()->SetDrawMode(draw_mode);
+
     lua_pop(L, 1);
     return 0;
 
