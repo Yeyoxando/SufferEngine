@@ -40,6 +40,13 @@ void Suffer::Scene::Step(float time_step){
 	// Logic
   main_camera_.get()->Update();
   if(main_camera_->FPS()) main_camera_->CameraMovement(main_camera_);
+
+  int size = current_gameobjects_.size();
+
+  for (int i = 0; i < size; ++i) {
+      current_gameobjects_[i]->Step(time_step);
+  }
+
 	PrepareDraw();
 
 }

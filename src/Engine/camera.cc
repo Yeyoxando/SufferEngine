@@ -97,7 +97,9 @@ void Suffer::Camera::SetPosition(const float position[3]) {
 // --------------------------------------------------- //
 
 void Suffer::Camera::SetFOV(const float new_fov){
-    field_of_view_ = new_fov;
+    float aux_fov = new_fov;
+    aux_fov = ThiefUtils::Math::Clamp(aux_fov, 48.5f, 50.0f);
+    field_of_view_ = aux_fov;
 }
 
 // --------------------------------------------------- //

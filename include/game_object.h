@@ -15,11 +15,6 @@
 #include <command.h>
 #include "display_list.h"
 
-// LUA
-#include "lua.hpp"
-#include <cstdlib>
-#include <cassert>
-
 // Mathematic Headers
 #include <vector3.h>
 #include <matrix4.h>
@@ -44,7 +39,7 @@ namespace Suffer {
 	// --------------------------------------------------- //
 
 	class GameObject : public virtual Referenced {
-
+      friend class Scene;
 	public:
 
 		GameObject();
@@ -83,9 +78,7 @@ namespace Suffer {
 
     const char* Name();
     void SetName(const char* name);
-
-    lua_State* _script = nullptr;
-
+    void StartUpLUA(const char* luaCodeFile);
 
 	protected:
 		virtual ~GameObject();
@@ -97,11 +90,14 @@ namespace Suffer {
 		ref_ptr<MaterialInstance> material_;
 		ref_ptr<Geometry> geometry_;
 
-    char* name_;
+    const char* name_;
 
 		// Methods
     void Step(float delta_time);
     void Destroy();
+
+    struct Data;
+    Data* data_;
 
 	};
 
