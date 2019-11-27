@@ -139,6 +139,63 @@ void Suffer::GameObject::AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matr
 
 // --------------------------------------------------- //
 
+Suffer::ref_ptr<Suffer::Component> Suffer::GameObject::GetComponent(Component::ComponentKind component){
+
+  if (!HasComponent(component)) return nullptr;
+  s32 component_id = (s32)component;
+  auto search = components_.find(component_id);
+  return static_cast<ref_ptr<Component>>(search->second);
+
+}
+
+// --------------------------------------------------- //
+
+bool Suffer::GameObject::HasComponent(Component::ComponentKind component){
+
+  // TODO: how to solve user components issue.
+  s32 component_id = (s32)component;
+  auto search = components_.find(component_id);
+  if (search == components_.end()) return false;
+  return true;
+
+}
+
+// --------------------------------------------------- //
+
+void Suffer::GameObject::AddComponent(ref_ptr<Component> new_component){
+
+  if(HasComponent(new_component->kind_)) 
+    assert(true && "The GameObject already has a component of this kind");
+
+  if (new_component->kind_ == Component::ComponentKind::kComponentKind_Invalid) 
+    assert(true && "Invalid ComponentKind.");
+  
+  components_.insert(std::pair<s32, ref_ptr<Component>>((s32)new_component->kind_, 
+                                                        new_component));
+
+}
+
+// --------------------------------------------------- //
+
+void Suffer::GameObject::RemoveComponent(Component::ComponentKind component){
+
+  if (!HasComponent(component))
+    assert(true && "The GameObject does not have a component of this kind");
+
+  if (component == Component::ComponentKind::kComponentKind_Invalid)
+    assert(true && "Invalid ComponentKind.");
+
+  u32 components_size = components_.size();
+  for (s32 i = 0; i < components_size; ++i) {
+    if (components_[i]->kind_ == component) {
+      components_.erase(i);
+    }
+  }
+
+}
+
+// --------------------------------------------------- //
+
 void Suffer::GameObject::Translate(mathmorra::Vector3 position){
   transform_.position_ = position;
 }

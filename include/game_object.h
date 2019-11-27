@@ -19,6 +19,10 @@
 #include <vector3.h>
 #include <matrix4.h>
 
+// ECS
+#include <map>
+#include "component.h"
+
 namespace Suffer {
 
 	// --------------------------------------------------- //
@@ -59,6 +63,14 @@ namespace Suffer {
 		void SetGeometry(ref_ptr<Geometry> new_geometry);
 
     void AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matrix4 view, mathmorra::Matrix4 projection);
+
+    // Components
+    std::map <s32, ref_ptr<Component>> components_;
+
+    ref_ptr<Component> GetComponent(Component::ComponentKind component);
+    bool HasComponent(Component::ComponentKind component);
+    void AddComponent(ref_ptr<Component> new_component);
+    void RemoveComponent(Component::ComponentKind component);
 
 
     // Hierarchy Stuff

@@ -10,7 +10,6 @@
 #include "referenced.h"
 #include "data_types.h"
 
-
 namespace Suffer {
 
     class Component : public virtual Referenced {
@@ -22,13 +21,13 @@ namespace Suffer {
           // INIT WITH THE LAST ELEMENT OF THE USER ENUMS
           kComponentKind_Invalid = -1,
           kComponentKind_Transform,
-          kComponentKind_Material ,
+          kComponentKind_Material,
           kComponentKind_Visibility,
           kComponentKind_Script,
           kComponentKind_Renderer,
       };
 
-      ComponentKind kind_;
+      ComponentKind const kind_;
 
   protected:
       virtual ~Component();
