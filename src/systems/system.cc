@@ -9,3 +9,7 @@
 Suffer::System::~System(){
 
 }
+
+void Suffer::System::Execute(){
+
+}

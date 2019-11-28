@@ -27,7 +27,7 @@ namespace Suffer {
           kComponentKind_Renderer,
       };
 
-      ComponentKind const kind_;
+      ComponentKind kind_;
 
   protected:
       virtual ~Component();

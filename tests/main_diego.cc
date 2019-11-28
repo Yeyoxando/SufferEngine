@@ -8,7 +8,9 @@
 #include "geometry.h"
 #include "material.h"
 #include "game_object.h"
+#include "component_transform.h"
 #include "resource_manager.h"
+#include "component.h"
 
 // --------------------------------------------------------------//
 
@@ -37,8 +39,23 @@ int main(int argc, char* argv[]) {
   material_params->albedo_texture_id_ = albedo_texture->id_;
   material->SetDefaultParams(material_params);
 
+
   Suffer::ref_ptr<Suffer::GameObject> go_cube;
   go_cube.alloc();
+
+// -------------------------------- COMPONENTS STUFF TESTS ------------------------------//
+
+  Suffer::ref_ptr<Suffer::TransformComponent> transform_component_;
+  transform_component_.alloc();
+
+  bool hasComponent = go_cube->HasComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
+  go_cube->AddComponent(transform_component_.get());
+  hasComponent = go_cube->HasComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
+
+  auto component_ = go_cube->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
+  Suffer::TransformComponent* component = reinterpret_cast<Suffer::TransformComponent*>(component_);
+
+// -------------------------------------------------------------------------------------//
   go_cube->StartUpLUA("../../../src/lua/lua_code_cube.txt");
   go_cube->SetGeometry(geometry);
   go_cube->GetGeometry()->SetDrawMode(Suffer::Geometry::kDrawMode_Triangles);

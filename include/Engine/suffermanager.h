@@ -11,6 +11,7 @@
 #include "thread.h"
 #include "vector2.h"
 #include "input.h"
+#include "system_transform.h"
 
 namespace Suffer {
 
@@ -67,6 +68,9 @@ namespace Suffer {
     InputManager input_manager_;
 		RenderManager render_manager_;
 		ResourceManager resource_manager_;
+
+    // Systems
+    SystemTransform transform_system_;
 
 	protected:
 

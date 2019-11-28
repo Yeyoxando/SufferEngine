@@ -186,7 +186,7 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
             -camera_direction_.z_ * camera_speed * time);
 
         //Transform Matrix4 / Vector3
-        camera_position_ = translations * camera_position_;
+        camera_position_ = translations.Transpose() * camera_position_;
     }
 
     // LEFT
@@ -199,7 +199,7 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
             left.z_ * camera_speed * time);
 
         //Transform Matrix4 / Vector3
-        camera_position_ = translations * camera_position_ ;
+        camera_position_ = translations.Transpose() * camera_position_ ;
     }
 
     // RIGHT
@@ -211,7 +211,7 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
             left.z_ * camera_speed * time);
 
         //Transform Matrix4 / Vector3
-        camera_position_ = translations * camera_position_ ;
+        camera_position_ = translations.Transpose() * camera_position_ ;
 
     }
 
@@ -224,7 +224,7 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
             camera_direction_.z_ * camera_speed * time);
 
         //Transform Matrix4 / Vector3
-        camera_position_ = translations * camera_position_ ;
+        camera_position_ = translations.Transpose() * camera_position_ ;
 
     }
 
@@ -237,7 +237,7 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
             0.0f);
 
         //Transform Matrix4 / Vector3
-        camera_position_ = translations * camera_position_ ;
+        camera_position_ = translations.Transpose() * camera_position_ ;
 
     }
 
@@ -252,7 +252,7 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
             0.0f);
 
         //Transform Matrix4 / Vector3
-        camera_position_ = translations * camera_position_;
+        camera_position_ = translations.Transpose() * camera_position_;
 
     }
 

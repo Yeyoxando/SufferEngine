@@ -22,6 +22,7 @@
 // ECS
 #include <map>
 #include "component.h"
+#include "component_transform.h"
 
 namespace Suffer {
 
@@ -67,7 +68,7 @@ namespace Suffer {
     // Components
     std::map <s32, ref_ptr<Component>> components_;
 
-    ref_ptr<Component> GetComponent(Component::ComponentKind component);
+    Component* GetComponent(Component::ComponentKind component);
     bool HasComponent(Component::ComponentKind component);
     void AddComponent(ref_ptr<Component> new_component);
     void RemoveComponent(Component::ComponentKind component);

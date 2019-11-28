@@ -16,6 +16,7 @@ namespace Suffer {
 
   public:
     explicit System() {}
+    virtual void Execute();
 
   protected:
     virtual ~System();

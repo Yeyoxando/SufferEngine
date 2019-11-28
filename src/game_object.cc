@@ -109,8 +109,8 @@ void Suffer::GameObject::AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matr
 
   mathmorra::Matrix4 translation_mat;
   translation_mat = translation_mat.Translate(transform_.position_.x_,
-                                              transform_.position_.y_,
-                                              transform_.position_.z_);
+      transform_.position_.y_,
+      transform_.position_.z_);
 
   mathmorra::Matrix4 rotation_mat_x;
   mathmorra::Matrix4 rotation_mat_y;
@@ -124,8 +124,8 @@ void Suffer::GameObject::AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matr
 
   mathmorra::Matrix4 scale_mat;
   scale_mat = scale_mat.Scale(transform_.scale_.x_,
-    transform_.scale_.y_,
-    transform_.scale_.z_);
+      transform_.scale_.y_,
+      transform_.scale_.z_);
 
   model_matrix = scale_mat * rotation_mat_z * translation_mat;
 
@@ -139,12 +139,12 @@ void Suffer::GameObject::AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matr
 
 // --------------------------------------------------- //
 
-Suffer::ref_ptr<Suffer::Component> Suffer::GameObject::GetComponent(Component::ComponentKind component){
+Suffer::Component* Suffer::GameObject::GetComponent(Component::ComponentKind component){
 
   if (!HasComponent(component)) return nullptr;
   s32 component_id = (s32)component;
   auto search = components_.find(component_id);
-  return static_cast<ref_ptr<Component>>(search->second);
+  return static_cast<Suffer::Component*>(search->second.get());
 
 }
 
@@ -165,10 +165,10 @@ bool Suffer::GameObject::HasComponent(Component::ComponentKind component){
 void Suffer::GameObject::AddComponent(ref_ptr<Component> new_component){
 
   if(HasComponent(new_component->kind_)) 
-    assert(true && "The GameObject already has a component of this kind");
+    assert(false && "The GameObject already has a component of this kind");
 
   if (new_component->kind_ == Component::ComponentKind::kComponentKind_Invalid) 
-    assert(true && "Invalid ComponentKind.");
+    assert(false && "Invalid ComponentKind.");
   
   components_.insert(std::pair<s32, ref_ptr<Component>>((s32)new_component->kind_, 
                                                         new_component));
@@ -180,10 +180,10 @@ void Suffer::GameObject::AddComponent(ref_ptr<Component> new_component){
 void Suffer::GameObject::RemoveComponent(Component::ComponentKind component){
 
   if (!HasComponent(component))
-    assert(true && "The GameObject does not have a component of this kind");
+    assert(false && "The GameObject does not have a component of this kind");
 
   if (component == Component::ComponentKind::kComponentKind_Invalid)
-    assert(true && "Invalid ComponentKind.");
+    assert(false && "Invalid ComponentKind.");
 
   u32 components_size = components_.size();
   for (s32 i = 0; i < components_size; ++i) {
