@@ -8,6 +8,7 @@
 #define __CAMERA_H__
 
 #include "vector3.h"
+#include "vector2.h"
 #include "matrix4.h"
 #include "quaternion.h"
 #include <referenced.h>
@@ -107,6 +108,7 @@ namespace Suffer {
         mathmorra::Matrix4 look_at_matrix_;
 
         float field_of_view_; // FOV
+        mathmorra::Vector2 last_cursor_position_;
 
         // Movement attributes
         float speed_;

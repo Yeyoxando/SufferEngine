@@ -18,6 +18,7 @@ namespace Suffer {
 
     friend class SufferManager;
     friend class Audio3D;
+    friend class Camera;
 
 public:
 

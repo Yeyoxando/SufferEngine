@@ -22,8 +22,8 @@ Suffer::SystemTransform::~SystemTransform(){
 
 void Suffer::SystemTransform::Execute(GameObject* go){
     
-    if (!go->HasComponent(Component::ComponentKind::kComponentKind_Transform)) return;
     if (go == nullptr) assert(false && "NULL GameObject");
+    if (!go->HasComponent(Component::ComponentKind::kComponentKind_Transform)) return;
 
     auto component_ = go->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
     Suffer::TransformComponent* transform_component = reinterpret_cast<Suffer::TransformComponent*>(component_);

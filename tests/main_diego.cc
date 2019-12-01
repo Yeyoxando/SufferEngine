@@ -56,13 +56,13 @@ int main(int argc, char* argv[]) {
   Suffer::TransformComponent* component = reinterpret_cast<Suffer::TransformComponent*>(component_);
 
 // -------------------------------------------------------------------------------------//
-  go_cube->StartUpLUA("../../../src/lua/lua_code_cube.txt");
+  //go_cube->StartUpLUA("../../../src/lua/lua_code_cube.txt");
   go_cube->SetGeometry(geometry);
   go_cube->GetGeometry()->SetDrawMode(Suffer::Geometry::kDrawMode_Triangles);
   go_cube->SetMaterial(material);
   go_cube->SetName("Cube");
 
-  go_cube->Translate(mathmorra::Vector3(-1.0f, 0.0f, 0.0f));
+  component->Translate(mathmorra::Vector3(-3.0f, 0.0f, 0.0f));
   go_cube->GetGeometry()->CreateGeometryWithShape(Suffer::Geometry::kBasicShapes_Cube);
 
 
@@ -86,12 +86,16 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::GameObject> go_sphere;
   go_sphere.alloc();
-  go_sphere->StartUpLUA("../../../src/lua/lua_code_sphere.txt");
+  //go_sphere->StartUpLUA("../../../src/lua/lua_code_sphere.txt");
   go_sphere->SetGeometry(geometry2);
   go_sphere->GetGeometry()->SetDrawMode(Suffer::Geometry::kDrawMode_Triangles);
 
+  Suffer::ref_ptr<Suffer::TransformComponent> transform_component_sphere_;
+  transform_component_sphere_.alloc();
+  go_sphere->AddComponent(transform_component_sphere_.get());
+
+
   go_sphere->SetMaterial(material2);
-  go_sphere->Translate(mathmorra::Vector3(1.0f, 0.0f, 0.0f));
   go_sphere->SetName("Sphere");
   go_sphere->GetGeometry()->CreateGeometryWithShape(Suffer::Geometry::kBasicShapes_Sphere);
 

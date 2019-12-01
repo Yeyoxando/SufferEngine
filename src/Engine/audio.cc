@@ -63,6 +63,8 @@ Suffer::Audio3D::Audio3D(){
     current_position_ = mathmorra::Vector3(0, 0, 0);
     current_velocity_ = mathmorra::Vector3(0, 0, 0);
 
+    suffer.audio_manager_.audio_container_.push_back(this);
+
 }
 
 // --------------------------------------------------------------//
@@ -115,6 +117,9 @@ bool Suffer::Audio3D::Play3D(mathmorra::Vector3 velocity /*= mathmorra::Vector3(
 
 	if (_ptr->wave_.mData == nullptr) return false;
 	Interface::log.AddLog("\n[" _audio_ "] Reproducing a new 3D song: [%s]", file_);
+
+  SetSoundMinMaxDistance(0.0f, 10000.0f);
+  SetSoundAttenuation(2, 1.0f);
 
 	SetGain(gain_);
 	SetPitch(pitch_);
@@ -208,12 +213,13 @@ void Suffer::Audio3D::SetSoundPosition(mathmorra::Vector3 newPosition){
 void Suffer::Audio3D::SetSoundMinMaxDistance(float min, float max){
 
 	_ptr->sound_.set3dSourceMinMaxDistance(_ptr->handle_, min, max);
+	_ptr->sound_.update3dAudio();
 
 }
 
 // --------------------------------------------------------------//
 
-void Suffer::Audio3D::SetSoundAttenuation(u32 attenuation, float rollOffFactor){
+void Suffer::Audio3D::SetSoundAttenuation(u8 attenuation, float rollOffFactor){
 
 	_ptr->sound_.set3dSourceAttenuation(_ptr->handle_, attenuation, rollOffFactor);
 
@@ -231,6 +237,7 @@ void Suffer::Audio3D::SetListenerParameters(mathmorra::Vector3 position, mathmor
 	
 	_ptr->sound_.set3dListenerParameters(position.x_, position.y_, position.z_, at.x_, at.y_, at.z_,
 										 up.x_, up.y_, up.z_, velocity.x_, velocity.y_, velocity.z_);
+  _ptr->sound_.update3dAudio();
 
 }
 
@@ -238,16 +245,18 @@ void Suffer::Audio3D::SetListenerParameters(mathmorra::Vector3 position, mathmor
 
 void Suffer::Audio3D::SetListenerPosition(mathmorra::Vector3 newPosition){
 
-	_ptr->sound_.set3dListenerPosition(newPosition.x_, newPosition.y_, newPosition.z_);
-	_ptr->sound_.update3dAudio();
+  SoLoud::Soloud sound_;
+	sound_.set3dListenerPosition(newPosition.x_, newPosition.y_, newPosition.z_);
+	sound_.update3dAudio();
 
 }
 
 // --------------------------------------------------------------//
 
 void Suffer::Audio3D::SetListenerAt(mathmorra::Vector3 newAt){
-
-	_ptr->sound_.set3dListenerAt(newAt.x_, newAt.y_, newAt.z_);
+  
+  SoLoud::Soloud sound_;
+	sound_.set3dListenerAt(newAt.x_, newAt.y_, newAt.z_);
 
 }
 
@@ -255,7 +264,8 @@ void Suffer::Audio3D::SetListenerAt(mathmorra::Vector3 newAt){
 
 void Suffer::Audio3D::SetListenerUp(mathmorra::Vector3 newUp){
 
-	_ptr->sound_.set3dListenerUp(newUp.x_, newUp.y_, newUp.z_);
+  SoLoud::Soloud sound_;
+	sound_.set3dListenerUp(newUp.x_, newUp.y_, newUp.z_);
 
 }
 
@@ -263,7 +273,8 @@ void Suffer::Audio3D::SetListenerUp(mathmorra::Vector3 newUp){
 
 void Suffer::Audio3D::SetListenerVelocity(mathmorra::Vector3 newVelocity){
 
-	_ptr->sound_.set3dListenerVelocity(newVelocity.x_, newVelocity.y_, newVelocity.z_);
+  SoLoud::Soloud sound_;
+	sound_.set3dListenerVelocity(newVelocity.x_, newVelocity.y_, newVelocity.z_);
 
 }
 

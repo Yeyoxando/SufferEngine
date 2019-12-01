@@ -28,6 +28,12 @@ mathmorra::Vector3::Vector3() {
 
 }
 
+mathmorra::Vector3::Vector3(float* v){
+    x_ = v[0];
+    y_ = v[1];
+    z_ = v[2];
+}
+
 //---------------------------------------------------------------------------//
 
 mathmorra::Vector3::Vector3(float x, float y, float z) {

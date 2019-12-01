@@ -15,12 +15,15 @@
 namespace Suffer {
 
     class SystemTransform : public System {
+
         friend class SufferManager;
-        public:
-            void Execute(GameObject* go);
+        friend class Scene;
+
         private:
             SystemTransform();
             ~SystemTransform();
+
+            void Execute(GameObject* go);
     };
 
 }

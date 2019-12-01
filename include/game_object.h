@@ -28,21 +28,6 @@ namespace Suffer {
 
 	// --------------------------------------------------- //
 
-	struct Transform {
-
-	public:
-		mathmorra::Vector3 scale_;
-		mathmorra::Vector3 position_;
-		mathmorra::Vector3 rotation_;
-
-    mathmorra::Vector3 up_;
-    mathmorra::Vector3 right_;
-    mathmorra::Vector3 forward_;
-
-	};
-
-	// --------------------------------------------------- //
-
 	class GameObject : public virtual Referenced {
       friend class Scene;
 	public:
@@ -55,7 +40,6 @@ namespace Suffer {
     bool operator==(const GameObject& go);
 
 		// Getters
-		Transform GetTransform();
 		ref_ptr<MaterialInstance> GetMaterial();
 		ref_ptr<Geometry> GetGeometry();
 
@@ -82,13 +66,6 @@ namespace Suffer {
     u32 NumberChilds();
     u32 NumberChildsRecursively(GameObject* go);
 
-    // Transform
-    void Rotate(float x, float y, float z);
-    void Translate(float x, float y, float z);
-    void Translate(mathmorra::Vector3 position);
-    void Scale(mathmorra::Vector3 scale);
-    void Scale(float x, float y, float z);
-
     const char* Name();
     void SetName(const char* name);
     void StartUpLUA(const char* luaCodeFile);
@@ -99,7 +76,7 @@ namespace Suffer {
 	private:
 
 		// Attributes
-		Transform transform_;
+		//Transform transform_;
 		ref_ptr<MaterialInstance> material_;
 		ref_ptr<Geometry> geometry_;
 

@@ -38,6 +38,7 @@ namespace mathmorra {
     //Constructors / Destructor
     Vector3();
     Vector3(const float x, const float y, const float z);
+    Vector3(float* v);
     Vector3(const Vector3& copy);
     ~Vector3() {}
 

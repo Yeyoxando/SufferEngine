@@ -77,6 +77,10 @@ bool Suffer::SufferManager::Init(){
 
 void Suffer::SufferManager::Draw() {
 
+ if (suffer.input_manager_.IsKeyDown(InputManager::k_F1)) {
+     glfwSetCursorPos(glfwGetCurrentContext(), WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.5f);
+ }
+
 	render_manager_.DoRender();
 
   if (data_->is_interface_active_) {
@@ -102,6 +106,8 @@ void Suffer::SufferManager::Input() {
   if (input_manager_.IsKeyDown(InputManager::k_F2)) {
       data_->is_interface_active_ = !data_->is_interface_active_;
   }
+
+  input_manager_.Update();
 
 }
 
@@ -202,6 +208,10 @@ mathmorra::Vector2 Suffer::SufferManager::GetMousePosition(){
 
     return mouse_position_;
 
+}
+
+void Suffer::SufferManager::SetCursorPosition(mathmorra::Vector2 newPosition){
+    glfwSetCursorPos(glfwGetCurrentContext(), newPosition.x_, newPosition.y_);
 }
 
 // --------------------------------------------------------------//

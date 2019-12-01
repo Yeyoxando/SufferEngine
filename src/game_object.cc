@@ -17,15 +17,6 @@
 
 Suffer::GameObject::GameObject() {
 
-  transform_.scale_ = { 1.0f, 1.0f, 1.0f };
-  transform_.position_ = { 0.0f, 0.0f, 0.0f };
-  transform_.rotation_ = { 0.0f, 0.0f, 0.0f };
-
-  transform_.up_ =    { 0.0f, 1.0f, 0.0f };
-  transform_.right_ = { 1.0f, 0.0f, 0.0f };
-  transform_.forward_ = mathmorra::Vector3::CrossProduct(transform_.up_, 
-                                                         transform_.right_);
-
   data_ = new Data();
 
   name_ = "GameObject";
@@ -44,16 +35,7 @@ Suffer::GameObject::~GameObject() {
 // --------------------------------------------------- //
 
 bool Suffer::GameObject::operator!=(const GameObject& go){
-
-    if (transform_.position_ !=  go.transform_.position_ ||
-        transform_.scale_    !=  go.transform_.scale_    ||
-        transform_.rotation_ !=  go.transform_.rotation_) 
-    {
-        return false;
-    }
-
-    // TODO: expand
-
+    return false;
 }
 
 // --------------------------------------------------- //
@@ -105,31 +87,11 @@ void Suffer::GameObject::AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matr
   draw_geometry.alloc();
   draw_geometry.get()->SetData(this);
 
-  mathmorra::Matrix4 model_matrix;
+  if (HasComponent(Component::kComponentKind_Transform)) {
+      TransformComponent* transform = reinterpret_cast<TransformComponent*>(GetComponent(Component::kComponentKind_Transform));
+      draw_geometry.get()->SetModelMatrix(transform->GetModelMatrix());
+  }
 
-  mathmorra::Matrix4 translation_mat;
-  translation_mat = translation_mat.Translate(transform_.position_.x_,
-      transform_.position_.y_,
-      transform_.position_.z_);
-
-  mathmorra::Matrix4 rotation_mat_x;
-  mathmorra::Matrix4 rotation_mat_y;
-  mathmorra::Matrix4 rotation_mat_z;
-  rotation_mat_x = rotation_mat_x.RotateX(transform_.rotation_.x_);
-  rotation_mat_y = rotation_mat_y.RotateY(transform_.rotation_.y_);
-  rotation_mat_z = rotation_mat_z.RotateZ(transform_.rotation_.z_);
-
-  rotation_mat_z = rotation_mat_z.Multiply(rotation_mat_y);
-  rotation_mat_z = rotation_mat_z.Multiply(rotation_mat_x);
-
-  mathmorra::Matrix4 scale_mat;
-  scale_mat = scale_mat.Scale(transform_.scale_.x_,
-      transform_.scale_.y_,
-      transform_.scale_.z_);
-
-  model_matrix = scale_mat * rotation_mat_z * translation_mat;
-
-  draw_geometry.get()->SetModelMatrix(model_matrix);
   draw_geometry.get()->SetViewMatrix(view);
   draw_geometry.get()->SetProjectionMatrix(projection);
 
@@ -196,24 +158,6 @@ void Suffer::GameObject::RemoveComponent(Component::ComponentKind component){
 
 // --------------------------------------------------- //
 
-void Suffer::GameObject::Translate(mathmorra::Vector3 position){
-  transform_.position_ = position;
-}
-
-// --------------------------------------------------- //
-
-void Suffer::GameObject::Scale(mathmorra::Vector3 scale){
-    transform_.scale_ = scale;
-}
-
-// --------------------------------------------------- //
-
-void Suffer::GameObject::Scale(float x, float y, float z){
-    transform_.scale_ = { x, y, z };
-}
-
-// --------------------------------------------------- //
-
 const char* Suffer::GameObject::Name(){
     return name_;
 }
@@ -273,6 +217,8 @@ void Suffer::GameObject::StartUpLUA(const char* luaCodeFile){
 
     data_->reference = data_->GetReference(data_->_script);
 
+    data_->execute_lua_ = true;
+
 }
 
 // --------------------------------------------------- //
@@ -308,28 +254,10 @@ u32 Suffer::GameObject::NumberChildsRecursively(GameObject* go){
 
 // --------------------------------------------------- //
 
-void Suffer::GameObject::Rotate(float x, float y, float z){
-    transform_.rotation_ = { x, y, z };
-}
-
-// --------------------------------------------------- //
-
-void Suffer::GameObject::Translate(float x, float y, float z){
-    transform_.position_ = { x, y, z };
-}
-
-// --------------------------------------------------- //
-
-Suffer::Transform Suffer::GameObject::GetTransform() {
-	return transform_;
-}
-
-// --------------------------------------------------- //
-
 void Suffer::GameObject::Step(float delta_time){
 
     // Updates
-    if (!data_->lua_error_) {
+    if (!data_->lua_error_ && data_->execute_lua_) {
       int status = luaL_dofile(data_->_script, data_->lua_file_);
       data_->CheckLuaError(status);
     }
@@ -403,7 +331,13 @@ int Suffer::GameObject::Data::lua_Scale(lua_State* L){
     float x = lua_tonumber(L, 1);
     float y = lua_tonumber(L, 2);
     float z = lua_tonumber(L, 3);
-    GetReference(L)->Scale(mathmorra::Vector3(x, y, z));
+
+    if (GetReference(L)->HasComponent(Component::kComponentKind_Transform)) {
+        TransformComponent* transform = reinterpret_cast<TransformComponent*>(
+            GetReference(L)->GetComponent(Component::kComponentKind_Transform));
+        transform->Scale(mathmorra::Vector3(x, y, z));
+    }
+
     lua_pop(L, 1);
     return 0;
 
@@ -475,9 +409,12 @@ void Suffer::GameObject::Data::CheckLuaError(int status) {
 
 void Suffer::GameObject::Data::RotateL(float x, float y, float z) {
 
-  reference->Rotate(reference->transform_.rotation_.x_ + x, 
-                    reference->transform_.rotation_.y_ + y,
-                    reference->transform_.rotation_.z_ + z);
+    if (reference->HasComponent(Component::kComponentKind_Transform)) {
+      TransformComponent* transform = reinterpret_cast<TransformComponent*>(
+      reference->GetComponent(Component::kComponentKind_Transform));
+      transform->Rotate(mathmorra::Vector3(transform->GetRotation()) + 
+                        mathmorra::Vector3(x, y, z));
+    }
 
 }
 
@@ -485,9 +422,12 @@ void Suffer::GameObject::Data::RotateL(float x, float y, float z) {
 
 void Suffer::GameObject::Data::TranslateL(float x, float y, float z){
 
-    reference->Translate(reference->transform_.position_.x_ + x,
-                         reference->transform_.position_.y_ + y,
-                         reference->transform_.position_.z_ + z);
+    if (reference->HasComponent(Component::kComponentKind_Transform)) {
+        TransformComponent* transform = reinterpret_cast<TransformComponent*>(
+        reference->GetComponent(Component::kComponentKind_Transform));
+        transform->Translate(mathmorra::Vector3(transform->GetPosition()) + 
+                             mathmorra::Vector3(x, y, z));
+    }
 
 }
 

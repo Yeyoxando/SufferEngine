@@ -185,12 +185,18 @@ Suffer::InputManager::~InputManager(){
 
 void Suffer::InputManager::Update(){
     
+    static bool two_frames_ = false;
+
     // This function will be called at the end of the frame.
-    for (int i = 0; i < INPUT_BUFFER; ++i) {
-        data_->input_events_[i].state_.recently_pressed_ = false;
-        data_->input_events_[i].state_.recently_released_ = false;
-        data_->input_events_[i].state_.released_ = false;
+    if (!two_frames_) {
+        for (int i = 0; i < INPUT_BUFFER; ++i) {
+            data_->input_events_[i].state_.recently_pressed_ = false;
+            data_->input_events_[i].state_.recently_released_ = false;
+            data_->input_events_[i].state_.released_ = false;
+        }
     }
+
+    two_frames_ = !two_frames_;
 
 }
 
@@ -257,7 +263,7 @@ bool Suffer::InputManager::IsKeyDown(Key key){
 
     auto state = GetState(key);
     if (state == nullptr) return false;
-    if (state->pressed_) {
+    if (state->pressed_ || state->recently_pressed_) {
         state->pressed_ = false;
         return true;
     }
@@ -271,7 +277,7 @@ bool Suffer::InputManager::IsKeyDown(Key key){
 bool Suffer::InputManager::IsKeyUp(Key key){
 	
     auto state = &suffer.input_manager_.data_->input_events_[(u32)key].state_;
-    if (state->released_) {
+    if (state->released_ || state->recently_released_) {
         state->pressed_ = false;
         state->released_ = false;
         return true;

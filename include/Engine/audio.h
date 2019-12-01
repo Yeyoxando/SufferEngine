@@ -44,16 +44,16 @@ namespace Suffer {
 		    void SetSoundSpeed(mathmorra::Vector3 newSpeed);
 		    void SetSoundPosition(mathmorra::Vector3 newPosition);
 		    void SetSoundMinMaxDistance(float min, float max);
-		    void SetSoundAttenuation(u32 attenuation, float rollOffFactor);
+		    void SetSoundAttenuation(u8 attenuation, float rollOffFactor);
 		    void SetSoundDopplerFactor(float newDopplerFactor);
 		    void SetMonotoneParams(u32 channels, u32 wave_form);
 
 		    // Listener
 		    void SetListenerParameters(mathmorra::Vector3 position, mathmorra::Vector3 at, mathmorra::Vector3 up, mathmorra::Vector3 velocity);
-		    void SetListenerPosition(mathmorra::Vector3 newPosition);
-		    void SetListenerAt(mathmorra::Vector3 newAt);
-		    void SetListenerUp(mathmorra::Vector3 newUp);
-		    void SetListenerVelocity(mathmorra::Vector3 newVelocity);
+		    static void SetListenerPosition(mathmorra::Vector3 newPosition);
+		    static void SetListenerAt(mathmorra::Vector3 newAt);
+		    static void SetListenerUp(mathmorra::Vector3 newUp);
+		    static void SetListenerVelocity(mathmorra::Vector3 newVelocity);
 
 		    // Getters
 		    bool isPaused();

@@ -62,6 +62,7 @@ namespace Suffer {
 		double DeltaTime();
 
     mathmorra::Vector2 GetMousePosition();
+    void SetCursorPosition(mathmorra::Vector2 newPosition);
 
 		// Subsystems
     AudioManager audio_manager_;
