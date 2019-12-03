@@ -88,7 +88,7 @@ void Suffer::GameObject::AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matr
   draw_geometry.get()->SetData(this);
 
   if (HasComponent(Component::kComponentKind_Transform)) {
-      TransformComponent* transform = reinterpret_cast<TransformComponent*>(GetComponent(Component::kComponentKind_Transform));
+      Transform* transform = reinterpret_cast<Transform*>(GetComponent(Component::kComponentKind_Transform));
       draw_geometry.get()->SetModelMatrix(transform->GetModelMatrix());
   }
 
@@ -333,7 +333,7 @@ int Suffer::GameObject::Data::lua_Scale(lua_State* L){
     float z = lua_tonumber(L, 3);
 
     if (GetReference(L)->HasComponent(Component::kComponentKind_Transform)) {
-        TransformComponent* transform = reinterpret_cast<TransformComponent*>(
+        Transform* transform = reinterpret_cast<Transform*>(
             GetReference(L)->GetComponent(Component::kComponentKind_Transform));
         transform->Scale(mathmorra::Vector3(x, y, z));
     }
@@ -410,7 +410,7 @@ void Suffer::GameObject::Data::CheckLuaError(int status) {
 void Suffer::GameObject::Data::RotateL(float x, float y, float z) {
 
     if (reference->HasComponent(Component::kComponentKind_Transform)) {
-      TransformComponent* transform = reinterpret_cast<TransformComponent*>(
+      Transform* transform = reinterpret_cast<Transform*>(
       reference->GetComponent(Component::kComponentKind_Transform));
       transform->Rotate(mathmorra::Vector3(transform->GetRotation()) + 
                         mathmorra::Vector3(x, y, z));
@@ -423,7 +423,7 @@ void Suffer::GameObject::Data::RotateL(float x, float y, float z) {
 void Suffer::GameObject::Data::TranslateL(float x, float y, float z){
 
     if (reference->HasComponent(Component::kComponentKind_Transform)) {
-        TransformComponent* transform = reinterpret_cast<TransformComponent*>(
+        Transform* transform = reinterpret_cast<Transform*>(
         reference->GetComponent(Component::kComponentKind_Transform));
         transform->Translate(mathmorra::Vector3(transform->GetPosition()) + 
                              mathmorra::Vector3(x, y, z));

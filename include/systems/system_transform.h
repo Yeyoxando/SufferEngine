@@ -19,11 +19,15 @@ namespace Suffer {
         friend class SufferManager;
         friend class Scene;
 
-        private:
+        public:
             SystemTransform();
+
+    protected:
+            virtual void Execute(GameObject* go) override;
+
+        private:
             ~SystemTransform();
 
-            void Execute(GameObject* go);
     };
 
 }

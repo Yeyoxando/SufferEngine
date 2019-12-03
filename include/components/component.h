@@ -15,7 +15,6 @@ namespace Suffer {
     class Component : public virtual Referenced {
 
     public:
-        explicit Component() : kind_(kComponentKind_Invalid) {}
 
       enum ComponentKind {
           // INIT WITH THE LAST ELEMENT OF THE USER ENUMS
@@ -25,9 +24,12 @@ namespace Suffer {
           kComponentKind_Visibility,
           kComponentKind_Script,
           kComponentKind_Renderer,
+          kComponentKind_User = 1000,
       };
 
-      ComponentKind kind_;
+        explicit Component(ComponentKind kind) : kind_(kind) {}
+
+      ComponentKind const kind_;
 
   protected:
       virtual ~Component();

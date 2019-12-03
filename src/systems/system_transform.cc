@@ -26,7 +26,7 @@ void Suffer::SystemTransform::Execute(GameObject* go){
     if (!go->HasComponent(Component::ComponentKind::kComponentKind_Transform)) return;
 
     auto component_ = go->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
-    Suffer::TransformComponent* transform_component = reinterpret_cast<Suffer::TransformComponent*>(component_);
+    Suffer::Transform* transform_component = reinterpret_cast<Suffer::Transform*>(component_);
 
     mathmorra::Matrix4 translation_mat;
     translation_mat = translation_mat.Translate(

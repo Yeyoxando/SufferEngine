@@ -20,6 +20,7 @@ namespace Suffer {
       friend class Camera;
       friend class Interface;
       friend class SufferManager;
+      friend class System;
 
 	public:
 		Scene();

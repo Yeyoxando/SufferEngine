@@ -11,6 +11,8 @@
 #include "component_transform.h"
 #include "resource_manager.h"
 #include "component.h"
+#include "system.h"
+#include "system_transform.h"
 
 // --------------------------------------------------------------//
 
@@ -18,6 +20,9 @@ int main(int argc, char* argv[]) {
 
   suffer.Init();
 
+  Suffer::ref_ptr<Suffer::SystemTransform> transform_system_;
+  transform_system_.alloc();
+  suffer.AddSystem(transform_system_.get());
 
   Suffer::ref_ptr<Suffer::Scene> scene;
   scene.alloc();
@@ -45,7 +50,7 @@ int main(int argc, char* argv[]) {
 
 // -------------------------------- COMPONENTS STUFF TESTS ------------------------------//
 
-  Suffer::ref_ptr<Suffer::TransformComponent> transform_component_;
+  Suffer::ref_ptr<Suffer::Transform> transform_component_;
   transform_component_.alloc();
 
   bool hasComponent = go_cube->HasComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
@@ -53,7 +58,7 @@ int main(int argc, char* argv[]) {
   hasComponent = go_cube->HasComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
 
   auto component_ = go_cube->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
-  Suffer::TransformComponent* component = reinterpret_cast<Suffer::TransformComponent*>(component_);
+  Suffer::Transform* component = reinterpret_cast<Suffer::Transform*>(component_);
 
 // -------------------------------------------------------------------------------------//
   //go_cube->StartUpLUA("../../../src/lua/lua_code_cube.txt");
@@ -90,7 +95,7 @@ int main(int argc, char* argv[]) {
   go_sphere->SetGeometry(geometry2);
   go_sphere->GetGeometry()->SetDrawMode(Suffer::Geometry::kDrawMode_Triangles);
 
-  Suffer::ref_ptr<Suffer::TransformComponent> transform_component_sphere_;
+  Suffer::ref_ptr<Suffer::Transform> transform_component_sphere_;
   transform_component_sphere_.alloc();
   go_sphere->AddComponent(transform_component_sphere_.get());
 

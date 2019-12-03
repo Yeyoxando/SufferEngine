@@ -9,16 +9,18 @@
 
 #include "referenced.h"
 #include "data_types.h"
+#include "game_object.h"
 
 namespace Suffer {
 
   class System : public virtual Referenced {
-
+    friend class SufferManager;
   public:
     explicit System() {}
-    virtual void Execute();
 
   protected:
+
+    virtual void Execute(GameObject* go);
     virtual ~System();
 
   };

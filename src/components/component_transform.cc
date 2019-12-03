@@ -8,72 +8,63 @@
 
 // --------------------------------------------------- //
 
-Suffer::TransformComponent::TransformComponent(){
-
-  Init();
-
-}
-// --------------------------------------------------- //
-
-void Suffer::TransformComponent::Scale(float x, float y, float z){
+void Suffer::Transform::Scale(float x, float y, float z){
     scale_ = { x, y ,z };
 }
 
 // --------------------------------------------------- //
 
-void Suffer::TransformComponent::Scale(mathmorra::Vector3 scale){
+void Suffer::Transform::Scale(mathmorra::Vector3 scale){
     scale_ = scale;
 }
 
 // --------------------------------------------------- //
 
-void Suffer::TransformComponent::Rotate(float x, float y, float z){
+void Suffer::Transform::Rotate(float x, float y, float z){
     rotation_ = { x, y, z };
 }
 
 // --------------------------------------------------- //
 
-void Suffer::TransformComponent::Translate(mathmorra::Vector3 position){
+void Suffer::Transform::Translate(mathmorra::Vector3 position){
     position_ = position;
 }
 
-float* Suffer::TransformComponent::GetScale(){
+float* Suffer::Transform::GetScale(){
     return &scale_.x_;
 }
 
 // --------------------------------------------------- //
 
-float* Suffer::TransformComponent::GetRotation(){
+float* Suffer::Transform::GetRotation(){
     return &rotation_.x_;
 }
 
 // --------------------------------------------------- //
 
-float* Suffer::TransformComponent::GetPosition(){
+float* Suffer::Transform::GetPosition(){
     return &position_.x_;
 }
 
-mathmorra::Matrix4 Suffer::TransformComponent::GetModelMatrix(){
+mathmorra::Matrix4 Suffer::Transform::GetModelMatrix(){
     return model_;
 }
 
 // --------------------------------------------------- //
 
-void Suffer::TransformComponent::Rotate(mathmorra::Vector3 rotation){
+void Suffer::Transform::Rotate(mathmorra::Vector3 rotation){
     rotation_ = rotation;
 }
 
 // --------------------------------------------------- //
 
-void Suffer::TransformComponent::Translate(float x, float y, float z){
+void Suffer::Transform::Translate(float x, float y, float z){
     position_ = { x, y, z };
 }
 
 // --------------------------------------------------- //
 
-void Suffer::TransformComponent::Init(){
-
-    kind_ = Component::kComponentKind_Transform;
+void Suffer::Transform::Init() {
 
     position_ = { 0.0f, 0.0f, 0.0f };
     scale_ = { 1.0f, 1.0f, 1.0f };
@@ -87,7 +78,7 @@ void Suffer::TransformComponent::Init(){
 
 // --------------------------------------------------- //
 
-Suffer::TransformComponent::~TransformComponent(){
+Suffer::Transform::~Transform(){
 
 }
 

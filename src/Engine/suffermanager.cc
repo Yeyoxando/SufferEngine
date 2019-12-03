@@ -49,6 +49,13 @@ Suffer::SufferManager& Suffer::SufferManager::instance() {
 
 // --------------------------------------------------------------//
 
+void Suffer::SufferManager::AddSystem(System* new_system){
+  assert(new_system != nullptr && "NULL System");
+  systems_.push_back(new_system);
+}
+
+// --------------------------------------------------------------//
+
 bool Suffer::SufferManager::Init(){
 
 	assert(data_ && "\n Data is null.");
@@ -172,6 +179,15 @@ void Suffer::SufferManager::PrepareAudio() {
 void Suffer::SufferManager::Step(){
 
 	data_->scene_context_->Step(data_->delta_time_);
+
+  // Systems
+  u32 systems_size = systems_.size();
+  u32 game_objects_count = suffer.GetCurrentScene()->current_gameobjects_.size();
+  for (u32 i = 0; i < systems_size; ++i) {
+    for (u32 j = 0; j < game_objects_count; ++j) {
+      systems_[i]->Execute(suffer.GetCurrentScene()->current_gameobjects_[j].get());
+    }
+  }
 
 	// This will be the last function in UPDATE
 	PrepareAudio();

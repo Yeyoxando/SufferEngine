@@ -10,6 +10,6 @@ Suffer::System::~System(){
 
 }
 
-void Suffer::System::Execute(){
+void Suffer::System::Execute(GameObject* go){
 
 }

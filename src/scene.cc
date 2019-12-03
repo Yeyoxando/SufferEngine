@@ -68,7 +68,6 @@ void Suffer::Scene::PrepareDraw(){
 
   // Gameobject adds itself to displaylist
 	for (u32 i = 0; i < current_gameobjects_.size(); ++i) {
-    suffer.transform_system_.Execute(current_gameobjects_.at(i).get());
     current_gameobjects_.at(i).get()->AddDrawCommand(frame_dl, main_camera_->ViewMatrix(), main_camera_->ProjectionMatrix());
 	}
 

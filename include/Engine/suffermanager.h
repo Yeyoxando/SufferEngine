@@ -36,6 +36,7 @@ namespace Suffer {
      */
 		static SufferManager& instance();
 
+    void AddSystem(System* new_system);
 
     /**
      * @brief: Initializes all the required dependencies for the Engine in order 
@@ -69,9 +70,6 @@ namespace Suffer {
     InputManager input_manager_;
 		RenderManager render_manager_;
 		ResourceManager resource_manager_;
-
-    // Systems
-    SystemTransform transform_system_;
 
 	protected:
 
@@ -114,6 +112,7 @@ namespace Suffer {
 		ref_ptr<Thread> audio_;
 
     mathmorra::Vector2 mouse_position_;
+    std::vector<ref_ptr<System>> systems_;
 
 		struct Data;
 		Data* data_;

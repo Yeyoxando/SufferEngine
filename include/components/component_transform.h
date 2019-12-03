@@ -13,10 +13,10 @@
 
 namespace Suffer {
 
-    class TransformComponent : public Component {
+    class Transform : public Component {
         friend class SystemTransform;
     public:
-        TransformComponent();
+      Transform() : Component(kComponentKind_Transform) { Init(); };
 
         void Scale(float x, float y, float z);
         void Rotate(float x, float y, float z);
@@ -46,7 +46,7 @@ namespace Suffer {
 
         mathmorra::Matrix4 model_;
 
-        ~TransformComponent();
+        ~Transform();
     };
 
 } // End of Suffer namespace
