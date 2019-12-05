@@ -84,10 +84,6 @@ bool Suffer::SufferManager::Init(){
 
 void Suffer::SufferManager::Draw() {
 
- if (suffer.input_manager_.IsKeyDown(InputManager::k_F1)) {
-     glfwSetCursorPos(glfwGetCurrentContext(), WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.5f);
- }
-
 	render_manager_.DoRender();
 
   if (data_->is_interface_active_) {

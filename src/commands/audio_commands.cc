@@ -10,6 +10,7 @@
 #include "math_utils.h"
 #include "common_definitions.h"
 #include "suffermanager.h"
+#include "internal_audio.h"
 
 Suffer::Audio3D* Suffer::AudioCommands::Crossfade::from_;
 Suffer::Audio3D* Suffer::AudioCommands::Crossfade::to_;
@@ -20,9 +21,9 @@ bool Suffer::AudioCommands::Crossfade::ended_;
 
 void Suffer::AudioCommands::Load::Execute() const {
 
-	if (file == nullptr) return;
-	if (audio_3d_ == nullptr) return;
-	audio_3d_->Load(file);
+  if (file == nullptr) return;
+  if (audio_3d_ == nullptr) return;
+  audio_3d_->Load(file);
 
 }
 
@@ -30,8 +31,27 @@ void Suffer::AudioCommands::Load::Execute() const {
 
 void Suffer::AudioCommands::Play::Execute() const {
 
-	if (audio_3d_ == nullptr) return;
-	audio_3d_->Play3D();
+  if (audio_3d_ == nullptr) return;
+
+  if (audio_3d_->_ptr->handle_ != 0) {
+    audio_3d_->_ptr->sound_.stop(audio_3d_->_ptr->handle_);
+  }
+
+  mathmorra::Vector3 current_position = audio_3d_->GetSoundPosition();
+
+  audio_3d_->_ptr->handle_ = audio_3d_->_ptr->sound_.play3d(audio_3d_->_ptr->wave_, current_position.x_, current_position.y_, current_position.z_);
+
+  //Interface::log.AddLog("\n[" _audio_ "] Reproducing a new 3D song: [%s]", file_);
+
+  audio_3d_->SetSoundMinMaxDistance(0.0f, 100.0f);
+  audio_3d_->SetSoundAttenuation(2, 1.0f);
+
+  audio_3d_->SetGain(audio_3d_->gain_);
+  audio_3d_->SetPitch(audio_3d_->pitch_);
+  audio_3d_->SetLooping(audio_3d_->looping_);
+
+  audio_3d_->SetPaused(false);
+
 
 }
 
@@ -39,8 +59,8 @@ void Suffer::AudioCommands::Play::Execute() const {
 
 void Suffer::AudioCommands::Pause::Execute() const {
 
-	if (audio_3d_ == nullptr) return;
-	audio_3d_->SetPaused(true);
+  if (audio_3d_ == nullptr) return;
+  audio_3d_->SetPaused(true);
 
 }
 
@@ -48,30 +68,30 @@ void Suffer::AudioCommands::Pause::Execute() const {
 
 void Suffer::AudioCommands::SetGain::Execute() const {
 
-	if (audio_3d_ == nullptr) return;
-	audio_3d_->SetGain(gain_);
+  if (audio_3d_ == nullptr) return;
+  audio_3d_->SetGain(gain_);
 
 }
 
-Suffer::AudioCommands::Crossfade::Crossfade(Audio3D* from, Audio3D* to, float attenuation){
+Suffer::AudioCommands::Crossfade::Crossfade(Audio3D* from, Audio3D* to, float attenuation) {
   from_ = from;
   to_ = to;
   attenuation_ = ThiefUtils::Math::Clamp(attenuation, 0.0f, 1.0f);
   ended_ = false;
 }
 
-void Suffer::AudioCommands::Crossfade::Execute() const{
+void Suffer::AudioCommands::Crossfade::Execute() const {
 
 #ifdef CUSTOM
 
   ref_ptr<Thread> coroutine_;
   coroutine_.alloc();
-  
+
   auto crossfade_job = [] { Crossfading(); };
   coroutine_->NewTask(crossfade_job);
 
 #else
-  
+
   from_->Fade(0.0f, 2);
   to_->Fade(1.0f, 2);
 
@@ -79,28 +99,28 @@ void Suffer::AudioCommands::Crossfade::Execute() const{
 
 }
 
-void Suffer::AudioCommands::Crossfade::Crossfading(){
+void Suffer::AudioCommands::Crossfade::Crossfading() {
 
 #ifdef CUSTOM
 
   suffer.audio_manager_.crossfade_mutex_.lock();
   ended_ = false;
-  
+
   while (!ended_) {
-  
+
     float current_from_gain_ = from_->GetGain();
     current_from_gain_ = ThiefUtils::Math::Lerp(current_from_gain_, 0.0f, attenuation_);
     from_->SetGain(current_from_gain_);
-  
+
     float current_to_gain_ = to_->GetGain();
     current_to_gain_ = ThiefUtils::Math::Lerp(current_to_gain_, 1.0f, attenuation_);
     to_->SetGain(current_to_gain_);
-    
+
     if (from_->GetGain() <= 0.01f && to_->GetGain() >= 0.97f) ended_ = true;
     else ended_ = false;
-  
+
   };
-  
+
   suffer.audio_manager_.crossfade_mutex_.unlock();
 
 #endif
