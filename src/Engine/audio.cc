@@ -134,6 +134,12 @@ bool Suffer::Audio3D::Play3D(mathmorra::Vector3 velocity /*= mathmorra::Vector3(
 
 // --------------------------------------------------------------//
 
+void Suffer::Audio3D::Fade(float volume, float time){
+  _ptr->sound_.fadeVolume(_ptr->handle_, volume, time);
+}
+
+// --------------------------------------------------------------//
+
 void Suffer::Audio3D::SetGain(const float newGain /*= 1.0f*/){
 
 #ifdef ASSERT

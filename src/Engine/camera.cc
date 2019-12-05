@@ -275,8 +275,8 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera){
 
     mathmorra::Vector2 mouse = suffer.GetMousePosition();
 
-    float angleX = (mouse.x_ / (WINDOW_WIDTH)) * 6.28f;
-    float angleY = (mouse.y_ / (WINDOW_HEIGHT)) * 6.28f;
+    float angleX = (mouse.x_ / (float)(WINDOW_WIDTH)) * 6.28f;
+    float angleY = (mouse.y_ / (float)(WINDOW_HEIGHT)) * 6.28f;
     
     
     //MOUSE CONTROL - QUATERNIONS

@@ -115,6 +115,24 @@ void Suffer::SufferManager::Input() {
 
 void Suffer::SufferManager::Run(){
 
+  //ref_ptr<Audio3D> one;
+  //ref_ptr<Audio3D> two;
+  //one.alloc(); two.alloc();
+  //one->Load("../../../resources/audio/plonk_dry.ogg");
+  //two->Load("../../../resources/audio/plonk_wet.ogg");
+  //ref_ptr<Suffer::AudioCommands::Play> play_one;
+  //ref_ptr<Suffer::AudioCommands::Play> play_two;
+  //play_one.alloc(); play_two.alloc();
+  //play_one->audio_3d_ = one.get();
+  //play_two->audio_3d_ = two.get();
+  //play_two->audio_3d_->SetGain(0.0f);
+  //suffer.audio_manager_.audio_dl_.AddCommand(play_one.get());
+  //suffer.audio_manager_.audio_dl_.AddCommand(play_two.get());
+  //Suffer::AudioCommands::Crossfade test();
+
+  //one->SetLooping(true);
+  //two->SetLooping(true);
+
   // Threads Function Assignment
   auto update_thread = [] { SufferManager::instance().Step(); };
   auto input_thread = [] { SufferManager::instance().Input(); };
@@ -138,6 +156,23 @@ void Suffer::SufferManager::Run(){
 		Draw();
     
     logic_->WaitFor(logic_.get());
+
+    //if (input_manager_.IsKeyDown(InputManager::k_Y)) {
+    //  ref_ptr<Suffer::AudioCommands::Crossfade> crossfade_;
+    //  crossfade_.alloc();
+    //  crossfade_->attenuation_ = 0.000001f;
+    //  crossfade_->from_ = one.get();
+    //  crossfade_->to_ = two.get();
+    //  suffer.audio_manager_.audio_dl_.AddCommand(crossfade_.get());
+    //}
+    //
+    //if (input_manager_.IsKeyDown(InputManager::k_U)) {
+    //  ref_ptr<Suffer::AudioCommands::Crossfade> crossfade_;
+    //  crossfade_.alloc();
+    //  crossfade_->from_ = two.get();
+    //  crossfade_->to_ = one.get();
+    //  suffer.audio_manager_.audio_dl_.AddCommand(crossfade_.get());
+    //}
 
 		data_->delta_time_ = (data_->current_time_ - data_->previous_time_) * 0.0001f;
 		data_->previous_time_ = data_->current_time_;
