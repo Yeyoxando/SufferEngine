@@ -12,10 +12,12 @@
 
 using namespace Suffer;
 
+px_sched::Scheduler scheduler_;
+bool one = false;
+
 struct Thread::ThreadData {
 
 	// PpluX Scheduler Stuff
-	px_sched::Scheduler scheduler_;
 	px_sched::Sync thread_;
 
 };
@@ -23,8 +25,11 @@ struct Thread::ThreadData {
 Thread::Thread(){
 
 	data_ = new ThreadData();
+  if (!one) {
+    scheduler_.init();
+    one = true;
+  }
 
-	Init();
 	im_done_ = false;
 
 }
@@ -37,21 +42,15 @@ Thread::~Thread(){
 
 }
 
-void Thread::Init(){
-
-	data_->scheduler_.init();
-
-}
-
 void Thread::NewTask(Task t){
 
-	data_->scheduler_.run(t, &data_->thread_);
+	scheduler_.run(t, &data_->thread_);
 
 }
 
 void Thread::WaitFor(Thread* thread){
 
-	data_->scheduler_.waitFor(thread->data_->thread_);
+	scheduler_.waitFor(thread->data_->thread_);
 
 }
 

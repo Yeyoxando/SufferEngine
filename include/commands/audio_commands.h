@@ -1,3 +1,9 @@
+/*
+* Author: Pablo Bano Benito <banyobe@esat-alumni.com>
+* Date: 11-10-2019
+* AudioCommands Header
+*/
+
 #ifndef __AUDIO_COMMANDS_H__
 #define __AUDIO_COMMANDS_H__
 
@@ -34,6 +40,17 @@ namespace Suffer {
 		    virtual void Execute() const override;
 		    Audio3D* audio_3d_ = nullptr;
 	    };
+
+      struct Crossfade : public Command {
+        Crossfade(Audio3D* from, Audio3D* to, float attenuation);
+        Crossfade() {};
+        virtual void Execute() const override;
+        static Audio3D* from_;
+        static Audio3D* to_;
+        static void Crossfading();
+        static float attenuation_;
+        static bool ended_;
+      };
 
   } // End of AudioCommands namespace
 
