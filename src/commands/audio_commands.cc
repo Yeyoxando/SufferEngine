@@ -11,6 +11,7 @@
 #include "common_definitions.h"
 #include "suffermanager.h"
 #include "internal_audio.h"
+#include <assert.h>
 
 Suffer::Audio3D* Suffer::AudioCommands::Crossfade::from_;
 Suffer::Audio3D* Suffer::AudioCommands::Crossfade::to_;
@@ -37,13 +38,15 @@ void Suffer::AudioCommands::Play::Execute() const {
     audio_3d_->_ptr->sound_.stop(audio_3d_->_ptr->handle_);
   }
 
+  audio_3d_->active_ = true;
+
   mathmorra::Vector3 current_position = audio_3d_->GetSoundPosition();
 
   audio_3d_->_ptr->handle_ = audio_3d_->_ptr->sound_.play3d(audio_3d_->_ptr->wave_, current_position.x_, current_position.y_, current_position.z_);
 
   //Interface::log.AddLog("\n[" _audio_ "] Reproducing a new 3D song: [%s]", file_);
 
-  audio_3d_->SetSoundMinMaxDistance(0.0f, 100.0f);
+  //audio_3d_->SetSoundMinMaxDistance(0.0f, 100.0f);
   audio_3d_->SetSoundAttenuation(2, 1.0f);
 
   //audio_3d_->SetSoundAttenuation()
@@ -70,8 +73,15 @@ void Suffer::AudioCommands::Pause::Execute() const {
 
 void Suffer::AudioCommands::SetGain::Execute() const {
 
-  if (audio_3d_ == nullptr) return;
-  audio_3d_->SetGain(gain_);
+  //if (audio_3d_ == nullptr) return;
+  //audio_3d_->SetGain(gain_);
+
+#ifdef ASSERT
+  assert(gain_ >= 0 && "¡Volume cannot set under 0!");
+#endif
+
+  audio_3d_->gain_ = gain_;
+  audio_3d_->_ptr->sound_.setVolume(audio_3d_->_ptr->handle_, gain_);
 
 }
 

@@ -7,6 +7,8 @@
 #define MAX_AUDIO_SOURCES 10
 #define INPUT_BUFFER 62
 
+#define MAX_SAMPLES 5
+
 //#define CUSTOM
 
 #define WINDOW_WIDTH  800
