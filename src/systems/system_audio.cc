@@ -6,6 +6,9 @@
 
 #include "system_audio.h"
 #include "audio.h"
+#include "suffermanager.h"
+#include "internal_suffermanager.h"
+#include "common_definitions.h"
 
 Suffer::SystemAudio::SystemAudio(){
 
@@ -23,7 +26,18 @@ void Suffer::SystemAudio::Execute(GameObject* go){
   Suffer::Audio3D* audio_source_ = reinterpret_cast<Suffer::Audio3D*>(audio_component_);
   Suffer::Transform* transform_ = reinterpret_cast<Suffer::Transform*>(transform_component_);
 
+  // Listener stuff
+  const float* listener_position = suffer.GetCurrentScene()->GetMainCamera()->Position();
+  const float* listener_target = suffer.GetCurrentScene()->GetMainCamera()->Target();
+  const float* listener_up = suffer.GetCurrentScene()->GetMainCamera()->Up();
+
   audio_source_->SetSoundPosition(transform_->GetPosition());
+  audio_source_->SetListenerParameters(
+    mathmorra::Vector3(listener_position),
+    mathmorra::Vector3(listener_target),
+    mathmorra::Vector3(listener_up),
+    mathmorra::Vector3(0.0f, 0.0f, 0.0f)
+  );
 
   // Velocity - Doppler Effect
   
