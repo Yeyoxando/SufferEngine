@@ -46,6 +46,8 @@ void Suffer::AudioCommands::Play::Execute() const {
   audio_3d_->SetSoundMinMaxDistance(0.0f, 100.0f);
   audio_3d_->SetSoundAttenuation(2, 1.0f);
 
+  //audio_3d_->SetSoundAttenuation()
+
   audio_3d_->SetGain(audio_3d_->gain_);
   audio_3d_->SetPitch(audio_3d_->pitch_);
   audio_3d_->SetLooping(audio_3d_->looping_);
