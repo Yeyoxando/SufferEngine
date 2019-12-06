@@ -9,6 +9,7 @@
 #include <data_types.h>
 #include "audio_commands.h"
 #include "component.h"
+#include "common_definitions.h"
 
 #ifndef __AUDIO_H__
 #define __AUDIO_H__
@@ -17,12 +18,14 @@ namespace Suffer {
 
   namespace AudioCommands {
     class Play;
+    class SetGain;
   }
 
   // ---------------------------------------------------------------------- //
 
   class Audio3D : public Component {
     friend class Suffer::AudioCommands::Play;
+    friend class Suffer::AudioCommands::SetGain;
     public:
       Audio3D();
       Audio3D(const Audio3D& copy);
@@ -37,6 +40,8 @@ namespace Suffer {
       bool Play3D(mathmorra::Vector3 velocity = mathmorra::Vector3(0, 0, 0));
 
       void Fade(float volume, float time);
+
+      void SetActive(bool active);
 
       void SetPaused(const bool paused);
       void SetGain(const float newGain = 1.0f);
@@ -78,6 +83,9 @@ namespace Suffer {
       // Operand overload
       void operator=(const Audio3D& a);
       bool operator!=(const Audio3D& a);
+
+      char* name_;
+      bool active_;
 
     protected:
       ~Audio3D();

@@ -19,6 +19,7 @@ namespace Suffer {
       friend class SufferManager;
       friend class Audio3D;
       friend class Camera;
+      friend class Interface;
 
 public:
 
@@ -47,6 +48,8 @@ private:
     Mutex dl_mutex_;
     DisplayList audio_dl_;
     std::vector<ref_ptr<Audio3D>> audio_container_;
+
+    ref_ptr<Audio3D> samples_[MAX_SAMPLES];
 
 };
 

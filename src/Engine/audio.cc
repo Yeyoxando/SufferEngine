@@ -41,11 +41,13 @@ Suffer::Audio3D::Audio3D() : Component(Component::kComponentKind_Audio) {
   _ptr = new Data();
   _ptr->sound_.init(SoLoud::Soloud::ENABLE_VISUALIZATION);
 
+  active_ = false;
   gain_ = 1.0f;
   looping_ = false;
   pitch_ = 1.0f;
   hertz_ = 0;
   paused_ = false;
+  name_ = "Empty";
 
   current_position_ = mathmorra::Vector3(0, 0, 0);
   current_velocity_ = mathmorra::Vector3(0, 0, 0);
@@ -109,15 +111,29 @@ void Suffer::Audio3D::Fade(float volume, float time) {
   _ptr->sound_.fadeVolume(_ptr->handle_, volume, time);
 }
 
+void Suffer::Audio3D::SetActive(bool active){
+
+  if (!active) {
+    SetGain(0.0f);
+  }
+  else {
+    SetGain(1.0f);
+  }
+
+  active_ = active;
+
+}
+
 // --------------------------------------------------------------//
 
 void Suffer::Audio3D::SetGain(const float newGain /*= 1.0f*/) {
 
-#ifdef ASSERT
-  assert(newGain >= 0 && "¡Volume cannot set under 0!");
-#endif
-  gain_ = newGain;
-  _ptr->sound_.setVolume(_ptr->handle_, gain_);
+  ref_ptr<AudioCommands::SetGain> set_gain_command_;
+  set_gain_command_.alloc();
+
+  set_gain_command_->gain_ = newGain;
+  set_gain_command_->audio_3d_ = this;
+  suffer.audio_manager_.audio_dl_.AddCommand(set_gain_command_.get());
 
 }
 
