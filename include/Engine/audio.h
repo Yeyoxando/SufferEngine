@@ -58,10 +58,10 @@ namespace Suffer {
 
       // Listener
       void SetListenerParameters(mathmorra::Vector3 position, mathmorra::Vector3 at, mathmorra::Vector3 up, mathmorra::Vector3 velocity);
-      static void SetListenerPosition(mathmorra::Vector3 newPosition);
-      static void SetListenerAt(mathmorra::Vector3 newAt);
-      static void SetListenerUp(mathmorra::Vector3 newUp);
-      static void SetListenerVelocity(mathmorra::Vector3 newVelocity);
+      void SetListenerPosition(mathmorra::Vector3 newPosition);
+      void SetListenerAt(mathmorra::Vector3 newAt);
+      void SetListenerUp(mathmorra::Vector3 newUp);
+      void SetListenerVelocity(mathmorra::Vector3 newVelocity);
 
       // Getters
       bool isPaused();
