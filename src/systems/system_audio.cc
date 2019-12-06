@@ -31,6 +31,8 @@ void Suffer::SystemAudio::Execute(GameObject* go){
   const float* listener_target = suffer.GetCurrentScene()->GetMainCamera()->Target();
   const float* listener_up = suffer.GetCurrentScene()->GetMainCamera()->Up();
 
+  audio_source_->SetSoundMinMaxDistance(0.0f, transform_->GetScale()[0]);
+
   audio_source_->SetSoundPosition(transform_->GetPosition());
   audio_source_->SetListenerParameters(
     mathmorra::Vector3(listener_position),

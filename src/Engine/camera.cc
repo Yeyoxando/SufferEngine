@@ -342,8 +342,6 @@ void Suffer::Camera::Update(){
 
     SetupPerspective(field_of_view_, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.01f, 150.0f);
 
-    const float* position = Position();
-
     view_matrix_ = mathmorra::Matrix4(
         mathmorra::Vector4(camera_right_, 0.0f),
         mathmorra::Vector4(camera_up_, 0.0f),

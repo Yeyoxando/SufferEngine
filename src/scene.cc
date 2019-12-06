@@ -61,7 +61,7 @@ void Suffer::Scene::PrepareDraw(){
 	ref_ptr<Clear> clear_cmd;
 
 	clear_cmd.alloc();
-	clear_cmd.get()->SetClearColor(mathmorra::Vector4(0.8f));
+	clear_cmd.get()->SetClearColor(mathmorra::Vector4(1.0f));
 
 	frame_dl.AddCommand(clear_cmd.get());
 
