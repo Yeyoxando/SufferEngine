@@ -34,6 +34,12 @@ namespace Suffer {
 		    Audio3D* audio_3d_ = nullptr;
 	    };
 
+      struct Stop : public Command {
+        Stop() { cmd_type_ = Command::kAudio; }
+        virtual void Execute() const override;
+        Audio3D* audio_3d_ = nullptr;
+      };
+
 	    struct SetGain : public Command {
 		    SetGain() { cmd_type_ = Command::kAudio; }
 		    float gain_;

@@ -107,6 +107,26 @@ bool Suffer::Audio3D::Play3D(mathmorra::Vector3 velocity /*= mathmorra::Vector3(
 
 // --------------------------------------------------------------//
 
+void Suffer::Audio3D::Stop(){
+
+  ref_ptr<AudioCommands::Stop> stop_command_;
+  stop_command_.alloc();
+
+  stop_command_->audio_3d_ = this;
+  suffer.audio_manager_.audio_dl_.AddCommand(stop_command_.get());
+
+}
+
+
+
+void Suffer::Audio3D::Rewind(){
+  //_ptr->wave_.
+}
+
+
+
+// --------------------------------------------------------------//
+
 void Suffer::Audio3D::Fade(float volume, float time) {
   _ptr->sound_.fadeVolume(_ptr->handle_, volume, time);
 }
@@ -349,6 +369,12 @@ void Suffer::Audio3D::SetMonotoneParams(u32 channels, u32 wave_form) {
 
 bool Suffer::Audio3D::isPaused() {
   return paused_;
+}
+
+// --------------------------------------------------------------//
+
+bool Suffer::Audio3D::hasFinished(){
+  return !_ptr->sound_.isValidVoiceHandle(_ptr->handle_);
 }
 
 // --------------------------------------------------------------//

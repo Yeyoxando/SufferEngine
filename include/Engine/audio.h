@@ -20,6 +20,7 @@ namespace Suffer {
     class Play;
     class SetGain;
     class Pause;
+    class Stop;
   }
 
   // ---------------------------------------------------------------------- //
@@ -28,6 +29,7 @@ namespace Suffer {
     friend class Suffer::AudioCommands::Play;
     friend class Suffer::AudioCommands::SetGain;
     friend class Suffer::AudioCommands::Pause;
+    friend class Suffer::AudioCommands::Stop;
     public:
       Audio3D();
       Audio3D(const Audio3D& copy);
@@ -40,6 +42,8 @@ namespace Suffer {
 
       // Plays the audio source
       bool Play3D(mathmorra::Vector3 velocity = mathmorra::Vector3(0, 0, 0));
+      void Stop();
+      void Rewind();
 
       void Fade(float volume, float time);
 
@@ -72,6 +76,7 @@ namespace Suffer {
 
       // Getters
       bool isPaused();
+      bool hasFinished();
       u32 GetHertz();
       double GetGain();
       double GetPitch();

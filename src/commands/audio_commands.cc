@@ -137,3 +137,13 @@ void Suffer::AudioCommands::Crossfade::Crossfading() {
 #endif
 
 }
+
+
+
+void Suffer::AudioCommands::Stop::Execute() const{
+
+  audio_3d_->_ptr->sound_.stop(audio_3d_->_ptr->handle_);
+
+}
+
+

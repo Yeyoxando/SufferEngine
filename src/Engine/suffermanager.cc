@@ -88,8 +88,8 @@ bool Suffer::SufferManager::Init(){
 
   // High Level Stuff
   one.alloc(); two.alloc();
-  one->Load("../../../resources/audio/wing_cap.ogg");
-  two->Load("../../../resources/audio/monster_town.ogg");
+  one->Load("../../../resources/audio/crossfade/wing_cap.ogg");
+  two->Load("../../../resources/audio/crossfade/monster_town.ogg");
   ref_ptr<Suffer::AudioCommands::Play> play_one;
   ref_ptr<Suffer::AudioCommands::Play> play_two;
   play_one.alloc(); play_two.alloc();
@@ -98,17 +98,37 @@ bool Suffer::SufferManager::Init(){
   suffer.audio_manager_.audio_dl_.AddCommand(play_one.get());
   suffer.audio_manager_.audio_dl_.AddCommand(play_two.get());
 
+  go_to_transition_ = false;
+  go_to_a = true;
 
+  branching_a_.alloc();
+  branching_b_.alloc();
+  branching_transition_.alloc();
+
+  branching_a_->Load("../../../resources/audio/branching/Branching_A_0.ogg");
+  branching_b_->Load("../../../resources/audio/branching/Branching_B_0.ogg");
+  branching_transition_->Load("../../../resources/audio/branching/Branching_Transition.ogg");
+
+  branching_a_->Play3D();
+  branching_b_->Play3D();
+  branching_transition_->Play3D();
+
+  branching_a_->SetPaused(true);
+  branching_b_->SetPaused(true);
+  branching_transition_->SetPaused(true);
+
+  branching_a_->SetLooping(true);
+  branching_transition_->SetLooping(true);
 
   for (int i = 0; i < MAX_SAMPLES; ++i) {
     samples_[i].alloc();
     samples_[i]->SetLooping(true);
   }
 
-  samples_[0]->Load("../../../resources/audio/samples/up_and_abobe_BASS.ogg");
-  samples_[1]->Load("../../../resources/audio/samples/up_and_abobe_DRUMS.ogg");
-  samples_[2]->Load("../../../resources/audio/samples/up_and_abobe_INSTRUMENTS.ogg");
-  samples_[3]->Load("../../../resources/audio/samples/up_and_abobe_MELODY.ogg");
+  samples_[0]->Load("../../../resources/audio/layering/up_and_abobe_BASS.ogg");
+  samples_[1]->Load("../../../resources/audio/layering/up_and_abobe_DRUMS.ogg");
+  samples_[2]->Load("../../../resources/audio/layering/up_and_abobe_INSTRUMENTS.ogg");
+  samples_[3]->Load("../../../resources/audio/layering/up_and_abobe_MELODY.ogg");
 
   samples_[0]->name_ = "BASS";
   samples_[1]->name_ = "DRUMS";
@@ -175,17 +195,21 @@ void Suffer::SufferManager::Input() {
     suffer.audio_manager_.audio_dl_.AddCommand(crossfade_.get());
   }
 
-  if (input_manager_.IsKeyDown(InputManager::k_Keypad_1)) {
+  if (input_manager_.IsKeyDown(InputManager::k_Keypad_1) && audio_mode_ != 0) {
     audio_mode_ = 0;
     for (u32 i = 0; i < MAX_SAMPLES; ++i) {
       samples_[i].get()->SetPaused(true);
     }
 
+    branching_a_->SetPaused(true);
+    branching_b_->SetPaused(true);
+    branching_transition_->SetPaused(true);
+
     one->SetPaused(false);
     two->SetPaused(false);
   }
 
-  if (input_manager_.IsKeyDown(InputManager::k_Keypad_2)) {
+  if (input_manager_.IsKeyDown(InputManager::k_Keypad_2) && audio_mode_ != 1) {
     audio_mode_ = 1;
     one->SetPaused(true);
     two->SetPaused(true);
@@ -194,12 +218,35 @@ void Suffer::SufferManager::Input() {
       samples_[i].get()->SetPaused(false);
     }
 
+    branching_a_->SetPaused(true);
+    branching_b_->SetPaused(true);
+    branching_transition_->SetPaused(true);
+
   }
 
-  if (input_manager_.IsKeyDown(InputManager::k_Keypad_3)) {
+  if (input_manager_.IsKeyDown(InputManager::k_Keypad_3) && audio_mode_ != 2) {
     audio_mode_ = 2;
-    one->SetGain(0.0f);
-    two->SetGain(0.0f);
+
+    one->SetPaused(true);
+    two->SetPaused(true);
+
+    for (u32 i = 0; i < MAX_SAMPLES; ++i) {
+      samples_[i].get()->SetPaused(true);
+    }
+
+    branching_a_->Play3D();
+    do_once_a = false;
+    do_once_b = false;
+    go_to_a = true;
+    go_to_transition_ = false;
+  }
+
+  if (input_manager_.IsKeyDown(InputManager::k_T)) {
+    go_to_transition_ = true;
+    do_once_a = true;
+    do_once_b = true;
+    branching_a_->SetLooping(false);
+    branching_b_->SetLooping(false);
   }
 
   input_manager_.Update();
@@ -282,7 +329,41 @@ void Suffer::SufferManager::HighLevel(){
 
 void Suffer::SufferManager::Step(){
 
+  static bool do_once = false;
 	data_->scene_context_->Step(data_->delta_time_);
+
+  if (branching_a_->hasFinished() && go_to_transition_ && go_to_a && do_once_a) {
+    go_to_a = false;
+    do_once = false;
+    do_once_b = false;
+    branching_transition_->Play3D();
+    branching_transition_->SetLooping(false);
+  }
+  else if (branching_b_->hasFinished() && go_to_transition_ && !go_to_a && do_once_b) {
+    go_to_a = true;
+    do_once = false;
+    do_once_a = false;
+    branching_transition_->Play3D();
+    branching_transition_->SetLooping(false);
+  }
+  else if (go_to_transition_ && branching_transition_->hasFinished() && !do_once) {
+    go_to_transition_ = false;
+    branching_transition_->SetLooping(true);
+    if (go_to_a) {
+      branching_a_->Play3D();
+      do_once_a = false;
+      do_once_b = false;
+      do_once = true;
+      branching_a_->SetLooping(true);
+    }
+    else {
+      branching_b_->Play3D();
+      do_once_b = false;
+      do_once_a = false;
+      do_once = true;
+      branching_b_->SetLooping(true);
+    }
+  }
 
   // Systems
   u32 systems_size = systems_.size();
