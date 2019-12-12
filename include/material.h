@@ -45,12 +45,12 @@ namespace Suffer {
       friend class MaterialInstance;
     public:
       mathmorra::Vector4 color_;
+      ParamsType params_type_;
 
     protected:
       BaseParams();
       ~BaseParams() {}
 
-      ParamsType params_type_;
 
     };
 
@@ -86,24 +86,14 @@ namespace Suffer {
      * @brief: sets material instance default material parameters. Converts the material to a default type.
      * @param: default params for the object.
      */
-    void SetDefaultParams(ref_ptr<DefaultParams> params);
-
-    /**
-     * @brief: sets material instance phong material parameters. Converts the material to a phong type.
-     * @param: phong params for the object.
-     */
-    void SetPhongParams(ref_ptr<PhongParams> params);
-
+    void SetParams(ref_ptr<BaseParams> params);
 
 	protected:
 		virtual ~MaterialInstance();
 
   private:
-    u32 GetMaterialParamsType() const;
-    BaseParams* GetMaterialParams();
 
-		struct Data;
-		Data* data_;
+    ref_ptr<BaseParams> current_params_;
 
 	};
 

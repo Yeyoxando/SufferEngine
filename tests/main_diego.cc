@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
   material_params.alloc();
   material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   material_params->albedo_texture_id_ = albedo_texture->id_;
-  material->SetDefaultParams(material_params);
+  material->SetParams(material_params.get());
 
 
   Suffer::ref_ptr<Suffer::GameObject> go_cube;
@@ -87,7 +87,7 @@ int main(int argc, char* argv[]) {
   material_params2.alloc();
   material_params2->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   material_params2->albedo_texture_id_ = albedo_texture2->id_;
-  material2->SetDefaultParams(material_params2);
+  material2->SetParams(material_params2.get());
 
   Suffer::ref_ptr<Suffer::GameObject> go_sphere;
   go_sphere.alloc();

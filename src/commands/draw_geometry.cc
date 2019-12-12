@@ -110,10 +110,10 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
 
   {
 
-    data_->material_type_ = (u32)go->GetMaterial()->GetMaterialParamsType();
+    data_->material_type_ = (u32)go->GetMaterial()->current_params_->params_type_;
 
     // -- Common Attributes --
-    MaterialInstance::BaseParams* params = go->GetMaterial()->GetMaterialParams();
+    MaterialInstance::BaseParams* params = go->GetMaterial()->current_params_.get();
     mathmorra::Vector4 aux_color = params->color_;
     float values[4] = { aux_color.x_, aux_color.y_, aux_color.z_, aux_color.w_ };
     // Copy color to next free uniform space, after Vector n12 because of 3 matrixes, > u_data[48]
