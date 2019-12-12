@@ -13,6 +13,7 @@
 #include "component.h"
 #include "system.h"
 #include "system_transform.h"
+#include "system_audio.h"
 
 // --------------------------------------------------------------//
 
@@ -23,6 +24,10 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::SystemTransform> transform_system_;
   transform_system_.alloc();
   suffer.AddSystem(transform_system_.get());
+
+  Suffer::ref_ptr<Suffer::SystemAudio> audio_system_;
+  audio_system_.alloc();
+  suffer.AddSystem(audio_system_.get());
 
   Suffer::ref_ptr<Suffer::Scene> scene;
   scene.alloc();
@@ -48,7 +53,7 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::GameObject> go_cube;
   go_cube.alloc();
 
-// -------------------------------- COMPONENTS STUFF TESTS ------------------------------//
+  // -------------------------------- COMPONENTS STUFF TESTS ------------------------------//
 
   Suffer::ref_ptr<Suffer::Transform> transform_component_;
   transform_component_.alloc();
@@ -60,8 +65,8 @@ int main(int argc, char* argv[]) {
   auto component_ = go_cube->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
   Suffer::Transform* component = reinterpret_cast<Suffer::Transform*>(component_);
 
-// -------------------------------------------------------------------------------------//
-  //go_cube->StartUpLUA("../../../src/lua/lua_code_cube.txt");
+  // -------------------------------------------------------------------------------------//
+    //go_cube->StartUpLUA("../../../src/lua/lua_code_cube.txt");
   go_cube->SetGeometry(geometry);
   go_cube->GetGeometry()->SetDrawMode(Suffer::Geometry::kDrawMode_Triangles);
   go_cube->SetMaterial(material);
@@ -91,13 +96,29 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::GameObject> go_sphere;
   go_sphere.alloc();
-  //go_sphere->StartUpLUA("../../../src/lua/lua_code_sphere.txt");
+  go_sphere->StartUpLUA("../../../src/lua/lua_code_sphere.txt");
   go_sphere->SetGeometry(geometry2);
   go_sphere->GetGeometry()->SetDrawMode(Suffer::Geometry::kDrawMode_Triangles);
+
+
+
+  // -------------------------------- COMPONENTS STUFF TESTS ------------------------------//
 
   Suffer::ref_ptr<Suffer::Transform> transform_component_sphere_;
   transform_component_sphere_.alloc();
   go_sphere->AddComponent(transform_component_sphere_.get());
+
+  Suffer::ref_ptr<Suffer::Audio3D> audio_component_;
+  audio_component_.alloc();
+  go_sphere->AddComponent(audio_component_.get());
+
+  auto audio_ = go_sphere->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Audio);
+  Suffer::Audio3D* source = reinterpret_cast<Suffer::Audio3D*>(audio_);
+  source->Load("../../../resources/audio/plonk_wet.ogg");
+  source->Play3D();
+  source->SetLooping(true);
+
+  // -------------------------------------------------------------------------------------//
 
 
   go_sphere->SetMaterial(material2);
