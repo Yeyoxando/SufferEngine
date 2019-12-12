@@ -12,6 +12,8 @@
 #include "audio_commands.h"
 #include "internal_suffermanager.h"
 #include <string>
+#include "system_render.h"
+#include "system_transform.h"
 
 // --------------------------------------------------------------//
 
@@ -75,6 +77,13 @@ bool Suffer::SufferManager::Init(){
 	logic_.alloc();
 	input_.alloc();
 	audio_.alloc();
+
+  // Adding systems
+  transform_system_.alloc();
+  suffer.AddSystem(transform_system_.get());
+
+  render_system_.alloc();
+  suffer.AddSystem(render_system_.get());
 
 	return true;
 
@@ -219,6 +228,8 @@ void Suffer::SufferManager::Step(){
       systems_[i]->Execute(suffer.GetCurrentScene()->current_gameobjects_[j].get());
     }
   }
+
+  render_manager_.AddToRenderQueue(std::move(render_system_.get()->dl_));
 
 	// This will be the last function in UPDATE
 	PrepareAudio();

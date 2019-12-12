@@ -4,6 +4,7 @@
 
 struct Suffer::Audio3D::Data {
 
+  // TODO: Make a structure with these attributes.
   SoLoud::Soloud sound_;
   SoLoud::Wav wave_;
   SoLoud::handle handle_;

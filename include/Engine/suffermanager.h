@@ -12,6 +12,7 @@
 #include "vector2.h"
 #include "input.h"
 #include "system_transform.h"
+#include "system_render.h"
 
 namespace Suffer {
 
@@ -113,6 +114,9 @@ namespace Suffer {
 
     mathmorra::Vector2 mouse_position_;
     std::vector<ref_ptr<System>> systems_;
+    
+    Suffer::ref_ptr<Suffer::SystemRender> render_system_;
+    Suffer::ref_ptr<Suffer::SystemTransform> transform_system_;
 
 		struct Data;
 		Data* data_;

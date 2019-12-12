@@ -12,6 +12,7 @@
 #include <suffermanager.h>
 #include "internal_interface.h"
 #include "internal_game_object.h"
+#include "component_geometry.h"
 
 // --------------------------------------------------- //
 
@@ -41,61 +42,6 @@ bool Suffer::GameObject::operator!=(const GameObject& go){
 // --------------------------------------------------- //
 
 Suffer::GameObject::GameObject(const GameObject& go) {
-
-	this->geometry_ = go.geometry_;
-	this->material_ = go.material_;
-
-}
-
-// --------------------------------------------------- //
-
-Suffer::ref_ptr<Suffer::MaterialInstance> Suffer::GameObject::GetMaterial() {
-	return material_;
-}
-
-// --------------------------------------------------- //
-
-Suffer::ref_ptr<Suffer::Geometry> Suffer::GameObject::GetGeometry() {
-	return geometry_;
-}
-
-// --------------------------------------------------- //
-
-void Suffer::GameObject::SetMaterial(ref_ptr<MaterialInstance> new_material) {
-
-#ifdef ASSERT
-	assert(new_material); // "newMaterial was NULL"
-#endif
-	material_ = new_material;
-}
-
-// --------------------------------------------------- //
-
-void Suffer::GameObject::SetGeometry(ref_ptr<Geometry> new_geometry) {
-#ifdef ASSERT
-	assert(new_geometry); // "newGeometry was NULL"
-#endif
-	geometry_ = new_geometry;
-}
-
-// --------------------------------------------------- //
-
-void Suffer::GameObject::AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matrix4 view, mathmorra::Matrix4 projection) {
-  
-  ref_ptr<DrawGeometry> draw_geometry;
-
-  draw_geometry.alloc();
-  draw_geometry.get()->SetData(this);
-
-  if (HasComponent(Component::kComponentKind_Transform)) {
-      Transform* transform = reinterpret_cast<Transform*>(GetComponent(Component::kComponentKind_Transform));
-      draw_geometry.get()->SetModelMatrix(transform->GetModelMatrix());
-  }
-
-  draw_geometry.get()->SetViewMatrix(view);
-  draw_geometry.get()->SetProjectionMatrix(projection);
-
-  dl.AddCommand(draw_geometry.get());
 
 }
 
@@ -347,6 +293,9 @@ int Suffer::GameObject::Data::lua_Scale(lua_State* L){
 
 int Suffer::GameObject::Data::lua_SetPredefinedGeometry(lua_State* L){
 
+  auto geometry_component = GetReference(L)->GetComponent(Suffer::Component::kComponentKind_Geometry);
+  GeometryComponent* geometry_ = reinterpret_cast<GeometryComponent*>(geometry_component);
+
     int arguments = lua_gettop(L);
     if (arguments != 1) {
         return luaL_error(L, "Invalid call, expected one argument");
@@ -354,14 +303,14 @@ int Suffer::GameObject::Data::lua_SetPredefinedGeometry(lua_State* L){
 
     const char* x = lua_tostring(L, 1);
 
-    Geometry::BasicShapes new_shape = Geometry::BasicShapes::kBasicShapes_Triangle;
+    GeometryComponent::BasicShapes new_shape = GeometryComponent::BasicShapes::kBasicShapes_Triangle;
     
-    if (!strcmp(x, "Triangle")) new_shape = Geometry::BasicShapes::kBasicShapes_Triangle;
-    if (!strcmp(x, "Quad"))     new_shape = Geometry::BasicShapes::kBasicShapes_Quad;
-    if (!strcmp(x, "Cube"))     new_shape = Geometry::BasicShapes::kBasicShapes_Cube;
-    if (!strcmp(x, "Sphere"))   new_shape = Geometry::BasicShapes::kBasicShapes_Sphere;
+    if (!strcmp(x, "Triangle")) new_shape = GeometryComponent::BasicShapes::kBasicShapes_Triangle;
+    if (!strcmp(x, "Quad"))     new_shape = GeometryComponent::BasicShapes::kBasicShapes_Quad;
+    if (!strcmp(x, "Cube"))     new_shape = GeometryComponent::BasicShapes::kBasicShapes_Cube;
+    if (!strcmp(x, "Sphere"))   new_shape = GeometryComponent::BasicShapes::kBasicShapes_Sphere;
 
-    GetReference(L)->GetGeometry()->CreateGeometryWithShape(new_shape);
+    geometry_->CreateGeometryWithShape(new_shape);
 
     lua_pop(L, 1);
     return 0;
@@ -372,6 +321,9 @@ int Suffer::GameObject::Data::lua_SetPredefinedGeometry(lua_State* L){
 
 int Suffer::GameObject::Data::lua_SetDrawMode(lua_State* L){
 
+  auto geometry_component = GetReference(L)->GetComponent(Suffer::Component::kComponentKind_Geometry);
+  GeometryComponent* geometry_ = reinterpret_cast<GeometryComponent*>(geometry_component);
+
     int arguments = lua_gettop(L);
     if (arguments != 1) {
         return luaL_error(L, "Invalid call, expected one argument");
@@ -379,14 +331,14 @@ int Suffer::GameObject::Data::lua_SetDrawMode(lua_State* L){
 
     const char* x = lua_tostring(L, 1);
 
-    Geometry::DrawMode draw_mode = Geometry::DrawMode::kDrawMode_Lines;
+    GeometryComponent::DrawMode draw_mode = GeometryComponent::DrawMode::kDrawMode_Lines;
 
-    if (!strcmp(x, "Lines"))     draw_mode = Geometry::DrawMode::kDrawMode_Lines;
-    if (!strcmp(x, "LineLoop"))  draw_mode = Geometry::DrawMode::kDrawMode_LineLoop;
-    if (!strcmp(x, "Points"))    draw_mode = Geometry::DrawMode::kDrawMode_Points;
-    if (!strcmp(x, "Triangles")) draw_mode = Geometry::DrawMode::kDrawMode_Triangles;
+    if (!strcmp(x, "Lines"))     draw_mode = GeometryComponent::DrawMode::kDrawMode_Lines;
+    if (!strcmp(x, "LineLoop"))  draw_mode = GeometryComponent::DrawMode::kDrawMode_LineLoop;
+    if (!strcmp(x, "Points"))    draw_mode = GeometryComponent::DrawMode::kDrawMode_Points;
+    if (!strcmp(x, "Triangles")) draw_mode = GeometryComponent::DrawMode::kDrawMode_Triangles;
 
-    GetReference(L)->GetGeometry()->SetDrawMode(draw_mode);
+    geometry_->SetDrawMode(draw_mode);
 
     lua_pop(L, 1);
     return 0;
