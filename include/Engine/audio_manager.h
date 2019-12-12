@@ -49,8 +49,6 @@ private:
     DisplayList audio_dl_;
     std::vector<ref_ptr<Audio3D>> audio_container_;
 
-    ref_ptr<Audio3D> samples_[MAX_SAMPLES];
-
 };
 
 

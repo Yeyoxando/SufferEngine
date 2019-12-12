@@ -328,8 +328,15 @@ void Suffer::Audio3D::operator=(const Audio3D& a) {
 // --------------------------------------------------------------//
 
 void Suffer::Audio3D::SetPaused(const bool paused) {
+
   paused_ = paused;
-  _ptr->sound_.setPause(_ptr->handle_, paused_);
+
+  ref_ptr<AudioCommands::Pause> pause_command;
+  pause_command.alloc();
+
+  pause_command->audio_3d_ = this;
+  suffer.audio_manager_.audio_dl_.AddCommand(pause_command.get());
+
 }
 
 // --------------------------------------------------------------//

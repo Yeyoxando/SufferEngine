@@ -21,26 +21,6 @@ void Suffer::AudioManager::StartUp() {
     max_audio_sources_ = MAX_AUDIO_SOURCES;
     audio_sources_ = 0;
 
-    for (int i = 0; i < MAX_SAMPLES; ++i) {
-      samples_[i].alloc();
-      samples_[i]->SetLooping(true);
-    }
-
-    samples_[0]->Load("../../../resources/audio/samples/up_and_abobe_BASS.ogg");
-    samples_[1]->Load("../../../resources/audio/samples/up_and_abobe_DRUMS.ogg");
-    samples_[2]->Load("../../../resources/audio/samples/up_and_abobe_INSTRUMENTS.ogg");
-    samples_[3]->Load("../../../resources/audio/samples/up_and_abobe_MELODY.ogg");
-
-    samples_[0]->name_ = "BASS";
-    samples_[1]->name_ = "DRUMS";
-    samples_[2]->name_ = "INSTRUMENTS";
-    samples_[3]->name_ = "MELODY";
-
-    samples_[0]->Play3D();
-    samples_[1]->Play3D();
-    samples_[2]->Play3D();
-    samples_[3]->Play3D();
-
 }
 
 // --------------------------------------------------------------//

@@ -55,17 +55,13 @@ void Suffer::AudioCommands::Play::Execute() const {
   audio_3d_->SetPitch(audio_3d_->pitch_);
   audio_3d_->SetLooping(audio_3d_->looping_);
 
-  audio_3d_->SetPaused(false);
-
-
 }
 
 // --------------------------------------------------------------//
 
 void Suffer::AudioCommands::Pause::Execute() const {
 
-  if (audio_3d_ == nullptr) return;
-  audio_3d_->SetPaused(true);
+  audio_3d_->_ptr->sound_.setPause(audio_3d_->_ptr->handle_, audio_3d_->paused_);
 
 }
 
@@ -88,6 +84,7 @@ void Suffer::AudioCommands::SetGain::Execute() const {
 Suffer::AudioCommands::Crossfade::Crossfade(Audio3D* from, Audio3D* to, float attenuation) {
   from_ = from;
   to_ = to;
+  cmd_type_ = Command::kAudio;
   attenuation_ = ThiefUtils::Math::Clamp(attenuation, 0.0f, 1.0f);
   ended_ = false;
 }
@@ -121,11 +118,13 @@ void Suffer::AudioCommands::Crossfade::Crossfading() {
   while (!ended_) {
 
     float current_from_gain_ = from_->GetGain();
-    current_from_gain_ = ThiefUtils::Math::Lerp(current_from_gain_, 0.0f, attenuation_);
+    //current_from_gain_ = ThiefUtils::Math::Lerp(current_from_gain_, 0.0f, attenuation_);
+    current_from_gain_ -= attenuation_;
     from_->SetGain(current_from_gain_);
 
     float current_to_gain_ = to_->GetGain();
-    current_to_gain_ = ThiefUtils::Math::Lerp(current_to_gain_, 1.0f, attenuation_);
+    //current_to_gain_ = ThiefUtils::Math::Lerp(current_to_gain_, 1.0f, attenuation_);
+    current_to_gain_ += attenuation_;
     to_->SetGain(current_to_gain_);
 
     if (from_->GetGain() <= 0.01f && to_->GetGain() >= 0.97f) ended_ = true;

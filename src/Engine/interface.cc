@@ -265,9 +265,30 @@ void  Suffer::Interface::CreateDock(bool* p_open){
 	if(is_project_window_opened_) Project();
 	if(is_log_opened_) Log();
   if (is_audio_window_opened_) {
-    for (int i = 0; i < 4; ++i) {
-      Audio(suffer.audio_manager_.samples_[i].get());
+    switch (suffer.audio_mode_) {
+      // Crossfading
+      case 0: {
+        Audio(suffer.one.get());
+        Audio(suffer.two.get());
+        break;
+      }
+
+      // Layering
+      case 1: {
+        for (int i = 0; i < 4; ++i) {
+          Audio(suffer.samples_[i].get());
+        }
+        break;
+      }
+
+      // Branching
+      case 2:
+        break;
+
+      default:
+        break;
     }
+
   }
 	if (is_game_window_opened_) Game(0);
 	
@@ -582,8 +603,9 @@ void  Suffer::Interface::Audio(Audio3D* sound){
 	static char pre_buffer_[255] = "../../../resources/audio/";
 	static char aux_buffer[255] = "../../../resources/audio/";
 	static bool swiped = false;
-  bool sound_active_ = sound->active_;
+  static bool sound_active_ = sound->active_;
 	static int max_value = 256;
+  static int sounds_id = 0;
 
   std::string attributes_ = "\0";
 
@@ -629,9 +651,14 @@ void  Suffer::Interface::Audio(Audio3D* sound){
   }
 
   ImGui::SameLine();
+  ImGui::PushID(sounds_id);
   if (ImGui::Checkbox("Is Active", &sound_active_)) {
     sound->SetActive(sound_active_);
   }
+  sounds_id++;
+  ImGui::PopID();
+
+  if (sounds_id > MAX_SAMPLES) sounds_id = 0;
 
 	ImGui::InputText("Song", buffer, sizeof(buffer));
 	ImGui::SameLine();

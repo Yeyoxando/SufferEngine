@@ -106,6 +106,13 @@ namespace Suffer {
      */
     void PrepareAudio();
 
+    // High Level Stuff
+    void HighLevel();
+    ref_ptr<Audio3D> one;
+    ref_ptr<Audio3D> two;
+    ref_ptr<Audio3D> samples_[MAX_SAMPLES];
+    u32 audio_mode_;
+    // TODO: Delete this
 
 		// Threads
 		ref_ptr<Thread> logic_;

@@ -21,6 +21,7 @@ Suffer::SufferManager::SufferManager(){
 
 	data_ = new Data();
 	data_->scene_context_.alloc();
+  audio_mode_ = 0;
 
 }
 
@@ -85,6 +86,44 @@ bool Suffer::SufferManager::Init(){
   render_system_.alloc();
   suffer.AddSystem(render_system_.get());
 
+  // High Level Stuff
+  one.alloc(); two.alloc();
+  one->Load("../../../resources/audio/wing_cap.ogg");
+  two->Load("../../../resources/audio/monster_town.ogg");
+  ref_ptr<Suffer::AudioCommands::Play> play_one;
+  ref_ptr<Suffer::AudioCommands::Play> play_two;
+  play_one.alloc(); play_two.alloc();
+  play_one->audio_3d_ = one.get();
+  play_two->audio_3d_ = two.get();
+  suffer.audio_manager_.audio_dl_.AddCommand(play_one.get());
+  suffer.audio_manager_.audio_dl_.AddCommand(play_two.get());
+
+
+
+  for (int i = 0; i < MAX_SAMPLES; ++i) {
+    samples_[i].alloc();
+    samples_[i]->SetLooping(true);
+  }
+
+  samples_[0]->Load("../../../resources/audio/samples/up_and_abobe_BASS.ogg");
+  samples_[1]->Load("../../../resources/audio/samples/up_and_abobe_DRUMS.ogg");
+  samples_[2]->Load("../../../resources/audio/samples/up_and_abobe_INSTRUMENTS.ogg");
+  samples_[3]->Load("../../../resources/audio/samples/up_and_abobe_MELODY.ogg");
+
+  samples_[0]->name_ = "BASS";
+  samples_[1]->name_ = "DRUMS";
+  samples_[2]->name_ = "INSTRUMENTS";
+  samples_[3]->name_ = "MELODY";
+
+  samples_[0]->Play3D();
+  samples_[1]->Play3D();
+  samples_[2]->Play3D();
+  samples_[3]->Play3D();
+
+  one->SetLooping(true);
+  two->SetLooping(true);
+  // TODO: Delete this
+
 	return true;
 
 }
@@ -119,37 +158,69 @@ void Suffer::SufferManager::Input() {
       data_->is_interface_active_ = !data_->is_interface_active_;
   }
 
+  if (input_manager_.IsKeyDown(InputManager::k_Y) && suffer.audio_mode_ == 0) {
+    ref_ptr<Suffer::AudioCommands::Crossfade> crossfade_;
+    crossfade_.alloc();
+    crossfade_->attenuation_ = 0.0001f;
+    crossfade_->from_ = one.get();
+    crossfade_->to_ = two.get();
+    suffer.audio_manager_.audio_dl_.AddCommand(crossfade_.get());
+  }
+
+  if (input_manager_.IsKeyDown(InputManager::k_U) && suffer.audio_mode_ == 0) {
+    ref_ptr<Suffer::AudioCommands::Crossfade> crossfade_;
+    crossfade_.alloc();
+    crossfade_->from_ = two.get();
+    crossfade_->to_ = one.get();
+    suffer.audio_manager_.audio_dl_.AddCommand(crossfade_.get());
+  }
+
+  if (input_manager_.IsKeyDown(InputManager::k_Keypad_1)) {
+    audio_mode_ = 0;
+    for (u32 i = 0; i < MAX_SAMPLES; ++i) {
+      samples_[i].get()->SetPaused(true);
+    }
+
+    one->SetPaused(false);
+    two->SetPaused(false);
+  }
+
+  if (input_manager_.IsKeyDown(InputManager::k_Keypad_2)) {
+    audio_mode_ = 1;
+    one->SetPaused(true);
+    two->SetPaused(true);
+
+    for (u32 i = 0; i < MAX_SAMPLES; ++i) {
+      samples_[i].get()->SetPaused(false);
+    }
+
+  }
+
+  if (input_manager_.IsKeyDown(InputManager::k_Keypad_3)) {
+    audio_mode_ = 2;
+    one->SetGain(0.0f);
+    two->SetGain(0.0f);
+  }
+
   input_manager_.Update();
 
 }
 
 // --------------------------------------------------------------//
 
-void Suffer::SufferManager::Run(){
-
-  //ref_ptr<Audio3D> one;
-  //ref_ptr<Audio3D> two;
-  //one.alloc(); two.alloc();
-  //one->Load("../../../resources/audio/plonk_dry.ogg");
-  //two->Load("../../../resources/audio/plonk_wet.ogg");
-  //ref_ptr<Suffer::AudioCommands::Play> play_one;
-  //ref_ptr<Suffer::AudioCommands::Play> play_two;
-  //play_one.alloc(); play_two.alloc();
-  //play_one->audio_3d_ = one.get();
-  //play_two->audio_3d_ = two.get();
-  //play_two->audio_3d_->SetGain(0.0f);
-  //suffer.audio_manager_.audio_dl_.AddCommand(play_one.get());
-  //suffer.audio_manager_.audio_dl_.AddCommand(play_two.get());
-  //Suffer::AudioCommands::Crossfade test();
-
-  //one->SetLooping(true);
-  //two->SetLooping(true);
+void Suffer::SufferManager::Run() {
 
   // Threads Function Assignment
   auto update_thread = [] { SufferManager::instance().Step(); };
   auto input_thread = [] { SufferManager::instance().Input(); };
 
   logic_->NewTask(update_thread);
+
+  one->SetGain(0.0f);
+  samples_[0]->SetPaused(true);
+  samples_[1]->SetPaused(true);
+  samples_[2]->SetPaused(true);
+  samples_[3]->SetPaused(true);
 
 	while (!data_->window_should_close_) {
 
@@ -168,23 +239,6 @@ void Suffer::SufferManager::Run(){
 		Draw();
     
     logic_->WaitFor(logic_.get());
-
-    //if (input_manager_.IsKeyDown(InputManager::k_Y)) {
-    //  ref_ptr<Suffer::AudioCommands::Crossfade> crossfade_;
-    //  crossfade_.alloc();
-    //  crossfade_->attenuation_ = 0.000001f;
-    //  crossfade_->from_ = one.get();
-    //  crossfade_->to_ = two.get();
-    //  suffer.audio_manager_.audio_dl_.AddCommand(crossfade_.get());
-    //}
-    //
-    //if (input_manager_.IsKeyDown(InputManager::k_U)) {
-    //  ref_ptr<Suffer::AudioCommands::Crossfade> crossfade_;
-    //  crossfade_.alloc();
-    //  crossfade_->from_ = two.get();
-    //  crossfade_->to_ = one.get();
-    //  suffer.audio_manager_.audio_dl_.AddCommand(crossfade_.get());
-    //}
 
 		data_->delta_time_ = (data_->current_time_ - data_->previous_time_) * 0.0001f;
 		data_->previous_time_ = data_->current_time_;
@@ -211,6 +265,16 @@ void Suffer::SufferManager::PrepareAudio() {
     auto audio_thread = [] { suffer.audio_manager_.DoAudio(); };
     audio_->NewTask(audio_thread);
   }
+
+}
+
+
+// --------------------------------------------------------------//
+
+void Suffer::SufferManager::HighLevel(){
+
+
+
 
 }
 

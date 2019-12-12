@@ -43,7 +43,7 @@ namespace Suffer {
 
       struct Crossfade : public Command {
         Crossfade(Audio3D* from, Audio3D* to, float attenuation);
-        Crossfade() {};
+        Crossfade() { cmd_type_ = Command::kAudio; };
         virtual void Execute() const override;
         static Audio3D* from_;
         static Audio3D* to_;

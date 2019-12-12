@@ -41,7 +41,7 @@ void Suffer::SystemRender::Execute(GameObject * go){
   draw_geometry.get()->SetModelMatrix(transform_component->GetModelMatrix());
 
   draw_geometry.get()->SetViewMatrix(suffer.GetCurrentScene()->GetMainCamera()->ViewMatrix());
-  draw_geometry.get()->SetViewMatrix(suffer.GetCurrentScene()->GetMainCamera()->ProjectionMatrix());
+  draw_geometry.get()->SetProjectionMatrix(suffer.GetCurrentScene()->GetMainCamera()->ProjectionMatrix());
 
   dl_.AddCommand(draw_geometry.get());
 

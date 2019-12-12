@@ -19,6 +19,7 @@ namespace Suffer {
   namespace AudioCommands {
     class Play;
     class SetGain;
+    class Pause;
   }
 
   // ---------------------------------------------------------------------- //
@@ -26,6 +27,7 @@ namespace Suffer {
   class Audio3D : public Component {
     friend class Suffer::AudioCommands::Play;
     friend class Suffer::AudioCommands::SetGain;
+    friend class Suffer::AudioCommands::Pause;
     public:
       Audio3D();
       Audio3D(const Audio3D& copy);
