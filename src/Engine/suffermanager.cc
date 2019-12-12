@@ -89,7 +89,9 @@ bool Suffer::SufferManager::Init(){
   // High Level Stuff
   one.alloc(); two.alloc();
   one->Load("../../../resources/audio/crossfade/wing_cap.ogg");
+  one->name_ = "Super Mario";
   two->Load("../../../resources/audio/crossfade/monster_town.ogg");
+  two->name_ = "Monster Town";
   ref_ptr<Suffer::AudioCommands::Play> play_one;
   ref_ptr<Suffer::AudioCommands::Play> play_two;
   play_one.alloc(); play_two.alloc();

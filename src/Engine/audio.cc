@@ -148,9 +148,9 @@ void Suffer::Audio3D::SetActive(bool active){
 
 void Suffer::Audio3D::SetGain(const float newGain /*= 1.0f*/) {
 
+  gain_ = newGain;
   ref_ptr<AudioCommands::SetGain> set_gain_command_;
   set_gain_command_.alloc();
-
   set_gain_command_->gain_ = newGain;
   set_gain_command_->audio_3d_ = this;
   suffer.audio_manager_.audio_dl_.AddCommand(set_gain_command_.get());
@@ -299,6 +299,7 @@ u32 Suffer::Audio3D::GetHertz() {
 // --------------------------------------------------------------//
 
 double Suffer::Audio3D::GetGain() {
+  gain_ = _ptr->sound_.getVolume(_ptr->handle_);
   return gain_;
 }
 
