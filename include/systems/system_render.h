@@ -1,31 +1,34 @@
 /*
 * Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
 * Date: 05-12-2019
-* SystemTransform Header
+* SystemRender Header
 */
 
 #ifndef __SYSTEM_RENDER_H__
 #define __SYSTEM_RENDER_H__
 
 #include "system.h"
+#include "display_list.h"
 
 // --------------------------------------------------- //
 
 namespace Suffer {
 
-  class SystemTransform : public System {
+  class SystemRender : public System {
 
     friend class SufferManager;
     friend class Scene;
 
   public:
-    SystemTransform();
+    SystemRender();
 
   protected:
     virtual void Execute(GameObject* go) override;
 
   private:
-    ~SystemTransform();
+    ~SystemRender();
+
+    DisplayList dl_;
 
   };
 
@@ -33,4 +36,4 @@ namespace Suffer {
 
 // --------------------------------------------------- //
 
-#endif // __SYSTEM_TRANSFORM_H__
+#endif // __SYSTEM_RENDER_H__

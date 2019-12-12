@@ -17,13 +17,11 @@ namespace Suffer {
     public:
 
       enum ComponentKind {
-          // INIT WITH THE LAST ELEMENT OF THE USER ENUMS
           kComponentKind_Invalid = -1,
           kComponentKind_Transform,
+          kComponentKind_Geometry,
           kComponentKind_Material,
-          kComponentKind_Visibility,
-          kComponentKind_Script,
-          kComponentKind_Renderer,
+          kComponentKind_Audio,
           kComponentKind_User = 1000,
       };
 
@@ -33,7 +31,6 @@ namespace Suffer {
 
   protected:
       virtual ~Component();
-
   };
 
 }

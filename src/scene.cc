@@ -65,12 +65,6 @@ void Suffer::Scene::PrepareDraw(){
 
 	frame_dl.AddCommand(clear_cmd.get());
 
-
-  // Gameobject adds itself to displaylist
-	for (u32 i = 0; i < current_gameobjects_.size(); ++i) {
-    current_gameobjects_.at(i).get()->AddDrawCommand(frame_dl, main_camera_->ViewMatrix(), main_camera_->ProjectionMatrix());
-	}
-
   // Send DL to render manager
 	suffer.render_manager_.AddToRenderQueue(std::move(frame_dl));
 

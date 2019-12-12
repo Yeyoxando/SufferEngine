@@ -67,6 +67,8 @@ Suffer::DrawGeometry::~DrawGeometry() {
 
 void Suffer::DrawGeometry::SetData(GameObject* go) {
 
+  // Cambiar toda esta movida para que vaya cn componentes
+
   // ---------------------------- SetGeometry ------------------------------ //
 
   {
