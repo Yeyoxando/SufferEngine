@@ -66,6 +66,10 @@ void Suffer::Scene::PrepareDraw(){
 
 	frame_dl.AddCommand(clear_cmd.get());
 
+  clear_cmd.get()->SetClearColor(mathmorra::Vector4(0.5f));
+
+	frame_dl.AddCommand(clear_cmd.get());
+
   // Send DL to render manager
 	suffer.render_manager_.AddToRenderQueue(std::move(frame_dl));
 
