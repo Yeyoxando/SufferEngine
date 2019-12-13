@@ -297,7 +297,7 @@ int Suffer::GameObject::Data::lua_SetPredefinedGeometry(lua_State* L){
   GeometryComponent* geometry_ = reinterpret_cast<GeometryComponent*>(geometry_component);
 
     int arguments = lua_gettop(L);
-    if (arguments != 1) {
+    if (arguments != 2) {
         return luaL_error(L, "Invalid call, expected one argument");
     }
 
@@ -325,7 +325,7 @@ int Suffer::GameObject::Data::lua_SetDrawMode(lua_State* L){
   GeometryComponent* geometry_ = reinterpret_cast<GeometryComponent*>(geometry_component);
 
     int arguments = lua_gettop(L);
-    if (arguments != 1) {
+    if (arguments != 2) {
         return luaL_error(L, "Invalid call, expected one argument");
     }
 
@@ -377,8 +377,8 @@ void Suffer::GameObject::Data::TranslateL(float x, float y, float z){
     if (reference->HasComponent(Component::kComponentKind_Transform)) {
         Transform* transform = reinterpret_cast<Transform*>(
         reference->GetComponent(Component::kComponentKind_Transform));
-        transform->Translate(mathmorra::Vector3(transform->GetPosition()) + 
-                             mathmorra::Vector3(x, y, z));
+        transform->Translate(/*mathmorra::Vector3(transform->GetPosition()) + 
+                             */mathmorra::Vector3(x, y, z));
     }
 
 }

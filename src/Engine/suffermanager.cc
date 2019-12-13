@@ -320,15 +320,6 @@ void Suffer::SufferManager::PrepareAudio() {
 
 // --------------------------------------------------------------//
 
-void Suffer::SufferManager::HighLevel(){
-
-
-
-
-}
-
-// --------------------------------------------------------------//
-
 void Suffer::SufferManager::Step(){
 
   static bool do_once = false;
