@@ -72,20 +72,6 @@ namespace Suffer {
 		RenderManager render_manager_;
 		ResourceManager resource_manager_;
 
-    // High Level Stuff
-    ref_ptr<Audio3D> one;
-    ref_ptr<Audio3D> two;
-    ref_ptr<Audio3D> samples_[MAX_SAMPLES];
-    ref_ptr<Audio3D> branching_a_;
-    ref_ptr<Audio3D> branching_b_;
-    ref_ptr<Audio3D> branching_transition_;
-    bool do_once_a = false;
-    bool do_once_b = false;
-    bool go_to_a;
-    bool go_to_transition_;
-    u32 audio_mode_;
-    // TODO: Delete this
-
 	protected:
 
 		SufferManager();

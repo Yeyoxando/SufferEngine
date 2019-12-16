@@ -264,32 +264,6 @@ void  Suffer::Interface::CreateDock(bool* p_open){
 	if(is_hierarchy_opened_) Hierarchy(SufferManager::instance().GetCurrentScene());
 	if(is_project_window_opened_) Project();
 	if(is_log_opened_) Log();
-  if (is_audio_window_opened_) {
-    switch (suffer.audio_mode_) {
-      // Crossfading
-      case 0: {
-        Audio(suffer.one.get());
-        Audio(suffer.two.get());
-        break;
-      }
-
-      // Layering
-      case 1: {
-        for (int i = 0; i < 4; ++i) {
-          Audio(suffer.samples_[i].get());
-        }
-        break;
-      }
-
-      // Branching
-      case 2:
-        break;
-
-      default:
-        break;
-    }
-
-  }
 	if (is_game_window_opened_) Game(0);
 	
 
