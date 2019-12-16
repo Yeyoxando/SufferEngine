@@ -59,7 +59,8 @@ void Suffer::AudioManager::DoAudio(){
 	
 	for (u32 i = 0; i < size; ++i) {
 		const Command* cmd = audio_dl_.dl_commands_[i].get();
-		cmd->Execute();
+    if(cmd != nullptr)
+		  cmd->Execute();
 	}
 	
   audio_dl_.Clear();

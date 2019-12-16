@@ -12,25 +12,27 @@
 
 namespace Suffer {
 
-    class Component : public virtual Referenced {
+  class Component : public virtual Referenced {
 
-    public:
+  public:
 
-      enum ComponentKind {
-          kComponentKind_Invalid = -1,
-          kComponentKind_Transform,
-          kComponentKind_Geometry,
-          kComponentKind_Material,
-          kComponentKind_Audio,
-          kComponentKind_User = 1000,
-      };
+    enum ComponentKind {
+      // INIT WITH THE LAST ELEMENT OF THE USER ENUMS
+      kComponentKind_Invalid = -1,
+      kComponentKind_Transform,
+      kComponentKind_DebugGeometry,
+      kComponentKind_Geometry,
+      kComponentKind_Material,
+      kComponentKind_Audio,
+      kComponentKind_User = 1000,
+    };
 
-        explicit Component(ComponentKind kind) : kind_(kind) {}
+    explicit Component(ComponentKind kind) : kind_(kind) {}
 
-      ComponentKind const kind_;
+    ComponentKind const kind_;
 
   protected:
-      virtual ~Component();
+    virtual ~Component();
   };
 
 }

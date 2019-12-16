@@ -56,6 +56,7 @@ namespace Suffer {
         void SetViewMatrix(mathmorra::Matrix4 view_matrix);
         void SetViewMatrix(const float m[16]);
 
+        const float* Target();
         const float* Position() const;
         const float* Up() const;
 

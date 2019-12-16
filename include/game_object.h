@@ -39,16 +39,6 @@ namespace Suffer {
     bool operator!=(const GameObject& go);
     bool operator==(const GameObject& go);
 
-		// Getters
-		ref_ptr<MaterialInstance> GetMaterial();
-		ref_ptr<Geometry> GetGeometry();
-
-		// Setters
-		void SetMaterial(ref_ptr<MaterialInstance> new_material);
-		void SetGeometry(ref_ptr<Geometry> new_geometry);
-
-    void AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matrix4 view, mathmorra::Matrix4 projection);
-
     // Components
     std::map <s32, ref_ptr<Component>> components_;
 
@@ -76,10 +66,6 @@ namespace Suffer {
 	private:
 
 		// Attributes
-		//Transform transform_;
-		ref_ptr<MaterialInstance> material_;
-		ref_ptr<Geometry> geometry_;
-
     const char* name_;
 
 		// Methods

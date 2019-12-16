@@ -18,6 +18,7 @@
 #include <imgui_impl_opengl3.h>
 #include <common_definitions.h>
 #include "internal_interface.h"
+#include <string>
 
 ExampleAppLog Suffer::Interface::log;
 
@@ -263,7 +264,32 @@ void  Suffer::Interface::CreateDock(bool* p_open){
 	if(is_hierarchy_opened_) Hierarchy(SufferManager::instance().GetCurrentScene());
 	if(is_project_window_opened_) Project();
 	if(is_log_opened_) Log();
-	//if(is_audio_window_opened_) Audio(SufferManager::instance().newSong.get());
+  if (is_audio_window_opened_) {
+    switch (suffer.audio_mode_) {
+      // Crossfading
+      case 0: {
+        Audio(suffer.one.get());
+        Audio(suffer.two.get());
+        break;
+      }
+
+      // Layering
+      case 1: {
+        for (int i = 0; i < 4; ++i) {
+          Audio(suffer.samples_[i].get());
+        }
+        break;
+      }
+
+      // Branching
+      case 2:
+        break;
+
+      default:
+        break;
+    }
+
+  }
 	if (is_game_window_opened_) Game(0);
 	
 
@@ -577,10 +603,62 @@ void  Suffer::Interface::Audio(Audio3D* sound){
 	static char pre_buffer_[255] = "../../../resources/audio/";
 	static char aux_buffer[255] = "../../../resources/audio/";
 	static bool swiped = false;
-
+  static bool sound_active_ = sound->active_;
 	static int max_value = 256;
+  static int sounds_id = 0;
 
-	ImGui::Begin("Audio");
+  std::string attributes_ = "\0";
+
+	ImGui::Begin("Audio Tests");
+
+  float song_volume = sound->GetGain();
+  static mathmorra::Vector3 song_position = sound->GetSoundPosition();
+  static bool looping = sound->GetLooping();
+  bool paused = sound->isPaused();
+
+  // Attributes
+  ImGui::TextColored(ImVec4(1.0, 0.0, 0.0, 1.0), sound->name_);
+
+  attributes_ = sound->name_;
+  attributes_.append(" volume");
+  if (ImGui::SliderFloat(attributes_.c_str(), &song_volume, 0.0f, 2.0f)) {
+    sound->SetGain(song_volume);
+  }
+  if (ImGui::InputFloat3("Sound Position", &song_position.x_, 0.1f)) {
+    sound->SetSoundPosition(song_position);
+  }
+  if (paused) {
+    if (ImGui::Button("Play")) {
+      ref_ptr<AudioCommands::Play> play_command_;
+      play_command_.alloc();
+      play_command_->audio_3d_ = sound;
+      //suffer.AddCommand(&suffer.audio_dl_, play_command_.get());
+      play_command_.release();
+    }
+  }
+  else {
+    if (ImGui::Button("Pause")) {
+      ref_ptr<AudioCommands::Pause> pause_command_;
+      pause_command_.alloc();
+      pause_command_->audio_3d_ = sound;
+      //suffer.AddCommand(&suffer.audio_dl_, pause_command_.get());
+      pause_command_.release();
+    }
+  }
+  ImGui::SameLine();
+  if (ImGui::Checkbox("Looping", &looping)) {
+    sound->SetLooping(looping);
+  }
+
+  ImGui::SameLine();
+  ImGui::PushID(sounds_id);
+  if (ImGui::Checkbox("Is Active", &sound_active_)) {
+    sound->SetActive(sound_active_);
+  }
+  sounds_id++;
+  ImGui::PopID();
+
+  if (sounds_id > MAX_SAMPLES) sounds_id = 0;
 
 	ImGui::InputText("Song", buffer, sizeof(buffer));
 	ImGui::SameLine();
@@ -610,47 +688,6 @@ void  Suffer::Interface::Audio(Audio3D* sound){
 		ImGui::PlotLines("##Fast Fourier Transform (FFT)", fft, max_value * 0.5f, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
 	}
 	ImGui::Separator();
-
-	static float song_volume = sound->GetGain();
-	static mathmorra::Vector3 song_position = sound->GetSoundPosition();
-	static bool looping = sound->GetLooping();
-	bool paused = sound->isPaused();
-
-	// Attributes
-	ImGui::TextColored(ImVec4(1.0, 0.0, 0.0, 1.0), "Sound Attributes");
-		if (ImGui::SliderFloat("Volume", &song_volume, 0.0f, 2.0f)) {
-			ref_ptr<AudioCommands::SetGain> set_gain_command;
-			set_gain_command.alloc();
-			set_gain_command->audio_3d_ = sound;
-			set_gain_command->gain_ = song_volume;
-			//suffer.AddCommand(&suffer.audio_dl_, set_gain_command.get());
-			set_gain_command.release();
-		}
-		if (ImGui::InputFloat3("Sound Position", &song_position.x_, 0.1f)) {
-			sound->SetSoundPosition(song_position);
-		}
-		if (paused) {
-			if (ImGui::Button("Play")) {
-				ref_ptr<AudioCommands::Play> play_command_;
-				play_command_.alloc();
-				play_command_->audio_3d_ = sound;
-				//suffer.AddCommand(&suffer.audio_dl_, play_command_.get());
-				play_command_.release();
-			}
-		}
-		else {
-			if (ImGui::Button("Pause")) {
-				ref_ptr<AudioCommands::Pause> pause_command_;
-				pause_command_.alloc();
-				pause_command_->audio_3d_ = sound;
-				//suffer.AddCommand(&suffer.audio_dl_, pause_command_.get());
-				pause_command_.release();
-			}
-		}
-		ImGui::SameLine();
-		if (ImGui::Checkbox("Looping", &looping)){
-			sound->SetLooping(looping);
-		}
 
 	ImGui::End();
 

@@ -12,6 +12,7 @@
 #include "vector2.h"
 #include "input.h"
 #include "system_transform.h"
+#include "system_render.h"
 
 namespace Suffer {
 
@@ -71,6 +72,20 @@ namespace Suffer {
 		RenderManager render_manager_;
 		ResourceManager resource_manager_;
 
+    // High Level Stuff
+    ref_ptr<Audio3D> one;
+    ref_ptr<Audio3D> two;
+    ref_ptr<Audio3D> samples_[MAX_SAMPLES];
+    ref_ptr<Audio3D> branching_a_;
+    ref_ptr<Audio3D> branching_b_;
+    ref_ptr<Audio3D> branching_transition_;
+    bool do_once_a = false;
+    bool do_once_b = false;
+    bool go_to_a;
+    bool go_to_transition_;
+    u32 audio_mode_;
+    // TODO: Delete this
+
 	protected:
 
 		SufferManager();
@@ -105,7 +120,6 @@ namespace Suffer {
      */
     void PrepareAudio();
 
-
 		// Threads
 		ref_ptr<Thread> logic_;
 		ref_ptr<Thread> input_;
@@ -113,6 +127,9 @@ namespace Suffer {
 
     mathmorra::Vector2 mouse_position_;
     std::vector<ref_ptr<System>> systems_;
+    
+    Suffer::ref_ptr<Suffer::SystemRender> render_system_;
+    Suffer::ref_ptr<Suffer::SystemTransform> transform_system_;
 
 		struct Data;
 		Data* data_;

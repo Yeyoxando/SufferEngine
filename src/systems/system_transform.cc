@@ -41,8 +41,8 @@ void Suffer::SystemTransform::Execute(GameObject* go){
     rotation_mat_y = rotation_mat_y.RotateY(transform_component->rotation_.y_);
     rotation_mat_z = rotation_mat_z.RotateZ(transform_component->rotation_.z_);
 
-    rotation_mat_z = rotation_mat_z.Multiply(rotation_mat_y);
-    rotation_mat_z = rotation_mat_z.Multiply(rotation_mat_x);
+    rotation_mat_z *= rotation_mat_y;
+    rotation_mat_z *= rotation_mat_x;
 
     mathmorra::Matrix4 scale_mat;
     scale_mat = scale_mat.Scale(
@@ -50,7 +50,7 @@ void Suffer::SystemTransform::Execute(GameObject* go){
         transform_component->scale_.y_,
         transform_component->scale_.z_);
 
-    transform_component->model_ = scale_mat * rotation_mat_z * translation_mat;
+    transform_component->model_ = translation_mat * scale_mat * rotation_mat_z;
 
 }
 
