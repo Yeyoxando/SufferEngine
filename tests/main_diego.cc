@@ -46,7 +46,6 @@ int main(int argc, char* argv[]) {
   albedo_texture2->LoadTextureData("../../../resources/images/earth.jpg");
 
 
-
   Suffer::ref_ptr<Suffer::GameObject> go_cube;
   go_cube.alloc();
 
@@ -60,10 +59,9 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::Material> material_component;
   material_component.alloc();
-  Suffer::ref_ptr<Suffer::Material::DefaultParams> material_params;
+  Suffer::ref_ptr<Suffer::Material::UnlitParams> material_params;
   material_params.alloc();
-  material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  material_params->albedo_texture_id_ = albedo_texture->id_;
+  material_params->color_ = mathmorra::Vector4(1.0f, 0.0f, 0.0f, 1.0f);
   material_component->SetParams(material_params.get());
 
   go_cube->AddComponent(material_component.get());

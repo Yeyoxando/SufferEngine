@@ -6,6 +6,7 @@
 
 #include <draw_geometry.h>
 #include <gl/glew.h>
+#include "time.h"
 #include <data_types.h>
 #include "vector4.h"
 #include "suffermanager.h"
@@ -16,7 +17,7 @@
 #include <string>
 
 #define MAX_USED_TEXTURES 5
-#define MAX_USED_VEC4DATA 13
+#define MAX_USED_VEC4DATA 14
 
 // ------------------------------------------------------------------------- //
 
@@ -142,15 +143,11 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
       data_->current_used_textures_ = 1;
     }
       break;
-    case Material::ParamsType::kParams_Phong: {
-      Material::PhongParams* phong_params_;
-      phong_params_ = reinterpret_cast<Material::PhongParams*>(params);
-
-      data_->texture_ids_[0] = phong_params_->albedo_texture_id_;
-      //data_->texture_ids_[1] = phong_params_->whatever_texture_id_;
-      //data_->texture_ids_[2] = phong_params_->whatever_texture_id_;
-      data_->current_used_textures_ = 1;
-      //data_->current_used_textures_ = Whatever;
+    case Material::ParamsType::kParams_Unlit: {
+      Material::UnlitParams* phong_params_;
+      phong_params_ = reinterpret_cast<Material::UnlitParams*>(params);
+      data_->u_data_[52] = (float)Time();
+      data_->current_used_textures_ = 0;
     }
       break;
     case Material::ParamsType::kParams_NONE:
@@ -470,7 +467,7 @@ void Suffer::DrawGeometry::Execute() const {
       return;
     }
 
-    glUniform4fv(u_pos, 13, data_->u_data_);
+    glUniform4fv(u_pos, 14, data_->u_data_);
     u_pos = -1;
   
 

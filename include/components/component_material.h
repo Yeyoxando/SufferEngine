@@ -24,7 +24,7 @@ namespace Suffer {
     */
     enum ParamsType {
       kParams_Default = 0,
-      kParams_Phong,
+      kParams_Unlit,
       kParams_NONE = 20,
     };
 
@@ -58,14 +58,14 @@ namespace Suffer {
     };
 
     /**
-     * @brief: Saves phong material specific parameters.
+     * @brief: Saves unlit material specific parameters.
      */
-    struct PhongParams : public BaseParams {
+    struct UnlitParams : public BaseParams {
     public:
-      PhongParams();
-      ~PhongParams() {}
+      UnlitParams();
+      ~UnlitParams() {}
 
-      s32 albedo_texture_id_;
+      float u_time_;
 
     };
 

@@ -49,11 +49,11 @@ Suffer::Material::DefaultParams::DefaultParams() {
 
 // ------------------------------------------------------------------------- //
 
-Suffer::Material::PhongParams::PhongParams() {
+Suffer::Material::UnlitParams::UnlitParams() {
 
-  params_type_ = kParams_Phong;
+  params_type_ = kParams_Unlit;
   color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  albedo_texture_id_ = -1;
+  u_time_ = 0.0f;
 
 }
 
