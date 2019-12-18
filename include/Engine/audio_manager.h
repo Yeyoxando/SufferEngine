@@ -11,13 +11,15 @@
 #include <mutex>
 #include <audio.h>
 #include <vector>
+#include "audio_commands.h"
 
 namespace Suffer {
 
     class AudioManager {
-
-    friend class SufferManager;
-    friend class Audio3D;
+      friend class SufferManager;
+      friend class Audio3D;
+      friend class Camera;
+      friend class Interface;
 
 public:
 
@@ -31,6 +33,8 @@ public:
         * @brief: executes the audio DisplayList
         */
     void DoAudio();
+
+    Mutex crossfade_mutex_;
 
 private:
     void StartUp();  // a.k.a Init()

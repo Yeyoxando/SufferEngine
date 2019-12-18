@@ -14,12 +14,12 @@ namespace Suffer {
 
 		ref_ptr() :ptr_(0L) {}
 		ref_ptr(T* t) :ptr_(t) { if (ptr_) ptr_->ref(); }
-		ref_ptr(const ref_ptr& rp) :ptr_(rp.ptr_) { if (ptr_) ptr_->ref(); }
+		ref_ptr(const ref_ptr& rp) :ptr_(rp.ptr_) { if (ptr_ != nullptr) ptr_->ref(); }
 		ref_ptr(ref_ptr&& rp) :ptr_(rp.ptr_) {
 			rp.ptr_ = 0;
 		}
 		~ref_ptr() {
-			if (ptr_) ptr_->unref();
+			if (ptr_ != nullptr) ptr_->unref();
 			ptr_ = 0L;
 		}
 

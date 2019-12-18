@@ -70,6 +70,7 @@ Suffer::DisplayList::DisplayListType Suffer::DisplayList::GetDisplayListType(){
 void Suffer::DisplayList::AddCommand(const ref_ptr<Command> cmd){
 	
   assert(cmd.get() != nullptr && "Command is null");
+  assert(cmd.get()->GetCommandType() != Command::kNONE && "Invalid command");
 
 	if (dl_type_ = kDisplayListType_NONE) {
 		switch (cmd->GetCommandType()) {

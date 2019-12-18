@@ -19,7 +19,8 @@ namespace Suffer {
   class ResourceManager {
     friend class DrawGeometry;
     friend class SufferManager;
-    friend class Geometry;
+    friend class GeometryComponent;
+    friend class Geometry; // DEPRECATED
 
   public:
 

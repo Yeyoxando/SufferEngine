@@ -4,11 +4,20 @@
 
 #include <suffermanager.h>
 #include "ref_ptr.h"
+#include "stdlib.h"
 #include "scene.h"
-#include "geometry.h"
-#include "material.h"
 #include "game_object.h"
 #include "resource_manager.h"
+#include "component.h"
+#include "system.h"
+#include "scoped_array.h"
+#include "system_transform.h"
+#include "system_animation.h"
+#include "component_transform.h"
+#include "component_geometry.h"
+#include "component_red_color.h"
+#include "component_blue_color.h"
+#include "component_animation.h"
 
 // --------------------------------------------------------------//
 
@@ -16,75 +25,73 @@ int main(int argc, char* argv[]) {
 
   suffer.Init();
 
+  Suffer::ref_ptr<Suffer::SystemAnimation> animation_system;
+  animation_system.alloc();
+
+  suffer.AddSystem(animation_system.get());
 
   Suffer::ref_ptr<Suffer::Scene> scene;
   scene.alloc();
 
-  Suffer::ref_ptr<Suffer::Geometry> geometry;
-  geometry.alloc();
+  Array<Suffer::ref_ptr<Suffer::GameObject>> go_cube;
+  go_cube.alloc(100);
 
-  Suffer::ref_ptr<Suffer::ResourceManager::Texture> albedo_texture;
-  albedo_texture.alloc();
-  albedo_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
-  albedo_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-  albedo_texture->LoadTextureData("../../../resources/images/box.jpg");
+  Array<Suffer::ref_ptr<Suffer::GeometryComponent>> geometry_components;
+  geometry_components.alloc(100);
 
-  Suffer::ref_ptr<Suffer::MaterialInstance> material;
-  Suffer::ref_ptr<Suffer::MaterialInstance::DefaultParams> material_params;
-  material.alloc();
-  material_params.alloc();
-  material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  material_params->albedo_texture_id_ = albedo_texture->id_;
-  material->SetDefaultParams(material_params);
+  Array<Suffer::ref_ptr<Suffer::Transform>> transform_components;
+  transform_components.alloc(100);
 
-  Suffer::ref_ptr<Suffer::GameObject> go_cube;
-  go_cube.alloc();
-  go_cube->StartUpLUA("../../../src/lua/lua_code_cube.txt");
-  go_cube->SetGeometry(geometry);
-  go_cube->GetGeometry()->SetDrawMode(Suffer::Geometry::kDrawMode_Triangles);
-  go_cube->SetMaterial(material);
-  go_cube->SetName("Cube");
+  Array<Suffer::ref_ptr<Suffer::BlueColorComponent>> blues_components;
+  blues_components.alloc(50);
+  Array<Suffer::ref_ptr<Suffer::RedColorComponent>> reds_components;
+  reds_components.alloc(50);
 
-  go_cube->Translate(mathmorra::Vector3(-1.0f, 0.0f, 0.0f));
-  go_cube->GetGeometry()->CreateGeometryWithShape(Suffer::Geometry::kBasicShapes_Cube);
+  for (u32 i = 0; i < 10; ++i) {
+    for (u32 j = 0; j < 10; ++j) {
+      go_cube[i + (j * 10)].alloc();
 
+      transform_components[i + (j * 10)].alloc();
+      transform_components[i + (j * 10)]->Translate((i * 3.0f) - 15.0f, (j * 3.0f) - 15.0f, 0.0f);
+      go_cube[i + (j * 10)]->AddComponent(transform_components[i + (j * 10)].get());
 
+      geometry_components[i + (j * 10)].alloc();
+      geometry_components[i + (j * 10)]->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+      geometry_components[i + (j * 10)]->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
+      go_cube[i + (j * 10)]->AddComponent(geometry_components[i + (j * 10)].get());
 
-  Suffer::ref_ptr<Suffer::Geometry> geometry2;
-  geometry2.alloc();
+      if ((i + (j * 10)) < 50) {
+        blues_components[i + (j * 10)].alloc();
+        go_cube[i + (j * 10)]->AddComponent(blues_components[i + (j * 10)].get());
+      }
+      else {
+        reds_components[(i + (j * 10)) - 50].alloc();
+        go_cube[i + (j * 10)]->AddComponent(reds_components[(i + (j * 10)) - 50].get());
+      }
 
-  Suffer::ref_ptr<Suffer::ResourceManager::Texture> albedo_texture2;
-  albedo_texture2.alloc();
-  albedo_texture2->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-  albedo_texture2->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-  albedo_texture2->LoadTextureData("../../../resources/images/earth.jpg");
+      go_cube[i + (j * 10)]->SetName("Cube");
 
-  Suffer::ref_ptr<Suffer::MaterialInstance> material2;
-  Suffer::ref_ptr<Suffer::MaterialInstance::DefaultParams> material_params2;
-  material2.alloc();
-  material_params2.alloc();
-  material_params2->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  material_params2->albedo_texture_id_ = albedo_texture2->id_;
-  material2->SetDefaultParams(material_params2);
+      scene->AddGameObject(go_cube[i + (j * 10)]);
 
-  Suffer::ref_ptr<Suffer::GameObject> go_sphere;
-  go_sphere.alloc();
-  go_sphere->StartUpLUA("../../../src/lua/lua_code_sphere.txt");
-  go_sphere->SetGeometry(geometry2);
-  go_sphere->GetGeometry()->SetDrawMode(Suffer::Geometry::kDrawMode_Triangles);
-
-  go_sphere->SetMaterial(material2);
-  go_sphere->Translate(mathmorra::Vector3(1.0f, 0.0f, 0.0f));
-  go_sphere->SetName("Sphere");
-  go_sphere->GetGeometry()->CreateGeometryWithShape(Suffer::Geometry::kBasicShapes_Sphere);
+    }
+  }
+  
 
 
+  Array<Suffer::ref_ptr<Suffer::AnimationComponent>> animation_components;
+  animation_components.alloc(20);
 
+  for (u32 i = 0; i < 20; ++i) {
+    animation_components[i].alloc();
 
+    int random = rand()%100;
 
-  scene->AddGameObject(go_sphere);
-  scene->AddGameObject(go_cube);
-
+    if (!go_cube[random]->HasComponent(Suffer::Component::kComponentKind_Animation)) {
+      animation_components[i]->amplitude_ = 0.2f;
+      animation_components[i]->frequency_ = 1.0f;
+      go_cube[random]->AddComponent(animation_components[i].get());
+    }
+  }
 
   suffer.SetScene(scene);
 

@@ -12,6 +12,8 @@
 #include "audio_commands.h"
 #include "internal_suffermanager.h"
 #include <string>
+#include "system_render.h"
+#include "system_transform.h"
 
 // --------------------------------------------------------------//
 
@@ -49,6 +51,13 @@ Suffer::SufferManager& Suffer::SufferManager::instance() {
 
 // --------------------------------------------------------------//
 
+void Suffer::SufferManager::AddSystem(System* new_system){
+  assert(new_system != nullptr && "NULL System");
+  systems_.push_back(new_system);
+}
+
+// --------------------------------------------------------------//
+
 bool Suffer::SufferManager::Init(){
 
 	assert(data_ && "\n Data is null.");
@@ -68,6 +77,19 @@ bool Suffer::SufferManager::Init(){
 	logic_.alloc();
 	input_.alloc();
 	audio_.alloc();
+
+  // Adding systems
+  transform_system_.alloc();
+  suffer.AddSystem(transform_system_.get());
+
+  render_system_.alloc();
+  suffer.AddSystem(render_system_.get());
+
+  red_render_system_.alloc();
+  suffer.AddSystem(red_render_system_.get());
+
+  blue_render_system_.alloc();
+  suffer.AddSystem(blue_render_system_.get());
 
 	return true;
 
@@ -103,17 +125,27 @@ void Suffer::SufferManager::Input() {
       data_->is_interface_active_ = !data_->is_interface_active_;
   }
 
+  input_manager_.Update();
+
+  if (input_manager_.IsKeyDown(InputManager::k_R)) {
+    red_render_system_->is_active_ = !red_render_system_->is_active_;
+  }
+  if (input_manager_.IsKeyDown(InputManager::k_B)) {
+    blue_render_system_->is_active_ = !blue_render_system_->is_active_;
+  }
+
 }
 
 // --------------------------------------------------------------//
 
-void Suffer::SufferManager::Run(){
+void Suffer::SufferManager::Run() {
 
   // Threads Function Assignment
   auto update_thread = [] { SufferManager::instance().Step(); };
   auto input_thread = [] { SufferManager::instance().Input(); };
 
   logic_->NewTask(update_thread);
+  logic_->WaitFor(logic_.get());
 
 	while (!data_->window_should_close_) {
 
@@ -161,11 +193,26 @@ void Suffer::SufferManager::PrepareAudio() {
 
 }
 
+
 // --------------------------------------------------------------//
 
 void Suffer::SufferManager::Step(){
 
+  static bool do_once = false;
 	data_->scene_context_->Step(data_->delta_time_);
+
+  // Systems
+  u32 systems_size = systems_.size();
+  u32 game_objects_count = suffer.GetCurrentScene()->current_gameobjects_.size();
+  for (u32 i = 0; i < systems_size; ++i) {
+    for (u32 j = 0; j < game_objects_count; ++j) {
+      systems_[i]->Execute(suffer.GetCurrentScene()->current_gameobjects_[j].get());
+    }
+  }
+
+  //render_manager_.AddToRenderQueue(std::move(render_system_.get()->dl_));
+  render_manager_.AddToRenderQueue(std::move(red_render_system_.get()->dl_));
+  render_manager_.AddToRenderQueue(std::move(blue_render_system_.get()->dl_));
 
 	// This will be the last function in UPDATE
 	PrepareAudio();
@@ -202,6 +249,10 @@ mathmorra::Vector2 Suffer::SufferManager::GetMousePosition(){
 
     return mouse_position_;
 
+}
+
+void Suffer::SufferManager::SetCursorPosition(mathmorra::Vector2 newPosition){
+    glfwSetCursorPos(glfwGetCurrentContext(), newPosition.x_, newPosition.y_);
 }
 
 // --------------------------------------------------------------//

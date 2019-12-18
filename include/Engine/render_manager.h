@@ -42,6 +42,7 @@ namespace Suffer {
 		DisplayList render_dl_;
 		std::list<DisplayList> list_of_dl_;
 		Mutex dl_mutex_;
+    u32 dls_to_draw_;
 
   };
 

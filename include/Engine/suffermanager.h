@@ -11,6 +11,10 @@
 #include "thread.h"
 #include "vector2.h"
 #include "input.h"
+#include "system_transform.h"
+#include "system_render.h"
+#include "system_red_render.h"
+#include "system_blue_render.h"
 
 namespace Suffer {
 
@@ -35,6 +39,7 @@ namespace Suffer {
      */
 		static SufferManager& instance();
 
+    void AddSystem(System* new_system);
 
     /**
      * @brief: Initializes all the required dependencies for the Engine in order 
@@ -61,6 +66,7 @@ namespace Suffer {
 		double DeltaTime();
 
     mathmorra::Vector2 GetMousePosition();
+    void SetCursorPosition(mathmorra::Vector2 newPosition);
 
 		// Subsystems
     AudioManager audio_manager_;
@@ -102,13 +108,18 @@ namespace Suffer {
      */
     void PrepareAudio();
 
-
 		// Threads
 		ref_ptr<Thread> logic_;
 		ref_ptr<Thread> input_;
 		ref_ptr<Thread> audio_;
 
     mathmorra::Vector2 mouse_position_;
+    std::vector<ref_ptr<System>> systems_;
+    
+    Suffer::ref_ptr<Suffer::SystemRender> render_system_;
+    Suffer::ref_ptr<Suffer::SystemBlueRender> blue_render_system_;
+    Suffer::ref_ptr<Suffer::SystemRedRender> red_render_system_;
+    Suffer::ref_ptr<Suffer::SystemTransform> transform_system_;
 
 		struct Data;
 		Data* data_;
