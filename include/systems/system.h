@@ -17,12 +17,15 @@ namespace Suffer {
     friend class SufferManager;
   public:
     explicit System() {}
+	void DeactivateSystem(bool status);
 
   protected:
 
     virtual void Execute(GameObject* go);
     virtual ~System();
 
+	bool active_;
+	int id_;
   };
 
 }

@@ -53,7 +53,14 @@ Suffer::SufferManager& Suffer::SufferManager::instance() {
 
 void Suffer::SufferManager::AddSystem(System* new_system){
   assert(new_system != nullptr && "NULL System");
+  new_system->active_ = true;
   systems_.push_back(new_system);
+}
+
+// --------------------------------------------------------------//
+
+void Suffer::SufferManager::ActivesSystem(System * system){
+	system->active_ = !system->active_;
 }
 
 // --------------------------------------------------------------//
@@ -82,8 +89,14 @@ bool Suffer::SufferManager::Init(){
   transform_system_.alloc();
   suffer.AddSystem(transform_system_.get());
 
-  render_system_.alloc();
-  suffer.AddSystem(render_system_.get());
+  //render_system_.alloc();
+  //suffer.AddSystem(render_system_.get());
+
+  blue_system_.alloc();
+  AddSystem(blue_system_.get());
+
+  red_system_.alloc();
+  AddSystem(red_system_.get());
 
 	return true;
 
@@ -118,6 +131,14 @@ void Suffer::SufferManager::Input() {
   if (input_manager_.IsKeyDown(InputManager::k_F2)) {
       data_->is_interface_active_ = !data_->is_interface_active_;
   }
+  
+  if (input_manager_.IsKeyDown(InputManager::k_Keypad_1)) {
+	  ActivesSystem(blue_system_.get());
+  }
+
+  if (input_manager_.IsKeyDown(InputManager::k_Keypad_2)) {
+	  ActivesSystem(red_system_.get());
+  }
 
   input_manager_.Update();
 
@@ -132,6 +153,7 @@ void Suffer::SufferManager::Run() {
   auto input_thread = [] { SufferManager::instance().Input(); };
 
   logic_->NewTask(update_thread);
+  logic_->WaitFor(logic_.get());
 
 	while (!data_->window_should_close_) {
 
@@ -196,7 +218,8 @@ void Suffer::SufferManager::Step(){
     }
   }
 
-  render_manager_.AddToRenderQueue(std::move(render_system_.get()->dl_));
+  render_manager_.AddToRenderQueue(std::move(blue_system_.get()->dl_));
+  render_manager_.AddToRenderQueue(std::move(red_system_.get()->dl_));
 
 	// This will be the last function in UPDATE
 	PrepareAudio();

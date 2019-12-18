@@ -13,6 +13,8 @@
 #include "input.h"
 #include "system_transform.h"
 #include "system_render.h"
+#include "system_red.h"
+#include "system_blue.h"
 
 namespace Suffer {
 
@@ -38,6 +40,7 @@ namespace Suffer {
 		static SufferManager& instance();
 
     void AddSystem(System* new_system);
+	void ActivesSystem(System* system);
 
     /**
      * @brief: Initializes all the required dependencies for the Engine in order 
@@ -111,11 +114,14 @@ namespace Suffer {
 		ref_ptr<Thread> input_;
 		ref_ptr<Thread> audio_;
 
-    mathmorra::Vector2 mouse_position_;
-    std::vector<ref_ptr<System>> systems_;
+		mathmorra::Vector2 mouse_position_;
+		std::vector<ref_ptr<System>> systems_;
     
-    Suffer::ref_ptr<Suffer::SystemRender> render_system_;
-    Suffer::ref_ptr<Suffer::SystemTransform> transform_system_;
+		Suffer::ref_ptr<Suffer::SystemRender> render_system_;
+		Suffer::ref_ptr<Suffer::SystemTransform> transform_system_;
+
+		Suffer::ref_ptr<Suffer::SystemBlue> blue_system_;
+		Suffer::ref_ptr<Suffer::SystemRed>  red_system_;
 
 		struct Data;
 		Data* data_;

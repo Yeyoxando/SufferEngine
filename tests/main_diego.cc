@@ -24,10 +24,6 @@ int main(int argc, char* argv[]) {
 
   suffer.Init();
   
-  Suffer::ref_ptr<Suffer::SystemAudio> audio_system_;
-  audio_system_.alloc();
-  suffer.AddSystem(audio_system_.get());
-
   Suffer::ref_ptr<Suffer::Scene> scene;
   scene.alloc();
 

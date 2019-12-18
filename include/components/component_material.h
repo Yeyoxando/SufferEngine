@@ -16,6 +16,8 @@ namespace Suffer {
 
   class Material : public Component {
     friend class DrawGeometry;
+	friend class SystemRed;
+	friend class SystemBlue;
   public:
     Material() : Component(kComponentKind_Material) { current_params_ = nullptr; }
 

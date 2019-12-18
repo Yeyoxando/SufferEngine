@@ -21,7 +21,7 @@ Suffer::Camera::Camera() {
   sensibility_ = 1.0f;
 
   camera_target_ = mathmorra::Vector3(0.0f, 0.0f, 0.0f);
-  camera_position_ = mathmorra::Vector3(0.0f, 0.0f, 15.0f);
+  camera_position_ = mathmorra::Vector3(5.0f, -5.0f, -55.0f);
   camera_direction_ = camera_position_ - camera_target_;
   camera_direction_.Normalize();
 
@@ -330,9 +330,9 @@ Suffer::Camera::~Camera() {
 
 void Suffer::Camera::Update() {
 
-  if (suffer.input_manager_.IsKeyDown(InputManager::k_F1)) {
-    fps_movement_ = !fps_movement_;
-  }
+  //if (suffer.input_manager_.IsKeyDown(InputManager::k_F1)) {
+  //  fps_movement_ = !fps_movement_;
+  //}
 
   if (suffer.input_manager_.IsKeyPressed(InputManager::k_Shift)) {
     speed_ = 1.5f;

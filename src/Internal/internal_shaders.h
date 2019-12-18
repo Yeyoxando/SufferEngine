@@ -202,7 +202,7 @@ namespace Suffer {
       float diff = max(dot(normalize(normal), normalize(-light_dir)), 0.0);
       vec3 test = CreateDiffuseLight(light_dir);
 
-      fragColor = vec4(ambient * abs(sin(time)), 1.0f);
+      fragColor = vec4(ambient, 1.0f);
     }
 
   )FUNLITSHADER";

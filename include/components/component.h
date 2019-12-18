@@ -24,6 +24,9 @@ namespace Suffer {
       kComponentKind_Geometry,
       kComponentKind_Material,
       kComponentKind_Audio,
+      kComponentKind_Red,
+      kComponentKind_Animation,
+      kComponentKind_Blue,
       kComponentKind_User = 1000,
     };
 

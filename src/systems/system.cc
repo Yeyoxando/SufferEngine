@@ -10,6 +10,10 @@ Suffer::System::~System(){
 
 }
 
+void Suffer::System::DeactivateSystem(bool status){
+
+}
+
 void Suffer::System::Execute(GameObject* go){
 
 }
