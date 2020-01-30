@@ -132,6 +132,7 @@ void Suffer::SufferManager::Run() {
   auto input_thread = [] { SufferManager::instance().Input(); };
 
   logic_->NewTask(update_thread);
+  logic_->WaitFor(logic_.get());
 
 	while (!data_->window_should_close_) {
 

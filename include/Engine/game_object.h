@@ -7,8 +7,6 @@
 #ifndef __GAME_OBJECT_H__
 #define __GAME_OBJECT_H__
 
-#include <geometry.h>
-#include <material.h>
 #include <data_types.h>
 #include <referenced.h>
 #include <ref_ptr.h>

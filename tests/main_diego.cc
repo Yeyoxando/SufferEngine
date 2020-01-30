@@ -5,8 +5,6 @@
 #include <suffermanager.h>
 #include "ref_ptr.h"
 #include "scene.h"
-#include "geometry.h"
-#include "material.h"
 #include "game_object.h"
 #include "component_transform.h"
 #include "resource_manager.h"
