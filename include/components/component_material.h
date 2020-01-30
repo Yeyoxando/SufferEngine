@@ -23,9 +23,9 @@ namespace Suffer {
     * @brief: Indicates which type of material is it
     */
     enum ParamsType {
-      kParams_Default = 0,
-      kParams_Unlit,
-      kParams_NONE = 20,
+      kParamsType_Invalid = -1,
+      kParamsType_Default = 0,
+      kParamsType_Unlit,
     };
 
 

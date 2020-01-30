@@ -210,7 +210,7 @@ void Suffer::ResourceManager::Texture::LoadTextureData(const char * file){
 Suffer::ResourceManager::GPUResource::GPUResource() {
 
   id_ = -1;
-  type_ = kInvalid;
+  type_ = kResourceType_Invalid;
 
 }
 
@@ -224,7 +224,7 @@ Suffer::ResourceManager::GPUResource::~GPUResource() {
 
 Suffer::ResourceManager::VertexBuffer::VertexBuffer() {
 
-  type_ = GPUResource::kVertexBuffer;
+  type_ = GPUResource::kResourceType_VertexBuffer;
   id_ = suffer.resource_manager_.data_->number_of_vertex_buffers_;
   suffer.resource_manager_.data_->number_of_vertex_buffers_++;
   SetVertexFormat(kVertexFormat_Invalid);
@@ -243,7 +243,7 @@ void Suffer::ResourceManager::VertexBuffer::SetVertexFormat(VertexFormat new_for
 
 Suffer::ResourceManager::IndexBuffer::IndexBuffer() {
 
-  type_ = GPUResource::kIndexBuffer;
+  type_ = GPUResource::kResourceType_IndexBuffer;
   id_ = suffer.resource_manager_.data_->number_of_index_buffers_;
   suffer.resource_manager_.data_->number_of_index_buffers_++;
 
@@ -253,7 +253,7 @@ Suffer::ResourceManager::IndexBuffer::IndexBuffer() {
 
 Suffer::ResourceManager::Texture::Texture(){
 
-  type_ = GPUResource::kTexture;
+  type_ = GPUResource::kResourceType_Texture;
   id_ = suffer.resource_manager_.data_->number_of_textures_;
   suffer.resource_manager_.data_->number_of_textures_++;
   suffer.resource_manager_.data_->internal_textures_[id_].wrap_s_ = kTextureWrap_Repeat;

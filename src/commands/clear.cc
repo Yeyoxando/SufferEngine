@@ -11,7 +11,7 @@
 
 Suffer::Clear::Clear(){
 
-	cmd_type_ = Command::kRender;
+	cmd_type_ = Command::kCommandType_Render;
 
 }
 

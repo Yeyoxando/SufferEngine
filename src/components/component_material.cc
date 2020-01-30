@@ -11,7 +11,7 @@
 void Suffer::Material::SetParams(ref_ptr<BaseParams> params){
 
   assert(params.get() != nullptr && "Error: params is null");
-  assert(params->params_type_ != kParams_NONE && "Error: params has no type");
+  assert(params->params_type_ != kParamsType_Invalid && "Error: params has no type");
 
   // Store current params
   current_params_ = params.get();
@@ -33,7 +33,7 @@ Suffer::Material::~Material(){
 
 Suffer::Material::BaseParams::BaseParams() {
 
-  params_type_ = kParams_NONE;
+  params_type_ = kParamsType_Invalid;
 
 }
 
@@ -41,7 +41,7 @@ Suffer::Material::BaseParams::BaseParams() {
 
 Suffer::Material::DefaultParams::DefaultParams() {
 
-  params_type_ = kParams_Default;
+  params_type_ = kParamsType_Default;
   color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   albedo_texture_id_ = -1;
 
@@ -51,7 +51,7 @@ Suffer::Material::DefaultParams::DefaultParams() {
 
 Suffer::Material::UnlitParams::UnlitParams() {
 
-  params_type_ = kParams_Unlit;
+  params_type_ = kParamsType_Unlit;
   color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   u_time_ = 0.0f;
 

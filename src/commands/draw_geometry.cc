@@ -43,7 +43,7 @@ struct Suffer::DrawGeometry::Data {
 
 Suffer::DrawGeometry::DrawGeometry() {
 
-  cmd_type_ = Command::kRender;
+  cmd_type_ = Command::kCommandType_Render;
   data_ = new Data();
   data_->current_used_textures_ = 0;
 
@@ -51,7 +51,7 @@ Suffer::DrawGeometry::DrawGeometry() {
     data_->texture_ids_[i] = -1;
   }
 
-  data_->material_type_ = Material::kParams_NONE;
+  data_->material_type_ = Material::kParamsType_Invalid;
 
 }
 
@@ -135,7 +135,7 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
 
     // -- Set specific material parameters --
     switch (data_->material_type_) {
-    case Material::ParamsType::kParams_Default: {
+    case Material::ParamsType::kParamsType_Default: {
       Material::DefaultParams* default_params_;
       default_params_ = reinterpret_cast<Material::DefaultParams*>(params);
 
@@ -143,15 +143,15 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
       data_->current_used_textures_ = 1;
     }
       break;
-    case Material::ParamsType::kParams_Unlit: {
+    case Material::ParamsType::kParamsType_Unlit: {
       Material::UnlitParams* phong_params_;
       phong_params_ = reinterpret_cast<Material::UnlitParams*>(params);
       data_->u_data_[52] = (float)Time();
       data_->current_used_textures_ = 0;
     }
       break;
-    case Material::ParamsType::kParams_NONE:
-      assert(data_->material_type_ != Material::kParams_NONE && "Material type not set");
+    case Material::ParamsType::kParamsType_Invalid:
+      assert(data_->material_type_ != Material::kParamsType_Invalid && "Material type not set");
       break;
     default:
       break;
