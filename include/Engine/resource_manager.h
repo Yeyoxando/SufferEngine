@@ -55,6 +55,32 @@ namespace Suffer {
 
 
 
+
+
+
+    // ----------------------------- FrameBuffers -------------------------- //
+
+
+    class FrameBuffer : public GPUResource {
+
+    public:
+      FrameBuffer();
+      ~FrameBuffer();
+
+      void SetColorTexture(s32 color_id);
+      void SetDepthTexture(s32 depth_id);
+
+      void InitFrameBuffer(u16 width, u16 height);
+
+    protected:
+    private:
+
+    };
+
+
+    // ----------------------------- FrameBuffers -------------------------- //
+
+
     // ----------------------------- VertexBuffer -------------------------- //
 
     /**
