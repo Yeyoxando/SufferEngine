@@ -12,19 +12,11 @@
 #include <suffermanager.h>
 #include "internal_interface.h"
 #include "internal_game_object.h"
+#include "component_geometry.h"
 
 // --------------------------------------------------- //
 
 Suffer::GameObject::GameObject() {
-
-  transform_.scale_ = { 1.0f, 1.0f, 1.0f };
-  transform_.position_ = { 0.0f, 0.0f, 0.0f };
-  transform_.rotation_ = { 0.0f, 0.0f, 0.0f };
-
-  transform_.up_ =    { 0.0f, 1.0f, 0.0f };
-  transform_.right_ = { 1.0f, 0.0f, 0.0f };
-  transform_.forward_ = mathmorra::Vector3::CrossProduct(transform_.up_, 
-                                                         transform_.right_);
 
   data_ = new Data();
 
@@ -44,115 +36,70 @@ Suffer::GameObject::~GameObject() {
 // --------------------------------------------------- //
 
 bool Suffer::GameObject::operator!=(const GameObject& go){
-
-    if (transform_.position_ !=  go.transform_.position_ ||
-        transform_.scale_    !=  go.transform_.scale_    ||
-        transform_.rotation_ !=  go.transform_.rotation_) 
-    {
-        return false;
-    }
-
-    // TODO: expand
-
+    return false;
 }
 
 // --------------------------------------------------- //
 
 Suffer::GameObject::GameObject(const GameObject& go) {
 
-	this->geometry_ = go.geometry_;
-	this->material_ = go.material_;
+}
+
+// --------------------------------------------------- //
+
+Suffer::Component* Suffer::GameObject::GetComponent(Component::ComponentKind component){
+
+  if (!HasComponent(component)) return nullptr;
+  s32 component_id = (s32)component;
+  auto search = components_.find(component_id);
+  return static_cast<Suffer::Component*>(search->second.get());
 
 }
 
 // --------------------------------------------------- //
 
-Suffer::ref_ptr<Suffer::MaterialInstance> Suffer::GameObject::GetMaterial() {
-	return material_;
+bool Suffer::GameObject::HasComponent(Component::ComponentKind component){
+
+  // TODO: how to solve user components issue.
+  s32 component_id = (s32)component;
+  auto search = components_.find(component_id);
+  if (search == components_.end()) return false;
+  return true;
+
 }
 
 // --------------------------------------------------- //
 
-Suffer::ref_ptr<Suffer::Geometry> Suffer::GameObject::GetGeometry() {
-	return geometry_;
-}
+void Suffer::GameObject::AddComponent(ref_ptr<Component> new_component){
 
-// --------------------------------------------------- //
+  if(HasComponent(new_component->kind_)) 
+    assert(false && "The GameObject already has a component of this kind");
 
-void Suffer::GameObject::SetMaterial(ref_ptr<MaterialInstance> new_material) {
-
-#ifdef ASSERT
-	assert(new_material); // "newMaterial was NULL"
-#endif
-	material_ = new_material;
-}
-
-// --------------------------------------------------- //
-
-void Suffer::GameObject::SetGeometry(ref_ptr<Geometry> new_geometry) {
-#ifdef ASSERT
-	assert(new_geometry); // "newGeometry was NULL"
-#endif
-	geometry_ = new_geometry;
-}
-
-// --------------------------------------------------- //
-
-void Suffer::GameObject::AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matrix4 view, mathmorra::Matrix4 projection) {
+  if (new_component->kind_ == Component::ComponentKind::kComponentKind_Invalid) 
+    assert(false && "Invalid ComponentKind.");
   
-  ref_ptr<DrawGeometry> draw_geometry;
-
-  draw_geometry.alloc();
-  draw_geometry.get()->SetData(this);
-
-  mathmorra::Matrix4 model_matrix;
-
-  mathmorra::Matrix4 translation_mat;
-  translation_mat = translation_mat.Translate(transform_.position_.x_,
-                                              transform_.position_.y_,
-                                              transform_.position_.z_);
-
-  mathmorra::Matrix4 rotation_mat_x;
-  mathmorra::Matrix4 rotation_mat_y;
-  mathmorra::Matrix4 rotation_mat_z;
-  rotation_mat_x = rotation_mat_x.RotateX(transform_.rotation_.x_);
-  rotation_mat_y = rotation_mat_y.RotateY(transform_.rotation_.y_);
-  rotation_mat_z = rotation_mat_z.RotateZ(transform_.rotation_.z_);
-
-  rotation_mat_z = rotation_mat_z.Multiply(rotation_mat_y);
-  rotation_mat_z = rotation_mat_z.Multiply(rotation_mat_x);
-
-  mathmorra::Matrix4 scale_mat;
-  scale_mat = scale_mat.Scale(transform_.scale_.x_,
-    transform_.scale_.y_,
-    transform_.scale_.z_);
-
-  model_matrix = scale_mat * rotation_mat_z * translation_mat;
-
-  draw_geometry.get()->SetModelMatrix(model_matrix);
-  draw_geometry.get()->SetViewMatrix(view);
-  draw_geometry.get()->SetProjectionMatrix(projection);
-
-  dl.AddCommand(draw_geometry.get());
+  components_.insert(std::pair<s32, ref_ptr<Component>>((s32)new_component->kind_, 
+                                                        new_component));
 
 }
 
 // --------------------------------------------------- //
 
-void Suffer::GameObject::Translate(mathmorra::Vector3 position){
-  transform_.position_ = position;
-}
+void Suffer::GameObject::RemoveComponent(Component::ComponentKind component){
 
-// --------------------------------------------------- //
+  if (!HasComponent(component))
+    assert(false && "The GameObject does not have a component of this kind");
 
-void Suffer::GameObject::Scale(mathmorra::Vector3 scale){
-    transform_.scale_ = scale;
-}
+  if (component == Component::ComponentKind::kComponentKind_Invalid)
+    assert(false && "Invalid ComponentKind.");
 
-// --------------------------------------------------- //
+  u32 components_size = components_.size();
+  for (s32 i = 0; i < components_size; ++i) {
+    if (components_[i]->kind_ == component) {
+      components_.erase(i);
+    }
+  }
 
-void Suffer::GameObject::Scale(float x, float y, float z){
-    transform_.scale_ = { x, y, z };
 }
 
 // --------------------------------------------------- //
@@ -216,6 +163,8 @@ void Suffer::GameObject::StartUpLUA(const char* luaCodeFile){
 
     data_->reference = data_->GetReference(data_->_script);
 
+    data_->execute_lua_ = true;
+
 }
 
 // --------------------------------------------------- //
@@ -251,28 +200,10 @@ u32 Suffer::GameObject::NumberChildsRecursively(GameObject* go){
 
 // --------------------------------------------------- //
 
-void Suffer::GameObject::Rotate(float x, float y, float z){
-    transform_.rotation_ = { x, y, z };
-}
-
-// --------------------------------------------------- //
-
-void Suffer::GameObject::Translate(float x, float y, float z){
-    transform_.position_ = { x, y, z };
-}
-
-// --------------------------------------------------- //
-
-Suffer::Transform Suffer::GameObject::GetTransform() {
-	return transform_;
-}
-
-// --------------------------------------------------- //
-
 void Suffer::GameObject::Step(float delta_time){
 
     // Updates
-    if (!data_->lua_error_) {
+    if (!data_->lua_error_ && data_->execute_lua_) {
       int status = luaL_dofile(data_->_script, data_->lua_file_);
       data_->CheckLuaError(status);
     }
@@ -346,7 +277,13 @@ int Suffer::GameObject::Data::lua_Scale(lua_State* L){
     float x = lua_tonumber(L, 1);
     float y = lua_tonumber(L, 2);
     float z = lua_tonumber(L, 3);
-    GetReference(L)->Scale(mathmorra::Vector3(x, y, z));
+
+    if (GetReference(L)->HasComponent(Component::kComponentKind_Transform)) {
+        Transform* transform = reinterpret_cast<Transform*>(
+            GetReference(L)->GetComponent(Component::kComponentKind_Transform));
+        transform->Scale(mathmorra::Vector3(x, y, z));
+    }
+
     lua_pop(L, 1);
     return 0;
 
@@ -356,21 +293,24 @@ int Suffer::GameObject::Data::lua_Scale(lua_State* L){
 
 int Suffer::GameObject::Data::lua_SetPredefinedGeometry(lua_State* L){
 
+  auto geometry_component = GetReference(L)->GetComponent(Suffer::Component::kComponentKind_Geometry);
+  GeometryComponent* geometry_ = reinterpret_cast<GeometryComponent*>(geometry_component);
+
     int arguments = lua_gettop(L);
-    if (arguments != 1) {
+    if (arguments != 2) {
         return luaL_error(L, "Invalid call, expected one argument");
     }
 
     const char* x = lua_tostring(L, 1);
 
-    Geometry::BasicShapes new_shape = Geometry::BasicShapes::kBasicShapes_Triangle;
+    GeometryComponent::BasicShapes new_shape = GeometryComponent::BasicShapes::kBasicShapes_Triangle;
     
-    if (!strcmp(x, "Triangle")) new_shape = Geometry::BasicShapes::kBasicShapes_Triangle;
-    if (!strcmp(x, "Quad"))     new_shape = Geometry::BasicShapes::kBasicShapes_Quad;
-    if (!strcmp(x, "Cube"))     new_shape = Geometry::BasicShapes::kBasicShapes_Cube;
-    if (!strcmp(x, "Sphere"))   new_shape = Geometry::BasicShapes::kBasicShapes_Sphere;
+    if (!strcmp(x, "Triangle")) new_shape = GeometryComponent::BasicShapes::kBasicShapes_Triangle;
+    if (!strcmp(x, "Quad"))     new_shape = GeometryComponent::BasicShapes::kBasicShapes_Quad;
+    if (!strcmp(x, "Cube"))     new_shape = GeometryComponent::BasicShapes::kBasicShapes_Cube;
+    if (!strcmp(x, "Sphere"))   new_shape = GeometryComponent::BasicShapes::kBasicShapes_Sphere;
 
-    GetReference(L)->GetGeometry()->CreateGeometryWithShape(new_shape);
+    geometry_->CreateGeometryWithShape(new_shape);
 
     lua_pop(L, 1);
     return 0;
@@ -381,21 +321,24 @@ int Suffer::GameObject::Data::lua_SetPredefinedGeometry(lua_State* L){
 
 int Suffer::GameObject::Data::lua_SetDrawMode(lua_State* L){
 
+  auto geometry_component = GetReference(L)->GetComponent(Suffer::Component::kComponentKind_Geometry);
+  GeometryComponent* geometry_ = reinterpret_cast<GeometryComponent*>(geometry_component);
+
     int arguments = lua_gettop(L);
-    if (arguments != 1) {
+    if (arguments != 2) {
         return luaL_error(L, "Invalid call, expected one argument");
     }
 
     const char* x = lua_tostring(L, 1);
 
-    Geometry::DrawMode draw_mode = Geometry::DrawMode::kDrawMode_Lines;
+    GeometryComponent::DrawMode draw_mode = GeometryComponent::DrawMode::kDrawMode_Lines;
 
-    if (!strcmp(x, "Lines"))     draw_mode = Geometry::DrawMode::kDrawMode_Lines;
-    if (!strcmp(x, "LineLoop"))  draw_mode = Geometry::DrawMode::kDrawMode_LineLoop;
-    if (!strcmp(x, "Points"))    draw_mode = Geometry::DrawMode::kDrawMode_Points;
-    if (!strcmp(x, "Triangles")) draw_mode = Geometry::DrawMode::kDrawMode_Triangles;
+    if (!strcmp(x, "Lines"))     draw_mode = GeometryComponent::DrawMode::kDrawMode_Lines;
+    if (!strcmp(x, "LineLoop"))  draw_mode = GeometryComponent::DrawMode::kDrawMode_LineLoop;
+    if (!strcmp(x, "Points"))    draw_mode = GeometryComponent::DrawMode::kDrawMode_Points;
+    if (!strcmp(x, "Triangles")) draw_mode = GeometryComponent::DrawMode::kDrawMode_Triangles;
 
-    GetReference(L)->GetGeometry()->SetDrawMode(draw_mode);
+    geometry_->SetDrawMode(draw_mode);
 
     lua_pop(L, 1);
     return 0;
@@ -418,9 +361,12 @@ void Suffer::GameObject::Data::CheckLuaError(int status) {
 
 void Suffer::GameObject::Data::RotateL(float x, float y, float z) {
 
-  reference->Rotate(reference->transform_.rotation_.x_ + x, 
-                    reference->transform_.rotation_.y_ + y,
-                    reference->transform_.rotation_.z_ + z);
+    if (reference->HasComponent(Component::kComponentKind_Transform)) {
+      Transform* transform = reinterpret_cast<Transform*>(
+      reference->GetComponent(Component::kComponentKind_Transform));
+      transform->Rotate(mathmorra::Vector3(transform->GetRotation()) + 
+                        mathmorra::Vector3(x, y, z));
+    }
 
 }
 
@@ -428,9 +374,12 @@ void Suffer::GameObject::Data::RotateL(float x, float y, float z) {
 
 void Suffer::GameObject::Data::TranslateL(float x, float y, float z){
 
-    reference->Translate(reference->transform_.position_.x_ + x,
-                         reference->transform_.position_.y_ + y,
-                         reference->transform_.position_.z_ + z);
+    if (reference->HasComponent(Component::kComponentKind_Transform)) {
+        Transform* transform = reinterpret_cast<Transform*>(
+        reference->GetComponent(Component::kComponentKind_Transform));
+        transform->Translate(/*mathmorra::Vector3(transform->GetPosition()) + 
+                             */mathmorra::Vector3(x, y, z));
+    }
 
 }
 

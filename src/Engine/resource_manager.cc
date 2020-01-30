@@ -561,7 +561,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
 void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   
   // Increase the number if you create a new one
-  internal_materials_.alloc(1);
+  internal_materials_.alloc(2);
   number_of_materials_ = 0;
 
   // -------------------------- DefaultMaterial ---------------------------- //
@@ -581,17 +581,17 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
 
   // ---------------------------- NewMaterial ------------------------------ //
   
-  //{
-  //
-  //  internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
-  //
-  //// To create a new material define the shaders in internal_shaders.h
-  //  internal_materials_[number_of_materials_].vertex_shader_ = Suffer::whatever_vertex_shader_;     
-  //  internal_materials_[number_of_materials_].fragment_shader_ = Suffer::whatever_fragment_shader_;
-  //
-  //  number_of_materials_++;
-  //
-  //}
+  {
+  
+    internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
+  
+    // To create a new material define the shaders in internal_shaders.h
+    internal_materials_[number_of_materials_].vertex_shader_ = Suffer::unlit_vertex_shader;
+    internal_materials_[number_of_materials_].fragment_shader_ = Suffer::unlit_fragment_shader;
+  
+    number_of_materials_++;
+  
+  }
 
   // ---------------------------- NewMaterial ------------------------------ //
 

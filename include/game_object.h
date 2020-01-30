@@ -19,22 +19,12 @@
 #include <vector3.h>
 #include <matrix4.h>
 
+// ECS
+#include <map>
+#include "component.h"
+#include "component_transform.h"
+
 namespace Suffer {
-
-	// --------------------------------------------------- //
-
-	struct Transform {
-
-	public:
-		mathmorra::Vector3 scale_;
-		mathmorra::Vector3 position_;
-		mathmorra::Vector3 rotation_;
-
-    mathmorra::Vector3 up_;
-    mathmorra::Vector3 right_;
-    mathmorra::Vector3 forward_;
-
-	};
 
 	// --------------------------------------------------- //
 
@@ -49,16 +39,13 @@ namespace Suffer {
     bool operator!=(const GameObject& go);
     bool operator==(const GameObject& go);
 
-		// Getters
-		Transform GetTransform();
-		ref_ptr<MaterialInstance> GetMaterial();
-		ref_ptr<Geometry> GetGeometry();
+    // Components
+    std::map <s32, ref_ptr<Component>> components_;
 
-		// Setters
-		void SetMaterial(ref_ptr<MaterialInstance> new_material);
-		void SetGeometry(ref_ptr<Geometry> new_geometry);
-
-    void AddDrawCommand(Suffer::DisplayList& dl, mathmorra::Matrix4 view, mathmorra::Matrix4 projection);
+    Component* GetComponent(Component::ComponentKind component);
+    bool HasComponent(Component::ComponentKind component);
+    void AddComponent(ref_ptr<Component> new_component);
+    void RemoveComponent(Component::ComponentKind component);
 
 
     // Hierarchy Stuff
@@ -68,13 +55,6 @@ namespace Suffer {
     
     u32 NumberChilds();
     u32 NumberChildsRecursively(GameObject* go);
-
-    // Transform
-    void Rotate(float x, float y, float z);
-    void Translate(float x, float y, float z);
-    void Translate(mathmorra::Vector3 position);
-    void Scale(mathmorra::Vector3 scale);
-    void Scale(float x, float y, float z);
 
     const char* Name();
     void SetName(const char* name);
@@ -86,10 +66,6 @@ namespace Suffer {
 	private:
 
 		// Attributes
-		Transform transform_;
-		ref_ptr<MaterialInstance> material_;
-		ref_ptr<Geometry> geometry_;
-
     const char* name_;
 
 		// Methods

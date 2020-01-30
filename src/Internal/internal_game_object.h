@@ -8,6 +8,8 @@
 
 struct Suffer::GameObject::Data {
 
+    Data();
+
     // LUA Stuff
     lua_State* _script = nullptr;
     static GameObject* GetReference(lua_State* L);
@@ -23,8 +25,14 @@ struct Suffer::GameObject::Data {
     static int lua_SetPredefinedGeometry(lua_State* L);
     static int lua_SetDrawMode(lua_State* L);
 
+    bool execute_lua_;
+
     char* lua_file_;
     GameObject* reference;
     bool lua_error_;
 
 };
+
+Suffer::GameObject::Data::Data(){
+    execute_lua_ = false;
+}

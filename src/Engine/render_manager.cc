@@ -23,6 +23,7 @@ Suffer::RenderManager::~RenderManager(){
 void Suffer::RenderManager::StartUp(){
 
 	// Init here instead of constructor and call in engine init
+  dls_to_draw_ = 0;
 
 }
 
@@ -42,7 +43,8 @@ void Suffer::RenderManager::AddToRenderQueue(DisplayList&& logic_dl){
 
 	// Moves given DL to current DL with std::move
 	if (logic_dl.GetDisplayListType() == DisplayList::kDisplayListType_Render) {
-		list_of_dl_.push_back(std::move(logic_dl));
+    list_of_dl_.push_back(std::move(logic_dl));
+    dls_to_draw_++;
 	}
 
 	dl_mutex_.unlock();
@@ -52,27 +54,34 @@ void Suffer::RenderManager::AddToRenderQueue(DisplayList&& logic_dl){
 // ------------------------------------------------------------------------- //
 
 void Suffer::RenderManager::DoRender(){
+  
+  u32 render_buckets = dls_to_draw_;
 
   // Extract first DisplayList of the list
-	dl_mutex_.lock();
-  
-  if (!list_of_dl_.empty())
-    render_dl_ = std::move(list_of_dl_.front());
-  
-  list_of_dl_.pop_front();
-	
-  dl_mutex_.unlock();
-    
+  for (u32 i = 0; i < render_buckets; ++i) {
+    dl_mutex_.lock();
 
-  // Execute the extracted DL
-  u32 size = render_dl_.Size();
+    if (!list_of_dl_.empty())
+      render_dl_ = std::move(list_of_dl_.front());
 
-  for (int i = 0; i < size; ++i) {
-    const Command* cmd = render_dl_.dl_commands_[i].get();
-    cmd->Execute();
+    list_of_dl_.pop_front();
+
+    dls_to_draw_--;
+
+    dl_mutex_.unlock();
+
+
+    // Execute the extracted DL
+    u32 size = render_dl_.Size();
+
+    for (int i = 0; i < size; ++i) {
+      const Command* cmd = render_dl_.dl_commands_[i].get();
+      cmd->Execute();
+    }
+
+    render_dl_.Clear();
+
   }
-
-  render_dl_.Clear();
 
 }
 

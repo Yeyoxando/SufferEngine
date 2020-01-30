@@ -6,15 +6,18 @@
 
 #include <draw_geometry.h>
 #include <gl/glew.h>
+#include "time.h"
 #include <data_types.h>
 #include "vector4.h"
 #include "suffermanager.h"
 #include "internal_resource_manager.h"
+#include "component_geometry.h"
+#include "component_material.h"
 #include "common_definitions.h"
 #include <string>
 
 #define MAX_USED_TEXTURES 5
-#define MAX_USED_VEC4DATA 13
+#define MAX_USED_VEC4DATA 14
 
 // ------------------------------------------------------------------------- //
 
@@ -48,7 +51,7 @@ Suffer::DrawGeometry::DrawGeometry() {
     data_->texture_ids_[i] = -1;
   }
 
-  data_->material_type_ = MaterialInstance::kParams_NONE;
+  data_->material_type_ = Material::kParams_NONE;
 
 }
 
@@ -67,35 +70,40 @@ Suffer::DrawGeometry::~DrawGeometry() {
 
 void Suffer::DrawGeometry::SetData(GameObject* go) {
 
+  // Cambiar toda esta movida para que vaya cn componentes
+
   // ---------------------------- SetGeometry ------------------------------ //
 
   {
   
-    data_->vertex_buffer_id_ = go->GetGeometry()->vertex_buffer_id_;
-    data_->index_buffer_id_ = go->GetGeometry()->index_buffer_id_;
-    Suffer::Geometry::DrawMode mode_ = go->GetGeometry()->mode_;
+    auto geometry_component = go->GetComponent(Suffer::Component::kComponentKind_Geometry);
+    GeometryComponent* geometry_ = reinterpret_cast<GeometryComponent*>(geometry_component);
+
+    data_->vertex_buffer_id_ = geometry_->vertex_buffer_id_;
+    data_->index_buffer_id_ = geometry_->index_buffer_id_;
+    Suffer::GeometryComponent::DrawMode mode_ = geometry_->mode_;
 
     switch (mode_){
 
-        case Suffer::Geometry::kDrawMode_Invalid:
+        case Suffer::GeometryComponent::kDrawMode_Invalid:
             data_->draw_mode_ = GL_NONE;
             break;
-        case Suffer::Geometry::kDrawMode_Triangles:
+        case Suffer::GeometryComponent::kDrawMode_Triangles:
             data_->draw_mode_ = GL_TRIANGLES;
             break;
-        case Suffer::Geometry::kDrawMode_Lines:
+        case Suffer::GeometryComponent::kDrawMode_Lines:
             data_->draw_mode_ = GL_LINES;
             break;
-        case Suffer::Geometry::kDrawMode_LineLoop:
+        case Suffer::GeometryComponent::kDrawMode_LineLoop:
             data_->draw_mode_ = GL_LINE_LOOP;
             break;
-        case Suffer::Geometry::kDrawMode_LineStrip:
+        case Suffer::GeometryComponent::kDrawMode_LineStrip:
             data_->draw_mode_ = GL_LINE_STRIP;
             break;
-        case Suffer::Geometry::kDrawMode_Points:
+        case Suffer::GeometryComponent::kDrawMode_Points:
             data_->draw_mode_ = GL_POINTS;
             break;
-        case Suffer::Geometry::kDrawMode_Patches:
+        case Suffer::GeometryComponent::kDrawMode_Patches:
             data_->draw_mode_ = GL_PATCHES;
         default:
             break;
@@ -110,12 +118,15 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
 
   {
 
-    data_->material_type_ = (u32)go->GetMaterial()->GetMaterialParamsType();
+    auto material_component = go->GetComponent(Suffer::Component::kComponentKind_Material);
+    Material* material_ = reinterpret_cast<Material*>(material_component);
+    data_->material_type_ = (u32)material_->current_params_->params_type_;
 
     // -- Common Attributes --
-    MaterialInstance::BaseParams* params = go->GetMaterial()->GetMaterialParams();
+    Material::BaseParams* params = material_->current_params_.get();
     mathmorra::Vector4 aux_color = params->color_;
     float values[4] = { aux_color.x_, aux_color.y_, aux_color.z_, aux_color.w_ };
+
     // Copy color to next free uniform space, after Vector n12 because of 3 matrixes, > u_data[48]
     data_->u_data_[48] = values[0];
     data_->u_data_[49] = values[1];
@@ -124,27 +135,23 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
 
     // -- Set specific material parameters --
     switch (data_->material_type_) {
-    case MaterialInstance::ParamsType::kParams_Default: {
-      MaterialInstance::DefaultParams* default_params_;
-      default_params_ = reinterpret_cast<MaterialInstance::DefaultParams*>(params);
+    case Material::ParamsType::kParams_Default: {
+      Material::DefaultParams* default_params_;
+      default_params_ = reinterpret_cast<Material::DefaultParams*>(params);
 
       data_->texture_ids_[0] = default_params_->albedo_texture_id_;
       data_->current_used_textures_ = 1;
     }
       break;
-    case MaterialInstance::ParamsType::kParams_Phong: {
-      MaterialInstance::PhongParams* phong_params_;
-      phong_params_ = reinterpret_cast<MaterialInstance::PhongParams*>(params);
-
-      data_->texture_ids_[0] = phong_params_->albedo_texture_id_;
-      //data_->texture_ids_[1] = phong_params_->whatever_texture_id_;
-      //data_->texture_ids_[2] = phong_params_->whatever_texture_id_;
-      data_->current_used_textures_ = 1;
-      //data_->current_used_textures_ = Whatever;
+    case Material::ParamsType::kParams_Unlit: {
+      Material::UnlitParams* phong_params_;
+      phong_params_ = reinterpret_cast<Material::UnlitParams*>(params);
+      data_->u_data_[52] = (float)Time();
+      data_->current_used_textures_ = 0;
     }
       break;
-    case MaterialInstance::ParamsType::kParams_NONE:
-      assert(data_->material_type_ != MaterialInstance::kParams_NONE && "MaterialInstance type not set");
+    case Material::ParamsType::kParams_NONE:
+      assert(data_->material_type_ != Material::kParams_NONE && "Material type not set");
       break;
     default:
       break;
@@ -460,7 +467,7 @@ void Suffer::DrawGeometry::Execute() const {
       return;
     }
 
-    glUniform4fv(u_pos, 13, data_->u_data_);
+    glUniform4fv(u_pos, 14, data_->u_data_);
     u_pos = -1;
   
 
