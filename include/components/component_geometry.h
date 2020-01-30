@@ -41,7 +41,6 @@ namespace Suffer {
       kBasicShapes_Quad,
       kBasicShapes_Cube,
       kBasicShapes_Sphere,
-      kBasicShapes_NONE = 20
     };
 
     void CreateGeometryWithShape(BasicShapes shape);

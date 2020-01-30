@@ -69,13 +69,13 @@ namespace Suffer {
 		void Options();
 
 		enum InterfaceStyle {
-			kDefault = 0,
-			kDark,
-			kRed,
-			kWhite,
-			kRayTeak,
-			kCommodore64,
-			kNONE = 20
+      kInterfaceStyle_Invalid = -1,
+      kInterfaceStyle_Default,
+      kInterfaceStyle_Dark,
+      kInterfaceStyle_Red,
+      kInterfaceStyle_White,
+      kInterfaceStyle_RayTeak,
+      kInterfaceStyle_Commodore64,
 		};
 
 		// Style Customization

@@ -67,7 +67,7 @@ Suffer::Interface::Interface(){
 
 	// Init attributes
 	options_window_ = false;
-	style_ = kRed;
+	style_ = kInterfaceStyle_Red;
 
 
 
@@ -105,7 +105,7 @@ void Suffer::Interface::Init(){
 #endif
 
 	ChangeEditorStyle();
-	style_ = kRayTeak;
+	style_ = kInterfaceStyle_RayTeak;
 	ChangeEditorStyle();
 
 }
@@ -293,11 +293,11 @@ void  Suffer::Interface::ChangeEditorStyle(){
 	#define COL(v, b, n) ImVec4(v / 255.0f, b / 255.0f, n / 255.0f, 100.0f);
 
 	switch (style_){
-		case Interface::kDefault: {
+		case Interface::kInterfaceStyle_Default: {
 			ImGui::StyleColorsDark();
 			break;
 		}
-		case Interface::kDark: {
+		case Interface::kInterfaceStyle_Dark: {
 
 			new_style_.FrameBorderSize = 1.0f;
 			new_style_.FramePadding = ImVec2(4.0f, 2.0f);
@@ -366,7 +366,7 @@ void  Suffer::Interface::ChangeEditorStyle(){
 
 			break;
 		}
-		case Interface::kRed: {
+		case Interface::kInterfaceStyle_Red: {
 
 			new_style_.FrameBorderSize = 1.0f;
 			new_style_.FramePadding = ImVec2(4.0f, 2.0f);
@@ -435,11 +435,11 @@ void  Suffer::Interface::ChangeEditorStyle(){
 
 			break;
 		}
-		case Interface::kWhite: {
+		case Interface::kInterfaceStyle_White: {
 			ImGui::StyleColorsLight();
 			break;
 		}
-		case Interface::kRayTeak: {
+		case Interface::kInterfaceStyle_RayTeak: {
 
 			new_style_.WindowPadding = ImVec2(15, 15);
 			new_style_.WindowRounding = 12.0f;
@@ -500,9 +500,7 @@ void  Suffer::Interface::ChangeEditorStyle(){
 
 			break;
 		}
-		case Interface::kCommodore64:
-			break;
-		case Interface::kNONE:
+		case Interface::kInterfaceStyle_Commodore64:
 			break;
 		default:
 			break;
