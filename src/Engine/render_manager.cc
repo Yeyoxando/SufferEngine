@@ -241,6 +241,7 @@ void Suffer::RenderManager::DoRender(){
   }
  
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glDisable(GL_DEPTH_TEST);
 
   // Here we have to create DrawGeometry command to draw the screen quad
   Suffer::ref_ptr<DrawGeometry> draw_screen_quad_;
