@@ -87,6 +87,7 @@ void Suffer::RenderManager::DoRender(){
         }
 
         if (suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ < suffer.resource_manager_.data_->internal_vertex_buffers_[id_frame_buffer].version_) {
+
           glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
 
           // --------------------------- IsTextureCreated -------------------------- //
@@ -136,7 +137,7 @@ void Suffer::RenderManager::DoRender(){
             if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ < suffer.resource_manager_.data_->internal_textures_[id_texture].version_) {
               glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
 
-              glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+              glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24,
                 suffer.resource_manager_.data_->internal_textures_[id_texture].width_,
                 suffer.resource_manager_.data_->internal_textures_[id_texture].height_,
                 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
@@ -186,6 +187,8 @@ void Suffer::RenderManager::DoRender(){
           suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ = suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].version_;
         }
       
+        glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
+
       }
 
     }

@@ -672,21 +672,23 @@ void Suffer::ResourceManager::FrameBuffer::InitFrameBuffer(u16 width, u16 height
   Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_color_texture;
   frame_buffer_color_texture.alloc();
 
-  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->number_of_textures_].width_ = width;
-  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->number_of_textures_].height_ = height;
-  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->number_of_textures_].number_channels_ = 3;
   suffer.resource_manager_.data_->internal_frame_buffers_[id_].color_texture_id_ = frame_buffer_color_texture->id_;
+  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].color_texture_id_].width_ = width;
+  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].color_texture_id_].height_ = height;
+  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].color_texture_id_].number_channels_ = 3;
   suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].color_texture_id_].version_++;
   
   // Depth
   Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_depth_texture;
   frame_buffer_depth_texture.alloc();
 
-  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->number_of_textures_].width_ = width;
-  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->number_of_textures_].height_ = height;
-  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->number_of_textures_].number_channels_ = 1;
   suffer.resource_manager_.data_->internal_frame_buffers_[id_].depth_texture_id_ = frame_buffer_depth_texture->id_;
+  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].depth_texture_id_].width_ = width;
+  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].depth_texture_id_].height_ = height;
+  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].depth_texture_id_].number_channels_ = 1;
   suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].depth_texture_id_].version_++;
+
+  suffer.resource_manager_.data_->internal_frame_buffers_[id_].version_++;
 
 }
 

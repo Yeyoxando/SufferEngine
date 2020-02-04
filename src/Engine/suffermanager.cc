@@ -64,7 +64,7 @@ bool Suffer::SufferManager::Init(){
 
 	data_->wind_.Open(WINDOW_WIDTH, WINDOW_HEIGHT);
 	data_->interface_.Init();
-  data_->is_interface_active_ = false;
+  data_->is_interface_active_ = true;
 	data_->window_should_close_ = false;
 
 	//Subsystems init
