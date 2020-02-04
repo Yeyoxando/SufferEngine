@@ -62,10 +62,12 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::Material> material_component;
   material_component.alloc();
-  Suffer::ref_ptr<Suffer::Material::UnlitParams> material_params;
+  Suffer::ref_ptr<Suffer::Material::DefaultParams> material_params;
   material_params.alloc();
-  material_params->color_ = mathmorra::Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+  material_params->albedo_texture_id_ = albedo_texture->id_;
+  material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   material_component->SetParams(material_params.get());
+  
 
   go_cube->AddComponent(material_component.get());
 
@@ -114,6 +116,7 @@ int main(int argc, char* argv[]) {
   transform_component_sphere_.alloc();
   go_sphere->AddComponent(transform_component_sphere_.get());
 
+  go_sphere->StartUpLUA("../../../src/lua/lua_code_sphere.txt");
 
   Suffer::ref_ptr<Suffer::Audio3D> audio_component_;
   audio_component_.alloc();

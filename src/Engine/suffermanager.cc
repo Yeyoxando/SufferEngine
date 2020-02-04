@@ -69,8 +69,8 @@ bool Suffer::SufferManager::Init(){
 
 	//Subsystems init
   audio_manager_.StartUp();
-  render_manager_.StartUp();
   resource_manager_.StartUp();
+  render_manager_.StartUp();
   input_manager_.StartUp();
 
 	// Threads Allocation
@@ -185,7 +185,6 @@ void Suffer::SufferManager::PrepareAudio() {
 
 void Suffer::SufferManager::Step(){
 
-  static bool do_once = false;
 	data_->scene_context_->Step(data_->delta_time_);
 
   // Systems

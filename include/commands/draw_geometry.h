@@ -20,7 +20,7 @@ namespace Suffer {
    * @brief: Command to draw GameObjects with Geometry and Material
    */
 	class DrawGeometry : public Command {
-
+    friend class RenderManager;
 	public:
 		DrawGeometry();
 

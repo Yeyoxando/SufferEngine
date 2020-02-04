@@ -4,6 +4,7 @@
 #include "suffermanager.h"
 #include "internal_render_manager.h"
 #include "internal_resource_manager.h"
+#include "draw_geometry.h"
 #include "component_geometry.h"
 #include "component_material.h"
 #include "common_definitions.h"
@@ -28,9 +29,32 @@ Suffer::RenderManager::~RenderManager(){
 
 void Suffer::RenderManager::StartUp(){
 
+  data_ = new RenderData();
+
 	// Init here instead of constructor and call in engine init
   dls_to_draw_ = 0;
   frame_buffer_id_ = -1;
+
+  data_->screen_quad_.alloc();
+
+  // Components
+  Suffer::ref_ptr< Suffer::GeometryComponent> geometry_component;
+  Suffer::ref_ptr< Suffer::Material> material_component;
+  Suffer::ref_ptr<Suffer::Material::RenderToTextureParams> material_params;
+
+  geometry_component.alloc();
+  material_component.alloc();
+  material_params.alloc();
+  
+  geometry_component->CreateGeometryWithShape(GeometryComponent::kBasicShapes_Quad);
+  geometry_component->SetDrawMode(GeometryComponent::kDrawMode_Triangles);
+
+  material_component->SetParams(material_params.get());
+
+  data_->screen_quad_->AddComponent(geometry_component.get());
+  data_->screen_quad_->AddComponent(material_component.get());
+
+  data_->reference_to_texture_params_ = material_params.get();
 
 }
 
@@ -39,6 +63,9 @@ void Suffer::RenderManager::StartUp(){
 void Suffer::RenderManager::ShutDown() {
 
 	// Init here instead of constructor and call in engine finish
+  if (data_ == nullptr) return;
+  delete data_;
+  data_ = nullptr;
 
 }
 
@@ -101,6 +128,7 @@ void Suffer::RenderManager::DoRender(){
 
             if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ == 0) {
               glGenTextures(1, &suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
+              data_->reference_to_texture_params_->albedo_texture_id_ = suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].color_texture_id_;
             }
 
             if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ < suffer.resource_manager_.data_->internal_textures_[id_texture].version_) {
@@ -215,6 +243,10 @@ void Suffer::RenderManager::DoRender(){
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
   // Here we have to create DrawGeometry command to draw the screen quad
+  Suffer::ref_ptr<DrawGeometry> draw_screen_quad_;
+  draw_screen_quad_.alloc();
+  draw_screen_quad_->SetData(data_->screen_quad_.get());
+  draw_screen_quad_->Execute();
 
 }
 

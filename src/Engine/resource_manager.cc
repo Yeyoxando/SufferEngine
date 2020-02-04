@@ -345,10 +345,10 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
   {
     float quad[] = {
         // Positions             Normals            UV's
-        0.5f, -0.5f, -1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
-        0.5f,  0.5f, -1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
-        -0.5f, -0.5f, -1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
+        1.0f,  -1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
+        1.0f,   1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+        -1.0f,  1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+        -1.0f, -1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
     };
 
     Array<u16> quad_indices;

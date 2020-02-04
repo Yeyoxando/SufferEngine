@@ -5,6 +5,7 @@
 
 #include "render_manager.h"
 #include "game_object.h"
+#include "component_material.h"
 
 // ------------------------------------------------------------------------- //
 
@@ -14,6 +15,7 @@ struct Suffer::RenderManager::RenderData {
   ~RenderData();
 
   ref_ptr<GameObject> screen_quad_;
+  Suffer::Material::RenderToTextureParams* reference_to_texture_params_; // Render to texture
 
 };
 
