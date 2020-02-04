@@ -58,3 +58,13 @@ Suffer::Material::UnlitParams::UnlitParams() {
 }
 
 // ------------------------------------------------------------------------- //
+
+Suffer::Material::RenderToTextureParams::RenderToTextureParams(){
+
+  params_type_ = kParamsType_RenderToTexture;
+  color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+  albedo_texture_id_ = -1;
+
+}
+
+// ------------------------------------------------------------------------- //

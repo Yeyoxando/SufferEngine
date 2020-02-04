@@ -50,6 +50,9 @@ namespace Suffer {
     s32 frame_buffer_id_;
     u32 dls_to_draw_;
 
+    struct RenderData;
+    RenderData* data_;
+
   };
 
   // ----------------------------------------------------------------------- //

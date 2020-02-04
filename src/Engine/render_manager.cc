@@ -2,7 +2,10 @@
 
 #include "render_manager.h"
 #include "suffermanager.h"
+#include "internal_render_manager.h"
 #include "internal_resource_manager.h"
+#include "component_geometry.h"
+#include "component_material.h"
 #include "common_definitions.h"
 
 // ------------------------------------------------------------------------- //
@@ -204,17 +207,20 @@ void Suffer::RenderManager::DoRender(){
       cmd->Execute();
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     render_dl_.Clear();
 
   }
+ 
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  // Here we have to create DrawGeometry command to draw the screen quad
 
 }
 
 // ------------------------------------------------------------------------- //
 
-void Suffer::RenderManager::SetFrameBuffer(ResourceManager::FrameBuffer* frame_buffer){
+void Suffer::RenderManager::SetFrameBuffer(ResourceManager::FrameBuffer* frame_buffer) {
 
   assert(frame_buffer != nullptr);
   if (frame_buffer == nullptr) {
@@ -223,6 +229,22 @@ void Suffer::RenderManager::SetFrameBuffer(ResourceManager::FrameBuffer* frame_b
   }
 
   frame_buffer_id_ = frame_buffer->id_;
+
+}
+
+// ------------------------------------------------------------------------- //
+
+Suffer::RenderManager::RenderData::RenderData(){
+
+
+
+}
+
+// ------------------------------------------------------------------------- //
+
+Suffer::RenderManager::RenderData::~RenderData(){
+
+
 
 }
 

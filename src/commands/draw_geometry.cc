@@ -150,6 +150,14 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
       data_->current_used_textures_ = 0;
     }
       break;
+    case Material::ParamsType::kParamsType_RenderToTexture: {
+      Material::RenderToTextureParams* render_params_;
+      render_params_ = reinterpret_cast<Material::RenderToTextureParams*>(params);
+
+      data_->texture_ids_[0] = render_params_->albedo_texture_id_;
+      data_->current_used_textures_ = 1;
+    }
+      break;
     case Material::ParamsType::kParamsType_Invalid:
       assert(data_->material_type_ != Material::kParamsType_Invalid && "Material type not set");
       break;
@@ -464,7 +472,7 @@ void Suffer::DrawGeometry::Execute() const {
     u_pos = glGetUniformLocation(program_id, "u_data");
     if (u_pos < 0) {
       printf("\nERROR: u_data uniform not exists.");
-      return;
+      //return;
     }
 
     glUniform4fv(u_pos, 14, data_->u_data_);
