@@ -63,7 +63,7 @@ namespace Suffer {
      * @brief: render the texture in the Game window in the interface
      * @param: the texture that will be rendered
      */
-		void Game(s8 tex);
+		void Game(s32 tex);
 
 		// Windows that can be opened
 		void Options();

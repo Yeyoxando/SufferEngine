@@ -4,7 +4,44 @@
 #define __INTERNAL_SHADERS_H__
 
 namespace Suffer {
+  // ----------------------- RenderToTextureShaders ------------------------ //
 
+  // -- Render to texture (vertex) --
+  static const char* render_to_texture_vertex_ = R"VTOTEXTURE(
+
+    #version 330 core
+    layout (location = 0) in vec2 aPos;
+    layout (location = 1) in vec2 aTexCoords;
+
+    out vec2 TexCoords;
+
+    void main()
+    {
+        gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0); 
+        TexCoords = aTexCoords;
+    }  
+
+  )VTOTEXTURE";
+
+  // -- Render to texture (fragment) --
+  static const char* render_to_texture_fragment_ = R"FTOTEXTURE(
+
+    #version 330 core
+    out vec4 FragColor;
+      
+    in vec2 TexCoords;
+    
+    uniform sampler2D screenTexture;
+    
+    void main()
+    { 
+        FragColor = texture(screenTexture, TexCoords);
+    }    
+
+  )FTOTEXTURE";
+
+  // ----------------------- RenderToTextureShaders ------------------------ //
+  
   // --------------------------- DefaultShaders ---------------------------- //
 
   // -- Default vertex shader --

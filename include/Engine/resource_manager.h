@@ -19,7 +19,9 @@ namespace Suffer {
   class ResourceManager {
     friend class DrawGeometry;
     friend class SufferManager;
+    friend class RenderManager;
     friend class GeometryComponent;
+    friend class Interface;
 
   public:
 
@@ -66,9 +68,6 @@ namespace Suffer {
     public:
       FrameBuffer();
       ~FrameBuffer();
-
-      void SetColorTexture(s32 color_id);
-      void SetDepthTexture(s32 depth_id);
 
       void InitFrameBuffer(u16 width, u16 height);
 

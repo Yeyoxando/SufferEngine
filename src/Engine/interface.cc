@@ -4,6 +4,7 @@
  * Interface Source
  */
 
+#include "internal_resource_manager.h"
 #include <imgui.h>
 #include <scene.h>
 #include <glfw3.h>
@@ -264,7 +265,8 @@ void  Suffer::Interface::CreateDock(bool* p_open){
 	if(is_hierarchy_opened_) Hierarchy(SufferManager::instance().GetCurrentScene());
 	if(is_project_window_opened_) Project();
 	if(is_log_opened_) Log();
-	if (is_game_window_opened_) Game(0);
+  s32 id = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[suffer.render_manager_.frame_buffer_id_].color_texture_id_].current_texture_id_;
+	if (is_game_window_opened_) Game(id);
 	
 
 	ImGui::End();
@@ -667,7 +669,7 @@ void  Suffer::Interface::Audio(Audio3D* sound){
 
 // --------------------------------------------------- //
 
-void  Suffer::Interface::Game(s8 tex){
+void  Suffer::Interface::Game(s32 tex){
 
 #ifdef ASSERT
 	assert(tex >= 0 && "Texture ID not valid.\n");
