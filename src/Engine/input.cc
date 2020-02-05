@@ -263,9 +263,9 @@ bool Suffer::InputManager::IsKeyDown(Key key){
 
     auto state = GetState(key);
     if (state == nullptr) return false;
-    if (state->pressed_ || state->recently_pressed_) {
-        state->pressed_ = false;
-        return true;
+    if (state->pressed_/* || state->recently_pressed_*/) {
+      state->pressed_ = false;
+      return true;
     }
 
 	return false;

@@ -116,7 +116,7 @@ void Suffer::SufferManager::Input() {
 
   // Activate Interface
   if (input_manager_.IsKeyDown(InputManager::k_F2)) {
-      data_->is_interface_active_ = !data_->is_interface_active_;
+    data_->is_interface_active_ = !data_->is_interface_active_;
   }
 
   input_manager_.Update();
@@ -151,6 +151,7 @@ void Suffer::SufferManager::Run() {
 		Draw();
     
     logic_->WaitFor(logic_.get());
+    input_->WaitFor(input_.get());
 
 		data_->delta_time_ = (data_->current_time_ - data_->previous_time_) * 0.0001f;
 		data_->previous_time_ = data_->current_time_;
