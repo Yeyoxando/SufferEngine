@@ -21,6 +21,7 @@ namespace Suffer {
     friend class SufferManager;
     friend class RenderManager;
     friend class GeometryComponent;
+    friend class DebugGeometryComponent;
     friend class Interface;
 
   public:

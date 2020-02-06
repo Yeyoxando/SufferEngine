@@ -955,37 +955,65 @@ bool mathmorra::Matrix4::IsIdentity(){
                                                mathmorra::Vector3 target, 
                                                mathmorra::Vector3 up){
 
-     Vector3 forward = eye - target;
-     forward.Normalized();
+     //Vector3 forward = eye - target;
+     //forward.Normalized();
 
-     // compute the left vector
-     Vector3 left = up.CrossProduct(up, forward); // cross product
-     left.Normalized();
+     //// compute the left vector
+     //Vector3 left = up.CrossProduct(up, forward); // cross product
+     //left.Normalized();
 
-     // recompute the orthonormal up vector
-     Vector3 upDir = forward.CrossProduct(forward, left);    // cross product
+     //// recompute the orthonormal up vector
+     //Vector3 upDir = forward.CrossProduct(forward, left);    // cross product
 
-     // init 4x4 matrix
-     Matrix4 matrix;
-     matrix.Identity();
+     //// init 4x4 matrix
+     //Matrix4 matrix;
+     //matrix.Identity();
 
-     // set rotation part, inverse rotation matrix: M^-1 = M^T for Euclidean transform
-     matrix.m[0] = left.x_;
-     matrix.m[4] = left.y_;
-     matrix.m[8] = left.z_;
-     matrix.m[1] = upDir.x_;
-     matrix.m[5] = upDir.y_;
-     matrix.m[9] = upDir.z_;
-     matrix.m[2] = forward.x_;
-     matrix.m[6] = forward.y_;
-     matrix.m[10] = forward.z_;
+     //// set rotation part, inverse rotation matrix: M^-1 = M^T for Euclidean transform
+     //matrix.m[0] = left.x_;
+     //matrix.m[4] = left.y_;
+     //matrix.m[8] = left.z_;
+     //matrix.m[1] = upDir.x_;
+     //matrix.m[5] = upDir.y_;
+     //matrix.m[9] = upDir.z_;
+     //matrix.m[2] = forward.x_;
+     //matrix.m[6] = forward.y_;
+     //matrix.m[10] = forward.z_;
 
-     // set translation part
-     matrix.m[12] = -left.x_ * eye.x_ - left.y_ * eye.y_ - left.z_ * eye.z_;
-     matrix.m[13] = -upDir.x_ * eye.x_ - upDir.y_ * eye.y_ - upDir.z_ * eye.z_;
-     matrix.m[14] = -forward.x_ * eye.x_ - forward.y_ * eye.y_ - forward.z_ * eye.z_;
+     //// set translation part
+     //matrix.m[12] = -left.x_ * eye.x_ - left.y_ * eye.y_ - left.z_ * eye.z_;
+     //matrix.m[13] = -upDir.x_ * eye.x_ - upDir.y_ * eye.y_ - upDir.z_ * eye.z_;
+     //matrix.m[14] = -forward.x_ * eye.x_ - forward.y_ * eye.y_ - forward.z_ * eye.z_;
 
-     return matrix;
+   mathmorra::Matrix4 result;
+
+   mathmorra::Vector3 f = (target - eye).Normalized();
+   mathmorra::Vector3 u = up.Normalized();
+   mathmorra::Vector3 s = mathmorra::Vector3::CrossProduct(f, u).Normalized();
+
+   u = mathmorra::Vector3::CrossProduct(s, f);
+
+   result.m[0]  = s.x_;
+   result.m[1]  = s.y_;
+   result.m[2]  = s.z_;
+   result.m[3] = 0.0f;
+
+   result.m[4]  = u.x_;
+   result.m[5]  = u.y_;
+   result.m[6]  = u.z_;
+   result.m[7] = 0.0f;
+
+   result.m[8]  = -f.x_;
+   result.m[9]  = -f.y_;
+   result.m[10] = -f.z_;
+   result.m[11] =  0.0f;
+
+   result.m[12]  = -mathmorra::Vector3::DotProduct(s, eye);
+   result.m[13]  = -mathmorra::Vector3::DotProduct(u, eye);
+   result.m[14] =   mathmorra::Vector3::DotProduct(f, eye);
+   result.m[15] = 1.0f;
+
+   return result;
 
  }
 

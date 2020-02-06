@@ -1,5 +1,5 @@
 Translate(0.0, 0.0, 0.0)
-Rotate(0.05, 0.0, 0.0)
+Rotate(0.0, 0.0, 0.0)
 Scale(1.0, 1.0, 1.0)
 SetDrawMode("Triangles")
 SetPredefinedGeometry("Sphere")

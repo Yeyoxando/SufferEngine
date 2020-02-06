@@ -117,6 +117,7 @@ int main(int argc, char* argv[]) {
   go_sphere->AddComponent(transform_component_sphere_.get());
 
   go_sphere->StartUpLUA("../../../src/lua/lua_code_sphere.txt");
+  go_cube->StartUpLUA("../../../src/lua/lua_code_cube.txt");
 
   Suffer::ref_ptr<Suffer::Audio3D> audio_component_;
   audio_component_.alloc();

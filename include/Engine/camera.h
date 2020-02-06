@@ -32,6 +32,7 @@ namespace Suffer {
          * @param: zfar:  maximum distance at which an object is displayed.
          */
         void SetupPerspective(float fov, float aspect, float znear, float zfar);
+        void SetupPerspective(float left, float right, float bottom, float top, float near, float far);
 
         void SetPosition(const mathmorra::Vector3 position);
         void SetPosition(const float position[3]);
@@ -83,9 +84,11 @@ namespace Suffer {
                    camera eye moves with the mouse
          * @param: new_sensibility: the new value.
          */
-        void SetSensibility(float new_sensibility);
+        void SetSensibility(float new_sensitivity_);
 
         void SetSpeed(float new_speed);
+
+        void ProcessMouseMovement(float x, float y);
 
         bool FPS();
 
@@ -98,11 +101,11 @@ namespace Suffer {
 
     private:
         mathmorra::Vector3 camera_position_;
-        mathmorra::Vector3 camera_target_;
-        mathmorra::Vector3 camera_direction_;
 
         mathmorra::Vector3 camera_up_;
+        mathmorra::Vector3 camera_back_;
         mathmorra::Vector3 camera_right_;
+        mathmorra::Vector3 camera_target_;
 
         mathmorra::Matrix4 view_matrix_;
         mathmorra::Matrix4 projection_matrix_;
@@ -113,8 +116,11 @@ namespace Suffer {
 
         // Movement attributes
         float speed_;
-        float sensibility_;
+        float sensitivity_;
         bool  fps_movement_;
+
+        float yaw_;
+        float pitch_;
 
 
     };

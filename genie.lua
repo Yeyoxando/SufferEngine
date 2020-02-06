@@ -72,7 +72,7 @@ project "SufferCore"
 		"./include/memory_management/",
 		"./include/commands/",
 		"./include/components/",
-    "./include/systems/",
+		"./include/systems/",
 		"./include/engine/",
 		"./deps/glm/",
 		"./deps/sokol/",
