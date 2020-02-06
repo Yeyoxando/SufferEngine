@@ -60,9 +60,9 @@ int main(int argc, char* argv[]) {
   geometry_component->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
   go_cube->AddComponent(geometry_component.get());
 
-  Suffer::ref_ptr<Suffer::Material> material_component;
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_component;
   material_component.alloc();
-  Suffer::ref_ptr<Suffer::Material::DefaultParams> material_params;
+  Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_params;
   material_params.alloc();
   material_params->albedo_texture_id_ = albedo_texture->id_;
   material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -103,9 +103,9 @@ int main(int argc, char* argv[]) {
   geometry_component_sphere->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Sphere);
   go_sphere->AddComponent(geometry_component_sphere.get());
 
-  Suffer::ref_ptr<Suffer::Material> material_component_sphere;
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_component_sphere;
   material_component_sphere.alloc();
-  Suffer::ref_ptr<Suffer::Material::DefaultParams> material_params2;
+  Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_params2;
   material_params2.alloc();
   material_params2->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   material_params2->albedo_texture_id_ = albedo_texture2->id_;

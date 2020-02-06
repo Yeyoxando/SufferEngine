@@ -36,11 +36,12 @@ void Suffer::RenderManager::StartUp(){
   frame_buffer_id_ = -1;
 
   data_->screen_quad_.alloc();
+  data_->draw_quad_command_.alloc();
 
   // Components
   Suffer::ref_ptr< Suffer::GeometryComponent> geometry_component;
-  Suffer::ref_ptr< Suffer::Material> material_component;
-  Suffer::ref_ptr<Suffer::Material::RenderToTextureParams> material_params;
+  Suffer::ref_ptr< Suffer::MaterialComponent> material_component;
+  Suffer::ref_ptr<Suffer::MaterialComponent::RenderToTextureParams> material_params;
 
   geometry_component.alloc();
   material_component.alloc();
@@ -243,11 +244,8 @@ void Suffer::RenderManager::DoRender(){
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glDisable(GL_DEPTH_TEST);
 
-  // Here we have to create DrawGeometry command to draw the screen quad
-  Suffer::ref_ptr<DrawGeometry> draw_screen_quad_;
-  draw_screen_quad_.alloc();
-  draw_screen_quad_->SetData(data_->screen_quad_.get());
-  draw_screen_quad_->Execute();
+  data_->draw_quad_command_->SetData(data_->screen_quad_.get());
+  data_->draw_quad_command_->Execute();
 
 }
 

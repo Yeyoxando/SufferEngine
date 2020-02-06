@@ -15,7 +15,8 @@ struct Suffer::RenderManager::RenderData {
   ~RenderData();
 
   ref_ptr<GameObject> screen_quad_;
-  Suffer::Material::RenderToTextureParams* reference_to_texture_params_; // Render to texture
+  ref_ptr<DrawGeometry> draw_quad_command_;
+  MaterialComponent::RenderToTextureParams* reference_to_texture_params_; // Render to texture
 
 };
 

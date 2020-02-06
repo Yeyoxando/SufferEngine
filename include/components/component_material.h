@@ -1,7 +1,7 @@
 /*
 * Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
 * Date: 12-12-2019
-* ComponentMaterial Header
+* MaterialComponent Header
 */
 
 #ifndef __COMPONENT_MATERIAL_H__
@@ -14,10 +14,10 @@
 
 namespace Suffer {
 
-  class Material : public Component {
+  class MaterialComponent : public Component {
     friend class DrawGeometry;
   public:
-    Material() : Component(kComponentKind_Material) { current_params_ = nullptr; }
+    MaterialComponent() : Component(kComponentKind_Material) { current_params_ = nullptr; }
 
     /**
     * @brief: Indicates which type of material is it
@@ -92,7 +92,7 @@ namespace Suffer {
     void SetParams(ref_ptr<BaseParams> params);
 
   protected:
-    virtual ~Material();
+    virtual ~MaterialComponent();
 
   private:
 

@@ -8,7 +8,7 @@
 
 // ------------------------------------------------------------------------- //
 
-void Suffer::Material::SetParams(ref_ptr<BaseParams> params){
+void Suffer::MaterialComponent::SetParams(ref_ptr<BaseParams> params){
 
   assert(params.get() != nullptr && "Error: params is null");
   assert(params->params_type_ != kParamsType_Invalid && "Error: params has no type");
@@ -20,18 +20,14 @@ void Suffer::Material::SetParams(ref_ptr<BaseParams> params){
 
 // ------------------------------------------------------------------------- //
 
-Suffer::Material::~Material(){
+Suffer::MaterialComponent::~MaterialComponent(){
 
 
 }
 
 // ------------------------------------------------------------------------- //
 
-
-
-// ------------------------------------------------------------------------- //
-
-Suffer::Material::BaseParams::BaseParams() {
+Suffer::MaterialComponent::BaseParams::BaseParams() {
 
   params_type_ = kParamsType_Invalid;
 
@@ -39,7 +35,7 @@ Suffer::Material::BaseParams::BaseParams() {
 
 // ------------------------------------------------------------------------- //
 
-Suffer::Material::DefaultParams::DefaultParams() {
+Suffer::MaterialComponent::DefaultParams::DefaultParams() {
 
   params_type_ = kParamsType_Default;
   color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -49,7 +45,7 @@ Suffer::Material::DefaultParams::DefaultParams() {
 
 // ------------------------------------------------------------------------- //
 
-Suffer::Material::UnlitParams::UnlitParams() {
+Suffer::MaterialComponent::UnlitParams::UnlitParams() {
 
   params_type_ = kParamsType_Unlit;
   color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -59,7 +55,7 @@ Suffer::Material::UnlitParams::UnlitParams() {
 
 // ------------------------------------------------------------------------- //
 
-Suffer::Material::RenderToTextureParams::RenderToTextureParams(){
+Suffer::MaterialComponent::RenderToTextureParams::RenderToTextureParams(){
 
   params_type_ = kParamsType_RenderToTexture;
   color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
