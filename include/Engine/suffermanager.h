@@ -6,6 +6,7 @@
 #include <ref_ptr.h>
 #include <render_manager.h>
 #include <resource_manager.h>
+#include <light_manager.h>
 #include <audio_manager.h>
 #include <scoped_array.h>
 #include "thread.h"
@@ -71,6 +72,7 @@ namespace Suffer {
     InputManager input_manager_;
 		RenderManager render_manager_;
 		ResourceManager resource_manager_;
+		LightManager light_manager_;
 
 	protected:
 

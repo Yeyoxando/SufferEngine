@@ -72,6 +72,7 @@ bool Suffer::SufferManager::Init(){
   resource_manager_.StartUp();
   render_manager_.StartUp();
   input_manager_.StartUp();
+  light_manager_.StartUp();
 
 	// Threads Allocation
 	logic_.alloc();
@@ -215,6 +216,7 @@ bool Suffer::SufferManager::Finish(){
 	render_manager_.ShutDown();
   audio_manager_.ShutDown();
   input_manager_.ShutDown();
+  light_manager_.ShutDown();
 
   data_->wind_.Close();
 
