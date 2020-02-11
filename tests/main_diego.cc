@@ -34,6 +34,9 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::Scene> scene;
   scene.alloc();
 
+  Suffer::ref_ptr<Suffer::LightManager::DirectionalLight> directional_light_;
+  directional_light_.alloc();
+
 
   // Textures
   Suffer::ref_ptr<Suffer::ResourceManager::Texture> albedo_texture;

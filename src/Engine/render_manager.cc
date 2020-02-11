@@ -169,10 +169,10 @@ void Suffer::RenderManager::DoRender(){
             if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ < suffer.resource_manager_.data_->internal_textures_[id_texture].version_) {
               glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
 
-              glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24,
+              glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8,
                 suffer.resource_manager_.data_->internal_textures_[id_texture].width_,
                 suffer.resource_manager_.data_->internal_textures_[id_texture].height_,
-                0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+                0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
 
               // WRAP S
               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -204,7 +204,7 @@ void Suffer::RenderManager::DoRender(){
             0);
           error = glGetError();
 
-          glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
+          glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D,
             suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[suffer.render_manager_.frame_buffer_id_].depth_texture_id_].current_texture_id_,
             0);
           error = glGetError();
@@ -220,6 +220,7 @@ void Suffer::RenderManager::DoRender(){
         }
       
         glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
+        //glViewport()
 
       }
 
@@ -242,6 +243,7 @@ void Suffer::RenderManager::DoRender(){
   }
  
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  //glViewport()
   glDisable(GL_DEPTH_TEST);
 
   data_->draw_quad_command_->SetData(data_->screen_quad_.get());

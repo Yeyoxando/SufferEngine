@@ -337,7 +337,7 @@ void Suffer::Camera::Update() {
     speed_ = 0.5f;
   }
 
-  SetupPerspective(field_of_view_, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.01f, 150.0f);
+  SetupPerspective(field_of_view_, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 5.0f, 50.0f);
 
   view_matrix_ = mathmorra::Matrix4::LookAt(camera_position_, camera_position_ + camera_target_, camera_up_);
   //view_matrix_.GetInverse(&view_matrix_);
