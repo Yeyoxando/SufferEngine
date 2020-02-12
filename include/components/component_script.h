@@ -27,6 +27,9 @@ namespace Suffer {
 
     void Update();
 
+    struct ScriptData;
+    ScriptData* data_;
+
     // TODO: test
     bool script_attached_;
 
