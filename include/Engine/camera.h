@@ -17,6 +17,8 @@
 namespace Suffer {
 
     class Camera : public virtual Referenced {
+      friend class InputManager;
+      friend class Scene;
 
     public:
         Camera();
@@ -88,18 +90,25 @@ namespace Suffer {
 
         void SetSpeed(float new_speed);
 
-        void ProcessMouseMovement(float x, float y);
+        void SetTarget(mathmorra::Vector3 new_target);
 
         bool FPS();
+        bool Moving();
 
-        // TODO: This will be private
-        void Update();
+        float Sensitivity();
+
+
+        float yaw_;
+        float pitch_;
+        mathmorra::Vector2 last_cursor_position_;
 
     protected:
         virtual ~Camera();
 
 
     private:
+        void Update();
+
         mathmorra::Vector3 camera_position_;
 
         mathmorra::Vector3 camera_up_;
@@ -112,15 +121,11 @@ namespace Suffer {
         mathmorra::Matrix4 look_at_matrix_;
 
         float field_of_view_; // FOV
-        mathmorra::Vector2 last_cursor_position_;
 
         // Movement attributes
         float speed_;
         float sensitivity_;
         bool  fps_movement_;
-
-        float yaw_;
-        float pitch_;
 
 
     };
