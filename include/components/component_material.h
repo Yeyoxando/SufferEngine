@@ -1,7 +1,7 @@
 /*
 * Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
 * Date: 12-12-2019
-* ComponentMaterial Header
+* MaterialComponent Header
 */
 
 #ifndef __COMPONENT_MATERIAL_H__
@@ -14,18 +14,19 @@
 
 namespace Suffer {
 
-  class Material : public Component {
+  class MaterialComponent : public Component {
     friend class DrawGeometry;
   public:
-    Material() : Component(kComponentKind_Material) { current_params_ = nullptr; }
+    MaterialComponent() : Component(kComponentKind_Material) { current_params_ = nullptr; }
 
     /**
     * @brief: Indicates which type of material is it
     */
     enum ParamsType {
-      kParams_Default = 0,
-      kParams_Unlit,
-      kParams_NONE = 20,
+      kParamsType_Invalid = -1,
+      kParamsType_Default = 0,
+      kParamsType_Unlit = 1,
+      kParamsType_RenderToTexture = 2,
     };
 
 
@@ -34,7 +35,6 @@ namespace Suffer {
      *         If an attribute is needed in all the rest of material params it will be here.
      */
     struct BaseParams : public Referenced {
-      friend class MaterialInstance;
     public:
       mathmorra::Vector4 color_;
       ParamsType params_type_;
@@ -69,6 +69,18 @@ namespace Suffer {
 
     };
 
+    /**
+     * @brief: Saves unlit material specific parameters.
+     */
+    struct RenderToTextureParams : public BaseParams {
+    public:
+      RenderToTextureParams();
+      ~RenderToTextureParams() {}
+
+      s32 albedo_texture_id_;
+
+    };
+
     //struct ...Params : public BaseParams {};
 
     // ------------------------------ Setters ------------------------------ //
@@ -80,7 +92,7 @@ namespace Suffer {
     void SetParams(ref_ptr<BaseParams> params);
 
   protected:
-    virtual ~Material();
+    virtual ~MaterialComponent();
 
   private:
 

@@ -10,7 +10,7 @@
 
 Suffer::DisplayList::DisplayList(){
 
-	dl_type_ = kDisplayListType_NONE;
+	dl_type_ = kDisplayListType_Invalid;
 
 }
 
@@ -19,7 +19,7 @@ Suffer::DisplayList::DisplayList(){
 void Suffer::DisplayList::Reset() {
 
 	Clear();
-	dl_type_ = kDisplayListType_NONE;
+	dl_type_ = kDisplayListType_Invalid;
 
 }
 
@@ -71,12 +71,12 @@ void Suffer::DisplayList::AddCommand(const ref_ptr<Command> cmd){
 	
   assert(cmd.get() != nullptr && "Command is null");
 
-	if (dl_type_ = kDisplayListType_NONE) {
+	if (dl_type_ == kDisplayListType_Invalid) {
 		switch (cmd->GetCommandType()) {
-		case Command::CommandType::kRender:
+		case Command::CommandType::kCommandType_Render:
 			dl_type_ = kDisplayListType_Render;
 			break;
-		case Command::CommandType::kAudio:
+		case Command::CommandType::kCommandType_Audio:
 			dl_type_ = kDisplayListType_Audio;
 			break;
 		default:
@@ -86,7 +86,7 @@ void Suffer::DisplayList::AddCommand(const ref_ptr<Command> cmd){
 	else {
 		switch (dl_type_){
 		case Suffer::DisplayList::kDisplayListType_Render:
-			if (cmd->GetCommandType() != Command::kRender){
+			if (cmd->GetCommandType() != Command::kCommandType_Render){
 #ifdef DEBUG
 				printf("\nError trying to adding Render command to not Render DL: [%s]\n", __FUNCTION__);
 #endif
@@ -94,7 +94,7 @@ void Suffer::DisplayList::AddCommand(const ref_ptr<Command> cmd){
 			}
 			break;
 		case Suffer::DisplayList::kDisplayListType_Audio:
-			if (cmd->GetCommandType() != Command::kAudio) {
+			if (cmd->GetCommandType() != Command::kCommandType_Audio) {
 #ifdef DEBUG
 				printf("\nError trying to adding Audio command to not Audio DL: [%s]\n", __FUNCTION__);
 #endif
@@ -117,7 +117,7 @@ Suffer::DisplayList & Suffer::DisplayList::operator=(DisplayList && d){
 	// swap pointers to pass values without creating a copy
 	std::swap(dl_commands_, d.dl_commands_);
 	dl_type_ = d.dl_type_;
-	d.dl_type_ = kDisplayListType_NONE;
+	d.dl_type_ = kDisplayListType_Invalid;
 
 	return *this;
 

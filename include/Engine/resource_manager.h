@@ -19,8 +19,10 @@ namespace Suffer {
   class ResourceManager {
     friend class DrawGeometry;
     friend class SufferManager;
+    friend class RenderManager;
     friend class GeometryComponent;
-    friend class Geometry; // DEPRECATED
+    friend class DebugGeometryComponent;
+    friend class Interface;
 
   public:
 
@@ -39,11 +41,11 @@ namespace Suffer {
        * @brief: Indicates which kind of resource is
        */
       enum ResourceType {
-        kVertexBuffer = 0,
-        kIndexBuffer,
-        kTexture,
-        kFrameBuffer,
-        kInvalid
+        kResourceType_Invalid = -1, 
+        kResourceType_VertexBuffer,
+        kResourceType_IndexBuffer,
+        kResourceType_Texture,
+        kResourceType_FrameBuffer,
       };
 
       s32 id_;
@@ -54,6 +56,29 @@ namespace Suffer {
 
     // ------------------------------ GPUResource --------------------------- //
 
+
+
+
+
+
+    // ----------------------------- FrameBuffers -------------------------- //
+
+
+    class FrameBuffer : public GPUResource {
+
+    public:
+      FrameBuffer();
+      ~FrameBuffer();
+
+      void InitFrameBuffer(u16 width, u16 height);
+
+    protected:
+    private:
+
+    };
+
+
+    // ----------------------------- FrameBuffers -------------------------- //
 
 
     // ----------------------------- VertexBuffer -------------------------- //
@@ -70,10 +95,10 @@ namespace Suffer {
        * @brief: Indicates which attributes contain the vertexes to upload.
        */
       enum VertexFormat {
+        kVertexFormat_Invalid = -1,
         kVertexFormat_3P = 0,
         kVertexFormat_3P_3N = 1,
         kVertexFormat_3P_3N_2UV = 2,
-        kVertexFormat_Invalid
       };
 
       /**
@@ -187,6 +212,7 @@ namespace Suffer {
        * @brief: Possible s and t Wraps for a texture.
        */
       enum TextureWrap {
+        kTextureWrap_Invalid = -1,
         kTextureWrap_Repeat = 0,
         kTextureWrap_MirroredRepeat,
         kTextureWrap_ClampToEdge,
@@ -196,6 +222,7 @@ namespace Suffer {
        * @brief: Possible min and mag filters for a texture.
        */
       enum TextureFilter {
+        kTextureFilter_Invalid = -1,
         kTextureFilter_Linear = 0,
         kTextureFilter_Nearest,
       };

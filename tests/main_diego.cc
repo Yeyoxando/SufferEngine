@@ -5,8 +5,6 @@
 #include <suffermanager.h>
 #include "ref_ptr.h"
 #include "scene.h"
-#include "geometry.h"
-#include "material.h"
 #include "game_object.h"
 #include "component_transform.h"
 #include "resource_manager.h"
@@ -23,6 +21,11 @@
 int main(int argc, char* argv[]) {
 
   suffer.Init();
+
+  Suffer::ref_ptr<Suffer::ResourceManager::FrameBuffer> frame_buffer_;
+  frame_buffer_.alloc();
+  frame_buffer_->InitFrameBuffer(WINDOW_WIDTH, WINDOW_HEIGHT);
+  suffer.render_manager_.SetFrameBuffer(frame_buffer_.get());
   
   Suffer::ref_ptr<Suffer::SystemAudio> audio_system_;
   audio_system_.alloc();
@@ -30,6 +33,9 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::Scene> scene;
   scene.alloc();
+
+  Suffer::ref_ptr<Suffer::LightManager::DirectionalLight> directional_light_;
+  directional_light_.alloc();
 
 
   // Textures
@@ -57,12 +63,14 @@ int main(int argc, char* argv[]) {
   geometry_component->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
   go_cube->AddComponent(geometry_component.get());
 
-  Suffer::ref_ptr<Suffer::Material> material_component;
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_component;
   material_component.alloc();
-  Suffer::ref_ptr<Suffer::Material::UnlitParams> material_params;
+  Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_params;
   material_params.alloc();
-  material_params->color_ = mathmorra::Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+  material_params->albedo_texture_id_ = albedo_texture->id_;
+  material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   material_component->SetParams(material_params.get());
+  
 
   go_cube->AddComponent(material_component.get());
 
@@ -98,9 +106,9 @@ int main(int argc, char* argv[]) {
   geometry_component_sphere->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Sphere);
   go_sphere->AddComponent(geometry_component_sphere.get());
 
-  Suffer::ref_ptr<Suffer::Material> material_component_sphere;
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_component_sphere;
   material_component_sphere.alloc();
-  Suffer::ref_ptr<Suffer::Material::DefaultParams> material_params2;
+  Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_params2;
   material_params2.alloc();
   material_params2->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   material_params2->albedo_texture_id_ = albedo_texture2->id_;
@@ -111,6 +119,8 @@ int main(int argc, char* argv[]) {
   transform_component_sphere_.alloc();
   go_sphere->AddComponent(transform_component_sphere_.get());
 
+  go_sphere->StartUpLUA("../../../src/lua/lua_code_sphere.txt");
+  go_cube->StartUpLUA("../../../src/lua/lua_code_cube.txt");
 
   Suffer::ref_ptr<Suffer::Audio3D> audio_component_;
   audio_component_.alloc();

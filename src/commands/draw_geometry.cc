@@ -43,7 +43,7 @@ struct Suffer::DrawGeometry::Data {
 
 Suffer::DrawGeometry::DrawGeometry() {
 
-  cmd_type_ = Command::kRender;
+  cmd_type_ = Command::kCommandType_Render;
   data_ = new Data();
   data_->current_used_textures_ = 0;
 
@@ -51,7 +51,7 @@ Suffer::DrawGeometry::DrawGeometry() {
     data_->texture_ids_[i] = -1;
   }
 
-  data_->material_type_ = Material::kParams_NONE;
+  data_->material_type_ = MaterialComponent::kParamsType_Invalid;
 
 }
 
@@ -119,11 +119,11 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
   {
 
     auto material_component = go->GetComponent(Suffer::Component::kComponentKind_Material);
-    Material* material_ = reinterpret_cast<Material*>(material_component);
+    MaterialComponent* material_ = reinterpret_cast<MaterialComponent*>(material_component);
     data_->material_type_ = (u32)material_->current_params_->params_type_;
 
     // -- Common Attributes --
-    Material::BaseParams* params = material_->current_params_.get();
+    MaterialComponent::BaseParams* params = material_->current_params_.get();
     mathmorra::Vector4 aux_color = params->color_;
     float values[4] = { aux_color.x_, aux_color.y_, aux_color.z_, aux_color.w_ };
 
@@ -135,23 +135,31 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
 
     // -- Set specific material parameters --
     switch (data_->material_type_) {
-    case Material::ParamsType::kParams_Default: {
-      Material::DefaultParams* default_params_;
-      default_params_ = reinterpret_cast<Material::DefaultParams*>(params);
+    case MaterialComponent::ParamsType::kParamsType_Default: {
+      MaterialComponent::DefaultParams* default_params_;
+      default_params_ = reinterpret_cast<MaterialComponent::DefaultParams*>(params);
 
       data_->texture_ids_[0] = default_params_->albedo_texture_id_;
       data_->current_used_textures_ = 1;
     }
       break;
-    case Material::ParamsType::kParams_Unlit: {
-      Material::UnlitParams* phong_params_;
-      phong_params_ = reinterpret_cast<Material::UnlitParams*>(params);
+    case MaterialComponent::ParamsType::kParamsType_Unlit: {
+      MaterialComponent::UnlitParams* phong_params_;
+      phong_params_ = reinterpret_cast<MaterialComponent::UnlitParams*>(params);
       data_->u_data_[52] = (float)Time();
       data_->current_used_textures_ = 0;
     }
       break;
-    case Material::ParamsType::kParams_NONE:
-      assert(data_->material_type_ != Material::kParams_NONE && "Material type not set");
+    case MaterialComponent::ParamsType::kParamsType_RenderToTexture: {
+      MaterialComponent::RenderToTextureParams* render_params_;
+      render_params_ = reinterpret_cast<MaterialComponent::RenderToTextureParams*>(params);
+
+      data_->texture_ids_[0] = render_params_->albedo_texture_id_;
+      data_->current_used_textures_ = 1;
+    }
+      break;
+    case MaterialComponent::ParamsType::kParamsType_Invalid:
+      assert(data_->material_type_ != MaterialComponent::kParamsType_Invalid && "Material type not set");
       break;
     default:
       break;
@@ -464,7 +472,7 @@ void Suffer::DrawGeometry::Execute() const {
     u_pos = glGetUniformLocation(program_id, "u_data");
     if (u_pos < 0) {
       printf("\nERROR: u_data uniform not exists.");
-      return;
+      //return;
     }
 
     glUniform4fv(u_pos, 14, data_->u_data_);

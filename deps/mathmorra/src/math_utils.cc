@@ -41,7 +41,7 @@ float ThiefUtils::Math::Min(float x, float y){
 
 float ThiefUtils::Math::Radians(float degrees){
   // (degrees * pi) / 180.0f;
-  return (degrees * fPI) * 0.0055555555555556f;
+  return (float)(degrees * fPI) * 0.0055555555555556;
 }
 
 float ThiefUtils::Math::Degrees(float radians){

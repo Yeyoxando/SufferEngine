@@ -7,7 +7,7 @@
 #ifndef __COMMAND_H__
 #define __COMMAND_H__
 
-#include <referenced.h>
+#include <Memory_Management/referenced.h>
 
 namespace Suffer {
 
@@ -28,9 +28,9 @@ namespace Suffer {
      * @brief: identifies the kind of the command.
      */
 		enum CommandType {
-			kRender = 0,
-			kAudio = 1,
-			kNONE = 20 // MAX for enum.
+			kCommandType_Invalid = -1,
+			kCommandType_Render = 0,
+			kCommandType_Audio = 1,
 		};
 
 

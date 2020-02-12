@@ -4,6 +4,7 @@
 #define __RENDER_MANAGER_H__
 
 #include <display_list.h>
+#include "resource_manager.h"
 #include <mutex>
 #include <list>
 
@@ -16,6 +17,7 @@ namespace Suffer {
    */
 	class RenderManager {
 		friend class SufferManager;
+    friend class Interface;
 
 	public:
     /**
@@ -30,6 +32,9 @@ namespace Suffer {
      *         render commands of it.
      */
 		void DoRender();
+
+    //TODO: Comment
+    void SetFrameBuffer(ResourceManager::FrameBuffer* frame_buffer);
 	
 	private:
     void StartUp(); // a.k.a Init()
@@ -42,7 +47,11 @@ namespace Suffer {
 		DisplayList render_dl_;
 		std::list<DisplayList> list_of_dl_;
 		Mutex dl_mutex_;
+    s32 frame_buffer_id_;
     u32 dls_to_draw_;
+
+    struct RenderData;
+    RenderData* data_;
 
   };
 

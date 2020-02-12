@@ -1,9 +1,5 @@
--- function main() 
--- Translate(0.0, 0.0, 0.0)
--- Rotate(0.0, 0.0, 0.0)
--- Scale(0.8, 0.8, 0.8)
--- SetPredefinedGeometry("Cube")
--- SetDrawMode("Triangles")
--- end
-
--- main()
+Translate(-3.0, 0.0, 0.0)
+Rotate(0.0, 0.0, 0.0)
+Scale(1.0, 1.0, 1.0)
+SetDrawMode("Triangles")
+SetPredefinedGeometry("Cube")

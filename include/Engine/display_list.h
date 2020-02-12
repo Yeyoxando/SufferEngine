@@ -28,9 +28,9 @@ namespace Suffer {
      * @brief: Identifies for what its going to be used this DisplayList.
      */
 	  enum DisplayListType {
+		  kDisplayListType_Invalid = -1,
 		  kDisplayListType_Render = 0,
 		  kDisplayListType_Audio = 1,
-		  kDisplayListType_NONE = 20 // MAX for enum.
 	  };
 
 	  // Constructors

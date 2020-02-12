@@ -4,7 +4,156 @@
 #define __INTERNAL_SHADERS_H__
 
 namespace Suffer {
+  // ----------------------- RenderToTextureShaders ------------------------ //
 
+  // TODO: Implement this fucking shit <-- John Carmack please
+  static const char* harakiri_shader = R"VHARAKIRI(
+
+  vec3 CreateAmbientLight(float intensity, vec3 color) {
+
+    vec3 ambientLight = intensity * color;
+    return ambientLight;
+
+  }
+
+  vec3 CreateDiffuseLight(float intensity, vec3 lightPos, vec3 color, vec3 normal) {
+
+    vec3 norm = normalize(normal);
+    vec3 lightDir = normalize(lightPos - FragPos);
+    float diffs = max(dot(norm, lightPos), 0.0f);
+    vec3 diffuseLight = diffs * color * intensity;
+
+    return diffuseLight;
+
+  }
+
+  vec3 CreateSpecularLight(float intensity, vec3 lightPos, vec3 color, vec3 normal) {
+
+    vec3 norm = normalize(normal);
+    float specularStrength = intensity;
+    vec3 reflectDirection = reflect(-lightPos, norm);
+    float spec = pow(max(dot(lightPos, reflectDirection), 0.0), 32);
+    vec3 specular = specularStrength * spec * color;
+    vec4 texel_specular = texture2D(u_texture_specularity, uv_ * 5.0);
+
+    return specular * vec3(texel_specular);
+
+  }
+
+  vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir) {
+
+    vec3 lightDir = normalize(-light.direction);
+
+    float diff = max(dot(normal, lightDir), 0.0f);
+
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+
+    vec3 ambient = CreateAmbientLight(1.0f, vec3(1, 1, 1));
+    vec3 diffuse = CreateDiffuseLight(u_light_diffuse_intensity, lightDir, vec3(u_light_diffuse_color), normal);
+    vec3 specular = CreateSpecularLight(u_light_specular_intensity, lightDir, vec3(u_light_specular_color), normal);
+
+    return (ambient + diffuse + specular);
+
+  }
+
+  vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPosition, vec3 viewDir) {
+
+    vec3 lightDir = normalize(light.position - FragPos);
+
+    float diff = max(dot(normal, lightDir), 0.0f);
+
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+
+    vec3 ambient = CreateAmbientLight(1.0f, vec3(1, 1, 1));
+
+    vec3 diffuse = CreateDiffuseLight(u_light_diffuse_intensity, lightDir, vec3(u_light_diffuse_color), normal);
+    vec3 specular = CreateSpecularLight(u_light_specular_intensity, lightDir, vec3(u_light_specular_color), normal);
+
+    float distance = length(light.position - FragPos);
+    float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic
+      * (distance * distance));
+
+    ambient *= attenuation * pointLightIntensity;
+    diffuse *= attenuation * pointLightIntensity;
+    specular *= attenuation * pointLightIntensity;
+
+    light.specular = specular;
+    light.diffuse = diffuse;
+    light.ambient = ambient;
+
+    return (ambient + diffuse + specular) * u_point_color;
+
+  }
+
+  vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 fragPosition, vec3 viewDir) {
+
+    vec3 lightDir = normalize(light.position - FragPos);
+    float diff = max(dot(normal, lightDir), 0.0f);
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 ambient = CreateAmbientLight(1.0f, vec3(1, 1, 1));
+    vec3 diffuse = CreateDiffuseLight(u_light_diffuse_intensity, lightDir, vec3(u_light_diffuse_color), normal);
+    float distance = length(light.position - fragPosition);
+    float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic
+      * (distance * distance));
+    float theta = dot(lightDir, normalize(-light.direction));
+    float epsilon = cos(radians(light.cutOff)) - cos(radians(light.outerCutOff));
+    float intensity = clamp((theta - cos(radians(light.outerCutOff))) / epsilon, 0.0, 1.0);
+
+    vec3 specular = light.specular * spec;
+    ambient *= attenuation * intensity * spotLightIntensity;
+    diffuse *= attenuation * intensity * spotLightIntensity;
+    specular *= attenuation * intensity * spotLightIntensity;
+
+    return (ambient + diffuse + specular);
+
+  }
+
+  )VHARAKIRI";
+
+
+  // -- Render to texture (vertex) --
+  static const char* render_to_texture_vertex_ = R"VTOTEXTURE(
+    #version 330
+    layout(location = 0) in vec3 a_position;
+    layout(location = 1) in vec3 a_normal;
+    layout(location = 2) in vec2 a_uvs;
+
+    uniform vec4 u_data[13];
+
+    out vec2 tex_coords;
+
+    void main()
+    {
+        gl_Position = vec4(a_position.x, a_position.y, 0.0, 1.0); 
+        tex_coords = a_uvs;
+    }  
+
+  )VTOTEXTURE";
+
+  // -- Render to texture (fragment) --
+  static const char* render_to_texture_fragment_ = R"FTOTEXTURE(
+    #version 330
+    out vec4 FragColor;
+      
+    in vec2 tex_coords;
+    
+    uniform sampler2D u_tex0;
+    
+    void main()
+    { 
+        vec4 color = texture2D(u_tex0, tex_coords);
+			  float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));
+			  FragColor = vec4(vec3(gray), 1.0);
+        //FragColor = texture(u_tex0, tex_coords);
+    }    
+
+  )FTOTEXTURE";
+
+  // ----------------------- RenderToTextureShaders ------------------------ //
+  
   // --------------------------- DefaultShaders ---------------------------- //
 
   // -- Default vertex shader --

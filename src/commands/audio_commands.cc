@@ -84,7 +84,7 @@ void Suffer::AudioCommands::SetGain::Execute() const {
 Suffer::AudioCommands::Crossfade::Crossfade(Audio3D* from, Audio3D* to, float attenuation) {
   from_ = from;
   to_ = to;
-  cmd_type_ = Command::kAudio;
+  cmd_type_ = Command::kCommandType_Audio;
   attenuation_ = ThiefUtils::Math::Clamp(attenuation, 0.0f, 1.0f);
   ended_ = false;
 }

@@ -16,32 +16,32 @@ namespace Suffer {
   namespace AudioCommands {
 
 	    struct Load : public Command {
-		    Load() { cmd_type_ = Command::kAudio; }
+		    Load() { cmd_type_ = Command::kCommandType_Audio; }
 		    virtual void Execute() const override;
 		    char* file;
 		    Audio3D* audio_3d_ = nullptr;
 	    };
 
 	    struct Play : public Command {
-		    Play() { cmd_type_ = Command::kAudio; }
+		    Play() { cmd_type_ = Command::kCommandType_Audio; }
 		    virtual void Execute() const override;
 		    Audio3D* audio_3d_ = nullptr;
 	    };
 
 	    struct Pause : public Command {
-		    Pause() { cmd_type_ = Command::kAudio; }
+		    Pause() { cmd_type_ = Command::kCommandType_Audio; }
 		    virtual void Execute() const override;
 		    Audio3D* audio_3d_ = nullptr;
 	    };
 
       struct Stop : public Command {
-        Stop() { cmd_type_ = Command::kAudio; }
+        Stop() { cmd_type_ = Command::kCommandType_Audio; }
         virtual void Execute() const override;
         Audio3D* audio_3d_ = nullptr;
       };
 
 	    struct SetGain : public Command {
-		    SetGain() { cmd_type_ = Command::kAudio; }
+		    SetGain() { cmd_type_ = Command::kCommandType_Audio; }
 		    float gain_;
 		    virtual void Execute() const override;
 		    Audio3D* audio_3d_ = nullptr;
@@ -49,7 +49,7 @@ namespace Suffer {
 
       struct Crossfade : public Command {
         Crossfade(Audio3D* from, Audio3D* to, float attenuation);
-        Crossfade() { cmd_type_ = Command::kAudio; };
+        Crossfade() { cmd_type_ = Command::kCommandType_Audio; };
         virtual void Execute() const override;
         static Audio3D* from_;
         static Audio3D* to_;

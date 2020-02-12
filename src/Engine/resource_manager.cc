@@ -10,10 +10,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-
-#define vertex_buffer ResourceManager::VertexBuffer
-#define index_buffer ResourceManager::IndexBuffer
-
 // ------------------------------------------------------------------------- //
 
 Suffer::ResourceManager::ResourceManager(){
@@ -39,6 +35,7 @@ void Suffer::ResourceManager::StartUp() {
   data_->InitInternalBuffers();
   data_->InitInternalTextures();
   data_->InitInternalMaterials();
+  data_->InitInternalFrameBuffers();
 
 }
 
@@ -58,6 +55,9 @@ void Suffer::ResourceManager::ShutDown() {
   }
   for (u32 i = 0; i < data_->number_of_materials_; ++i) {
     glDeleteProgram(data_->internal_materials_[i].current_program_);
+  }
+  for (u32 i = 0; i < data_->number_of_frame_buffers_; ++i) {
+    glDeleteFramebuffers(1, &data_->internal_frame_buffers_[i].current_gl_framebuffer_);
   }
 
   if (data_ == nullptr) return;
@@ -210,7 +210,7 @@ void Suffer::ResourceManager::Texture::LoadTextureData(const char * file){
 Suffer::ResourceManager::GPUResource::GPUResource() {
 
   id_ = -1;
-  type_ = kInvalid;
+  type_ = kResourceType_Invalid;
 
 }
 
@@ -224,7 +224,7 @@ Suffer::ResourceManager::GPUResource::~GPUResource() {
 
 Suffer::ResourceManager::VertexBuffer::VertexBuffer() {
 
-  type_ = GPUResource::kVertexBuffer;
+  type_ = GPUResource::kResourceType_VertexBuffer;
   id_ = suffer.resource_manager_.data_->number_of_vertex_buffers_;
   suffer.resource_manager_.data_->number_of_vertex_buffers_++;
   SetVertexFormat(kVertexFormat_Invalid);
@@ -243,7 +243,7 @@ void Suffer::ResourceManager::VertexBuffer::SetVertexFormat(VertexFormat new_for
 
 Suffer::ResourceManager::IndexBuffer::IndexBuffer() {
 
-  type_ = GPUResource::kIndexBuffer;
+  type_ = GPUResource::kResourceType_IndexBuffer;
   id_ = suffer.resource_manager_.data_->number_of_index_buffers_;
   suffer.resource_manager_.data_->number_of_index_buffers_++;
 
@@ -253,7 +253,7 @@ Suffer::ResourceManager::IndexBuffer::IndexBuffer() {
 
 Suffer::ResourceManager::Texture::Texture(){
 
-  type_ = GPUResource::kTexture;
+  type_ = GPUResource::kResourceType_Texture;
   id_ = suffer.resource_manager_.data_->number_of_textures_;
   suffer.resource_manager_.data_->number_of_textures_++;
   suffer.resource_manager_.data_->internal_textures_[id_].wrap_s_ = kTextureWrap_Repeat;
@@ -331,7 +331,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
     internal_index_buffers_[number_of_index_buffers_].version_++;
     internal_vertex_buffers_[number_of_vertex_buffers_].version_++;
 
-    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
+    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = VertexBuffer::kVertexFormat_3P_3N_2UV;
 
     internal_index_buffers_[number_of_index_buffers_].id_handle_ = 0;
     internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 0;
@@ -345,10 +345,10 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
   {
     float quad[] = {
         // Positions             Normals            UV's
-        0.5f, -0.5f, -1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
-        0.5f,  0.5f, -1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
-        -0.5f, -0.5f, -1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
+        -1.0f,  -1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
+        -1.0f,   1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+        1.0f,  1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+        1.0f, -1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
     };
 
     Array<u16> quad_indices;
@@ -372,7 +372,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
     internal_index_buffers_[number_of_index_buffers_].version_++;
     internal_vertex_buffers_[number_of_vertex_buffers_].version_++;
 
-    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
+    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = VertexBuffer::kVertexFormat_3P_3N_2UV;
 
     internal_index_buffers_[number_of_index_buffers_].id_handle_ = 1;
     internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 1;
@@ -473,7 +473,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
     int index = 0;
     int radius = 1.0f;
 
-    vertex_buffer::Vertex sphere_vertices[(number_revolutions * number_points)];
+    VertexBuffer::Vertex sphere_vertices[(number_revolutions * number_points)];
 
     for (int i = 0; i < number_points; ++i) {
 
@@ -495,7 +495,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
         uv.x_ = (float)j / number_revolutions;
         uv.y_ = (float)i / number_points;
 
-        sphere_vertices[(i * number_revolutions + j)] = vertex_buffer::Vertex(
+        sphere_vertices[(i * number_revolutions + j)] = VertexBuffer::Vertex(
           sphere_points[i * number_revolutions + j].x_,
           sphere_points[i * number_revolutions + j].y_,
           sphere_points[i * number_revolutions + j].z_,
@@ -537,7 +537,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
     internal_index_buffers_[number_of_index_buffers_].id_handle_ = 3;
     internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 3;
 
-    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
+    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = VertexBuffer::kVertexFormat_3P_3N_2UV;
 
     ++number_of_index_buffers_;
     ++number_of_vertex_buffers_;
@@ -561,8 +561,10 @@ void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
 void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   
   // Increase the number if you create a new one
-  internal_materials_.alloc(2);
+  internal_materials_.alloc(3);
   number_of_materials_ = 0;
+
+  // To create a new material define the shaders in internal_shaders.h
 
   // -------------------------- DefaultMaterial ---------------------------- //
 
@@ -579,13 +581,12 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
 
   // -------------------------- DefaultMaterial ---------------------------- //
 
-  // ---------------------------- NewMaterial ------------------------------ //
+  // --------------------------- UnlitMaterial ----------------------------- //
   
   {
   
     internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
   
-    // To create a new material define the shaders in internal_shaders.h
     internal_materials_[number_of_materials_].vertex_shader_ = Suffer::unlit_vertex_shader;
     internal_materials_[number_of_materials_].fragment_shader_ = Suffer::unlit_fragment_shader;
   
@@ -593,7 +594,32 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   
   }
 
-  // ---------------------------- NewMaterial ------------------------------ //
+  // --------------------------- UnlitMaterial ----------------------------- //
+
+  // ---------------------- RenderToTextureMaterial ------------------------ //
+
+  {
+
+    internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
+
+    internal_materials_[number_of_materials_].vertex_shader_ = Suffer::render_to_texture_vertex_;
+    internal_materials_[number_of_materials_].fragment_shader_ = Suffer::render_to_texture_fragment_;
+
+    number_of_materials_++;
+
+  }
+
+  // ---------------------- RenderToTextureMaterial ------------------------ //
+
+}
+
+// ------------------------------------------------------------------------- //
+
+void Suffer::ResourceManager::ResourceData::InitInternalFrameBuffers(){
+
+  internal_frame_buffers_.alloc(MAX_FRAMEBUFFERS);
+
+  number_of_frame_buffers_ = 0;
 
 }
 
@@ -635,3 +661,52 @@ Suffer::ResourceManager::IndexBuffer::Triangle::Triangle(u16 index1, u16 index2,
 }
 
 // ------------------------------------------------------------------------- //
+
+Suffer::ResourceManager::FrameBuffer::FrameBuffer(){
+
+  type_ = GPUResource::kResourceType_FrameBuffer;
+  id_ = suffer.resource_manager_.data_->number_of_frame_buffers_;
+  suffer.resource_manager_.data_->number_of_frame_buffers_++;
+
+}
+
+// ------------------------------------------------------------------------- //
+
+Suffer::ResourceManager::FrameBuffer::~FrameBuffer()
+{
+
+}
+
+// ------------------------------------------------------------------------- //
+
+void Suffer::ResourceManager::FrameBuffer::InitFrameBuffer(u16 width, u16 height){
+
+  suffer.resource_manager_.data_->internal_frame_buffers_[id_].height_ = height;
+  suffer.resource_manager_.data_->internal_frame_buffers_[id_].width_ = width;
+
+  // Color
+  Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_color_texture;
+  frame_buffer_color_texture.alloc();
+
+  suffer.resource_manager_.data_->internal_frame_buffers_[id_].color_texture_id_ = frame_buffer_color_texture->id_;
+  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].color_texture_id_].width_ = width;
+  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].color_texture_id_].height_ = height;
+  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].color_texture_id_].number_channels_ = 3;
+  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].color_texture_id_].version_++;
+  
+  // Depth
+  Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_depth_texture;
+  frame_buffer_depth_texture.alloc();
+
+  suffer.resource_manager_.data_->internal_frame_buffers_[id_].depth_texture_id_ = frame_buffer_depth_texture->id_;
+  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].depth_texture_id_].width_ = width;
+  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].depth_texture_id_].height_ = height;
+  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].depth_texture_id_].number_channels_ = 1;
+  suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_].depth_texture_id_].version_++;
+
+  suffer.resource_manager_.data_->internal_frame_buffers_[id_].version_++;
+
+}
+
+// ------------------------------------------------------------------------- //
+

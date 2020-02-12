@@ -3,6 +3,7 @@
 #include <window.h>
 #include <GL/glew.h>
 #include <glfw3.h>
+#include "common_definitions.h"
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -66,6 +67,8 @@ bool Suffer::Window::Open(int width, int height){
   // TODO: Substitute this by our methods
 	ImGui_ImplGlfw_InitForOpenGL(glfwGetCurrentContext(), true);
 	ImGui_ImplOpenGL3_Init("#version 130");
+
+  glfwSetCursorPos(glfwGetCurrentContext(), WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.5f);
 
 	return true;
 

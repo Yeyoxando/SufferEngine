@@ -4,6 +4,7 @@
  * Interface Source
  */
 
+#include "internal_resource_manager.h"
 #include <imgui.h>
 #include <scene.h>
 #include <glfw3.h>
@@ -67,7 +68,7 @@ Suffer::Interface::Interface(){
 
 	// Init attributes
 	options_window_ = false;
-	style_ = kRed;
+	style_ = kInterfaceStyle_Red;
 
 
 
@@ -105,7 +106,7 @@ void Suffer::Interface::Init(){
 #endif
 
 	ChangeEditorStyle();
-	style_ = kRayTeak;
+	style_ = kInterfaceStyle_RayTeak;
 	ChangeEditorStyle();
 
 }
@@ -264,7 +265,8 @@ void  Suffer::Interface::CreateDock(bool* p_open){
 	if(is_hierarchy_opened_) Hierarchy(SufferManager::instance().GetCurrentScene());
 	if(is_project_window_opened_) Project();
 	if(is_log_opened_) Log();
-	if (is_game_window_opened_) Game(0);
+  s32 id = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[suffer.render_manager_.frame_buffer_id_].depth_texture_id_].current_texture_id_;
+	if (is_game_window_opened_) Game(id);
 	
 
 	ImGui::End();
@@ -293,11 +295,11 @@ void  Suffer::Interface::ChangeEditorStyle(){
 	#define COL(v, b, n) ImVec4(v / 255.0f, b / 255.0f, n / 255.0f, 100.0f);
 
 	switch (style_){
-		case Interface::kDefault: {
+		case Interface::kInterfaceStyle_Default: {
 			ImGui::StyleColorsDark();
 			break;
 		}
-		case Interface::kDark: {
+		case Interface::kInterfaceStyle_Dark: {
 
 			new_style_.FrameBorderSize = 1.0f;
 			new_style_.FramePadding = ImVec2(4.0f, 2.0f);
@@ -366,7 +368,7 @@ void  Suffer::Interface::ChangeEditorStyle(){
 
 			break;
 		}
-		case Interface::kRed: {
+		case Interface::kInterfaceStyle_Red: {
 
 			new_style_.FrameBorderSize = 1.0f;
 			new_style_.FramePadding = ImVec2(4.0f, 2.0f);
@@ -435,11 +437,11 @@ void  Suffer::Interface::ChangeEditorStyle(){
 
 			break;
 		}
-		case Interface::kWhite: {
+		case Interface::kInterfaceStyle_White: {
 			ImGui::StyleColorsLight();
 			break;
 		}
-		case Interface::kRayTeak: {
+		case Interface::kInterfaceStyle_RayTeak: {
 
 			new_style_.WindowPadding = ImVec2(15, 15);
 			new_style_.WindowRounding = 12.0f;
@@ -500,9 +502,7 @@ void  Suffer::Interface::ChangeEditorStyle(){
 
 			break;
 		}
-		case Interface::kCommodore64:
-			break;
-		case Interface::kNONE:
+		case Interface::kInterfaceStyle_Commodore64:
 			break;
 		default:
 			break;
@@ -669,7 +669,7 @@ void  Suffer::Interface::Audio(Audio3D* sound){
 
 // --------------------------------------------------- //
 
-void  Suffer::Interface::Game(s8 tex){
+void  Suffer::Interface::Game(s32 tex){
 
 #ifdef ASSERT
 	assert(tex >= 0 && "Texture ID not valid.\n");

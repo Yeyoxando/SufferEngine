@@ -12,6 +12,24 @@ struct Suffer::ResourceManager::ResourceData {
   ResourceData();
   ~ResourceData();
 
+  struct InternalFrameBuffer {
+    
+    InternalFrameBuffer() { id_handle_ = -1; version_ = 0; gpu_version_ = 0; };
+    ~InternalFrameBuffer() {}
+
+    s32 id_handle_;
+    u32 version_;
+    u32 gpu_version_;
+    GLuint current_gl_framebuffer_;
+
+    u16 width_;
+    u16 height_;
+
+    s32 color_texture_id_;
+    s32 depth_texture_id_;
+
+  };
+
   struct InternalVertexBuffer {
 
     InternalVertexBuffer() { id_handle_ = -1; version_ = 0; gpu_version_ = 0; };
@@ -79,15 +97,18 @@ struct Suffer::ResourceManager::ResourceData {
   Array<InternalIndexBuffer> internal_index_buffers_;
   Array<InternalTexture> internal_textures_;
   Array<InternalMaterial> internal_materials_;
+  Array<InternalFrameBuffer> internal_frame_buffers_;
 
   u32 number_of_vertex_buffers_;
   u32 number_of_index_buffers_;
   u32 number_of_textures_;
   u32 number_of_materials_;
+  u32 number_of_frame_buffers_;
 
   void InitInternalBuffers();
   void InitInternalMaterials();
   void InitInternalTextures();
+  void InitInternalFrameBuffers();
 
 };
 

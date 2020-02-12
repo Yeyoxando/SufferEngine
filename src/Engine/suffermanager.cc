@@ -64,14 +64,15 @@ bool Suffer::SufferManager::Init(){
 
 	data_->wind_.Open(WINDOW_WIDTH, WINDOW_HEIGHT);
 	data_->interface_.Init();
-  data_->is_interface_active_ = false;
+  data_->is_interface_active_ = true;
 	data_->window_should_close_ = false;
 
 	//Subsystems init
   audio_manager_.StartUp();
-  render_manager_.StartUp();
   resource_manager_.StartUp();
+  render_manager_.StartUp();
   input_manager_.StartUp();
+  light_manager_.StartUp();
 
 	// Threads Allocation
 	logic_.alloc();
@@ -84,6 +85,9 @@ bool Suffer::SufferManager::Init(){
 
   render_system_.alloc();
   suffer.AddSystem(render_system_.get());
+
+  //debug_render_system_.alloc();
+  //suffer.AddSystem(debug_render_system_.get());
 
 	return true;
 
@@ -116,7 +120,7 @@ void Suffer::SufferManager::Input() {
 
   // Activate Interface
   if (input_manager_.IsKeyDown(InputManager::k_F2)) {
-      data_->is_interface_active_ = !data_->is_interface_active_;
+    data_->is_interface_active_ = !data_->is_interface_active_;
   }
 
   input_manager_.Update();
@@ -132,6 +136,7 @@ void Suffer::SufferManager::Run() {
   auto input_thread = [] { SufferManager::instance().Input(); };
 
   logic_->NewTask(update_thread);
+  logic_->WaitFor(logic_.get());
 
 	while (!data_->window_should_close_) {
 
@@ -150,6 +155,7 @@ void Suffer::SufferManager::Run() {
 		Draw();
     
     logic_->WaitFor(logic_.get());
+    input_->WaitFor(input_.get());
 
 		data_->delta_time_ = (data_->current_time_ - data_->previous_time_) * 0.0001f;
 		data_->previous_time_ = data_->current_time_;
@@ -184,7 +190,6 @@ void Suffer::SufferManager::PrepareAudio() {
 
 void Suffer::SufferManager::Step(){
 
-  static bool do_once = false;
 	data_->scene_context_->Step(data_->delta_time_);
 
   // Systems
@@ -211,6 +216,7 @@ bool Suffer::SufferManager::Finish(){
 	render_manager_.ShutDown();
   audio_manager_.ShutDown();
   input_manager_.ShutDown();
+  light_manager_.ShutDown();
 
   data_->wind_.Close();
 

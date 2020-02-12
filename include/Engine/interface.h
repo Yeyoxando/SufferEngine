@@ -63,19 +63,19 @@ namespace Suffer {
      * @brief: render the texture in the Game window in the interface
      * @param: the texture that will be rendered
      */
-		void Game(s8 tex);
+		void Game(s32 tex);
 
 		// Windows that can be opened
 		void Options();
 
 		enum InterfaceStyle {
-			kDefault = 0,
-			kDark,
-			kRed,
-			kWhite,
-			kRayTeak,
-			kCommodore64,
-			kNONE = 20
+      kInterfaceStyle_Invalid = -1,
+      kInterfaceStyle_Default,
+      kInterfaceStyle_Dark,
+      kInterfaceStyle_Red,
+      kInterfaceStyle_White,
+      kInterfaceStyle_RayTeak,
+      kInterfaceStyle_Commodore64,
 		};
 
 		// Style Customization

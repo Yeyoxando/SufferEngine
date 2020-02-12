@@ -9,7 +9,7 @@
 Suffer::GeometryComponent::GeometryComponent() : Component(Component::kComponentKind_Geometry){
 
   mode_ = kDrawMode_Triangles;
-  shape_ = kBasicShapes_NONE;
+  shape_ = kBasicShapes_Invalid;
 
 }
 
