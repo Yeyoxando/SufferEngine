@@ -11,6 +11,7 @@
 #include "scene.h"
 #include "audio_commands.h"
 #include "internal_suffermanager.h"
+#include "internal_resource_manager.h"
 #include <string>
 #include "system_render.h"
 #include "system_transform.h"
@@ -242,9 +243,13 @@ mathmorra::Vector2 Suffer::SufferManager::GetMousePosition(){
 
 }
 
+// --------------------------------------------------------------//
+
 void Suffer::SufferManager::SetCursorPosition(mathmorra::Vector2 newPosition){
     glfwSetCursorPos(glfwGetCurrentContext(), newPosition.x_, newPosition.y_);
 }
+
+// --------------------------------------------------------------//
 
 mathmorra::Vector2 Suffer::SufferManager::GetWindowSize(){
   mathmorra::Vector2 ratio = mathmorra::Vector2(data_->wind_.data_->width_, data_->wind_.data_->height_);
@@ -254,8 +259,12 @@ mathmorra::Vector2 Suffer::SufferManager::GetWindowSize(){
 // --------------------------------------------------------------//
 
 void Suffer::SufferManager::SetWindowSize(int width, int height){
+  
   data_->wind_.data_->width_ = width;
   data_->wind_.data_->height_ = height;
+
+  resource_manager_.data_->RefreshFrameBuffers();
+
 }
 
 // --------------------------------------------------------------//
