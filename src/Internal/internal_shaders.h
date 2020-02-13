@@ -8,6 +8,46 @@ namespace Suffer {
 
   // TODO: Implement this fucking shit <-- John Carmack please
   static const char* harakiri_shader = R"VHARAKIRI(
+  struct DirectionalLight{
+      5 vec4[20]
+      vec3 direction;
+    
+      vec3 specular;
+      vec3 diffuse;
+      vec3 ambient;
+      vec3 color;
+
+  };
+
+  struct PointLight{
+      6 vec4[24]
+      vec3 position;
+      vec3 specular;
+      vec3 diffuse;
+      vec3 ambient;
+      vec3 color;
+      float constant;
+      float linear;
+      float quadratic;
+  };
+
+  struct SpotLight{
+      8 vec4[32]
+      vec3 direction;
+      vec3 position;
+      float cutOff;
+      float outerCutOff;
+
+      vec3 specular;
+      vec3 diffuse;
+      vec3 ambient;
+      vec3 color;
+
+      float constant;
+      float linear;
+      float quadratic;
+
+  };
 
   vec3 CreateAmbientLight(float intensity, vec3 color) {
 
@@ -270,7 +310,7 @@ namespace Suffer {
     layout(location = 1) in vec3 a_normal;
     layout(location = 2) in vec2 a_uvs;
     
-    uniform vec4 u_data[14];
+    uniform vec4 u_data[46];
 
     #define model0 u_data[0]
     #define model1 u_data[1]
@@ -316,9 +356,51 @@ namespace Suffer {
   )VUNLITSHADER";
 
   static const char* unlit_fragment_shader = R"FUNLITSHADER(
-  
     #version 330
+ 
+    struct DirectionalLight{
+      vec3 direction;
+    
+      vec3 specular;
+      vec3 diffuse;
+      vec3 ambient;
+      vec3 color;
 
+    };
+
+    struct PointLight{
+      vec3 position;
+
+      vec3 specular;
+      vec3 diffuse;
+      vec3 ambient;
+      vec3 color;
+
+      float constant;
+      float linear;
+      float quadratic;
+
+    };
+
+    struct SpotLight{
+      vec3 direction;
+      vec3 position;
+      float cutOff;
+      float outerCutOff;
+
+      vec3 specular;
+      vec3 diffuse;
+      vec3 ambient;
+      vec3 color;
+
+      float constant;
+      float linear;
+      float quadratic;
+
+    };
+
+    uniform vec4 u_data[46];
+    
     out vec4 fragColor;
 
     in vec4 color;
@@ -328,6 +410,66 @@ namespace Suffer {
 
     vec3 light_dir = vec3(0, 0, 1);
     vec3 light_color = vec3(1, 1, 1);
+
+    int num_directionals = 0;
+    int num_points = 0;
+    int num_spots = 0;
+
+    DirectionalLight directional_lights[4];
+    PointLight point_lights[4];
+    SpotLight spot_lights[4];
+
+    void CompoundLights(){
+      int offset = 0;
+      for(int i = 0; i < 4; ++i){
+        if(bool(u_data[14].a)){
+          switch(int(u_data[15 + (offset * i)].a)){
+            case 0:
+              DirectionalLight d_light;
+              d_light.direction = vec3(u_data[14 + (offset * i)].x, u_data[14 + (offset * i)].y, u_data[14 + (offset * i)].z);
+              d_light.color     = vec3(u_data[15 + (offset * i)].x, u_data[15 + (offset * i)].y, u_data[15 + (offset * i)].z);
+              d_light.ambient   = vec3(u_data[16 + (offset * i)].x, u_data[16 + (offset * i)].y, u_data[16 + (offset * i)].z);
+              d_light.diffuse   = vec3(u_data[17 + (offset * i)].x, u_data[17 + (offset * i)].y, u_data[17 + (offset * i)].z);
+              d_light.specular  = vec3(u_data[18 + (offset * i)].x, u_data[18 + (offset * i)].y, u_data[18 + (offset * i)].z);
+              directional_lights[num_directionals] = d_light;
+              num_directionals++;
+              offset += 5;
+              break;
+            case 1:
+              PointLight p_light;
+              p_light.position  = vec3(u_data[14 + (offset * i)].x, u_data[14 + (offset * i)].y, u_data[14 + (offset * i)].z);
+              p_light.color     = vec3(u_data[15 + (offset * i)].x, u_data[15 + (offset * i)].y, u_data[15 + (offset * i)].z);
+              p_light.ambient   = vec3(u_data[16 + (offset * i)].x, u_data[16 + (offset * i)].y, u_data[16 + (offset * i)].z);
+              p_light.diffuse   = vec3(u_data[17 + (offset * i)].x, u_data[17 + (offset * i)].y, u_data[17 + (offset * i)].z);
+              p_light.specular  = vec3(u_data[18 + (offset * i)].x, u_data[18 + (offset * i)].y, u_data[18 + (offset * i)].z);
+              p_light.constant  = u_data[19 + (offset * i)].x;
+              p_light.linear    = u_data[19 + (offset * i)].y;
+              p_light.quadratic = u_data[19 + (offset * i)].z;
+              point_lights[num_points] = p_light;
+              num_points++;
+              offset += 6;
+              break;
+            case 2:
+              SpotLight s_light;
+              s_light.direction = vec3(u_data[14 + (offset * i)].x, u_data[14 + (offset * i)].y, u_data[14 + (offset * i)].z);
+              s_light.position  = vec3(u_data[15 + (offset * i)].x, u_data[15 + (offset * i)].y, u_data[15 + (offset * i)].z);
+              s_light.color     = vec3(u_data[16 + (offset * i)].x, u_data[16 + (offset * i)].y, u_data[16 + (offset * i)].z);
+              s_light.ambient   = vec3(u_data[17 + (offset * i)].x, u_data[17 + (offset * i)].y, u_data[17 + (offset * i)].z);
+              s_light.diffuse   = vec3(u_data[18 + (offset * i)].x, u_data[18 + (offset * i)].y, u_data[18 + (offset * i)].z);
+              s_light.specular  = vec3(u_data[19 + (offset * i)].x, u_data[19 + (offset * i)].y, u_data[19 + (offset * i)].z);
+              s_light.constant  = u_data[20 + (offset * i)].x;
+              s_light.linear    = u_data[20 + (offset * i)].y;
+              s_light.quadratic = u_data[20 + (offset * i)].z;            
+              s_light.cutOff    = u_data[21 + (offset * i)].x;            
+              s_light.outerCutOff = u_data[21 + (offset * i)].y;            
+              spot_lights[num_spots] = s_light;
+              num_spots++;
+              offset += 8;
+              break;
+          }
+        }
+      }
+    }
 
     // --------------------------------------------------------------------- //
 
