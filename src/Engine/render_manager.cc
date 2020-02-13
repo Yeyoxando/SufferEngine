@@ -221,7 +221,7 @@ void Suffer::RenderManager::DoRender(){
         }
       
         glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
-        //glViewport()
+        glViewport(0, 0, suffer.GetWindowSize().x_, suffer.GetWindowSize().y_);
 
       }
 

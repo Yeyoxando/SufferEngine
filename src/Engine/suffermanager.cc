@@ -140,7 +140,7 @@ void Suffer::SufferManager::Run() {
   logic_->NewTask(update_thread);
   logic_->WaitFor(logic_.get());
 
-	while (!data_->window_should_close_) {
+	while (Running()) {
 
     // TODO: remove from here
     mouse_position_.x_ = input_manager_.MousePositionX();
@@ -265,6 +265,12 @@ void Suffer::SufferManager::SetWindowSize(int width, int height){
 
   resource_manager_.data_->RefreshFrameBuffers();
 
+}
+
+// --------------------------------------------------------------//
+
+bool Suffer::SufferManager::Running(){
+  return !glfwWindowShouldClose(glfwGetCurrentContext()) || !data_->window_should_close_;
 }
 
 // --------------------------------------------------------------//
