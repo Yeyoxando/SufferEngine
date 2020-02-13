@@ -67,6 +67,9 @@ namespace Suffer {
     mathmorra::Vector2 GetMousePosition();
     void SetCursorPosition(mathmorra::Vector2 newPosition);
 
+    mathmorra::Vector2 GetWindowSize();
+    void SetWindowSize(int width, int height);
+
 		// Subsystems
     AudioManager audio_manager_;
     InputManager input_manager_;

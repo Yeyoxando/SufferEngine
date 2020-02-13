@@ -266,7 +266,10 @@ void ErrorCallback(int error, const char* description){
 // --------------------------------------------------- //
 
 void WindowResizeCallback(GLFWwindow* window, int width, int height) {
-    // TODO: Fill this
+  
+  // TODO: Fill this
+  suffer.SetWindowSize(width, height);
+
 }
 
 // --------------------------------------------------- //

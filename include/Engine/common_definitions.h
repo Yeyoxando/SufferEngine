@@ -13,8 +13,8 @@
 
 //#define CUSTOM
 
-#define WINDOW_WIDTH  800
-#define WINDOW_HEIGHT 600
+//#define WINDOW_WIDTH  800
+//#define WINDOW_HEIGHT 600
 
 #define _MAIN_DIEGO_
 //#define _MAIN_PABLO_

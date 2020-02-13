@@ -14,6 +14,7 @@
 #include <string>
 #include "system_render.h"
 #include "system_transform.h"
+#include "internal_window.h"
 
 // --------------------------------------------------------------//
 
@@ -62,7 +63,7 @@ bool Suffer::SufferManager::Init(){
 
 	assert(data_ && "\n Data is null.");
 
-	data_->wind_.Open(WINDOW_WIDTH, WINDOW_HEIGHT);
+	data_->wind_.Open(800, 600);
 	data_->interface_.Init();
   data_->is_interface_active_ = true;
 	data_->window_should_close_ = false;
@@ -243,6 +244,18 @@ mathmorra::Vector2 Suffer::SufferManager::GetMousePosition(){
 
 void Suffer::SufferManager::SetCursorPosition(mathmorra::Vector2 newPosition){
     glfwSetCursorPos(glfwGetCurrentContext(), newPosition.x_, newPosition.y_);
+}
+
+mathmorra::Vector2 Suffer::SufferManager::GetWindowSize(){
+  mathmorra::Vector2 ratio = mathmorra::Vector2(data_->wind_.data_->width_, data_->wind_.data_->height_);
+  return ratio;
+}
+
+// --------------------------------------------------------------//
+
+void Suffer::SufferManager::SetWindowSize(int width, int height){
+  data_->wind_.data_->width_ = width;
+  data_->wind_.data_->height_ = height;
 }
 
 // --------------------------------------------------------------//

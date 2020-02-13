@@ -7,14 +7,7 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-
-// --------------------------------------------------------------//
-
-struct Suffer::Window::Data {
-
-  GLFWwindow* window_;
-
-};
+#include "internal_window.h"
 
 // --------------------------------------------------------------//
 
@@ -49,6 +42,10 @@ bool Suffer::Window::Open(int width, int height){
 	window_init = true;
 
 	data_->window_ = glfwCreateWindow(width, height, "Suffer Engine", NULL, NULL);
+
+  data_->width_ = width;
+  data_->height_ = height;
+
 	if (!data_->window_) return false;
 	glfwMakeContextCurrent(data_->window_);
 
@@ -68,7 +65,7 @@ bool Suffer::Window::Open(int width, int height){
 	ImGui_ImplGlfw_InitForOpenGL(glfwGetCurrentContext(), true);
 	ImGui_ImplOpenGL3_Init("#version 130");
 
-  glfwSetCursorPos(glfwGetCurrentContext(), WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.5f);
+  glfwSetCursorPos(glfwGetCurrentContext(), data_->width_ * 0.5f, data_->height_ * 0.5f);
 
 	return true;
 

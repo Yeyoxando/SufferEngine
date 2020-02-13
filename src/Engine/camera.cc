@@ -29,8 +29,8 @@ Suffer::Camera::Camera() {
   camera_target_ = { 0.0f, 0.0f, 1.0f };
   camera_position_ = { -1.5f, 0.0f, -30.0f };
 
-  last_cursor_position_.x_ = WINDOW_WIDTH * 0.5f;
-  last_cursor_position_.y_ = WINDOW_HEIGHT  * 0.5f;
+  last_cursor_position_.x_ = 800.0f * 0.5f;
+  last_cursor_position_.y_ = 600.0f * 0.5f;
 
   fps_movement_ = false;
 
@@ -245,17 +245,17 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera) {
 
   //ROTATE Y
   if (suffer.input_manager_.IsKeyPressed(InputManager::k_Left)) {
-    camera_target_ = mathmorra::Matrix4::RotateY(0.004f) * camera_target_;
+    camera_target_ = mathmorra::Matrix4::RotateY(0.008f) * camera_target_;
   }
   if (suffer.input_manager_.IsKeyPressed(InputManager::k_Right)) {
-    camera_target_ = mathmorra::Matrix4::RotateY(-0.004f) * camera_target_;
+    camera_target_ = mathmorra::Matrix4::RotateY(-0.008f) * camera_target_;
   }
 
   if (suffer.input_manager_.IsKeyPressed(InputManager::k_Up)) {
-    camera_target_ = mathmorra::Matrix4::RotateX(-0.004f) * camera_target_;
+    camera_target_ = mathmorra::Matrix4::RotateX(-0.008f) * camera_target_;
   }
   if (suffer.input_manager_.IsKeyPressed(InputManager::k_Down)) {
-    camera_target_ = mathmorra::Matrix4::RotateX(0.004f) * camera_target_;
+    camera_target_ = mathmorra::Matrix4::RotateX(0.008f) * camera_target_;
   }
 
   // Mouse Stuff
@@ -320,7 +320,7 @@ void Suffer::Camera::Update() {
     speed_ = 0.5f;
   }
 
-  SetupPerspective(field_of_view_, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 5.0f, 50.0f);
+  SetupPerspective(field_of_view_, (float)suffer.GetWindowSize().x_ / (float)suffer.GetWindowSize().y_, 5.0f, 50.0f);
   view_matrix_ = mathmorra::Matrix4::LookAt(camera_position_, camera_position_ + camera_target_, camera_up_);
 
 }
