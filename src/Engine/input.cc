@@ -274,6 +274,12 @@ void WindowResizeCallback(GLFWwindow* window, int width, int height) {
 
 // --------------------------------------------------- //
 
+void WindowCloseCallback(GLFWwindow* window){
+  glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
+// --------------------------------------------------- //
+
 void Suffer::InputManager::StartUp(){
 
     data_ = new Data();
@@ -281,10 +287,12 @@ void Suffer::InputManager::StartUp(){
     
     // Set callbacks
     glfwSetInputMode(glfwGetCurrentContext(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
     glfwSetKeyCallback(glfwGetCurrentContext(), KeyCallback);
     glfwSetCursorPosCallback(glfwGetCurrentContext(), MouseCallback);
     glfwSetScrollCallback(glfwGetCurrentContext(), ScrollCallback);
     glfwSetErrorCallback(ErrorCallback);
+    glfwSetWindowCloseCallback(glfwGetCurrentContext(), WindowCloseCallback);
     glfwSetWindowSizeCallback(glfwGetCurrentContext(), WindowResizeCallback);
 
 }

@@ -70,6 +70,8 @@ namespace Suffer {
     mathmorra::Vector2 GetWindowSize();
     void SetWindowSize(int width, int height);
 
+    bool Running();
+
 		// Subsystems
     AudioManager audio_manager_;
     InputManager input_manager_;
