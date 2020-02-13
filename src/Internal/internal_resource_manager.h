@@ -109,6 +109,7 @@ struct Suffer::ResourceManager::ResourceData {
   void InitInternalMaterials();
   void InitInternalTextures();
   void InitInternalFrameBuffers();
+  void RefreshFrameBuffers();
 
 };
 

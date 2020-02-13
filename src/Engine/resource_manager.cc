@@ -625,6 +625,13 @@ void Suffer::ResourceManager::ResourceData::InitInternalFrameBuffers(){
 
 // ------------------------------------------------------------------------- //
 
+void Suffer::ResourceManager::ResourceData::RefreshFrameBuffers() {
+  
+}
+
+
+// ------------------------------------------------------------------------- //
+
 Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(float vertex_x, float vertex_y, float vertex_z){
 
   vertices_ = mathmorra::Vector3(vertex_x, vertex_y, vertex_z);
