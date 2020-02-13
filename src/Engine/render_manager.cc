@@ -116,8 +116,9 @@ void Suffer::RenderManager::DoRender(){
         if (suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ == 0) {
           glGenFramebuffers(1, &suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
         }
-
-        if (suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ < suffer.resource_manager_.data_->internal_vertex_buffers_[id_frame_buffer].version_) {
+        printf("\nGPU %d", suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_);
+        printf("\nnormal %d", suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].version_);
+        if (suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ < suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].version_) {
 
           glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
 

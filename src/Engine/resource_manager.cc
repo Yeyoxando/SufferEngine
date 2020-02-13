@@ -627,8 +627,32 @@ void Suffer::ResourceManager::ResourceData::InitInternalFrameBuffers(){
 
 void Suffer::ResourceManager::ResourceData::RefreshFrameBuffers() {
   
-}
+  for (u32 i = 0; i < number_of_frame_buffers_; ++i) {
+    internal_frame_buffers_[i].width_ = suffer.GetWindowSize().x_;
+    internal_frame_buffers_[i].height_ = suffer.GetWindowSize().y_;
 
+    // Color
+    //Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_color_texture;
+    //frame_buffer_color_texture.alloc();
+
+    internal_textures_[internal_frame_buffers_[i].color_texture_id_].width_ = suffer.GetWindowSize().x_;
+    internal_textures_[internal_frame_buffers_[i].color_texture_id_].height_ = suffer.GetWindowSize().y_;
+    internal_textures_[internal_frame_buffers_[i].color_texture_id_].number_channels_ = 3;
+    internal_textures_[internal_frame_buffers_[i].color_texture_id_].version_++;
+
+    // Depth
+   //Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_depth_texture;
+   //frame_buffer_depth_texture.alloc();
+
+    internal_textures_[internal_frame_buffers_[i].depth_texture_id_].width_ = suffer.GetWindowSize().x_;
+    internal_textures_[internal_frame_buffers_[i].depth_texture_id_].height_ = suffer.GetWindowSize().y_;
+    internal_textures_[internal_frame_buffers_[i].depth_texture_id_].number_channels_ = 1;
+    internal_textures_[internal_frame_buffers_[i].depth_texture_id_].version_++;
+
+    suffer.resource_manager_.data_->internal_frame_buffers_[i].version_++;
+  }
+
+}
 
 // ------------------------------------------------------------------------- //
 
