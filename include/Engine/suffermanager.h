@@ -14,6 +14,7 @@
 #include "input.h"
 #include "system_transform.h"
 #include "system_render.h"
+#include "system_script.h"
 
 namespace Suffer {
 
@@ -118,6 +119,7 @@ namespace Suffer {
     
     Suffer::ref_ptr<Suffer::SystemRender> render_system_;
     Suffer::ref_ptr<Suffer::SystemTransform> transform_system_;
+    Suffer::ref_ptr<Suffer::SystemScript> script_system_;
 
 		struct Data;
 		Data* data_;

@@ -1,0 +1,7 @@
+function Start()
+  print "Starting SPHERE from LUA!"
+end
+
+function Update()
+  print "Updating SPHERE from LUA!"
+end

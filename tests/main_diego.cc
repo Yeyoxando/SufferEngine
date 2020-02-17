@@ -15,6 +15,7 @@
 #include "system_render.h"
 #include "component_geometry.h"
 #include "component_material.h"
+#include "component_script.h"
 
 // --------------------------------------------------------------//
 
@@ -119,8 +120,19 @@ int main(int argc, char* argv[]) {
   transform_component_sphere_.alloc();
   go_sphere->AddComponent(transform_component_sphere_.get());
 
-  go_sphere->StartUpLUA("../../../src/lua/lua_code_sphere.txt");
-  go_cube->StartUpLUA("../../../src/lua/lua_code_cube.txt");
+
+  // SCRIPTING TESTS
+
+  Suffer::ref_ptr<Suffer::ScriptComponent> script_component_;
+  script_component_.alloc();
+  script_component_->AttachScript("../../../src/lua/lua_test_update.txt");
+  go_sphere->AddComponent(script_component_.get());
+
+  Suffer::ref_ptr<Suffer::ScriptComponent> script_component_cube;
+  script_component_cube.alloc();
+  script_component_cube->AttachScript("../../../src/lua/lua_test_update_cube.txt");
+  go_cube->AddComponent(script_component_cube.get());
+  //go_sphere->StartUpLUA("../../../src/lua/lua_test_update.txt");
 
   Suffer::ref_ptr<Suffer::Audio3D> audio_component_;
   audio_component_.alloc();

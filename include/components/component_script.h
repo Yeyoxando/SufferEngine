@@ -26,11 +26,13 @@ namespace Suffer {
     ScriptComponent(const ScriptComponent&) = delete;
 
     void Update();
+    void Start();
 
     struct ScriptData;
     ScriptData* data_;
 
     // TODO: test
+    bool initialized_;
     bool script_attached_;
 
   };

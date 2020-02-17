@@ -1,0 +1,7 @@
+function Start()
+  print "Starting CUBE from LUA!"
+end
+
+function Update()
+  print "Updating CUBE from LUA!"
+end

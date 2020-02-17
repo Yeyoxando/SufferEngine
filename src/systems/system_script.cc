@@ -6,6 +6,7 @@
 
 #include "component_script.h"
 #include "system_script.h"
+//#include "internal_component_script.h"
 
 // --------------------------------------------------- //
 
@@ -26,6 +27,12 @@ void Suffer::SystemScript::Execute(GameObject* go){
   if (!script->script_attached_) {
     printf("ERROR: the GameObject has not a script attached.\n");
     abort();
+  }
+
+
+  // TODO: we have to research about that.
+  if (!script->initialized_) {
+    script->Start();
   }
 
   script->Update();
