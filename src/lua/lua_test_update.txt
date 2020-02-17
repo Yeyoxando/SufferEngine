@@ -4,4 +4,5 @@ end
 
 function Update()
   print "Updating SPHERE from LUA!"
+  Rotate(0.0, 10.0, 0.0)
 end

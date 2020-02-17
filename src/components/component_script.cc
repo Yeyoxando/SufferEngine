@@ -19,7 +19,7 @@ Suffer::ScriptComponent::ScriptComponent() : Component(Component::kComponentKind
 
 // --------------------------------------------------- //
 
-void Suffer::ScriptComponent::AttachScript(const char* script_path){
+void Suffer::ScriptComponent::AttachScript(GameObject* go, char* script_path){
 
   assert(script_path != nullptr && "Invalid script");
   data_->state_ = luaL_newstate();
@@ -31,11 +31,11 @@ void Suffer::ScriptComponent::AttachScript(const char* script_path){
   //lua_pushcfunction(data_->state_, data_->lua_Update);    // +1
   //lua_setglobal(data_->state_, "Update");                 // -1
 
-  //lua_pushcfunction(data_->state_, data_->lua_Start); // +1
-  //lua_setglobal(data_->state_, "Start");              // -1
+  lua_pushcfunction(data_->state_, data_->lua_Rotate); // +1
+  lua_setglobal(data_->state_, "Rotate");              // -1
   
   lua_pushstring(data_->state_, "THIS");
-  lua_pushlightuserdata(data_->state_, this);
+  lua_pushlightuserdata(data_->state_, go);
   lua_settable(data_->state_, LUA_REGISTRYINDEX);
   
   //data_->reference = data_->GetReference(data_->state_);
@@ -66,6 +66,7 @@ void Suffer::ScriptComponent::Start(){
 
   data_->lua_Start(data_->state_);
   initialized_ = true;
+  data_->go_reference_ = reference_;
 
 }
 

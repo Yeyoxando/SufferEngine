@@ -33,6 +33,7 @@ void Suffer::SystemScript::Execute(GameObject* go){
   // TODO: we have to research about that.
   if (!script->initialized_) {
     script->Start();
+    script->reference_ = go;
   }
 
   script->Update();

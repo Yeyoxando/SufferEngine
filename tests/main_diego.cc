@@ -125,12 +125,12 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::ScriptComponent> script_component_;
   script_component_.alloc();
-  script_component_->AttachScript("../../../src/lua/lua_test_update.txt");
+  script_component_->AttachScript(go_sphere.get(), "../../../src/lua/lua_test_update.txt");
   go_sphere->AddComponent(script_component_.get());
 
   Suffer::ref_ptr<Suffer::ScriptComponent> script_component_cube;
   script_component_cube.alloc();
-  script_component_cube->AttachScript("../../../src/lua/lua_test_update_cube.txt");
+  script_component_cube->AttachScript(go_cube.get(), "../../../src/lua/lua_test_update_cube.txt");
   go_cube->AddComponent(script_component_cube.get());
   //go_sphere->StartUpLUA("../../../src/lua/lua_test_update.txt");
 

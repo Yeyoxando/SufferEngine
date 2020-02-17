@@ -8,6 +8,7 @@
 #define __COMPONENT_SCRIPT_H__
 
 #include "component.h"
+#include "game_object.h"
 
 namespace Suffer {
 
@@ -17,7 +18,7 @@ namespace Suffer {
   public:
     ScriptComponent();
 
-    void AttachScript(const char* script_path);
+    void AttachScript(GameObject* go, char* script_path);
 
   protected:
     virtual ~ScriptComponent();
@@ -34,6 +35,7 @@ namespace Suffer {
     // TODO: test
     bool initialized_;
     bool script_attached_;
+    GameObject* reference_;
 
   };
 
