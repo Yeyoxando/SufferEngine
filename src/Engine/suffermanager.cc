@@ -270,7 +270,9 @@ void Suffer::SufferManager::SetWindowSize(int width, int height){
 // --------------------------------------------------------------//
 
 bool Suffer::SufferManager::Running(){
-  return !glfwWindowShouldClose(glfwGetCurrentContext()) || !data_->window_should_close_;
+  if (data_->window_should_close_) return false;
+  if (glfwWindowShouldClose(glfwGetCurrentContext())) return false;
+  return true;
 }
 
 // --------------------------------------------------------------//
