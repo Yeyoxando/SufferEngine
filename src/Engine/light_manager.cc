@@ -38,7 +38,7 @@ void Suffer::LightManager::ShutDown(){
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetActive(bool active){
+void Suffer::LightManager::DirectionalLight::SetActive(bool active){
 
   active_ = active;
 
@@ -46,7 +46,7 @@ void Suffer::LightManager::Light::SetActive(bool active){
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetIntensity(float new_intensity){
+void Suffer::LightManager::DirectionalLight::SetIntensity(float new_intensity){
 
   intensity_ = new_intensity;
 
@@ -54,7 +54,7 @@ void Suffer::LightManager::Light::SetIntensity(float new_intensity){
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetColor(float* new_color) {
+void Suffer::LightManager::DirectionalLight::SetColor(float* new_color) {
 
   color_.x_ = new_color[0];
   color_.y_ = new_color[1];
@@ -64,7 +64,7 @@ void Suffer::LightManager::Light::SetColor(float* new_color) {
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetColor(mathmorra::Vector3 new_color) {
+void Suffer::LightManager::DirectionalLight::SetColor(mathmorra::Vector3 new_color) {
 
   color_.x_ = new_color.x_;
   color_.y_ = new_color.y_;
@@ -74,7 +74,7 @@ void Suffer::LightManager::Light::SetColor(mathmorra::Vector3 new_color) {
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetColor(float r, float g, float b) {
+void Suffer::LightManager::DirectionalLight::SetColor(float r, float g, float b) {
 
   color_.x_ = r;
   color_.y_ = g;
@@ -84,7 +84,7 @@ void Suffer::LightManager::Light::SetColor(float r, float g, float b) {
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetPosition(float* new_position) {
+void Suffer::LightManager::DirectionalLight::SetPosition(float* new_position) {
 
   position_.x_ = new_position[0];
   position_.y_ = new_position[1];
@@ -94,7 +94,7 @@ void Suffer::LightManager::Light::SetPosition(float* new_position) {
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetPosition(mathmorra::Vector3 new_position) {
+void Suffer::LightManager::DirectionalLight::SetPosition(mathmorra::Vector3 new_position) {
 
   position_.x_ = new_position.x_;
   position_.y_ = new_position.y_;
@@ -104,7 +104,7 @@ void Suffer::LightManager::Light::SetPosition(mathmorra::Vector3 new_position) {
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetPosition(float x, float y, float z) {
+void Suffer::LightManager::DirectionalLight::SetPosition(float x, float y, float z) {
 
   position_.x_ = x;
   position_.y_ = y;
@@ -114,7 +114,7 @@ void Suffer::LightManager::Light::SetPosition(float x, float y, float z) {
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetDirection(float* new_direction){
+void Suffer::LightManager::DirectionalLight::SetDirection(float* new_direction){
 
   direction_.x_ = new_direction[0];
   direction_.y_ = new_direction[1];
@@ -124,7 +124,7 @@ void Suffer::LightManager::Light::SetDirection(float* new_direction){
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetDirection(mathmorra::Vector3 new_direction) {
+void Suffer::LightManager::DirectionalLight::SetDirection(mathmorra::Vector3 new_direction) {
 
   direction_.x_ = new_direction.x_;
   direction_.y_ = new_direction.y_;
@@ -134,7 +134,7 @@ void Suffer::LightManager::Light::SetDirection(mathmorra::Vector3 new_direction)
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetDirection(float x, float y, float z) {
+void Suffer::LightManager::DirectionalLight::SetDirection(float x, float y, float z) {
 
   direction_.x_ = x;
   direction_.y_ = y;
@@ -144,7 +144,7 @@ void Suffer::LightManager::Light::SetDirection(float x, float y, float z) {
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetAmbient(float* new_ambient) {
+void Suffer::LightManager::DirectionalLight::SetAmbient(float* new_ambient) {
 
   ambient_.x_ = new_ambient[0];
   ambient_.y_ = new_ambient[1];
@@ -154,7 +154,7 @@ void Suffer::LightManager::Light::SetAmbient(float* new_ambient) {
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetAmbient(mathmorra::Vector3 new_ambient) {
+void Suffer::LightManager::DirectionalLight::SetAmbient(mathmorra::Vector3 new_ambient) {
 
   ambient_.x_ = new_ambient.x_;
   ambient_.y_ = new_ambient.y_;
@@ -164,7 +164,7 @@ void Suffer::LightManager::Light::SetAmbient(mathmorra::Vector3 new_ambient) {
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetAmbient(float x, float y, float z) {
+void Suffer::LightManager::DirectionalLight::SetAmbient(float x, float y, float z) {
 
   ambient_.x_ = x;
   ambient_.y_ = y;
@@ -174,7 +174,7 @@ void Suffer::LightManager::Light::SetAmbient(float x, float y, float z) {
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetDiffuse(float* new_diffuse){
+void Suffer::LightManager::DirectionalLight::SetDiffuse(float* new_diffuse){
 
   diffuse_.x_ = new_diffuse[0];
   diffuse_.y_ = new_diffuse[1];
@@ -184,7 +184,7 @@ void Suffer::LightManager::Light::SetDiffuse(float* new_diffuse){
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetDiffuse(mathmorra::Vector3 new_diffuse) {
+void Suffer::LightManager::DirectionalLight::SetDiffuse(mathmorra::Vector3 new_diffuse) {
 
   diffuse_.x_ = new_diffuse.x_;
   diffuse_.y_ = new_diffuse.y_;
@@ -194,7 +194,7 @@ void Suffer::LightManager::Light::SetDiffuse(mathmorra::Vector3 new_diffuse) {
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetDiffuse(float x, float y, float z) {
+void Suffer::LightManager::DirectionalLight::SetDiffuse(float x, float y, float z) {
 
   diffuse_.x_ = x;
   diffuse_.y_ = y;
@@ -204,7 +204,7 @@ void Suffer::LightManager::Light::SetDiffuse(float x, float y, float z) {
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetSpecular(float* new_specular){
+void Suffer::LightManager::DirectionalLight::SetSpecular(float* new_specular){
 
   specular_.x_ = new_specular[0];
   specular_.y_ = new_specular[1];
@@ -214,7 +214,7 @@ void Suffer::LightManager::Light::SetSpecular(float* new_specular){
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetSpecular(mathmorra::Vector3 new_specular) {
+void Suffer::LightManager::DirectionalLight::SetSpecular(mathmorra::Vector3 new_specular) {
 
   specular_.x_ = new_specular.x_;
   specular_.y_ = new_specular.y_;
@@ -224,7 +224,7 @@ void Suffer::LightManager::Light::SetSpecular(mathmorra::Vector3 new_specular) {
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightManager::Light::SetSpecular(float x, float y, float z) {
+void Suffer::LightManager::DirectionalLight::SetSpecular(float x, float y, float z) {
 
   specular_.x_ = x;
   specular_.y_ = y;
@@ -234,7 +234,7 @@ void Suffer::LightManager::Light::SetSpecular(float x, float y, float z) {
 
 // ----------------------------------------------------------------------- //
 
-float* Suffer::LightManager::Light::Color(){
+float* Suffer::LightManager::DirectionalLight::Color(){
 
   return &color_.x_;
 
@@ -242,7 +242,7 @@ float* Suffer::LightManager::Light::Color(){
 
 // ----------------------------------------------------------------------- //
 
-bool Suffer::LightManager::Light::Active(){
+bool Suffer::LightManager::DirectionalLight::Active(){
 
   return active_;
 
@@ -250,7 +250,7 @@ bool Suffer::LightManager::Light::Active(){
 
 // ----------------------------------------------------------------------- //
 
-float* Suffer::LightManager::Light::Position(){
+float* Suffer::LightManager::DirectionalLight::Position(){
 
   return &position_.x_;
 
@@ -258,7 +258,7 @@ float* Suffer::LightManager::Light::Position(){
 
 // ----------------------------------------------------------------------- //
 
-float* Suffer::LightManager::Light::Direction(){
+float* Suffer::LightManager::DirectionalLight::Direction(){
 
   return &direction_.x_;
 
@@ -266,7 +266,7 @@ float* Suffer::LightManager::Light::Direction(){
 
 // ----------------------------------------------------------------------- //
 
-float* Suffer::LightManager::Light::Ambient(){
+float* Suffer::LightManager::DirectionalLight::Ambient(){
 
   return &ambient_.x_;
 
@@ -274,7 +274,7 @@ float* Suffer::LightManager::Light::Ambient(){
 
 // ----------------------------------------------------------------------- //
 
-float* Suffer::LightManager::Light::Diffuse(){
+float* Suffer::LightManager::DirectionalLight::Diffuse(){
 
   return &diffuse_.x_;
 
@@ -282,7 +282,7 @@ float* Suffer::LightManager::Light::Diffuse(){
 
 // ----------------------------------------------------------------------- //
 
-float* Suffer::LightManager::Light::Specular(){
+float* Suffer::LightManager::DirectionalLight::Specular(){
 
   return &specular_.x_;
 
@@ -290,7 +290,7 @@ float* Suffer::LightManager::Light::Specular(){
 
 // ----------------------------------------------------------------------- //
 
-float Suffer::LightManager::Light::Intensity(){
+float Suffer::LightManager::DirectionalLight::Intensity(){
 
   return intensity_;
 
@@ -298,35 +298,9 @@ float Suffer::LightManager::Light::Intensity(){
 
 // ----------------------------------------------------------------------- //
 
-u16 Suffer::LightManager::Light::GetLightKind(){
+u16 Suffer::LightManager::DirectionalLight::GetLightKind(){
 
   return (u16)light_kind_;
-
-}
-
-// ----------------------------------------------------------------------- //
-
-Suffer::LightManager::Light::Light(){
-
-  assert(suffer.light_manager_.current_lights_ < MAX_LIGHTS);
-  if (suffer.light_manager_.current_lights_ >= MAX_LIGHTS) return;
-
-  // Attributes
-  active_ = true;
-  intensity_ = 1.0f;
-
-  light_kind_ = kLightKind_Directional;
-
-  suffer.light_manager_.current_lights_++;
-  suffer.light_manager_.lights_.push_back(this);
-
-}
-
-// ----------------------------------------------------------------------- //
-
-Suffer::LightManager::Light::~Light(){
-
-
 
 }
 

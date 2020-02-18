@@ -17,17 +17,18 @@ namespace Suffer {
 
   public:
 
+    enum LightKind {
+      kLightKind_Invalid = -1,
+      kLightKind_Directional = 0,
+      kLightKind_Point = 1,
+      kLightKind_Spot = 2,
+    };
+
     // ----------------------------------------------------------------------- //
 
-    class Light : public Referenced {
+    class DirectionalLight : public Referenced {
 
     public:
-      enum LightKind {
-        kLightKind_Invalid = -1,
-        kLightKind_Directional = 0,
-        kLightKind_Point = 1,
-        kLightKind_Spot = 2,
-      };
       
       void SetActive(bool active);
       void SetIntensity(float new_intensity);
@@ -67,10 +68,10 @@ namespace Suffer {
       float  Intensity();
       u16 GetLightKind();
 
-    protected:
-      Light();
-      ~Light();
+      DirectionalLight();
+      ~DirectionalLight();
 
+    protected:
       mathmorra::Vector3 color_;
       mathmorra::Vector3 position_;
       mathmorra::Vector3 direction_;
@@ -86,16 +87,7 @@ namespace Suffer {
 
     // ----------------------------------------------------------------------- //
 
-    class DirectionalLight : public Light {
-    public:
-      DirectionalLight();
-      ~DirectionalLight();
-
-    };
-
-    // ----------------------------------------------------------------------- //
-
-    class PointLight : public Light {
+    class PointLight : public DirectionalLight {
     public:
       PointLight();
       ~PointLight();
@@ -145,7 +137,7 @@ namespace Suffer {
     
 
     u32 current_lights_;
-    std::vector<Light*> lights_;
+    std::vector<DirectionalLight*> lights_;
 
   };
 
