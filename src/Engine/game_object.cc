@@ -93,12 +93,7 @@ void Suffer::GameObject::RemoveComponent(Component::ComponentKind component){
   if (component == Component::ComponentKind::kComponentKind_Invalid)
     assert(false && "Invalid ComponentKind.");
 
-  u32 components_size = components_.size();
-  for (s32 i = 0; i < components_size; ++i) {
-    if (components_[i]->kind_ == component) {
-      components_.erase(i);
-    }
-  }
+  components_.erase(component);
 
 }
 
