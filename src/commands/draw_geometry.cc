@@ -153,11 +153,11 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
       u32 number_lights = suffer.light_manager_.current_lights_;
       u32 offset = 0;
       for (u32 i = 0; i < number_lights; ++i) {
-        LightManager::Light* light = suffer.light_manager_.lights_[i];
+        LightManager::DirectionalLight* light = suffer.light_manager_.lights_[i];
         LightManager::PointLight* point_light;
         LightManager::SpotLight* spot_light;
         switch (light->GetLightKind()) {
-        case LightManager::Light::kLightKind_Directional: {
+        case LightManager::kLightKind_Directional: {
           //20
           data_->u_data_[56 + (offset * i)] = light->Direction()[0];
           data_->u_data_[57 + (offset * i)] = light->Direction()[1];
@@ -179,7 +179,7 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
           offset += 20;
         }
           break;
-        case LightManager::Light::kLightKind_Point: {
+        case LightManager::kLightKind_Point: {
           //24
           point_light = static_cast<LightManager::PointLight*>(light);
           data_->u_data_[56 + (offset * i)] = point_light->Position()[0];
@@ -205,7 +205,7 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
           offset += 24;
         }
           break;
-        case LightManager::Light::kLightKind_Spot: {
+        case LightManager::kLightKind_Spot: {
           //32
           spot_light = static_cast<LightManager::SpotLight*>(light);
           data_->u_data_[56 + (offset * i)] = spot_light->Direction()[0];
@@ -236,7 +236,7 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
           offset += 32;
         }
           break;
-        case LightManager::Light::kLightKind_Invalid:
+        case LightManager::kLightKind_Invalid:
           
           break;
         default:
