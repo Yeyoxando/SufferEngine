@@ -1,10 +1,12 @@
 function Start()
   print "Starting CUBE from LUA!"
+  Rotate(0.0, 0.0, 0.0)
+  AddComponent(0)
 end
 
 local rotation = 0
 function Update()
-  rotation = rotation + 0.01
   print "Updating CUBE from LUA!"
-  Rotate(rotation, 0.0, 0.0)
+  Translate(math.sin(os.clock()) * 5.0, math.cos(os.clock()) * 5.0, 0.0)
+  Scale(math.sin(os.clock()) * 2.0, math.cos(os.clock()) * 2.0, math.sin(os.clock()) * 2.0)
 end

@@ -21,7 +21,9 @@ Suffer::ScriptComponent::ScriptComponent() : Component(Component::kComponentKind
 
 void Suffer::ScriptComponent::AttachScript(GameObject* go, char* script_path){
 
-  assert(script_path != nullptr && "Invalid script");
+  assert(script_path != nullptr && "Invalid script.");
+  assert(go != nullptr && "Invalid GameObject.");
+
   data_->state_ = luaL_newstate();
 
   luaL_openlibs(data_->state_);
@@ -33,6 +35,20 @@ void Suffer::ScriptComponent::AttachScript(GameObject* go, char* script_path){
 
   lua_pushcfunction(data_->state_, data_->lua_Rotate); // +1
   lua_setglobal(data_->state_, "Rotate");              // -1
+
+  lua_pushcfunction(data_->state_, data_->lua_Scale); // +1
+  lua_setglobal(data_->state_, "Scale");              // -1
+
+  lua_pushcfunction(data_->state_, data_->lua_Translate); // +1
+  lua_setglobal(data_->state_, "Translate");              // -1
+
+  lua_pushcfunction(data_->state_, data_->lua_AddComponent); // +1
+  lua_setglobal(data_->state_, "AddComponent");              // -1
+
+  lua_pushcfunction(data_->state_, data_->lua_RemoveComponent); // +1
+  lua_setglobal(data_->state_, "RemoveComponent");              // -1
+
+  lua_register(data_->state_, "Update", data_->lua_Update);
   
   lua_pushstring(data_->state_, "THIS");
   lua_pushlightuserdata(data_->state_, go);
@@ -41,11 +57,14 @@ void Suffer::ScriptComponent::AttachScript(GameObject* go, char* script_path){
   //data_->reference = data_->GetReference(data_->state_);
   //data_->execute_lua_ = true;
 
-  int status = luaL_dofile(data_->state_, script_path);
+  u8 status = luaL_dofile(data_->state_, script_path);
+
   if (status) {
     const char* error = lua_tostring(data_->state_, -1);
-    printf("LUA ERRROR %s\n", error);
+    printf("ERROR: %s\n", error);
+    assert(!status);
     lua_pop(data_->state_, 1);
+    return;
   }
 
   script_attached_ = true;
@@ -73,6 +92,11 @@ void Suffer::ScriptComponent::Start(){
 // --------------------------------------------------- //
 
 Suffer::ScriptComponent::~ScriptComponent(){
+
+  if (data_->state_ != nullptr) {
+    lua_close(data_->state_);
+    data_->state_ = nullptr;
+  }
 
   if (data_ == nullptr) return;
   delete data_;

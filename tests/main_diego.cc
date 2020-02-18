@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::Transform> transform_component_;
   transform_component_.alloc();
-  go_cube->AddComponent(transform_component_.get());
+  //go_cube->AddComponent(transform_component_.get());
 
   auto component_ = go_cube->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
   Suffer::Transform* component = reinterpret_cast<Suffer::Transform*>(component_);
@@ -89,7 +89,7 @@ int main(int argc, char* argv[]) {
 
   go_cube->SetName("Cube");
 
-  component->Translate(mathmorra::Vector3(-3.0f, 0.0f, 0.0f));
+  //component->Translate(mathmorra::Vector3(-3.0f, 0.0f, 0.0f));
 
 
 

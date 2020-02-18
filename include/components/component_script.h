@@ -21,7 +21,7 @@ namespace Suffer {
     void AttachScript(GameObject* go, char* script_path);
 
   protected:
-    virtual ~ScriptComponent();
+    virtual ~ScriptComponent() override;
 
   private:
     ScriptComponent(const ScriptComponent&) = delete;

@@ -22,7 +22,7 @@ void Suffer::SystemScript::Execute(GameObject* go){
   if (!go->HasComponent(Suffer::Component::kComponentKind_Script)) return;
   
   Component* script_component = go->GetComponent(Suffer::Component::kComponentKind_Script);
-  ScriptComponent* script = reinterpret_cast<ScriptComponent*>(script_component);
+  ScriptComponent* script = static_cast<ScriptComponent*>(script_component);
 
   if (!script->script_attached_) {
     printf("ERROR: the GameObject has not a script attached.\n");

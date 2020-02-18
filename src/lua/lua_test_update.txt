@@ -2,7 +2,14 @@ function Start()
   print "Starting SPHERE from LUA!"
 end
 
+local rotation_ = 0
+local speed_ = 10
+function Rotation()
+  rotation_ = math.sin(os.clock() * speed_)
+  Rotate(math.sin(os.clock()), rotation_, 0.0)
+end
+
 function Update()
   print "Updating SPHERE from LUA!"
-  Rotate(0.0, 10.0, 0.0)
+  Rotation()
 end
