@@ -19,10 +19,10 @@ Suffer::ScriptComponent::ScriptComponent() : Component(Component::kComponentKind
 
 // --------------------------------------------------- //
 
-void Suffer::ScriptComponent::AttachScript(GameObject* go, char* script_path){
+void Suffer::ScriptComponent::AttachScript(char* script_path){
 
   assert(script_path != nullptr && "Invalid script.");
-  assert(go != nullptr && "Invalid GameObject.");
+  assert(game_object_reference_ != nullptr && "Invalid GameObject.");
 
   data_->state_ = luaL_newstate();
 
@@ -48,10 +48,16 @@ void Suffer::ScriptComponent::AttachScript(GameObject* go, char* script_path){
   lua_pushcfunction(data_->state_, data_->lua_RemoveComponent); // +1
   lua_setglobal(data_->state_, "RemoveComponent");              // -1
 
+  lua_pushcfunction(data_->state_, data_->lua_SetGeometry); // +1
+  lua_setglobal(data_->state_, "SetGeometry");              // -1
+
+  lua_pushcfunction(data_->state_, data_->lua_SetDrawMode); // +1
+  lua_setglobal(data_->state_, "SetDrawMode");              // -1
+
   lua_register(data_->state_, "Update", data_->lua_Update);
   
   lua_pushstring(data_->state_, "THIS");
-  lua_pushlightuserdata(data_->state_, go);
+  lua_pushlightuserdata(data_->state_, game_object_reference_);
   lua_settable(data_->state_, LUA_REGISTRYINDEX);
   
   //data_->reference = data_->GetReference(data_->state_);

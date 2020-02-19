@@ -31,10 +31,13 @@ struct Suffer::ScriptComponent::ScriptData {
 
   static int lua_Start(lua_State* L);
   static int lua_Update(lua_State* L);
+
   static int lua_AddComponent(lua_State* L);
   static int lua_RemoveComponent(lua_State* L);
 
-  // TRANSFORM Tests
+  static int lua_SetGeometry(lua_State* L);
+  static int lua_SetDrawMode(lua_State* L);
+
   static int lua_Scale(lua_State* L);
   static int lua_Rotate(lua_State* L);
   static int lua_Translate(lua_State* L);
@@ -182,7 +185,7 @@ Suffer::GameObject* Suffer::ScriptComponent::ScriptData::GetReference(lua_State*
   lua_gettable(L, LUA_REGISTRYINDEX);
   const void* raw_ptr = lua_topointer(L, -1);
   
-  GameObject* ptr = reinterpret_cast<GameObject*>(const_cast<void*>(raw_ptr));
+  GameObject* ptr = static_cast<GameObject*>(const_cast<void*>(raw_ptr));
   return ptr;
 
 }
@@ -199,7 +202,6 @@ int Suffer::ScriptComponent::ScriptData::lua_AddComponent(lua_State* L){
   Component::ComponentKind component = static_cast<Component::ComponentKind>(component_number);
 
   if (game_object_reference->HasComponent(component)) {
-    assert(false && "The GameObject already has the component.");
     printf("The GameObject already has the component.\n");
     return -1;
   }
@@ -252,7 +254,6 @@ int Suffer::ScriptComponent::ScriptData::lua_RemoveComponent(lua_State* L){
   Component::ComponentKind component = static_cast<Component::ComponentKind>(component_number);
 
   if (!game_object_reference->HasComponent(component)) {
-    assert(false && "The GameObject does not have the component.");
     printf("The GameObject does not have the component.\n");
     return -1;
   }
@@ -261,6 +262,75 @@ int Suffer::ScriptComponent::ScriptData::lua_RemoveComponent(lua_State* L){
   game_object_reference->RemoveComponent(component);
 
   return error;
+
+}
+
+// --------------------------------------------------- //
+
+int Suffer::ScriptComponent::ScriptData::lua_SetGeometry(lua_State* L){
+
+  GameObject* game_object_reference = GetReference(L);
+  assert(nullptr != game_object_reference);
+  if (nullptr == game_object_reference) return -1;
+  
+  if (!game_object_reference->HasComponent(Suffer::Component::kComponentKind_Geometry)) return -1;
+  
+  auto geometry_component = game_object_reference->GetComponent(Suffer::Component::kComponentKind_Geometry);
+  GeometryComponent* geometry_ = static_cast<GeometryComponent*>(geometry_component);
+  
+  int arguments = lua_gettop(L);
+  //if (arguments != 2) {
+  //  return luaL_error(L, "Invalid call, expected one argument");
+  //}
+  
+  const char* x = lua_tostring(L, 1);
+  
+  GeometryComponent::BasicShapes new_shape = GeometryComponent::BasicShapes::kBasicShapes_Triangle;
+  
+  if (!strcmp(x, "Triangle")) new_shape = GeometryComponent::BasicShapes::kBasicShapes_Triangle;
+  if (!strcmp(x, "Quad"))     new_shape = GeometryComponent::BasicShapes::kBasicShapes_Quad;
+  if (!strcmp(x, "Cube"))     new_shape = GeometryComponent::BasicShapes::kBasicShapes_Cube;
+  if (!strcmp(x, "Sphere"))   new_shape = GeometryComponent::BasicShapes::kBasicShapes_Sphere;
+  
+  geometry_->CreateGeometryWithShape(new_shape);
+  
+  lua_pop(L, 1);
+
+  return 0;
+
+}
+
+// --------------------------------------------------- //
+
+int Suffer::ScriptComponent::ScriptData::lua_SetDrawMode(lua_State* L){
+
+  GameObject* game_object_reference = GetReference(L);
+  assert(nullptr != game_object_reference);
+  if (nullptr == game_object_reference) return -1;
+
+  if (!game_object_reference->HasComponent(Suffer::Component::kComponentKind_Geometry)) return -1;
+
+  auto geometry_component = game_object_reference->GetComponent(Suffer::Component::kComponentKind_Geometry);
+  GeometryComponent* geometry_ = static_cast<GeometryComponent*>(geometry_component);
+
+  int arguments = lua_gettop(L);
+  //if (arguments != 2) {
+  //  return luaL_error(L, "Invalid call, expected one argument");
+  //}
+
+  const char* x = lua_tostring(L, 1);
+
+  GeometryComponent::DrawMode draw_mode = GeometryComponent::DrawMode::kDrawMode_Lines;
+
+  if (!strcmp(x, "Lines"))     draw_mode = GeometryComponent::DrawMode::kDrawMode_Lines;
+  if (!strcmp(x, "LineLoop"))  draw_mode = GeometryComponent::DrawMode::kDrawMode_LineLoop;
+  if (!strcmp(x, "Points"))    draw_mode = GeometryComponent::DrawMode::kDrawMode_Points;
+  if (!strcmp(x, "Triangles")) draw_mode = GeometryComponent::DrawMode::kDrawMode_Triangles;
+
+  geometry_->SetDrawMode(draw_mode);
+
+  lua_pop(L, 1);
+  return 0;
 
 }
 

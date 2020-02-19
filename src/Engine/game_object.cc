@@ -77,6 +77,8 @@ void Suffer::GameObject::AddComponent(ref_ptr<Component> new_component){
 
   if (new_component->kind_ == Component::ComponentKind::kComponentKind_Invalid) 
     assert(false && "Invalid ComponentKind.");
+
+  new_component->game_object_reference_ = this;
   
   components_.insert(std::pair<s32, ref_ptr<Component>>((s32)new_component->kind_, 
                                                         new_component));

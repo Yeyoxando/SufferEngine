@@ -18,7 +18,7 @@ namespace Suffer {
   public:
     ScriptComponent();
 
-    void AttachScript(GameObject* go, char* script_path);
+    void AttachScript(char* script_path);
 
   protected:
     virtual ~ScriptComponent() override;

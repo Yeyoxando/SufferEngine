@@ -13,6 +13,7 @@
 namespace Suffer {
 
   class Component : public virtual Referenced {
+    friend class GameObject;
 
   public:
 
@@ -33,6 +34,7 @@ namespace Suffer {
     ComponentKind const kind_;
 
   protected:
+    Suffer::GameObject* game_object_reference_;
     virtual ~Component();
   };
 
