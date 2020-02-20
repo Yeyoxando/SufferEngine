@@ -121,9 +121,13 @@ namespace Suffer {
     mathmorra::Vector2 mouse_position_;
     std::vector<ref_ptr<System>> systems_;
     
-    Suffer::ref_ptr<Suffer::SystemRender> render_system_;
-    Suffer::ref_ptr<Suffer::SystemTransform> transform_system_;
+    ref_ptr<SystemRender> render_system_;
+    ref_ptr<SystemTransform> transform_system_;
 
+    //Framebuffers
+    ref_ptr<ResourceManager::FrameBuffer> draw_frame_buffer_;
+    ref_ptr<ResourceManager::FrameBuffer> postprocessing_frame_buffer_;
+    
 		struct Data;
 		Data* data_;
 
