@@ -47,13 +47,6 @@ namespace Suffer {
      */
     void Step(float time_step);
 
-    /**
-     * @brief: Prepares a DisplayList with all the GameObjects of the scene to send it
-     *         to RenderManager.
-     */
-    void PrepareDraw();
-
-
 		// Attributes
 		std::vector<ref_ptr<GameObject>> current_gameobjects_;
 

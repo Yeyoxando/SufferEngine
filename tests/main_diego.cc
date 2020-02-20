@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::ResourceManager::FrameBuffer> frame_buffer_;
   frame_buffer_.alloc();
   frame_buffer_->InitFrameBuffer(suffer.GetWindowSize().x_, suffer.GetWindowSize().y_);
-  suffer.render_manager_.SetFrameBuffer(frame_buffer_.get());
+  //suffer.render_manager_.SetFrameBuffer(frame_buffer_.get());
   
   Suffer::ref_ptr<Suffer::SystemAudio> audio_system_;
   audio_system_.alloc();

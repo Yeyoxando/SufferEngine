@@ -33,7 +33,6 @@ void Suffer::RenderManager::StartUp(){
 
 	// Init here instead of constructor and call in engine init
   dls_to_draw_ = 0;
-  frame_buffer_id_ = -1;
 
   data_->screen_quad_.alloc();
   data_->draw_quad_command_.alloc();
@@ -72,12 +71,13 @@ void Suffer::RenderManager::ShutDown() {
 
 // ------------------------------------------------------------------------- //
 
-void Suffer::RenderManager::AddToRenderQueue(DisplayList&& logic_dl){
+void Suffer::RenderManager::AddToRenderQueue(DisplayList&& logic_dl, u32 framebuffer){
 
 	dl_mutex_.lock();
 
 	// Moves given DL to current DL with std::move
 	if (logic_dl.GetDisplayListType() == DisplayList::kDisplayListType_Render) {
+    logic_dl.frame_buffer_id_ = framebuffer;
     list_of_dl_.push_back(std::move(logic_dl));
     dls_to_draw_++;
 	}
@@ -109,9 +109,9 @@ void Suffer::RenderManager::DoRender(){
     
     {
       
-      if (frame_buffer_id_ >= 0) {
+      if (render_dl_.frame_buffer_id_ >= 0) {
 
-        s32 id_frame_buffer = frame_buffer_id_;
+        s32 id_frame_buffer = render_dl_.frame_buffer_id_;
 
         if (suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ == 0) {
           glGenFramebuffers(1, &suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
@@ -201,12 +201,12 @@ void Suffer::RenderManager::DoRender(){
 
           GLenum error;
           glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-            suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[suffer.render_manager_.frame_buffer_id_].color_texture_id_].current_texture_id_,
+            suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].color_texture_id_].current_texture_id_,
             0);
           error = glGetError();
 
           glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D,
-            suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[suffer.render_manager_.frame_buffer_id_].depth_texture_id_].current_texture_id_,
+            suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].depth_texture_id_].current_texture_id_,
             0);
           error = glGetError();
 
@@ -220,6 +220,7 @@ void Suffer::RenderManager::DoRender(){
           suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ = suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].version_;
         }
       
+        s32 id = suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_;
         glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
         glViewport(0, 0, suffer.GetWindowSize().x_, suffer.GetWindowSize().y_);
 
@@ -243,8 +244,11 @@ void Suffer::RenderManager::DoRender(){
 
   }
  
+  //Set final texture to draw in imgui
+
+  // Render to final framebuffer (screen quad)
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  //glViewport()
+
   glDisable(GL_DEPTH_TEST);
 
   data_->draw_quad_command_->SetData(data_->screen_quad_.get());
@@ -254,17 +258,17 @@ void Suffer::RenderManager::DoRender(){
 
 // ------------------------------------------------------------------------- //
 
-void Suffer::RenderManager::SetFrameBuffer(ResourceManager::FrameBuffer* frame_buffer) {
-
-  assert(frame_buffer != nullptr);
-  if (frame_buffer == nullptr) {
-    printf("NULL FrameBuffer.\n");
-    return;
-  }
-
-  frame_buffer_id_ = frame_buffer->id_;
-
-}
+//void Suffer::RenderManager::SetFrameBuffer(ResourceManager::FrameBuffer* frame_buffer) {
+//
+//  assert(frame_buffer != nullptr);
+//  if (frame_buffer == nullptr) {
+//    printf("NULL FrameBuffer.\n");
+//    return;
+//  }
+//
+//  frame_buffer_id_ = frame_buffer->id_;
+//
+//}
 
 // ------------------------------------------------------------------------- //
 

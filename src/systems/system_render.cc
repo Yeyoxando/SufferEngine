@@ -9,6 +9,7 @@
 #include "component_geometry.h"
 #include "component_material.h"
 #include "suffermanager.h"
+#include "clear.h"
 #include "internal_suffermanager.h"
 
 // ------------------------------------------------------------------------- //
@@ -23,6 +24,17 @@ Suffer::SystemRender::SystemRender(){
 
 void Suffer::SystemRender::Execute(GameObject * go){
 
+  //Add clear at the beginning
+  if (dl_.Size() <= 0) {
+    ref_ptr<Clear> clear_cmd;
+
+    clear_cmd.alloc();
+
+    clear_cmd.get()->SetClearColor(mathmorra::Vector4(0.5f));
+
+    dl_.AddCommand(clear_cmd.get());
+  }
+
   if (go == nullptr) assert(false && "NULL GameObject");
   if (!go->HasComponent(Component::ComponentKind::kComponentKind_Transform)) return;
   if (!go->HasComponent(Component::ComponentKind::kComponentKind_Geometry)) return;
@@ -30,7 +42,6 @@ void Suffer::SystemRender::Execute(GameObject * go){
 
   auto component = go->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
   Suffer::Transform* transform_component = reinterpret_cast<Suffer::Transform*>(component);
-
 
   // Add draw command
   ref_ptr<DrawGeometry> draw_geometry;

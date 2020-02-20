@@ -11,6 +11,7 @@
 Suffer::DisplayList::DisplayList(){
 
 	dl_type_ = kDisplayListType_Invalid;
+  frame_buffer_id_ = -1;
 
 }
 
@@ -38,6 +39,21 @@ void Suffer::DisplayList::Clear(){
 u32 Suffer::DisplayList::Size(){
 
 	return dl_commands_.size();
+
+}
+
+
+// --------------------------------------------------------------//
+
+void Suffer::DisplayList::SetFrameBuffer(ResourceManager::FrameBuffer* frame_buffer){
+
+  assert(frame_buffer != nullptr);
+  if (frame_buffer == nullptr) {
+    printf("NULL FrameBuffer.\n");
+    return;
+  }
+
+  frame_buffer_id_ = frame_buffer->id_;
 
 }
 
@@ -118,6 +134,7 @@ Suffer::DisplayList & Suffer::DisplayList::operator=(DisplayList && d){
 	std::swap(dl_commands_, d.dl_commands_);
 	dl_type_ = d.dl_type_;
 	d.dl_type_ = kDisplayListType_Invalid;
+  frame_buffer_id_ = d.frame_buffer_id_;
 
 	return *this;
 
