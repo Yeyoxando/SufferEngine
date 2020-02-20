@@ -333,6 +333,7 @@ namespace Suffer {
 
     out vec4 color;
     out vec3 normal;
+    out vec3 fragPos;
     out vec2 uvs;
     out float time;
     
@@ -347,6 +348,7 @@ namespace Suffer {
 
       mat4 accum_matrix = u_p_matrix * u_v_matrix * u_m_matrix;
       color = u_color;
+      fragPos = (u_m_matrix * vec4(a_position, 1.0f)).xyz;
       normal = normalize((accum_matrix * vec4(a_normal, 0.0))).xyz;
       uvs = a_uvs;
       time = u_time;
@@ -400,11 +402,14 @@ namespace Suffer {
     };
 
     uniform vec4 u_data[46];
+
+    #define camera_pos vec3(u_data[13].x, u_data[13].y, u_data[13].z)
     
     out vec4 fragColor;
 
     in vec4 color;
     in vec3 normal;
+    in vec3 fragPos;
     in vec2 uvs;
     in float time;
 
@@ -473,27 +478,67 @@ namespace Suffer {
 
     // --------------------------------------------------------------------- //
 
-    vec3 CreateDiffuseLight(vec3 light_direction) {
+    vec3 CreateAmbientLight(float intensity, vec3 color) {
+
+      vec3 ambientLight = intensity * color;
+      return ambientLight;
+
+    }
+
+    vec3 CreateDiffuseLight(float intensity, vec3 lightDir, vec3 color, vec3 normal) {
 
       vec3 norm = normalize(normal);
-      float diffs = max(dot(norm, -light_direction), 0.0f);
-      vec3 diffuse_light = diffs * vec3(light_color) * 0.4;
+      //vec3 lightDir = normalize(lightPos - fragPos);
+      float diffs = max(dot(norm, -lightDir), 0.0f);
+      vec3 diffuseLight = diffs * color * intensity;
 
-      return diffuse_light;
+      return diffuseLight;
+
+    }
+
+    vec3 CreateSpecularLight(float intensity, vec3 lightPos, vec3 color, vec3 normal) {
+
+      vec3 norm = normalize(normal);
+      vec3 reflectDirection = reflect(-lightPos, norm);
+      float spec = pow(max(dot(lightPos, reflectDirection), 0.0f), 32);
+      vec3 specular = intensity * spec * color;
+
+      return specular;
+
+    }
+
+    vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir){
+  
+      vec3 lightDir = normalize(-light.direction);
+      //
+      //float diff = max(dot(normal, lightDir), 0.0f);
+      //
+      //vec3 reflectDir = reflect(-lightDir, normal);
+      //float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+
+      //vec3 ambient = CreateAmbientLight(0.7f, vec3(1.0f));
+      vec3 diffuse = CreateDiffuseLight(1.0f, lightDir, vec3(1.0f), normal);
+      //vec3 specular = CreateSpecularLight(1.0f, lightDir, vec3(1.0f), normal);
+
+      return (diffuse);
+
     }
 
     // --------------------------------------------------------------------- //
 
     void main() {
+      CompoundLights();      
 
-      // Ambient
-      vec3 ambient = 0.4 * light_color * color.xyz;
-
-      // Diffuse
-      float diff = max(dot(normalize(normal), normalize(-light_dir)), 0.0);
-      vec3 test = CreateDiffuseLight(light_dir);
-
-      fragColor = vec4(ambient * abs(sin(time)), 1.0f);
+      //// Ambient
+      //vec3 ambient = 0.4 * light_color * color.xyz;
+      //
+      //// Diffuse
+      //float diff = max(dot(normalize(normal), normalize(-light_dir)), 0.0);
+      
+      vec3 view_dir = normalize(camera_pos - fragPos);
+      vec3 result = CalculateDirectionalLight(directional_lights[0], normal, view_dir);
+      
+      fragColor = vec4(result, 1.0f);
     }
 
   )FUNLITSHADER";
