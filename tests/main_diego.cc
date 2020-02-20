@@ -60,9 +60,8 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::MaterialComponent> material_component;
   material_component.alloc();
-  Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_params;
+  Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params;
   material_params.alloc();
-  material_params->albedo_texture_id_ = albedo_texture->id_;
   material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   material_component->SetParams(material_params.get());
   

@@ -8,6 +8,7 @@
 #include <gl/glew.h>
 #include "time.h"
 #include <data_types.h>
+#include "scene.h"
 #include "vector4.h"
 #include "suffermanager.h"
 #include "internal_resource_manager.h"
@@ -70,8 +71,6 @@ Suffer::DrawGeometry::~DrawGeometry() {
 // ------------------------------------------------------------------------- //
 
 void Suffer::DrawGeometry::SetData(GameObject* go) {
-
-  // Cambiar toda esta movida para que vaya cn componentes
 
   // ---------------------------- SetGeometry ------------------------------ //
 
@@ -144,10 +143,13 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
       data_->current_used_textures_ = 1;
     }
       break;
-    case MaterialComponent::ParamsType::kParamsType_Unlit: {
-      MaterialComponent::UnlitParams* phong_params_;
-      phong_params_ = reinterpret_cast<MaterialComponent::UnlitParams*>(params);
-      data_->u_data_[52] = (float)Time();
+    case MaterialComponent::ParamsType::kParamsType_Phong: {
+      MaterialComponent::PhongParams* phong_params_;
+      phong_params_ = reinterpret_cast<MaterialComponent::PhongParams*>(params);
+      data_->u_data_[52] = suffer.GetCurrentScene()->GetMainCamera()->Position()[0];
+      data_->u_data_[53] = suffer.GetCurrentScene()->GetMainCamera()->Position()[1];
+      data_->u_data_[54] = suffer.GetCurrentScene()->GetMainCamera()->Position()[2];
+      data_->u_data_[55] = (float)Time();
       data_->current_used_textures_ = 0;
       // Lighting
       u32 number_lights = suffer.light_manager_.current_lights_;
@@ -570,7 +572,7 @@ void Suffer::DrawGeometry::Execute() const {
       //return;
     }
 
-    glUniform4fv(u_pos, 14, data_->u_data_);
+    glUniform4fv(u_pos, MAX_USED_VEC4DATA, data_->u_data_);
     u_pos = -1;
   
 

@@ -314,6 +314,7 @@ Suffer::LightManager::DirectionalLight::DirectionalLight(){
   // Attributes
   active_ = true;
   intensity_ = 1.0f;
+  direction_ = mathmorra::Vector3(0.0f, 0.0f, -1.0f);
 
   light_kind_ = kLightKind_Directional;
 
