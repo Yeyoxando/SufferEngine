@@ -131,7 +131,7 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::ScriptComponent> script_component_cube;
   script_component_cube.alloc();
   go_cube->AddComponent(script_component_cube.get());
-  script_component_cube->AttachScript("../../../src/lua/lua_test_update_cube.txt");
+  script_component_cube->AttachScript("../../../src/lua/lua_test_update_cube.lua");
   //go_sphere->StartUpLUA("../../../src/lua/lua_test_update.txt");
 
   Suffer::ref_ptr<Suffer::Audio3D> audio_component_;

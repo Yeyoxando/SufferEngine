@@ -8,6 +8,7 @@
 #include "component_geometry.h"
 #include "component_material.h"
 #include "component_debug_geometry.h"
+#include "audio.h"
 
 // --------------------------------------------------- //
 
@@ -37,6 +38,7 @@ struct Suffer::ScriptComponent::ScriptData {
 
   static int lua_SetGeometry(lua_State* L);
   static int lua_SetDrawMode(lua_State* L);
+  static int lua_PlayAudio(lua_State* L);
 
   static int lua_Scale(lua_State* L);
   static int lua_Rotate(lua_State* L);
@@ -228,14 +230,17 @@ int Suffer::ScriptComponent::ScriptData::lua_AddComponent(lua_State* L){
     }
     case Suffer::Component::kComponentKind_Material:
       break;
-    case Suffer::Component::kComponentKind_Audio:
+    case Suffer::Component::kComponentKind_Audio: {
+      Suffer::ref_ptr<Suffer::Audio3D> audio_component_;
+      audio_component_.alloc();
+      game_object_reference->AddComponent(audio_component_.get());
       break;
-    case Suffer::Component::kComponentKind_Script:
+    }
+    default: {
+      printf("Invalid component.\n");
+      error = -1;
       break;
-    case Suffer::Component::kComponentKind_User:
-      break;
-    default:
-      break;
+    }
   }
 
   return error;
@@ -332,6 +337,34 @@ int Suffer::ScriptComponent::ScriptData::lua_SetDrawMode(lua_State* L){
   lua_pop(L, 1);
   return 0;
 
+}
+
+// --------------------------------------------------- //
+
+int Suffer::ScriptComponent::ScriptData::lua_PlayAudio(lua_State* L){
+
+  GameObject* game_object_reference = GetReference(L);
+  assert(nullptr != game_object_reference);
+  if (nullptr == game_object_reference) return -1;
+
+  if (!game_object_reference->HasComponent(Suffer::Component::kComponentKind_Audio)) return -1;
+
+  int arguments = lua_gettop(L);
+  //if (arguments != 2) {
+  //  return luaL_error(L, "Invalid call, expected one argument");
+  //}
+
+  const char* song_path = lua_tostring(L, 1);
+
+  auto audio_ = game_object_reference->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Audio);
+  Suffer::Audio3D* source = static_cast<Suffer::Audio3D*>(audio_);
+
+  bool error = false;
+  error = source->Load((char*)song_path);
+  if (!error) return -1;
+  error = source->Play3D();
+  if (!error) return -1;
+   
 }
 
 // --------------------------------------------------- //

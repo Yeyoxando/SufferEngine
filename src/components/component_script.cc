@@ -54,6 +54,9 @@ void Suffer::ScriptComponent::AttachScript(char* script_path){
   lua_pushcfunction(data_->state_, data_->lua_SetDrawMode); // +1
   lua_setglobal(data_->state_, "SetDrawMode");              // -1
 
+  lua_pushcfunction(data_->state_, data_->lua_PlayAudio); // +1
+  lua_setglobal(data_->state_, "PlayAudio");              // -1
+
   lua_register(data_->state_, "Update", data_->lua_Update);
   
   lua_pushstring(data_->state_, "THIS");
