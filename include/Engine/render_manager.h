@@ -23,18 +23,15 @@ namespace Suffer {
     /**
      * @brief: Add a DisplayList to the render queue.
      * @param: Display list parameter created in logic thread.
-     *         Usae std::move to pass parameter without creating a copy.
+     *         Use std::move to pass parameter without creating a copy.
      */
-		void AddToRenderQueue(DisplayList&& logic_dl);
+		void AddToRenderQueue(DisplayList&& logic_dl, u32 framebuffer);
 
     /**
      * @brief: Extracts first DisplayList of the List of DLs and executes all 
      *         render commands of it.
      */
 		void DoRender();
-
-    //TODO: Comment
-    void SetFrameBuffer(ResourceManager::FrameBuffer* frame_buffer);
 	
 	private:
     void StartUp(); // a.k.a Init()
@@ -47,8 +44,9 @@ namespace Suffer {
 		DisplayList render_dl_;
 		std::list<DisplayList> list_of_dl_;
 		Mutex dl_mutex_;
-    s32 frame_buffer_id_;
     u32 dls_to_draw_;
+
+    s32 current_drawn_texture_id_;
 
     struct RenderData;
     RenderData* data_;

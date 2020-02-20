@@ -203,7 +203,7 @@ void Suffer::SufferManager::Step(){
     }
   }
 
-  render_manager_.AddToRenderQueue(std::move(render_system_.get()->dl_));
+  render_manager_.AddToRenderQueue(std::move(render_system_.get()->dl_), 0);
 
 	// This will be the last function in UPDATE
 	PrepareAudio();

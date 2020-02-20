@@ -47,28 +47,6 @@ void Suffer::Scene::Step(float time_step){
       current_gameobjects_[i]->Step(time_step);
   }
 
-	PrepareDraw();
-
-}
-
-// --------------------------------------------------- //
-
-void Suffer::Scene::PrepareDraw(){
-
-	DisplayList frame_dl;
-
-  // Clear command
-	ref_ptr<Clear> clear_cmd;
-
-	clear_cmd.alloc();
-
-  clear_cmd.get()->SetClearColor(mathmorra::Vector4(0.5f));
-
-	frame_dl.AddCommand(clear_cmd.get());
-
-  // Send DL to render manager
-	suffer.render_manager_.AddToRenderQueue(std::move(frame_dl));
-
 }
 
 // --------------------------------------------------- //
