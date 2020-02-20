@@ -42,6 +42,21 @@ u32 Suffer::DisplayList::Size(){
 
 }
 
+
+// --------------------------------------------------------------//
+
+void Suffer::DisplayList::SetFrameBuffer(ResourceManager::FrameBuffer* frame_buffer){
+
+  assert(frame_buffer != nullptr);
+  if (frame_buffer == nullptr) {
+    printf("NULL FrameBuffer.\n");
+    return;
+  }
+
+  frame_buffer_id_ = frame_buffer->id_;
+
+}
+
 // --------------------------------------------------------------//
 
 void Suffer::DisplayList::SetDisplayListType(DisplayListType dl_type) {
