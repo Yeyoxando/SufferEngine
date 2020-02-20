@@ -24,8 +24,9 @@ namespace Suffer {
      * @brief: Add a DisplayList to the render queue.
      * @param: Display list parameter created in logic thread.
      *         Use std::move to pass parameter without creating a copy.
+     * @param: framebuffer to use for drawing
      */
-		void AddToRenderQueue(DisplayList&& logic_dl, u32 framebuffer);
+		void AddToRenderQueue(DisplayList&& logic_dl, ResourceManager::FrameBuffer* framebuffer);
 
     /**
      * @brief: Extracts first DisplayList of the List of DLs and executes all 

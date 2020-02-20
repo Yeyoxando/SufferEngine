@@ -71,13 +71,15 @@ void Suffer::RenderManager::ShutDown() {
 
 // ------------------------------------------------------------------------- //
 
-void Suffer::RenderManager::AddToRenderQueue(DisplayList&& logic_dl, u32 framebuffer){
+void Suffer::RenderManager::AddToRenderQueue(DisplayList&& logic_dl, ResourceManager::FrameBuffer* framebuffer){
 
 	dl_mutex_.lock();
 
 	// Moves given DL to current DL with std::move
 	if (logic_dl.GetDisplayListType() == DisplayList::kDisplayListType_Render) {
-    logic_dl.frame_buffer_id_ = framebuffer;
+    if (framebuffer != nullptr) {
+      logic_dl.frame_buffer_id_ = framebuffer->id_;
+    }
     list_of_dl_.push_back(std::move(logic_dl));
     dls_to_draw_++;
 	}
@@ -219,11 +221,13 @@ void Suffer::RenderManager::DoRender(){
 
           suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ = suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].version_;
         }
-      
-        s32 id = suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_;
+     
         glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
         glViewport(0, 0, suffer.GetWindowSize().x_, suffer.GetWindowSize().y_);
-
+        
+        //Set last framebuffer texture to draw it in imgui
+        current_drawn_texture_id_ = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].color_texture_id_].current_texture_id_;
+      
       }
 
     }

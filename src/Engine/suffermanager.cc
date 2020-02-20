@@ -91,6 +91,12 @@ bool Suffer::SufferManager::Init(){
   //debug_render_system_.alloc();
   //suffer.AddSystem(debug_render_system_.get());
 
+  draw_frame_buffer_.alloc();
+  draw_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
+
+  postprocessing_frame_buffer_.alloc();
+  postprocessing_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
+
 	return true;
 
 }
@@ -203,7 +209,7 @@ void Suffer::SufferManager::Step(){
     }
   }
 
-  render_manager_.AddToRenderQueue(std::move(render_system_.get()->dl_), 0);
+  render_manager_.AddToRenderQueue(std::move(render_system_.get()->dl_), draw_frame_buffer_.get());
 
 	// This will be the last function in UPDATE
 	PrepareAudio();

@@ -73,11 +73,6 @@ namespace Suffer {
     u32 Size();
 
     /**
-     * @brief: assign a framebuffer to draw this display list
-     */
-    void SetFrameBuffer(ResourceManager::FrameBuffer* frame_buffer);
-
-    /**
      * @brief: Add a new command at the last position of the DisplayList
      * @param: command to add
      */
