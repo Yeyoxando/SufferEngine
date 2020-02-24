@@ -16,6 +16,7 @@
 #include "system_render.h"
 #include "system_transform.h"
 #include "internal_window.h"
+#include "postprocessing.h"
 
 // --------------------------------------------------------------//
 
@@ -210,6 +211,13 @@ void Suffer::SufferManager::Step(){
   }
 
   render_manager_.AddToRenderQueue(std::move(render_system_.get()->dl_), draw_frame_buffer_.get());
+
+  DisplayList postpro_dl;
+  ref_ptr<Postprocessing> black_white;
+  black_white.alloc();
+  black_white->SetData(Postprocessing::kPostproccessKind_BlackAndWhite);
+  postpro_dl.AddCommand(black_white.get());
+  render_manager_.AddToRenderQueue(std::move(postpro_dl), postprocessing_frame_buffer_.get());
 
 	// This will be the last function in UPDATE
 	PrepareAudio();

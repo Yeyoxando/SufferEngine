@@ -161,8 +161,6 @@ namespace Suffer {
     layout(location = 1) in vec3 a_normal;
     layout(location = 2) in vec2 a_uvs;
 
-    uniform vec4 u_data[13];
-
     out vec2 tex_coords;
 
     void main()
@@ -184,13 +182,45 @@ namespace Suffer {
     
     void main()
     { 
-        vec4 color = texture2D(u_tex0, tex_coords);
-			  float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));
-			  FragColor = vec4(vec3(gray), 1.0);
-        //FragColor = texture(u_tex0, tex_coords);
+        FragColor = texture(u_tex0, tex_coords);
     }    
 
   )FTOTEXTURE";
+
+  // -- Render to texture (vertex) --
+  static const char* black_and_white_vertex_ = R"VBLACKWHITE(
+    #version 330
+    layout(location = 0) in vec3 a_position;
+    layout(location = 1) in vec3 a_normal;
+    layout(location = 2) in vec2 a_uvs;
+
+    out vec2 tex_coords;
+
+    void main()
+    {
+        gl_Position = vec4(a_position.x, a_position.y, 0.0, 1.0); 
+        tex_coords = a_uvs;
+    }  
+
+  )VBLACKWHITE";
+
+  // -- Render to texture (fragment) --
+  static const char* black_and_white_fragment_ = R"FBLACKWHITE(
+    #version 330
+    out vec4 FragColor;
+      
+    in vec2 tex_coords;
+    
+    uniform sampler2D u_tex0;
+    
+    void main()
+    { 
+        vec4 color = texture2D(u_tex0, tex_coords);
+			  float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));
+			  FragColor = vec4(vec3(gray), 1.0);
+    }    
+
+  )FBLACKWHITE";
 
   // ----------------------- RenderToTextureShaders ------------------------ //
   

@@ -17,6 +17,7 @@ namespace Suffer {
    */
 	class RenderManager {
 		friend class SufferManager;
+		friend class Postprocessing;
     friend class Interface;
 
 	public:
