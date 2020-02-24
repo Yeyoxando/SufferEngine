@@ -36,6 +36,7 @@ void Suffer::RenderManager::StartUp(){
 
   data_->screen_quad_.alloc();
   data_->draw_quad_command_.alloc();
+  data_->post_command_.alloc();
 
   // Components
   Suffer::ref_ptr< Suffer::GeometryComponent> geometry_component;
@@ -118,8 +119,7 @@ void Suffer::RenderManager::DoRender(){
         if (suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ == 0) {
           glGenFramebuffers(1, &suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
         }
-        printf("\nGPU %d", suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_);
-        printf("\nnormal %d", suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].version_);
+        
         if (suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ < suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].version_) {
 
           glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
@@ -225,9 +225,7 @@ void Suffer::RenderManager::DoRender(){
         glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
         glViewport(0, 0, suffer.GetWindowSize().x_, suffer.GetWindowSize().y_);
         
-        //Set last framebuffer texture to draw it in imgui
-        current_drawn_texture_id_ = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].color_texture_id_].current_texture_id_;
-      
+        
       }
 
     }
@@ -245,6 +243,10 @@ void Suffer::RenderManager::DoRender(){
 
 
     render_dl_.Clear();
+    
+    //Set last framebuffer texture to draw it in imgui
+    current_drawn_texture_id_ = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[render_dl_.frame_buffer_id_].color_texture_id_].current_texture_id_;
+
 
   }
  
@@ -255,8 +257,11 @@ void Suffer::RenderManager::DoRender(){
 
   glDisable(GL_DEPTH_TEST);
 
-  data_->draw_quad_command_->SetData(data_->screen_quad_.get());
-  data_->draw_quad_command_->Execute();
+  // data_->draw_quad_command_->SetData(data_->screen_quad_.get());
+  // data_->draw_quad_command_->Execute();
+
+  data_->post_command_->SetData(Postprocessing::PostproccessKind::kPostproccessKind_Default);
+  data_->post_command_->Execute();
 
 }
 
