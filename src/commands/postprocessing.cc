@@ -87,9 +87,7 @@ void Suffer::Postprocessing::SetData(PostproccessKind postpro) {
 
   {
 
-
       data_->material_type_ = MaterialComponent::kParamsType_RenderToTexture;
-      data_->texture_ids_[0] = suffer.render_manager_.current_drawn_texture_id_;
       data_->current_used_textures_ = 1;
       data_->postpro_type_ = postpro;
   }
@@ -101,8 +99,6 @@ void Suffer::Postprocessing::SetData(PostproccessKind postpro) {
 // ------------------------------------------------------------------------- //
 
 void Suffer::Postprocessing::Execute() const {
-
-  //SetData((PostproccessKind)data_->postpro_type_);
 
   glDisable(GL_DEPTH_TEST);
 
@@ -168,114 +164,11 @@ void Suffer::Postprocessing::Execute() const {
 
   // ----------------------------------------------------------------------- //
 
-  // --------------------------- IsTextureCreated -------------------------- //
-
-  {
-
-    //for (u32 i = 0; i < data_->current_used_textures_; ++i) {
-    //
-    //  if (data_->texture_ids_[i] < 0) return;
-    //  s32 id_texture = data_->texture_ids_[i];
-    //
-    //  if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ == 0) {
-    //    glGenTextures(1, &suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
-    //  }
-    //
-    //  if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ < suffer.resource_manager_.data_->internal_textures_[id_texture].version_) {
-    //    glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
-    //
-    //    // WRAP S
-    //    switch (suffer.resource_manager_.data_->internal_textures_[id_texture].wrap_s_) {
-    //    case ResourceManager::Texture::kTextureWrap_Repeat:
-    //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    //      break;
-    //    case ResourceManager::Texture::kTextureWrap_MirroredRepeat:
-    //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    //      break;
-    //    case ResourceManager::Texture::kTextureWrap_ClampToEdge:
-    //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    //      break;
-    //    default:
-    //      break;
-    //    }
-    //
-    //    // WRAP T
-    //    switch (suffer.resource_manager_.data_->internal_textures_[id_texture].wrap_t_) {
-    //    case ResourceManager::Texture::kTextureWrap_Repeat:
-    //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    //      break;
-    //    case ResourceManager::Texture::kTextureWrap_MirroredRepeat:
-    //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    //      break;
-    //    case ResourceManager::Texture::kTextureWrap_ClampToEdge:
-    //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    //      break;
-    //    default:
-    //      break;
-    //    }
-    //
-    //    // MIN FILTER
-    //    switch (suffer.resource_manager_.data_->internal_textures_[id_texture].min_filter_) {
-    //    case ResourceManager::Texture::kTextureFilter_Linear:
-    //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    //      break;
-    //    case ResourceManager::Texture::kTextureFilter_Nearest:
-    //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    //      break;
-    //    default:
-    //      break;
-    //    }
-    //
-    //    // MAG FILTER
-    //    switch (suffer.resource_manager_.data_->internal_textures_[id_texture].mag_filter_) {
-    //    case ResourceManager::Texture::kTextureFilter_Linear:
-    //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //      break;
-    //    case ResourceManager::Texture::kTextureFilter_Nearest:
-    //      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    //      break;
-    //    default:
-    //      break;
-    //    }
-    //
-    //    // UPLOAD DATA DEPENDING ON NUMBER CHANNELS
-    //    switch (suffer.resource_manager_.data_->internal_textures_[id_texture].number_channels_) {
-    //    case 3:
-    //      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
-    //        suffer.resource_manager_.data_->internal_textures_[id_texture].width_,
-    //        suffer.resource_manager_.data_->internal_textures_[id_texture].height_,
-    //        0, GL_RGB, GL_UNSIGNED_BYTE,
-    //        suffer.resource_manager_.data_->internal_textures_[id_texture].data_.get());
-    //      break;
-    //    case 4:
-    //      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-    //        suffer.resource_manager_.data_->internal_textures_[id_texture].width_,
-    //        suffer.resource_manager_.data_->internal_textures_[id_texture].height_,
-    //        0, GL_RGBA, GL_UNSIGNED_BYTE,
-    //        suffer.resource_manager_.data_->internal_textures_[id_texture].data_.get());
-    //      break;
-    //    default:
-    //      assert(1 && "\n Not contemplated number of channels.");
-    //      break;
-    //    }
-    //
-    //    glGenerateMipmap(GL_TEXTURE_2D);
-    //
-    //    suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ = suffer.resource_manager_.data_->internal_textures_[id_texture].version_;
-    //  }
-    //
-    //  
-    //}
-
-  }
-
-  // --------------------------- IsTextureCreated -------------------------- //
-
-  // ----------------------------------------------------------------------- //
-
   // -------------------------- IsMaterialCreated -------------------------- //
 
   {
+
+    // I'm not sure if this is the best way, or should I have to modify material to change its shaders?
     u32 mat_type;
     switch (data_->postpro_type_) {
     case PostproccessKind::kPostproccessKind_Default: {
@@ -289,9 +182,7 @@ void Suffer::Postprocessing::Execute() const {
     default:
       break;
     }
-
     
-
     // If internal material is not created, creates it
     if (!suffer.resource_manager_.data_->internal_materials_[mat_type].is_created_) {
       // Create vertex shader
@@ -387,7 +278,6 @@ void Suffer::Postprocessing::Execute() const {
       u_pos = glGetUniformLocation(program_id, str);
       if (u_pos < 0) {
         printf("\nERROR: texture %d uniform not exists.", i);
-        //return;
       }
 
       glActiveTexture(GL_TEXTURE0 + i);
@@ -409,31 +299,13 @@ void Suffer::Postprocessing::Execute() const {
   {
 
     glBindBuffer(GL_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_vertex_buffers_[data_->vertex_buffer_id_].current_gl_buffer_);
-    auto type = suffer.resource_manager_.data_->internal_vertex_buffers_[data_->vertex_buffer_id_].vertex_format_;
-    switch (type) {
-    case Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P:
-      glEnableVertexAttribArray(0);
-      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
-      break;
-    case Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N:
-      glEnableVertexAttribArray(0);
-      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (6 * sizeof(float)), (GLvoid*)0);
-      glEnableVertexAttribArray(1);
-      glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (6 * sizeof(float)), (GLvoid*)(3 * sizeof(float)));
-      break;
-    case Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV:
-      glEnableVertexAttribArray(0);
-      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (GLvoid*)0);
-      glEnableVertexAttribArray(1);
-      glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (GLvoid*)(3 * sizeof(float)));
-      glEnableVertexAttribArray(2);
-      glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (GLvoid*)(6 * sizeof(float)));
 
-      break;
-    default:
-
-      break;
-    }
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (GLvoid*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (GLvoid*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (GLvoid*)(6 * sizeof(float)));
 
   }
 
@@ -450,7 +322,6 @@ void Suffer::Postprocessing::Execute() const {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_id_].current_gl_buffer_);
 
     glDrawElements(GL_TRIANGLES, number_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
-    GLenum error = glGetError();
     
   }
 

@@ -38,7 +38,7 @@ namespace Suffer {
   private:
 
     /**
-     * @brief: Executes the command with all necessary things to draw use the postproccess
+     * @brief: Executes the command with all necessary things to draw use the post process
      */
     virtual void Execute() const override;
 

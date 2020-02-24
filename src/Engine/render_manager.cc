@@ -29,33 +29,12 @@ Suffer::RenderManager::~RenderManager(){
 
 void Suffer::RenderManager::StartUp(){
 
+	// Init here instead of constructor and call in engine init
   data_ = new RenderData();
 
-	// Init here instead of constructor and call in engine init
   dls_to_draw_ = 0;
 
-  data_->screen_quad_.alloc();
-  data_->draw_quad_command_.alloc();
   data_->post_command_.alloc();
-
-  // Components
-  Suffer::ref_ptr< Suffer::GeometryComponent> geometry_component;
-  Suffer::ref_ptr< Suffer::MaterialComponent> material_component;
-  Suffer::ref_ptr<Suffer::MaterialComponent::RenderToTextureParams> material_params;
-
-  geometry_component.alloc();
-  material_component.alloc();
-  material_params.alloc();
-  
-  geometry_component->CreateGeometryWithShape(GeometryComponent::kBasicShapes_Quad);
-  geometry_component->SetDrawMode(GeometryComponent::kDrawMode_Triangles);
-
-  material_component->SetParams(material_params.get());
-
-  data_->screen_quad_->AddComponent(geometry_component.get());
-  data_->screen_quad_->AddComponent(material_component.get());
-
-  data_->reference_to_texture_params_ = material_params.get();
 
 }
 
@@ -132,7 +111,6 @@ void Suffer::RenderManager::DoRender(){
 
             if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ == 0) {
               glGenTextures(1, &suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
-              data_->reference_to_texture_params_->albedo_texture_id_ = suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].color_texture_id_;
             }
 
             if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ < suffer.resource_manager_.data_->internal_textures_[id_texture].version_) {
@@ -244,22 +222,15 @@ void Suffer::RenderManager::DoRender(){
 
     render_dl_.Clear();
     
-    //Set last framebuffer texture to draw it in imgui
+    //Set last framebuffer texture to draw it in imgui and use it in post processes
     current_drawn_texture_id_ = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[render_dl_.frame_buffer_id_].color_texture_id_].current_texture_id_;
 
-
   }
- 
-  //Set final texture to draw in imgui
 
   // Render to final framebuffer (screen quad)
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-  glDisable(GL_DEPTH_TEST);
-
-  // data_->draw_quad_command_->SetData(data_->screen_quad_.get());
-  // data_->draw_quad_command_->Execute();
-
+  //glDisable is on post proccess command
   data_->post_command_->SetData(Postprocessing::PostproccessKind::kPostproccessKind_Default);
   data_->post_command_->Execute();
 

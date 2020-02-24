@@ -23,6 +23,9 @@ struct Suffer::SufferManager::Data {
     // Running
     bool window_should_close_;
 
+    //Active post processes
+    bool black_and_white_;
+
 };
 
 // ------------------------------------------------------------------------- //
