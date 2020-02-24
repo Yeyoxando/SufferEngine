@@ -19,7 +19,7 @@
 
 #define MAX_USED_TEXTURES 5
 //14 to uniforms, rest for lights
-#define MAX_USED_VEC4DATA 46 
+#define MAX_USED_VEC4DATA 80 
 
 // ------------------------------------------------------------------------- //
 
