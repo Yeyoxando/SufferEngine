@@ -14,6 +14,7 @@
 #include "input.h"
 #include "system_transform.h"
 #include "system_render.h"
+#include "system_script.h"
 
 namespace Suffer {
 
@@ -125,6 +126,8 @@ namespace Suffer {
     
     ref_ptr<SystemRender> render_system_;
     ref_ptr<SystemTransform> transform_system_;
+    ref_ptr<SystemScript> script_system_;
+
 
     //Framebuffers
     ref_ptr<ResourceManager::FrameBuffer> draw_frame_buffer_;
