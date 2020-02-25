@@ -78,6 +78,7 @@ Suffer::Interface::Interface(){
 	is_game_window_opened_ = true;
 	is_project_window_opened_ = true;
 	is_audio_window_opened_ = true;
+	is_lighting_window_opened_ = false;
 
 	_ptr = new Data();
 
@@ -184,7 +185,10 @@ void Suffer::Interface::DrawMenuBar(){
 		}
 		if (ImGui::MenuItem("Game")) {
 			is_game_window_opened_ = !is_game_window_opened_;
-		}
+    }		
+		if (ImGui::MenuItem("Lighting")) {
+			is_lighting_window_opened_ = !is_lighting_window_opened_;
+    }
 		if (ImGui::MenuItem("Log")) {
 			is_log_opened_ = !is_log_opened_;
 		}
@@ -250,6 +254,7 @@ void  Suffer::Interface::CreateDock(bool* p_open){
 		ImGuiID dock_id_bottom = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.20f, NULL, &dock_main_id);
 
 		ImGui::DockBuilderDockWindow("Inspector", dock_id_right);
+		ImGui::DockBuilderDockWindow("Lighting", dock_id_right);
 		ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
 		ImGui::DockBuilderDockWindow("Project", dock_id_bottom);
 		ImGui::DockBuilderDockWindow("Audio", dock_id_bottom);
@@ -262,6 +267,7 @@ void  Suffer::Interface::CreateDock(bool* p_open){
 	ImGui::DockSpace(ImGui::GetID("SufferDockSpace"), ImVec2(0.0f, 0.0f), dockspace_flags);
 
 	if(is_inspector_opened_) Inspector();
+	if(is_lighting_window_opened_) Lighting(suffer.GetCurrentScene());
 	if(is_hierarchy_opened_) Hierarchy(SufferManager::instance().GetCurrentScene());
 	if(is_project_window_opened_) Project();
 	if(is_log_opened_) Log();
@@ -567,6 +573,64 @@ void  Suffer::Interface::Project(){
 	ImGui::Begin("Project", &is_project_window_opened_);
 	ImGui::Text("I'm the project structure!");
 	ImGui::End();
+}
+
+// --------------------------------------------------- //
+
+void Suffer::Interface::Lighting(Scene* current_scene){
+
+  assert(current_scene != nullptr);
+  if(current_scene == nullptr) return;
+
+	u8 number_lights = suffer.light_manager_.current_lights_;
+
+	static float intensity = 0.0f;
+
+	ImGui::Begin("Lighting");
+
+	for (u8 i = 0; i < number_lights; ++i) {
+	  LightManager::DirectionalLight* light = suffer.light_manager_.lights_[i];
+	  LightManager::PointLight* point_light;
+	  LightManager::SpotLight* spot_light;
+		switch (light->GetLightKind()){
+			case LightManager::kLightKind_Directional: {
+
+        ImGui::PushID(i);
+
+        ImGui::TextColored(ImVec4(0.0, 1.0, 0.0, 1.0), "Directional Light");
+        intensity = light->Intensity();
+        ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0f, 1.0f);
+				light->SetIntensity(intensity);
+
+        ImGui::PopID();
+
+			  break;
+			}
+			case LightManager::kLightKind_Point: {
+        ImGui::PushID(i);
+
+				ImGui::TextColored(ImVec4(1.0, 0.0, 0.0, 1.0), "Point Light");
+				point_light = static_cast<LightManager::PointLight*>(light);
+				intensity = point_light->Intensity();
+				ImGui::DragFloat("Intensity", &intensity, 0.1f, 0.0f, 100.0f);
+				point_light->SetIntensity(intensity);
+
+				ImGui::PopID();
+			  break;
+			}
+			case LightManager::kLightKind_Spot: {
+			  break;
+			}
+			default: {
+	
+			break;
+			}
+		}
+	}
+
+	ImGui::End();
+
+
 }
 
 // --------------------------------------------------- //

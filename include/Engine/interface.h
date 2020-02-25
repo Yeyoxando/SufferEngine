@@ -52,6 +52,7 @@ namespace Suffer {
 		void Log();                            // LOG engine window
 		void Inspector();                      // GameObjects inspector
 		void Project();                        // Project folder
+		void Lighting(Scene* current_scene);   // Lights customization
 
     /**
      * @brief: Processes the sound passed by parameter in the interface
@@ -105,6 +106,7 @@ namespace Suffer {
 		bool is_project_window_opened_;
 		bool is_game_window_opened_;
 		bool is_audio_window_opened_;
+		bool is_lighting_window_opened_;
 
 	};
 

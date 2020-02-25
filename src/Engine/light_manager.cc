@@ -344,9 +344,6 @@ Suffer::LightManager::PointLight::PointLight(){
 
   light_kind_ = kLightKind_Point;
 
-  suffer.light_manager_.current_lights_++;
-  suffer.light_manager_.lights_.push_back(this);
-
 }
 
 // ----------------------------------------------------------------------- //
@@ -417,9 +414,6 @@ Suffer::LightManager::SpotLight::SpotLight(){
   intensity_ = 1.0f;
 
   light_kind_ = kLightKind_Spot;
-
-  suffer.light_manager_.current_lights_++;
-  suffer.light_manager_.lights_.push_back(this);
 
 }
 

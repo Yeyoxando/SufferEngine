@@ -14,6 +14,7 @@ namespace Suffer {
   class LightManager {
     friend class SufferManager;
     friend class DrawGeometry;
+    friend class Interface;
 
   public:
 

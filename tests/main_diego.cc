@@ -29,16 +29,24 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::Scene> scene;
   scene.alloc();
 
+  Suffer::ref_ptr<Suffer::LightManager::PointLight> point_light;
+  point_light.alloc();
+  point_light->SetIntensity(20.0f);
+  point_light->SetAmbient(0.0f, 0.0f, 1.0f);
+  point_light->SetDiffuse(0.0f, 0.0f, 1.0f);
+  point_light->SetSpecular(0.0f, 0.0f, 1.0f);
+  point_light->SetColor(0.0f, 0.0f, 1.0f);
+  point_light->SetLinear(1.0f);
+  point_light->SetConstant(1.0f);
+  point_light->SetQuadratic(1.0f);
+
   Suffer::ref_ptr<Suffer::LightManager::DirectionalLight> directional_light_;
   directional_light_.alloc();
   directional_light_->SetIntensity(1.0f);
-  directional_light_->SetAmbient(1.0f, 0.0f, 0.0f);
+  directional_light_->SetAmbient(0.0f, 0.0f, 0.0f);
   directional_light_->SetDiffuse(0.0f, 1.0f, 0.0f);
   directional_light_->SetSpecular(0.0f, 0.0f, 1.0f);
 
-  //Suffer::ref_ptr<Suffer::LightManager::DirectionalLight> directional_light_2;
-  //directional_light_2.alloc();
-  //
   //Suffer::ref_ptr<Suffer::LightManager::DirectionalLight> directional_light_3;
   //directional_light_3.alloc();
   //

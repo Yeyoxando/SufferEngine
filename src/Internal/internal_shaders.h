@@ -560,13 +560,55 @@ namespace Suffer {
 
     }
 
+
+    vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 viewDir) {
+
+      vec3 lightDir = normalize(light.position - fragPos);
+
+      float diff = max(dot(normal, lightDir), 0.0f);
+
+      vec3 reflectDir = reflect(-lightDir, normal);
+      float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+
+      vec3 ambient = CreateAmbientLight(1.0f, light.ambient);
+
+      vec3 diffuse = CreateDiffuseLight(light.intensity, lightDir, vec3(light.diffuse), normal);
+      vec3 specular = CreateSpecularLight(light.intensity, lightDir, vec3(light.specular), normal);
+
+      float distance = length(light.position - fragPos);
+      float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic
+        * (distance * distance));
+
+      ambient  *= attenuation *  light.intensity;
+      diffuse  *= attenuation *  light.intensity;
+      specular *= attenuation *  light.intensity;
+
+      //light.specular = specular;
+      //light.diffuse = diffuse;
+      //light.ambient = ambient;
+
+      return (ambient + diffuse + specular) * light.color;
+
+    }
+
     // --------------------------------------------------------------------- //
 
     void main() {
-      CompoundLights();      
+      CompoundLights();
       
       vec3 view_dir = normalize(camera_pos - fragPos);
-      vec3 result = CalculateDirectionalLight(directional_lights[0], normal, view_dir);
+
+      vec3 directionals = vec3(0.0, 0.0, 0.0);
+      for(int i = 0; i < num_directionals; ++i){
+        directionals += CalculateDirectionalLight(directional_lights[i], normal, view_dir);
+      }
+       
+      vec3 point = vec3(0.0, 0.0, 0.0);
+      for(int i = 0; i < num_points; ++i){
+        point += CalculatePointLight(point_lights[i], normal, view_dir);
+      }
+
+      vec3 result = directionals + point;
       
       fragColor = vec4(result, 1.0f);
     }
