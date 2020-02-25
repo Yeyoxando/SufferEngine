@@ -17,19 +17,26 @@ namespace Suffer {
   // ----------------------------------------------------------------------- //
 
   /**
-   * @brief: Command to draw GameObjects with Geometry and Material
+   * @brief: Command to draw post processes with fixed quad geometry
    */
   class Postprocessing : public Command {
     friend class RenderManager;
   public:
     Postprocessing();
 
+    /**
+     * @brief: Indicates which kind of post process is
+     */
     enum PostproccessKind {
       kPostproccessKind_Invalid = -1,
       kPostproccessKind_Default = 0,
       kPostproccessKind_BlackAndWhite = 1,
     };
 
+    /**
+     * @brief: Initializes command data
+     * @param: Post process to use
+     */
     void SetData(PostproccessKind postpro);
 
   protected:
@@ -38,7 +45,7 @@ namespace Suffer {
   private:
 
     /**
-     * @brief: Executes the command with all necessary things to draw use the post process
+     * @brief: Executes the command with all necessary things to draw with the post process
      */
     virtual void Execute() const override;
 

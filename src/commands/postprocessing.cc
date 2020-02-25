@@ -19,8 +19,6 @@
 #include <string>
 
 #define MAX_USED_TEXTURES 5
- //14 to uniforms, rest for lights
-#define MAX_USED_VEC4DATA 46 
 
 // ------------------------------------------------------------------------- //
 
@@ -29,7 +27,6 @@ struct Suffer::Postprocessing::Data {
   // Geometry
   s32 vertex_buffer_id_;
   s32 index_buffer_id_;
-
 
   // Textures has to be separated
   s32 texture_ids_[MAX_USED_TEXTURES];
@@ -83,7 +80,7 @@ void Suffer::Postprocessing::SetData(PostproccessKind postpro) {
   // ---------------------------- SetGeometry ------------------------------ //
 
 
-  // --------------------------- StoreUniforms ----------------------------- //
+  // ---------------------------- SetMaterial ------------------------------ //
 
   {
 
@@ -92,7 +89,7 @@ void Suffer::Postprocessing::SetData(PostproccessKind postpro) {
       data_->postpro_type_ = postpro;
   }
 
-  // --------------------------- StoreUniforms ----------------------------- //
+  // ---------------------------- SetMaterial ------------------------------ //
 
 }
 
