@@ -53,15 +53,6 @@ int main(int argc, char* argv[]) {
   //Suffer::ref_ptr<Suffer::LightManager::DirectionalLight> directional_light_4;
   //directional_light_4.alloc();
 
-  Suffer::ref_ptr<Suffer::LightManager::DirectionalLight> directional_light_2;
-  directional_light_2.alloc();
-
-  Suffer::ref_ptr<Suffer::LightManager::DirectionalLight> directional_light_3;
-  directional_light_3.alloc();
-
-  Suffer::ref_ptr<Suffer::LightManager::DirectionalLight> directional_light_4;
-  directional_light_4.alloc();
-
 
   // Textures
   Suffer::ref_ptr<Suffer::ResourceManager::Texture> albedo_texture;
