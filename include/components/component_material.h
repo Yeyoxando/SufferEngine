@@ -77,9 +77,6 @@ namespace Suffer {
       RenderToTextureParams();
       ~RenderToTextureParams() {}
 
-      // Add here an enum to choose current postprocess from imgui or something like that 
-      // by switching the shader and increasing material version
-
       s32 albedo_texture_id_;
 
     };

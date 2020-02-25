@@ -113,6 +113,8 @@ namespace Suffer {
      */
     void PrepareAudio();
 
+    void PreparePostproccess();
+
 		// Threads
 		ref_ptr<Thread> logic_;
 		ref_ptr<Thread> input_;

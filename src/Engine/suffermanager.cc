@@ -16,6 +16,7 @@
 #include "system_render.h"
 #include "system_transform.h"
 #include "internal_window.h"
+#include "postprocessing.h"
 
 // --------------------------------------------------------------//
 
@@ -131,6 +132,10 @@ void Suffer::SufferManager::Input() {
     data_->is_interface_active_ = !data_->is_interface_active_;
   }
 
+  if (input_manager_.IsKeyDown(InputManager::k_B)) {
+    data_->black_and_white_ = !data_->black_and_white_;
+  }
+
   input_manager_.Update();
 
 }
@@ -193,6 +198,20 @@ void Suffer::SufferManager::PrepareAudio() {
 
 }
 
+// --------------------------------------------------------------//
+
+void Suffer::SufferManager::PreparePostproccess(){
+
+  if (data_->black_and_white_) {
+    DisplayList postpro_dl;
+    ref_ptr<Postprocessing> black_white;
+    black_white.alloc();
+    black_white->SetData(Postprocessing::kPostproccessKind_BlackAndWhite);
+    postpro_dl.AddCommand(black_white.get());
+    render_manager_.AddToRenderQueue(std::move(postpro_dl), postprocessing_frame_buffer_.get());
+  }
+
+}
 
 // --------------------------------------------------------------//
 
@@ -210,6 +229,8 @@ void Suffer::SufferManager::Step(){
   }
 
   render_manager_.AddToRenderQueue(std::move(render_system_.get()->dl_), draw_frame_buffer_.get());
+
+  PreparePostproccess();
 
 	// This will be the last function in UPDATE
 	PrepareAudio();
