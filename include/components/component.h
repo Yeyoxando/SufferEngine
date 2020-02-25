@@ -13,6 +13,7 @@
 namespace Suffer {
 
   class Component : public virtual Referenced {
+    friend class GameObject;
 
   public:
 
@@ -24,6 +25,7 @@ namespace Suffer {
       kComponentKind_Geometry,
       kComponentKind_Material,
       kComponentKind_Audio,
+      kComponentKind_Script,
       kComponentKind_User = 1000,
     };
 
@@ -32,6 +34,7 @@ namespace Suffer {
     ComponentKind const kind_;
 
   protected:
+    Suffer::GameObject* game_object_reference_;
     virtual ~Component();
   };
 
