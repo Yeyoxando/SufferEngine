@@ -89,6 +89,9 @@ bool Suffer::SufferManager::Init(){
   render_system_.alloc();
   suffer.AddSystem(render_system_.get());
 
+  script_system_.alloc();
+  suffer.AddSystem(script_system_.get());
+
   //debug_render_system_.alloc();
   //suffer.AddSystem(debug_render_system_.get());
 

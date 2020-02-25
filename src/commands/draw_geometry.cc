@@ -574,7 +574,7 @@ void Suffer::DrawGeometry::Execute() const {
     // -- Uniform Block --
     u_pos = glGetUniformLocation(program_id, "u_data");
     if (u_pos < 0) {
-      printf("\nERROR: u_data uniform not exists.");
+      printf("\nERROR: u_data uniform not exists.\n");
       //return;
     }
 

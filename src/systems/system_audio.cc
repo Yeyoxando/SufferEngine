@@ -31,13 +31,14 @@ void Suffer::SystemAudio::Execute(GameObject* go){
   const float* listener_target = suffer.GetCurrentScene()->GetMainCamera()->Target();
   const float* listener_up = suffer.GetCurrentScene()->GetMainCamera()->Up();
 
+  mathmorra::Vector3 list_up = mathmorra::Vector3(listener_up);
   audio_source_->SetSoundMinMaxDistance(transform_->GetPosition()[0], transform_->GetScale()[0]);
 
   audio_source_->SetSoundPosition(transform_->GetPosition());
   audio_source_->SetListenerParameters(
     mathmorra::Vector3(listener_position),
     mathmorra::Vector3(listener_target),
-    mathmorra::Vector3(listener_up),
+    list_up * -1.0f,
     mathmorra::Vector3(0.0f, 0.0f, 0.0f)
   );
 

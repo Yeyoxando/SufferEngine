@@ -15,6 +15,7 @@
 #include "system_render.h"
 #include "component_geometry.h"
 #include "component_material.h"
+#include "component_script.h"
 
 // --------------------------------------------------------------//
 
@@ -91,7 +92,7 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::Transform> transform_component_;
   transform_component_.alloc();
-  go_cube->AddComponent(transform_component_.get());
+  //go_cube->AddComponent(transform_component_.get());
 
   auto component_ = go_cube->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
   Suffer::Transform* component = reinterpret_cast<Suffer::Transform*>(component_);
@@ -103,7 +104,7 @@ int main(int argc, char* argv[]) {
 
   go_cube->SetName("Cube");
 
-  component->Translate(mathmorra::Vector3(-3.0f, 0.0f, 0.0f));
+  //component->Translate(mathmorra::Vector3(-3.0f, 0.0f, 0.0f));
 
 
 
@@ -134,8 +135,19 @@ int main(int argc, char* argv[]) {
   transform_component_sphere_.alloc();
   go_sphere->AddComponent(transform_component_sphere_.get());
 
-  go_sphere->StartUpLUA("../../../src/lua/lua_code_sphere.txt");
-  go_cube->StartUpLUA("../../../src/lua/lua_code_cube.txt");
+
+  // SCRIPTING TESTS
+
+  Suffer::ref_ptr<Suffer::ScriptComponent> script_component_;
+  script_component_.alloc();
+  go_sphere->AddComponent(script_component_.get());
+  script_component_->AttachScript("../../../src/lua/lua_test_update.txt");
+
+  Suffer::ref_ptr<Suffer::ScriptComponent> script_component_cube;
+  script_component_cube.alloc();
+  go_cube->AddComponent(script_component_cube.get());
+  script_component_cube->AttachScript("../../../src/lua/lua_test_update_cube.lua");
+  //go_sphere->StartUpLUA("../../../src/lua/lua_test_update.txt");
 
   Suffer::ref_ptr<Suffer::Audio3D> audio_component_;
   audio_component_.alloc();
