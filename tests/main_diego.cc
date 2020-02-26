@@ -49,32 +49,32 @@ int main(int argc, char* argv[]) {
   directional_light_->SetSpecular(0.5f, 0.5f, 0.5f);
   directional_light_->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
 
-  //Suffer::ref_ptr<Suffer::LightManager::SpotLight> spot_light_;
-  //spot_light_.alloc();
-  //spot_light_->SetPosition(mathmorra::Vector3(0.0f, 0.0f, -5.0f));
-  //spot_light_->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-  //spot_light_->SetIntensity(0.4f);
-  //spot_light_->SetAmbient(1.0f, 1.0f, 1.0f);
-  //spot_light_->SetDiffuse(1.0f, 0.0f, 0.0f);
-  //spot_light_->SetSpecular(0.0f, 1.0f, 1.0f);
-  //spot_light_->SetColor(0.0f, 0.0f, 1.0f);
-  //spot_light_->SetLinear(1.0f);
-  //spot_light_->SetConstant(0.09f);
-  //spot_light_->SetQuadratic(0.032f);
-  //spot_light_->SetCutOff(0.9978f);
-  //spot_light_->SetOuterCutOff(0.99f);
+  Suffer::ref_ptr<Suffer::LightManager::SpotLight> spot_light_;
+  spot_light_.alloc();
+  spot_light_->SetPosition(mathmorra::Vector3(0.0f, 0.0f, -5.0f));
+  spot_light_->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+  spot_light_->SetIntensity(0.4f);
+  spot_light_->SetAmbient(1.0f, 1.0f, 1.0f);
+  spot_light_->SetDiffuse(1.0f, 0.0f, 0.0f);
+  spot_light_->SetSpecular(0.0f, 1.0f, 1.0f);
+  spot_light_->SetColor(0.0f, 0.0f, 1.0f);
+  spot_light_->SetLinear(1.0f);
+  spot_light_->SetConstant(0.09f);
+  spot_light_->SetQuadratic(0.032f);
+  spot_light_->SetCutOff(0.9978f);
+  spot_light_->SetOuterCutOff(0.99f);
   
-  //Suffer::ref_ptr<Suffer::LightManager::PointLight> point;
-  //point.alloc();
-  //point->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-  //point->SetIntensity(2.0f);
-  //point->SetAmbient(1.0f, 0.0f, 0.0f);
-  //point->SetDiffuse(1.0f, 0.0f, 1.0f);
-  //point->SetSpecular(1.0f, 0.0f, 1.0f);
-  //point->SetPosition(mathmorra::Vector3(10.0f, 0.0f, 10.0f));
-  //point->SetLinear(1.0f);
-  //point->SetConstant(0.09f);
-  //point->SetQuadratic(0.032f);
+  Suffer::ref_ptr<Suffer::LightManager::PointLight> point;
+  point.alloc();
+  point->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+  point->SetIntensity(2.0f);
+  point->SetAmbient(1.0f, 0.0f, 0.0f);
+  point->SetDiffuse(1.0f, 0.0f, 1.0f);
+  point->SetSpecular(1.0f, 0.0f, 1.0f);
+  point->SetPosition(mathmorra::Vector3(0.0f, 10.0f, 0.0f));
+  point->SetLinear(1.0f);
+  point->SetConstant(0.09f);
+  point->SetQuadratic(0.032f);
 
   // Textures
   Suffer::ref_ptr<Suffer::ResourceManager::Texture> albedo_texture;
@@ -143,9 +143,9 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::Transform> transform_component_2;
   transform_component_2.alloc();
+  transform_component_2->Scale(mathmorra::Vector3(5.0f, 5.0f, 5.0f));
   transform_component_2->Translate(mathmorra::Vector3(0.0f, 0.0f, 10.0f));
   transform_component_2->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
-  transform_component_2->Scale(mathmorra::Vector3(5.0f, 5.0f, 5.0f));
   go_quad->AddComponent(transform_component_2.get());
   
   go_quad->SetName("Quad");

@@ -306,6 +306,12 @@ u16 Suffer::LightManager::DirectionalLight::GetLightKind(){
 
 // ----------------------------------------------------------------------- //
 
+void Suffer::LightManager::DirectionalLight::SetLightKind(LightKind new_kind){
+    light_kind_ = new_kind;
+}
+
+// ----------------------------------------------------------------------- //
+
 Suffer::LightManager::DirectionalLight::DirectionalLight(){
 
   assert(suffer.light_manager_.current_lights_ < MAX_LIGHTS);

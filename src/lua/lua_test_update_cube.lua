@@ -4,7 +4,7 @@ function Start()
   AddComponent(0)
   SetGeometry("Sphere")
   SetDrawMode("Triangles")
-  Translate(0.0, 0.0, -5.0)
+  Translate(0.0, 10.0, 0.0)
 end
 
 local rotation = 0

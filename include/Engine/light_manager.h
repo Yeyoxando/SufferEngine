@@ -68,6 +68,7 @@ namespace Suffer {
       float* Specular();
       float  Intensity();
       u16 GetLightKind();
+      void SetLightKind(LightKind new_kind);
 
       DirectionalLight();
       ~DirectionalLight();

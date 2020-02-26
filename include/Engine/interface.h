@@ -95,6 +95,12 @@ namespace Suffer {
 			"RayTeak"
 		};
 
+    const char* lights[3] = {
+      "Directional",
+      "Point",
+      "Spot"
+    };
+
 		struct Data;
 		Data* _ptr;
 
