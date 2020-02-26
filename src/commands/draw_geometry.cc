@@ -186,8 +186,6 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
         case LightManager::kLightKind_Point: {
           //24
           point_light = static_cast<LightManager::PointLight*>(light);
-          mathmorra::Vector3 pos = suffer.GetCurrentScene()->GetMainCamera()->Position();
-          point_light->SetPosition(pos);
           data_->u_data_[60 + (offset)] = point_light->Position()[0];
           data_->u_data_[61 + (offset)] = point_light->Position()[1];
           data_->u_data_[62 + (offset)] = point_light->Position()[2];
@@ -215,6 +213,10 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
         case LightManager::kLightKind_Spot: {
           //32
           spot_light = static_cast<LightManager::SpotLight*>(light);
+          mathmorra::Vector3 pos = suffer.GetCurrentScene()->GetMainCamera()->Position();
+          spot_light->SetPosition(pos);
+          mathmorra::Vector3 dir = suffer.GetCurrentScene()->GetMainCamera()->Target();
+          spot_light->SetDirection(dir);
           data_->u_data_[60 + (offset)] = spot_light->Direction()[0];
           data_->u_data_[61 + (offset)] = spot_light->Direction()[1];
           data_->u_data_[62 + (offset)] = spot_light->Direction()[2];

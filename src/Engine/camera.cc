@@ -320,7 +320,7 @@ void Suffer::Camera::Update() {
     speed_ = 0.5f;
   }
 
-  SetupPerspective(field_of_view_, (float)suffer.GetWindowSize().x_ / (float)suffer.GetWindowSize().y_, 5.0f, 50.0f);
+  SetupPerspective(field_of_view_, (float)suffer.GetWindowSize().x_ / (float)suffer.GetWindowSize().y_, 0.001f, 450.0f);
   view_matrix_ = mathmorra::Matrix4::LookAt(camera_position_, camera_position_ + camera_target_, camera_up_);
 
 }

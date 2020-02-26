@@ -4,6 +4,7 @@ function Start()
   AddComponent(0)
   SetGeometry("Sphere")
   SetDrawMode("Triangles")
+  Translate(0.0, 0.0, -5.0)
 end
 
 local rotation = 0
@@ -11,5 +12,5 @@ function Update()
   print "Updating CUBE from LUA!"
   rotation = rotation + 0.01
   Rotate(rotation, 0.0, 0.0);
-  Translate(math.sin(os.clock()) * 5.0, math.cos(os.clock()) * 5.0, 0.0)
+  --Translate(math.sin(os.clock()) * 5.0, math.cos(os.clock()) * 5.0, 0.0)
 end
