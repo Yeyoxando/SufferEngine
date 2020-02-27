@@ -98,6 +98,7 @@ struct Suffer::ResourceManager::ResourceData {
   Array<InternalTexture> internal_textures_;
   Array<InternalMaterial> internal_materials_;
   Array<InternalFrameBuffer> internal_frame_buffers_;
+  Array<InternalFrameBuffer> internal_light_frame_buffers_;
 
   u32 number_of_vertex_buffers_;
   u32 number_of_index_buffers_;

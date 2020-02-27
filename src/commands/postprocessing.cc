@@ -1,19 +1,17 @@
 /*
  * Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
- * Date: 15-10-2019
- * Draw Geometry command Header
+ * Date: 24-02-2019
+ * Post-processing command Header
  */
 
 #include <postprocessing.h>
 #include <gl/glew.h>
 #include "time.h"
 #include <data_types.h>
-#include "scene.h"
 #include "vector4.h"
 #include "suffermanager.h"
 #include "internal_resource_manager.h"
 #include "internal_shaders.h"
-#include "component_geometry.h"
 #include "component_material.h"
 #include "common_definitions.h"
 #include <string>

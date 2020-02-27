@@ -60,6 +60,9 @@ void Suffer::RenderManager::AddToRenderQueue(DisplayList&& logic_dl, ResourceMan
     if (framebuffer != nullptr) {
       logic_dl.frame_buffer_id_ = framebuffer->id_;
     }
+    else {
+      logic_dl.frame_buffer_id_ = -1;
+    }
     list_of_dl_.push_back(std::move(logic_dl));
     dls_to_draw_++;
 	}
