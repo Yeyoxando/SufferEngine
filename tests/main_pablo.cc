@@ -18,6 +18,7 @@
 #include "component_material.h"
 #include "component_script.h"
 #include <time.h>
+#include "component_light.h"
 
 // --------------------------------------------------------------//
 
@@ -43,40 +44,40 @@ int main(int argc, char* argv[]) {
     //point_light->SetConstant(1.0f);
     //point_light->SetQuadratic(1.0f);
 
-    Suffer::ref_ptr<Suffer::LightManager::DirectionalLight> directional_light_;
-    directional_light_.alloc();
-    directional_light_->SetIntensity(1.0f);
-    directional_light_->SetAmbient(0.5f, 0.5f, 0.5f);
-    directional_light_->SetDiffuse(0.5f, 0.5f, 0.5f);
-    directional_light_->SetSpecular(0.5f, 0.5f, 0.5f);
-    directional_light_->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-
-    Suffer::ref_ptr<Suffer::LightManager::SpotLight> spot_light_;
-    spot_light_.alloc();
-    spot_light_->SetPosition(mathmorra::Vector3(0.0f, 0.0f, -5.0f));
-    spot_light_->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-    spot_light_->SetIntensity(1.0f);
-    spot_light_->SetAmbient(0.5f, 0.5f, 0.5f);
-    spot_light_->SetDiffuse(1.0f, 1.0f, 1.0f);
-    spot_light_->SetSpecular(1.0f, 1.0f, 1.0f);
-    spot_light_->SetColor(0.0f, 0.0f, 1.0f);
-    spot_light_->SetLinear(1.0f);
-    spot_light_->SetConstant(0.09f);
-    spot_light_->SetQuadratic(0.032f);
-    spot_light_->SetCutOff(0.9978f);
-    spot_light_->SetOuterCutOff(0.99f);
-
-    Suffer::ref_ptr<Suffer::LightManager::PointLight> point;
-    point.alloc();
-    point->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-    point->SetIntensity(20.0f);
-    point->SetAmbient(0.0f, 1.0f, 1.0f);
-    point->SetDiffuse(0.0f, 1.0f, 1.0f);
-    point->SetSpecular(0.0f, 1.0f, 1.0f);
-    point->SetPosition(mathmorra::Vector3(rand() % 20, rand() % 20, rand() % 20));
-    point->SetLinear(1.0f);
-    point->SetConstant(0.09f);
-    point->SetQuadratic(0.032f);
+    //Suffer::ref_ptr<Suffer::LightManager::DirectionalLight> directional_light_;
+    //directional_light_.alloc();
+    //directional_light_->SetIntensity(1.0f);
+    //directional_light_->SetAmbient(0.5f, 0.5f, 0.5f);
+    //directional_light_->SetDiffuse(0.5f, 0.5f, 0.5f);
+    //directional_light_->SetSpecular(0.5f, 0.5f, 0.5f);
+    //directional_light_->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+    //
+    //Suffer::ref_ptr<Suffer::LightManager::SpotLight> spot_light_;
+    //spot_light_.alloc();
+    //spot_light_->SetPosition(mathmorra::Vector3(0.0f, 0.0f, -5.0f));
+    //spot_light_->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+    //spot_light_->SetIntensity(1.0f);
+    //spot_light_->SetAmbient(0.5f, 0.5f, 0.5f);
+    //spot_light_->SetDiffuse(1.0f, 1.0f, 1.0f);
+    //spot_light_->SetSpecular(1.0f, 1.0f, 1.0f);
+    //spot_light_->SetColor(0.0f, 0.0f, 1.0f);
+    //spot_light_->SetLinear(1.0f);
+    //spot_light_->SetConstant(0.09f);
+    //spot_light_->SetQuadratic(0.032f);
+    //spot_light_->SetCutOff(0.9978f);
+    //spot_light_->SetOuterCutOff(0.99f);
+    //
+    //Suffer::ref_ptr<Suffer::LightManager::PointLight> point;
+    //point.alloc();
+    //point->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+    //point->SetIntensity(20.0f);
+    //point->SetAmbient(0.0f, 1.0f, 1.0f);
+    //point->SetDiffuse(0.0f, 1.0f, 1.0f);
+    //point->SetSpecular(0.0f, 1.0f, 1.0f);
+    //point->SetPosition(mathmorra::Vector3(rand() % 20, rand() % 20, rand() % 20));
+    //point->SetLinear(1.0f);
+    //point->SetConstant(0.09f);
+    //point->SetQuadratic(0.032f);
 
     //Suffer::ref_ptr<Suffer::LightManager::PointLight> point2;
     //point2.alloc();
@@ -145,6 +146,10 @@ int main(int argc, char* argv[]) {
     material_params2->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     material_component2->SetParams(material_params_sphere.get());
 
+    Suffer::ref_ptr<Suffer::LightComponent> light_component;
+    light_component.alloc();
+
+
     for (int i = 0; i < 20; ++i) {
         go_cube[i].alloc();
         script_component_[i].alloc();
@@ -171,6 +176,16 @@ int main(int argc, char* argv[]) {
     geometry_component_sphere->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
     geometry_component_sphere->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Sphere);
     go_sphere->AddComponent(geometry_component_sphere.get());
+    light_component->Init(Suffer::LightComponent::kLightKind_Point);
+
+    light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+    light_component->SetIntensity(20.0f);
+    light_component->SetAmbient(0.0f, 1.0f, 1.0f);
+    light_component->SetDiffuse(0.0f, 1.0f, 1.0f);
+    light_component->SetSpecular(0.0f, 1.0f, 1.0f);
+    light_component->SetPosition(mathmorra::Vector3(rand() % 20, rand() % 20, rand() % 20));
+
+    go_sphere->AddComponent(light_component.get());
 
 
     Suffer::ref_ptr<Suffer::ScriptComponent> script_component_2;
@@ -182,8 +197,9 @@ int main(int argc, char* argv[]) {
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_sphere_;
     transform_component_sphere_.alloc();
-    transform_component_sphere_->Translate(point->Position());
+    //transform_component_sphere_->Translate(point->Position());
     transform_component_sphere_->Rotate(mathmorra::Vector3(90.0f, 0.0f, 0.0f));
+    transform_component_sphere_->Translate(mathmorra::Vector3(10.0f, 10.0f, 10.0f));
     go_sphere->AddComponent(transform_component_sphere_.get());
 
 

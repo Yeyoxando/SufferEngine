@@ -347,6 +347,9 @@ Suffer::LightManager::PointLight::PointLight(){
   // Attributes
   active_ = true;
   intensity_ = 1.0f;
+  linear_ = 1.0f;
+  constant_ = 0.09f;
+  quadratic_ = 0.032f;
 
   light_kind_ = kLightKind_Point;
 

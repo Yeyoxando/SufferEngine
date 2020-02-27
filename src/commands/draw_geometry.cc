@@ -222,7 +222,8 @@ void Suffer::DrawGeometry::SetLights(){
   // Lighting
   u32 number_lights = 0;
   u32 offset = 0;
-  for (u32 i = 0; i < suffer.light_manager_.current_lights_; ++i) {
+  u32 current_lights = suffer.light_manager_.current_lights_;
+  for (u32 i = 0; i < current_lights; ++i) {
     LightManager::DirectionalLight* light = suffer.light_manager_.lights_[i];
     if (light->Active()) {
       number_lights++;

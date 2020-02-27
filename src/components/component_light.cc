@@ -25,6 +25,8 @@ void Suffer::LightComponent::Init(LightKind kind){
       }
       case Suffer::LightComponent::kLightKind_Point: {
           ref_ptr<LightManager::PointLight> point;
+          LightManager::PointLight* foo;
+          //foo = new LightManager::PointLight();
           point.alloc();
           point->SetActive(false);
           reference_ = point.get();
@@ -43,23 +45,23 @@ void Suffer::LightComponent::Init(LightKind kind){
       }
     }
 
-    s32 id = suffer.resource_manager_.data_->number_of_light_frame_buffers_;
-    suffer.resource_manager_.data_->internal_light_frame_buffers_[id].height_ = SHADOW_SIZE;
-    suffer.resource_manager_.data_->internal_light_frame_buffers_[id].width_ = SHADOW_SIZE;
-
-    // Depth
-    Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_depth_texture;
-    frame_buffer_depth_texture.alloc();
-
-    suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_ = frame_buffer_depth_texture->id_;
-    suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].width_ = SHADOW_SIZE;
-    suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].height_ = SHADOW_SIZE;
-    suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].number_channels_ = 1;
-    suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].version_++;
-
-    suffer.resource_manager_.data_->internal_light_frame_buffers_[id].version_++;
-
-    framebuffer_id_ = id;
+    //s32 id = suffer.resource_manager_.data_->number_of_light_frame_buffers_;
+    //suffer.resource_manager_.data_->internal_light_frame_buffers_[id].height_ = SHADOW_SIZE;
+    //suffer.resource_manager_.data_->internal_light_frame_buffers_[id].width_ = SHADOW_SIZE;
+    //
+    //// Depth
+    //Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_depth_texture;
+    //frame_buffer_depth_texture.alloc();
+    //
+    //suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_ = frame_buffer_depth_texture->id_;
+    //suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].width_ = SHADOW_SIZE;
+    //suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].height_ = SHADOW_SIZE;
+    //suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].number_channels_ = 1;
+    //suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].version_++;
+    //
+    //suffer.resource_manager_.data_->internal_light_frame_buffers_[id].version_++;
+    //
+    //framebuffer_id_ = id;
     initialized_ = true;
 
 }
@@ -100,6 +102,9 @@ void Suffer::LightComponent::SetColor(float* new_color){
 void Suffer::LightComponent::SetPosition(float* new_position){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) return;
+    reference_->position_.x_ = new_position[0];
+    reference_->position_.y_ = new_position[1];
+    reference_->position_.z_ = new_position[2];
 }
 
 // ----------------------------------------------------------------------- //
@@ -107,6 +112,9 @@ void Suffer::LightComponent::SetPosition(float* new_position){
 void Suffer::LightComponent::SetDirection(float* new_direction){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) return;
+    reference_->direction_.x_ = new_direction[0];
+    reference_->direction_.y_ = new_direction[1];
+    reference_->direction_.z_ = new_direction[2];
 }
 
 // ----------------------------------------------------------------------- //
@@ -114,6 +122,9 @@ void Suffer::LightComponent::SetDirection(float* new_direction){
 void Suffer::LightComponent::SetAmbient(float* new_ambient){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) return;
+    reference_->ambient_.x_ = new_ambient[0];
+    reference_->ambient_.y_ = new_ambient[1];
+    reference_->ambient_.z_ = new_ambient[2];
 }
 
 // ----------------------------------------------------------------------- //
@@ -121,6 +132,9 @@ void Suffer::LightComponent::SetAmbient(float* new_ambient){
 void Suffer::LightComponent::SetDiffuse(float* new_diffuse){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) return;
+    reference_->diffuse_.x_ = new_diffuse[0];
+    reference_->diffuse_.y_ = new_diffuse[1];
+    reference_->diffuse_.z_ = new_diffuse[2];
 }
 
 // ----------------------------------------------------------------------- //
@@ -128,137 +142,155 @@ void Suffer::LightComponent::SetDiffuse(float* new_diffuse){
 void Suffer::LightComponent::SetSpecular(float* new_specular){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) return;
+    reference_->specular_.x_ = new_specular[0];
+    reference_->specular_.y_ = new_specular[1];
+    reference_->specular_.z_ = new_specular[2];
 }
 
 // ----------------------------------------------------------------------- //
-//
-//float* Suffer::LightComponent::Color(){
-//    assert(reference_ != nullptr && "ERROR: NULL light");
-//    if (reference_ == nullptr) return;
-//}
-//
-//// ----------------------------------------------------------------------- //
-//
-//bool Suffer::LightComponent::Active(){
-//    assert(reference_ != nullptr && "ERROR: NULL light");
-//    if (reference_ == nullptr) return;
-//}
-//
-//// ----------------------------------------------------------------------- //
-//
-//float* Suffer::LightComponent::Position(){
-//    assert(reference_ != nullptr && "ERROR: NULL light");
-//    if (reference_ == nullptr) return;
-//}
-//
-//// ----------------------------------------------------------------------- //
-//
-//float* Suffer::LightComponent::Direction()
-//{
-//    assert(reference_ != nullptr && "ERROR: NULL light");
-//    if (reference_ == nullptr) return;
-//}
-//
-//// ----------------------------------------------------------------------- //
-//
-//float* Suffer::LightComponent::Ambient()
-//{
-//    assert(reference_ != nullptr && "ERROR: NULL light");
-//    if (reference_ == nullptr) return;
-//}
-//
-//// ----------------------------------------------------------------------- //
-//
-//float* Suffer::LightComponent::Diffuse()
-//{
-//    assert(reference_ != nullptr && "ERROR: NULL light");
-//    if (reference_ == nullptr) return;
-//}
-//
-//// ----------------------------------------------------------------------- //
-//
-//float* Suffer::LightComponent::Specular()
-//{
-//    assert(reference_ != nullptr && "ERROR: NULL light");
-//    if (reference_ == nullptr) return;
-//}
-//
-//// ----------------------------------------------------------------------- //
-//
-//float Suffer::LightComponent::Intensity()
-//{
-//    assert(reference_ != nullptr && "ERROR: NULL light");
-//    if (reference_ == nullptr) return;
-//}
-//
-//// ----------------------------------------------------------------------- //
-//
-//u16 Suffer::LightComponent::GetLightKind()
-//{
-//    assert(reference_ != nullptr && "ERROR: NULL light");
-//    if (reference_ == nullptr) return;
-//}
-//
-//// ----------------------------------------------------------------------- //
 
-void Suffer::LightComponent::SetLightKind(LightKind new_kind)
-{
+float* Suffer::LightComponent::Color(){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return nullptr;
+    return &reference_->color_.x_;
+}
+
+// ----------------------------------------------------------------------- //
+
+bool Suffer::LightComponent::Active(){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return nullptr;
+    return reference_->active_;
+}
+
+// ----------------------------------------------------------------------- //
+
+float* Suffer::LightComponent::Position(){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return nullptr;
+    return &reference_->position_.x_;
+}
+
+// ----------------------------------------------------------------------- //
+
+float* Suffer::LightComponent::Direction(){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return nullptr;
+    return &reference_->direction_.x_;
+}
+
+// ----------------------------------------------------------------------- //
+
+float* Suffer::LightComponent::Ambient(){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return nullptr;
+    return &reference_->ambient_.x_;
+}
+
+// ----------------------------------------------------------------------- //
+
+float* Suffer::LightComponent::Diffuse(){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return nullptr;
+    return &reference_->diffuse_.x_;
+}
+
+// ----------------------------------------------------------------------- //
+
+float* Suffer::LightComponent::Specular(){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return nullptr;
+    return &reference_->specular_.x_;
+}
+
+// ----------------------------------------------------------------------- //
+
+float Suffer::LightComponent::Intensity(){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) abort();
+    return reference_->intensity_;
+}
+
+// ----------------------------------------------------------------------- //
+
+u16 Suffer::LightComponent::GetLightKind(){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) abort();
+    return reference_->light_kind_;
+}
+
+// ----------------------------------------------------------------------- //
+
+void Suffer::LightComponent::SetLightKind(LightKind new_kind){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) abort();
+    reference_->light_kind_ = new_kind;
+    kind_ = new_kind;
+}
+
+// ----------------------------------------------------------------------- //
+
+void Suffer::LightComponent::Reset(){
+    reference_->SetPosition(0.0f, 0.0f, 0.0f);
+    reference_->SetAmbient(0.0f, 0.0f, 0.0f);
+    reference_->SetSpecular(0.0f, 0.0f, 0.0f);
+    reference_->SetDiffuse(0.0f, 0.0f, 0.0f);
+    reference_->SetDirection(0.0f, 0.0f, 0.0f);
+    reference_->SetIntensity(1.0f);
+    reference_->SetColor(1.0f, 1.0f, 1.0f);
+}
+
+// ----------------------------------------------------------------------- //
+
+void Suffer::LightComponent::SetSpecular(mathmorra::Vector3 new_specular){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) return;
+    reference_->specular_ = new_specular;
 }
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightComponent::SetSpecular(mathmorra::Vector3 new_specular)
-{
+void Suffer::LightComponent::SetSpecular(float x, float y, float z){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) return;
+    reference_->specular_ = mathmorra::Vector3(x, y, z);
 }
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightComponent::SetSpecular(float x, float y, float z)
-{
+void Suffer::LightComponent::SetDiffuse(mathmorra::Vector3 new_diffuse){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) return;
+    reference_->diffuse_ = new_diffuse;
 }
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightComponent::SetDiffuse(mathmorra::Vector3 new_diffuse)
-{
+void Suffer::LightComponent::SetDiffuse(float x, float y, float z){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) return;
+    reference_->diffuse_ = mathmorra::Vector3(x, y, z);
 }
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightComponent::SetDiffuse(float x, float y, float z)
-{
+void Suffer::LightComponent::SetAmbient(mathmorra::Vector3 new_ambient){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) return;
+    reference_->ambient_ = new_ambient;
 }
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightComponent::SetAmbient(mathmorra::Vector3 new_ambient)
-{
+void Suffer::LightComponent::SetAmbient(float x, float y, float z){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) return;
+    reference_->ambient_ = mathmorra::Vector3(x, y, z);
 }
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightComponent::SetAmbient(float x, float y, float z)
-{
-    assert(reference_ != nullptr && "ERROR: NULL light");
-    if (reference_ == nullptr) return;
-}
-
-// ----------------------------------------------------------------------- //
-
-void Suffer::LightComponent::SetDirection(mathmorra::Vector3 new_direction)
-{
+void Suffer::LightComponent::SetDirection(mathmorra::Vector3 new_direction){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) return;
     reference_->direction_.x_ = new_direction.x_;
@@ -279,8 +311,7 @@ void Suffer::LightComponent::SetDirection(float x, float y, float z){
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::LightComponent::SetPosition(mathmorra::Vector3 new_position)
-{
+void Suffer::LightComponent::SetPosition(mathmorra::Vector3 new_position){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) return;
 

@@ -13,6 +13,7 @@
 #include "internal_interface.h"
 #include "internal_game_object.h"
 #include "component_geometry.h"
+#include "component_light.h"
 
 // --------------------------------------------------- //
 
@@ -79,6 +80,16 @@ void Suffer::GameObject::AddComponent(ref_ptr<Component> new_component){
     assert(false && "Invalid ComponentKind.");
 
   new_component->game_object_reference_ = this;
+
+  if (new_component->kind_ == Component::ComponentKind::kComponentKind_Light) {
+      LightComponent* light = static_cast<LightComponent*>(new_component.get());
+      if (!light->initialized_) {
+          printf("CRITICAL ERROR: The LIGHT has not been initialized.\n");
+          printf("Miss calling Init() function in the component?\n");
+          abort();
+      }
+      light->SetActive(true);
+  }
   
   components_.insert(std::pair<s32, ref_ptr<Component>>((s32)new_component->kind_, 
                                                         new_component));

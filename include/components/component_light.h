@@ -13,6 +13,8 @@
 namespace Suffer {
 
     class LightComponent : public Component {
+        friend class SystemLight;
+        friend class GameObject;
 
     public:
         enum LightKind {
@@ -26,6 +28,8 @@ namespace Suffer {
         LightKind kind_;
 
         void Init(LightKind kind);
+        void Reset();
+
 
         void SetActive(bool active);
         void SetIntensity(float new_intensity);
@@ -68,7 +72,6 @@ namespace Suffer {
 
     private:
         s32 framebuffer_id_;
-
         bool initialized_;
         LightManager::DirectionalLight* reference_;
 

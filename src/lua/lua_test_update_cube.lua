@@ -3,6 +3,7 @@ function Start()
   Rotate(0.0, 0.0, 0.0)
   SetGeometry("Sphere")
   SetDrawMode("Triangles")
+  Translate(30.0, 10.0, 5.0)
 end
 
 local rotation = 0
