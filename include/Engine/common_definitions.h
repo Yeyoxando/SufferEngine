@@ -7,6 +7,8 @@
 #define MAX_FRAMEBUFFERS 4
 #define MAX_AUDIO_SOURCES 15
 
+#define SHADOW_SIZE 1024
+
 #define INPUT_BUFFER 62
 
 #define MAX_SAMPLES 5

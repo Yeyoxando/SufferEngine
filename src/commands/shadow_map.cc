@@ -18,10 +18,6 @@ struct Suffer::ShadowMap::Data {
 
 // ------------------------------------------------------------------------- //
 
-#define SHADOW_SIZE 1024
-
-// ------------------------------------------------------------------------- //
-
 Suffer::ShadowMap::ShadowMap(){
 
   cmd_type_ = Command::kCommandType_Render;

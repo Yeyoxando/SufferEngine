@@ -635,6 +635,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalFrameBuffers(){
   internal_frame_buffers_.alloc(MAX_FRAMEBUFFERS);
 
   number_of_frame_buffers_ = 0;
+  number_of_light_frame_buffers_ = 0;
 
 }
 

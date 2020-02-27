@@ -16,6 +16,7 @@
 #include "component_geometry.h"
 #include "component_material.h"
 #include "component_script.h"
+#include "component_light.h"
 
 // --------------------------------------------------------------//
 
@@ -40,6 +41,8 @@ int main(int argc, char* argv[]) {
  //point_light->SetLinear(1.0f);
  //point_light->SetConstant(1.0f);
  //point_light->SetQuadratic(1.0f);
+  
+  Suffer::ref_ptr<Suffer::LightComponent> test;
 
   Suffer::ref_ptr<Suffer::LightManager::DirectionalLight> directional_light_;
   directional_light_.alloc();

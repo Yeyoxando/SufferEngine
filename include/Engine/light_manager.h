@@ -28,6 +28,7 @@ namespace Suffer {
     // ----------------------------------------------------------------------- //
 
     class DirectionalLight : public Referenced {
+    friend class LightComponent;
 
     public:
       

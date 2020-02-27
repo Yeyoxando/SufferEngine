@@ -86,11 +86,14 @@ bool Suffer::SufferManager::Init(){
   transform_system_.alloc();
   suffer.AddSystem(transform_system_.get());
 
+  script_system_.alloc();
+  suffer.AddSystem(script_system_.get());
+
+
+
   render_system_.alloc();
   suffer.AddSystem(render_system_.get());
 
-  script_system_.alloc();
-  suffer.AddSystem(script_system_.get());
 
   //debug_render_system_.alloc();
   //suffer.AddSystem(debug_render_system_.get());
@@ -230,6 +233,8 @@ void Suffer::SufferManager::Step(){
       systems_[i]->Execute(suffer.GetCurrentScene()->current_gameobjects_[j].get());
     }
   }
+
+  //////////////////////////
 
   render_manager_.AddToRenderQueue(std::move(render_system_.get()->dl_), draw_frame_buffer_.get());
 
