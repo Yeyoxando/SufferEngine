@@ -47,22 +47,23 @@ int main(int argc, char* argv[]) {
   directional_light_->SetAmbient(0.5f, 0.5f, 0.5f);
   directional_light_->SetDiffuse(0.5f, 0.5f, 0.5f);
   directional_light_->SetSpecular(0.5f, 0.5f, 0.5f);
+  directional_light_->SetActive(false);
   directional_light_->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
 
-  //Suffer::ref_ptr<Suffer::LightManager::SpotLight> spot_light_;
-  //spot_light_.alloc();
-  //spot_light_->SetPosition(mathmorra::Vector3(0.0f, 0.0f, -5.0f));
-  //spot_light_->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-  //spot_light_->SetIntensity(1.0f);
-  //spot_light_->SetAmbient(0.5f, 0.5f, 0.5f);
-  //spot_light_->SetDiffuse(1.0f, 1.0f, 1.0f);
-  //spot_light_->SetSpecular(1.0f, 1.0f, 1.0f);
-  //spot_light_->SetColor(0.0f, 0.0f, 1.0f);
-  //spot_light_->SetLinear(1.0f);
-  //spot_light_->SetConstant(0.09f);
-  //spot_light_->SetQuadratic(0.032f);
-  //spot_light_->SetCutOff(0.9978f);
-  //spot_light_->SetOuterCutOff(0.99f);
+  Suffer::ref_ptr<Suffer::LightManager::SpotLight> spot_light_;
+  spot_light_.alloc();
+  spot_light_->SetPosition(mathmorra::Vector3(0.0f, 0.0f, -5.0f));
+  spot_light_->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+  spot_light_->SetIntensity(1.0f);
+  spot_light_->SetAmbient(0.5f, 0.5f, 0.5f);
+  spot_light_->SetDiffuse(1.0f, 1.0f, 1.0f);
+  spot_light_->SetSpecular(1.0f, 1.0f, 1.0f);
+  spot_light_->SetColor(0.0f, 0.0f, 1.0f);
+  spot_light_->SetLinear(1.0f);
+  spot_light_->SetConstant(0.09f);
+  spot_light_->SetQuadratic(0.032f);
+  spot_light_->SetCutOff(0.9978f);
+  spot_light_->SetOuterCutOff(0.99f);
   
   //Suffer::ref_ptr<Suffer::LightManager::PointLight> point;
   //point.alloc();

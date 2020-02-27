@@ -212,57 +212,57 @@ namespace Suffer {
     PointLight point_lights[max_lights];
     SpotLight spot_lights[max_lights];
 
+    // --------------------------------------------------------------------- //
+
     void CompoundLights(){
       int offset = 0;
       for(int i = 0; i < num_lights; ++i){
-        if(bool(u_data[15 + (offset)].a)){
-          switch(int(u_data[16 + (offset)].a)){
-            case 0:
-              DirectionalLight d_light;
-              d_light.direction = vec3(u_data[15 + (offset)].x, u_data[15 + (offset)].y, u_data[15 + (offset)].z);
-              d_light.color     = vec3(u_data[16 + (offset)].x, u_data[16 + (offset)].y, u_data[16 + (offset)].z);
-              d_light.ambient   = vec3(u_data[17 + (offset)].x, u_data[17 + (offset)].y, u_data[17 + (offset)].z);
-              d_light.diffuse   = vec3(u_data[18 + (offset)].x, u_data[18 + (offset)].y, u_data[18 + (offset)].z);
-              d_light.specular  = vec3(u_data[19 + (offset)].x, u_data[19 + (offset)].y, u_data[19 + (offset)].z);
-              d_light.intensity = u_data[17 + offset].a;
-              directional_lights[num_directionals] = d_light;
-              num_directionals++;
-              offset += 5;
-              break;
-            case 1:
-              PointLight p_light;
-              p_light.position  = vec3(u_data[15 + (offset)].x, u_data[15 + (offset)].y, u_data[15 + (offset)].z);
-              p_light.color     = vec3(u_data[16 + (offset)].x, u_data[16 + (offset)].y, u_data[16 + (offset)].z);
-              p_light.ambient   = vec3(u_data[17 + (offset)].x, u_data[17 + (offset)].y, u_data[17 + (offset)].z);
-              p_light.diffuse   = vec3(u_data[18 + (offset)].x, u_data[18 + (offset)].y, u_data[18 + (offset)].z);
-              p_light.specular  = vec3(u_data[19 + (offset)].x, u_data[19 + (offset)].y, u_data[19 + (offset)].z);
-              p_light.constant  = u_data[20 + (offset)].x;
-              p_light.linear    = u_data[20 + (offset)].y;
-              p_light.quadratic = u_data[20 + (offset)].z;
-              p_light.intensity = u_data[17 + offset].a;
-              point_lights[num_points] = p_light;
-              num_points++;
-              offset += 6;
-              break;
-            case 2:
-              SpotLight s_light;
-              s_light.direction = vec3(u_data[15 + (offset)].x, u_data[15 + (offset)].y, u_data[15 + (offset)].z);
-              s_light.position  = vec3(u_data[16 + (offset)].x, u_data[16 + (offset)].y, u_data[16 + (offset)].z);
-              s_light.color     = vec3(u_data[17 + (offset)].x, u_data[17 + (offset)].y, u_data[17 + (offset)].z);
-              s_light.ambient   = vec3(u_data[18 + (offset)].x, u_data[18 + (offset)].y, u_data[18 + (offset)].z);
-              s_light.diffuse   = vec3(u_data[19 + (offset)].x, u_data[19 + (offset)].y, u_data[19 + (offset)].z);
-              s_light.specular  = vec3(u_data[20 + (offset)].x, u_data[20 + (offset)].y, u_data[20 + (offset)].z);
-              s_light.constant  = u_data[21 + (offset)].x;
-              s_light.linear    = u_data[21 + (offset)].y;
-              s_light.quadratic = u_data[21 + (offset)].z;            
-              s_light.cutOff    = u_data[22 + (offset)].x;            
-              s_light.outerCutOff = u_data[22 + (offset)].y; 
-              s_light.intensity = u_data[18 + offset].a;           
-              spot_lights[num_spots] = s_light;
-              num_spots++;
-              offset += 8;
-              break;
-          }
+        switch(int(u_data[16 + (offset)].a)){
+          case 0:
+            DirectionalLight d_light;
+            d_light.direction = vec3(u_data[15 + (offset)].x, u_data[15 + (offset)].y, u_data[15 + (offset)].z);
+            d_light.color     = vec3(u_data[16 + (offset)].x, u_data[16 + (offset)].y, u_data[16 + (offset)].z);
+            d_light.ambient   = vec3(u_data[17 + (offset)].x, u_data[17 + (offset)].y, u_data[17 + (offset)].z);
+            d_light.diffuse   = vec3(u_data[18 + (offset)].x, u_data[18 + (offset)].y, u_data[18 + (offset)].z);
+            d_light.specular  = vec3(u_data[19 + (offset)].x, u_data[19 + (offset)].y, u_data[19 + (offset)].z);
+            d_light.intensity = u_data[17 + offset].a;
+            directional_lights[num_directionals] = d_light;
+            num_directionals++;
+            offset += 5;
+            break;
+          case 1:
+            PointLight p_light;
+            p_light.position  = vec3(u_data[15 + (offset)].x, u_data[15 + (offset)].y, u_data[15 + (offset)].z);
+            p_light.color     = vec3(u_data[16 + (offset)].x, u_data[16 + (offset)].y, u_data[16 + (offset)].z);
+            p_light.ambient   = vec3(u_data[17 + (offset)].x, u_data[17 + (offset)].y, u_data[17 + (offset)].z);
+            p_light.diffuse   = vec3(u_data[18 + (offset)].x, u_data[18 + (offset)].y, u_data[18 + (offset)].z);
+            p_light.specular  = vec3(u_data[19 + (offset)].x, u_data[19 + (offset)].y, u_data[19 + (offset)].z);
+            p_light.constant  = u_data[20 + (offset)].x;
+            p_light.linear    = u_data[20 + (offset)].y;
+            p_light.quadratic = u_data[20 + (offset)].z;
+            p_light.intensity = u_data[17 + offset].a;
+            point_lights[num_points] = p_light;
+            num_points++;
+            offset += 6;
+            break;
+          case 2:
+            SpotLight s_light;
+            s_light.direction = vec3(u_data[15 + (offset)].x, u_data[15 + (offset)].y, u_data[15 + (offset)].z);
+            s_light.position  = vec3(u_data[16 + (offset)].x, u_data[16 + (offset)].y, u_data[16 + (offset)].z);
+            s_light.color     = vec3(u_data[17 + (offset)].x, u_data[17 + (offset)].y, u_data[17 + (offset)].z);
+            s_light.ambient   = vec3(u_data[18 + (offset)].x, u_data[18 + (offset)].y, u_data[18 + (offset)].z);
+            s_light.diffuse   = vec3(u_data[19 + (offset)].x, u_data[19 + (offset)].y, u_data[19 + (offset)].z);
+            s_light.specular  = vec3(u_data[20 + (offset)].x, u_data[20 + (offset)].y, u_data[20 + (offset)].z);
+            s_light.constant  = u_data[21 + (offset)].x;
+            s_light.linear    = u_data[21 + (offset)].y;
+            s_light.quadratic = u_data[21 + (offset)].z;            
+            s_light.cutOff    = u_data[22 + (offset)].x;            
+            s_light.outerCutOff = u_data[22 + (offset)].y; 
+            s_light.intensity = u_data[18 + offset].a;           
+            spot_lights[num_spots] = s_light;
+            num_spots++;
+            offset += 8;
+            break;
         }
       }
     }
@@ -503,91 +503,59 @@ namespace Suffer {
     PointLight point_lights[max_lights];
     SpotLight spot_lights[max_lights];
 
+    // --------------------------------------------------------------------- //
+
     void CompoundLights(){
       int offset = 0;
       for(int i = 0; i < num_lights; ++i){
-        if(bool(u_data[15 + (offset)].a)){
-          switch(int(u_data[16 + (offset)].a)){
-            case 0:
-              DirectionalLight d_light;
-              d_light.direction = vec3(u_data[15 + (offset)].x, u_data[15 + (offset)].y, u_data[15 + (offset)].z);
-              d_light.color     = vec3(u_data[16 + (offset)].x, u_data[16 + (offset)].y, u_data[16 + (offset)].z);
-              d_light.ambient   = vec3(u_data[17 + (offset)].x, u_data[17 + (offset)].y, u_data[17 + (offset)].z);
-              d_light.diffuse   = vec3(u_data[18 + (offset)].x, u_data[18 + (offset)].y, u_data[18 + (offset)].z);
-              d_light.specular  = vec3(u_data[19 + (offset)].x, u_data[19 + (offset)].y, u_data[19 + (offset)].z);
-              d_light.intensity = u_data[17 + offset].a;
-              directional_lights[num_directionals] = d_light;
-              num_directionals++;
-              offset += 5;
-              break;
-            case 1:
-              PointLight p_light;
-              p_light.position  = vec3(u_data[15 + (offset)].x, u_data[15 + (offset)].y, u_data[15 + (offset)].z);
-              p_light.color     = vec3(u_data[16 + (offset)].x, u_data[16 + (offset)].y, u_data[16 + (offset)].z);
-              p_light.ambient   = vec3(u_data[17 + (offset)].x, u_data[17 + (offset)].y, u_data[17 + (offset)].z);
-              p_light.diffuse   = vec3(u_data[18 + (offset)].x, u_data[18 + (offset)].y, u_data[18 + (offset)].z);
-              p_light.specular  = vec3(u_data[19 + (offset)].x, u_data[19 + (offset)].y, u_data[19 + (offset)].z);
-              p_light.constant  = u_data[20 + (offset)].x;
-              p_light.linear    = u_data[20 + (offset)].y;
-              p_light.quadratic = u_data[20 + (offset)].z;
-              p_light.intensity = u_data[17 + offset].a;
-              point_lights[num_points] = p_light;
-              num_points++;
-              offset += 6;
-              break;
-            case 2:
-              SpotLight s_light;
-              s_light.direction = vec3(u_data[15 + (offset)].x, u_data[15 + (offset)].y, u_data[15 + (offset)].z);
-              s_light.position  = vec3(u_data[16 + (offset)].x, u_data[16 + (offset)].y, u_data[16 + (offset)].z);
-              s_light.color     = vec3(u_data[17 + (offset)].x, u_data[17 + (offset)].y, u_data[17 + (offset)].z);
-              s_light.ambient   = vec3(u_data[18 + (offset)].x, u_data[18 + (offset)].y, u_data[18 + (offset)].z);
-              s_light.diffuse   = vec3(u_data[19 + (offset)].x, u_data[19 + (offset)].y, u_data[19 + (offset)].z);
-              s_light.specular  = vec3(u_data[20 + (offset)].x, u_data[20 + (offset)].y, u_data[20 + (offset)].z);
-              s_light.constant  = u_data[21 + (offset)].x;
-              s_light.linear    = u_data[21 + (offset)].y;
-              s_light.quadratic = u_data[21 + (offset)].z;            
-              s_light.cutOff    = u_data[22 + (offset)].x;            
-              s_light.outerCutOff = u_data[22 + (offset)].y; 
-              s_light.intensity = u_data[18 + offset].a;           
-              spot_lights[num_spots] = s_light;
-              num_spots++;
-              offset += 8;
-              break;
-          }
+        switch(int(u_data[16 + (offset)].a)){
+          case 0:
+            DirectionalLight d_light;
+            d_light.direction = vec3(u_data[15 + (offset)].x, u_data[15 + (offset)].y, u_data[15 + (offset)].z);
+            d_light.color     = vec3(u_data[16 + (offset)].x, u_data[16 + (offset)].y, u_data[16 + (offset)].z);
+            d_light.ambient   = vec3(u_data[17 + (offset)].x, u_data[17 + (offset)].y, u_data[17 + (offset)].z);
+            d_light.diffuse   = vec3(u_data[18 + (offset)].x, u_data[18 + (offset)].y, u_data[18 + (offset)].z);
+            d_light.specular  = vec3(u_data[19 + (offset)].x, u_data[19 + (offset)].y, u_data[19 + (offset)].z);
+            d_light.intensity = u_data[17 + offset].a;
+            directional_lights[num_directionals] = d_light;
+            num_directionals++;
+            offset += 5;
+            break;
+          case 1:
+            PointLight p_light;
+            p_light.position  = vec3(u_data[15 + (offset)].x, u_data[15 + (offset)].y, u_data[15 + (offset)].z);
+            p_light.color     = vec3(u_data[16 + (offset)].x, u_data[16 + (offset)].y, u_data[16 + (offset)].z);
+            p_light.ambient   = vec3(u_data[17 + (offset)].x, u_data[17 + (offset)].y, u_data[17 + (offset)].z);
+            p_light.diffuse   = vec3(u_data[18 + (offset)].x, u_data[18 + (offset)].y, u_data[18 + (offset)].z);
+            p_light.specular  = vec3(u_data[19 + (offset)].x, u_data[19 + (offset)].y, u_data[19 + (offset)].z);
+            p_light.constant  = u_data[20 + (offset)].x;
+            p_light.linear    = u_data[20 + (offset)].y;
+            p_light.quadratic = u_data[20 + (offset)].z;
+            p_light.intensity = u_data[17 + offset].a;
+            point_lights[num_points] = p_light;
+            num_points++;
+            offset += 6;
+            break;
+          case 2:
+            SpotLight s_light;
+            s_light.direction = vec3(u_data[15 + (offset)].x, u_data[15 + (offset)].y, u_data[15 + (offset)].z);
+            s_light.position  = vec3(u_data[16 + (offset)].x, u_data[16 + (offset)].y, u_data[16 + (offset)].z);
+            s_light.color     = vec3(u_data[17 + (offset)].x, u_data[17 + (offset)].y, u_data[17 + (offset)].z);
+            s_light.ambient   = vec3(u_data[18 + (offset)].x, u_data[18 + (offset)].y, u_data[18 + (offset)].z);
+            s_light.diffuse   = vec3(u_data[19 + (offset)].x, u_data[19 + (offset)].y, u_data[19 + (offset)].z);
+            s_light.specular  = vec3(u_data[20 + (offset)].x, u_data[20 + (offset)].y, u_data[20 + (offset)].z);
+            s_light.constant  = u_data[21 + (offset)].x;
+            s_light.linear    = u_data[21 + (offset)].y;
+            s_light.quadratic = u_data[21 + (offset)].z;            
+            s_light.cutOff    = u_data[22 + (offset)].x;            
+            s_light.outerCutOff = u_data[22 + (offset)].y; 
+            s_light.intensity = u_data[18 + offset].a;           
+            spot_lights[num_spots] = s_light;
+            num_spots++;
+            offset += 8;
+            break;
         }
       }
-    }
-
-    // --------------------------------------------------------------------- //
-
-    vec3 CreateAmbientLight(float intensity, vec3 color) {
-
-      vec3 ambientLight = intensity * color;
-      return ambientLight;
-
-    }
-
-    vec3 CreateDiffuseLight(float intensity, vec3 lightDir, vec3 color, vec3 normal) {
-
-      vec3 norm = normalize(normal);
-
-      float diffs = max(dot(norm, -lightDir), 0.0f);
-      vec3 diffuseLight = diffs * color * intensity;
-
-      return diffuseLight;
-
-    }
-
-    vec3 CreateSpecularLight(float intensity, vec3 lightDir, vec3 color, vec3 normal) {
-
-      vec3 norm = normalize(normal);
-      vec3 viewDir = normalize(camera_pos - fragPos);
-      vec3 reflectDirection = reflect(-lightDir, norm);
-      float spec = pow(max(dot(viewDir, reflectDirection), 0.0f), 32);
-      vec3 specular = intensity * spec * color;
-
-      return specular;
-
     }
 
     // --------------------------------------------------------------------- //
@@ -607,6 +575,8 @@ namespace Suffer {
       return (ambient + diffuse + specular);
 
     }
+
+    // --------------------------------------------------------------------- //
 
     vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 viewDir) {
 
@@ -632,35 +602,37 @@ namespace Suffer {
 
     }
 
-  vec3 CalculateSpotLight(SpotLight light, vec3 normal) {
+    // --------------------------------------------------------------------- //
 
-    vec3 ambient = light.ambient * color.xyz;
+    vec3 CalculateSpotLight(SpotLight light, vec3 normal) {
+
+      vec3 ambient = light.ambient * color.xyz;
     
-    vec3 norm = normalize(normal);
-    vec3 lightDir = normalize(light.position - fragPos);
-    float diff = max(dot(norm, lightDir), 0.0f);
-    vec3 diffuse = light.diffuse * diff * color.xyz;
+      vec3 norm = normalize(normal);
+      vec3 lightDir = normalize(light.position - fragPos);
+      float diff = max(dot(norm, lightDir), 0.0f);
+      vec3 diffuse = light.diffuse * diff * color.xyz;
 
-    vec3 viewDir = normalize(camera_pos - fragPos);
-    vec3 reflectDir = reflect(-light.direction, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0f), 32);
-    vec3 specular = light.specular * spec * color.xyz;
+      vec3 viewDir = normalize(camera_pos - fragPos);
+      vec3 reflectDir = reflect(-light.direction, norm);
+      float spec = pow(max(dot(viewDir, reflectDir), 0.0f), 32);
+      vec3 specular = light.specular * spec * color.xyz;
 
-    float distance = length(light.position - fragPos);
-    float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic
-      * (distance * distance));
+      float distance = length(light.position - fragPos);
+      float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic
+        * (distance * distance));
     
-    float theta = dot(lightDir, normalize(-light.direction));
-    float epsilon = light.cutOff - light.outerCutOff;
-    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0f, 1.0f);
+      float theta = dot(lightDir, normalize(-light.direction));
+      float epsilon = light.cutOff - light.outerCutOff;
+      float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0f, 1.0f);
 
-    ambient  *= intensity * light.intensity;
-    diffuse  *= intensity * light.intensity;
-    specular *= intensity * light.intensity;
+      ambient  *= intensity * light.intensity;
+      diffuse  *= intensity * light.intensity;
+      specular *= intensity * light.intensity;
 
-    return (ambient + diffuse + specular) * light.intensity;
+      return (ambient + diffuse + specular) * light.intensity;
       
-  }
+    }
 
     // --------------------------------------------------------------------- //
 

@@ -191,7 +191,7 @@ void Suffer::RenderManager::DoRender(){
           error = glGetError();
 
           GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-          assert(status == GL_FRAMEBUFFER_COMPLETE);
+          //assert(status == GL_FRAMEBUFFER_COMPLETE);
           if (status != GL_FRAMEBUFFER_COMPLETE) {
             printf("FrameBuffer not complete.\n");
             return;
