@@ -30,7 +30,7 @@ void Suffer::SystemRender::Execute(GameObject * go){
 
     clear_cmd.alloc();
 
-    clear_cmd.get()->SetClearColor(mathmorra::Vector4(0.5f));
+    clear_cmd.get()->SetClearColor(mathmorra::Vector4(0.1f));
 
     dl_.AddCommand(clear_cmd.get());
   }

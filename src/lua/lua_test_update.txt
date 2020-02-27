@@ -2,7 +2,6 @@ function Start()
   print "Starting SPHERE from LUA!"
   SetGeometry("Cube")
   SetDrawMode("Triangles")
-  Translate(0.0, 0.0, 0.0)
 end
 
 local rotation_ = 0

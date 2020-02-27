@@ -258,14 +258,42 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera) {
     camera_target_ = mathmorra::Matrix4::RotateX(0.008f) * camera_target_;
   }
 
-  // Mouse Stuff
-  if (pitch_ > 89.0f)
-    pitch_ = 89.0f;
-  if (pitch_ < -89.0f)
-    pitch_ = -89.0f;
+  mathmorra::Vector2 mouse = suffer.GetMousePosition();
 
-  camera_right_ = -mathmorra::Vector3::CrossProduct(camera_target_, mathmorra::Vector3(0.0f, 1.0f, 0.0f)).Normalized();
-  camera_up_ = -mathmorra::Vector3::CrossProduct(camera_right_, camera_target_).Normalized();
+  float angleX = (mouse.x_ / (float)suffer.GetWindowSize().x_) * 6.28319f;
+  float angleY = (mouse.y_ / (float)suffer.GetWindowSize().y_) * 6.28319f;
+
+
+  //MOUSE CONTROL - QUATERNIONS
+  mathmorra::Vector3 x = mathmorra::Vector3(1.0f, 0.0f, 0.0f);
+  mathmorra::Vector3 y = mathmorra::Vector3(0.0f, 1.0f, 0.0f);
+
+  mathmorra::Quaternion q = q.EulerAngles(x, -angleY);
+  mathmorra::Quaternion p = p.EulerAngles(y, angleX);
+  mathmorra::Quaternion quaternion = quaternion.Multiply(p, q);
+
+  quaternion.Normalize();
+
+  mathmorra::Vector3 back;
+  back = { 0.0f, 0.0f, -1.0f };
+  back = quaternion.RotateVectorByQuaternion(back, quaternion);
+  back.Normalize();
+
+  camera_target_ = -back;
+
+  //glm::vec3 Front = glm::vec3(camera_target_.x_, camera_target_.y_, camera_target_.z_);
+  //glm::vec3 WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+  //glm::vec3 rig = glm::normalize(glm::cross(Front, WorldUp));
+  //glm::vec3 upp = glm::normalize(glm::cross(rig, Front));
+
+  camera_right_ = mathmorra::Vector3::CrossProduct(back, mathmorra::Vector3(0.0f, 1.0f, 0.0f)).Normalized();
+  camera_up_ = mathmorra::Vector3::CrossProduct(camera_right_, back).Normalized();
+
+  //camera_target_ = mathmorra::Vector3::CrossProduct(camera_right_, camera_up_).Normalized();
+
+  printf("\nUP X: %f, Y: %f, Z: %f\n", camera_up_.x_, camera_up_.y_, camera_up_.z_);
+  printf("RI X: %f, Y: %f, Z: %f\n", camera_right_.x_, camera_right_.y_, camera_right_.z_);
+  //printf("POS X: %f, Y: %f, Z: %f\n", camera_position_.x_, camera_position_.y_, camera_position_.z_);
 
 }
 
@@ -311,6 +339,7 @@ void Suffer::Camera::Update() {
 
   if (suffer.input_manager_.IsKeyDown(InputManager::k_F1)) {
     fps_movement_ = !fps_movement_;
+    //suffer.SetCursorPosition(mathmorra::Vector2(0.0f, 0.0f));
   }
 
   if (suffer.input_manager_.IsKeyPressed(InputManager::k_Shift)) {
