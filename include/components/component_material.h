@@ -54,6 +54,7 @@ namespace Suffer {
       ~DefaultParams() {}
 
       s32 albedo_texture_id_;
+      s32 specular_texture_id_;
 
     };
 
