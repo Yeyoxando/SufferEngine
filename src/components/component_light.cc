@@ -25,8 +25,6 @@ void Suffer::LightComponent::Init(LightKind kind){
       }
       case Suffer::LightComponent::kLightKind_Point: {
           ref_ptr<LightManager::PointLight> point;
-          LightManager::PointLight* foo;
-          //foo = new LightManager::PointLight();
           point.alloc();
           point->SetActive(false);
           reference_ = point.get();

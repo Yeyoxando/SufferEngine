@@ -590,7 +590,7 @@ void Suffer::Interface::Lighting(Scene* current_scene){
 	ImGui::Begin("Lighting");
 
 	for (u8 i = 0; i < number_lights; ++i) {
-	  LightManager::DirectionalLight* light = suffer.light_manager_.lights_[i];
+	  LightManager::DirectionalLight* light = suffer.light_manager_.lights_[i].get();
 		if (light == nullptr) break;
 	  LightManager::PointLight* point_light;
 	  LightManager::SpotLight* spot_light;

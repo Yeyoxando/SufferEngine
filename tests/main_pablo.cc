@@ -147,7 +147,9 @@ int main(int argc, char* argv[]) {
     material_component2->SetParams(material_params_sphere.get());
 
     Suffer::ref_ptr<Suffer::LightComponent> light_component;
+    Suffer::ref_ptr<Suffer::LightComponent> light_component2;
     light_component.alloc();
+    light_component2.alloc();
 
 
     for (int i = 0; i < 20; ++i) {
@@ -166,6 +168,14 @@ int main(int argc, char* argv[]) {
 
     }
 
+    light_component2->Init(Suffer::LightComponent::kLightKind_Point);
+    light_component2->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+    light_component2->SetIntensity(20.0f);
+    light_component2->SetAmbient(0.0f, 1.0f, 1.0f);
+    light_component2->SetDiffuse(0.0f, 1.0f, 1.0f);
+    light_component2->SetSpecular(0.0f, 1.0f, 1.0f);
+    go_cube[5]->AddComponent(light_component2.get());
+
     // -------------------------------- COMPONENTS STUFF TESTS ------------------------------//
 
     Suffer::ref_ptr<Suffer::GameObject> go_sphere;
@@ -178,15 +188,15 @@ int main(int argc, char* argv[]) {
     go_sphere->AddComponent(geometry_component_sphere.get());
     light_component->Init(Suffer::LightComponent::kLightKind_Point);
 
+
+    go_sphere->AddComponent(light_component.get());
+
     light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
     light_component->SetIntensity(20.0f);
     light_component->SetAmbient(0.0f, 1.0f, 1.0f);
     light_component->SetDiffuse(0.0f, 1.0f, 1.0f);
     light_component->SetSpecular(0.0f, 1.0f, 1.0f);
     light_component->SetPosition(mathmorra::Vector3(rand() % 20, rand() % 20, rand() % 20));
-
-    go_sphere->AddComponent(light_component.get());
-
 
     Suffer::ref_ptr<Suffer::ScriptComponent> script_component_2;
     script_component_2.alloc();
