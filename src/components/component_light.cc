@@ -147,6 +147,68 @@ void Suffer::LightComponent::SetSpecular(float* new_specular){
 
 // ----------------------------------------------------------------------- //
 
+void Suffer::LightComponent::SetLinear(float new_linear /*= 1.0f*/){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return;
+    if (reference_->GetLightKind() == LightManager::kLightKind_Directional) return;
+
+    Suffer::LightManager::PointLight* light = static_cast<Suffer::LightManager::PointLight*>(reference_);
+    if (light == nullptr) return;
+    light->SetLinear(new_linear);
+}
+
+// ----------------------------------------------------------------------- //
+
+void Suffer::LightComponent::SetConstant(float new_constant /*= 0.09f*/){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return;
+    if (reference_->GetLightKind() == LightManager::kLightKind_Directional) return;
+
+    Suffer::LightManager::PointLight* light = static_cast<Suffer::LightManager::PointLight*>(reference_);
+    if (light == nullptr) return;
+    light->SetConstant(new_constant);
+}
+
+// ----------------------------------------------------------------------- //
+
+void Suffer::LightComponent::SetQuadratic(float new_quadratic /*= 0.032f*/){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return;
+    if (reference_->GetLightKind() == LightManager::kLightKind_Directional) return;
+
+    Suffer::LightManager::PointLight* light = static_cast<Suffer::LightManager::PointLight*>(reference_);
+    if (light == nullptr) return;
+    light->SetQuadratic(new_quadratic);
+}
+
+// ----------------------------------------------------------------------- //
+
+void Suffer::LightComponent::SetCutOff(float new_cut_off /*= 0.9978f*/){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return;
+    if (reference_->GetLightKind() != kLightKind_Spot) return;
+
+    Suffer::LightManager::SpotLight* light = static_cast<Suffer::LightManager::SpotLight*>(reference_);
+    if (light == nullptr) return;
+    light->SetCutOff(new_cut_off);
+
+}
+
+// ----------------------------------------------------------------------- //
+
+void Suffer::LightComponent::SetOuterCutOff(float new_outer_cut_off /*= 0.99f*/){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return;
+    if (reference_->GetLightKind() != kLightKind_Spot) return;
+
+    Suffer::LightManager::SpotLight* light = static_cast<Suffer::LightManager::SpotLight*>(reference_);
+    if (light == nullptr) return;
+    light->SetOuterCutOff(new_outer_cut_off);
+
+}
+
+// ----------------------------------------------------------------------- //
+
 float* Suffer::LightComponent::Color(){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) return nullptr;

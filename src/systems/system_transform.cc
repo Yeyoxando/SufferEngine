@@ -5,6 +5,8 @@
 */
 
 #include "system_transform.h"
+#include "math_utils.h"
+#include "quaternion.h"
 
 // --------------------------------------------------- //
 
@@ -48,6 +50,34 @@ void Suffer::SystemTransform::Execute(GameObject* go){
         transform_component->scale_.z_);
 
     transform_component->model_ = scale_mat * (rotation_mat_x * rotation_mat_y * rotation_mat_z) * translation_mat;
+
+    // Update the Forward vector
+    mathmorra::Vector3 x = mathmorra::Vector3(1.0f, 0.0f, 0.0f);
+    mathmorra::Vector3 y = mathmorra::Vector3(0.0f, 1.0f, 0.0f);
+    mathmorra::Vector3 z = mathmorra::Vector3(0.0f, 0.0f, 1.0f);
+
+    mathmorra::Quaternion qx = qx.EulerAngles(x, -transform_component->rotation_.x_);
+    mathmorra::Quaternion qy = qy.EulerAngles(y, -transform_component->rotation_.y_);
+    mathmorra::Quaternion qz = qz.EulerAngles(z, -transform_component->rotation_.z_);
+    mathmorra::Quaternion quaternion = quaternion.Multiply(qz, qy);
+    quaternion = quaternion.Multiply(quaternion, qx);
+
+    quaternion.Normalize();
+    transform_component->forward_  = { 0.0f, 0.0f, 1.0f };
+    transform_component->forward_ = quaternion.RotateVectorByQuaternion(transform_component->forward_, quaternion);
+    transform_component->forward_.Normalize();
+
+    // Also re-calculate the Right and Up vector
+    transform_component->right_ = mathmorra::Vector3::CrossProduct(
+        transform_component->forward_,
+        mathmorra::Vector3(0.0f, 1.0f, 0.0f)
+    ).Normalized();
+
+    transform_component->up_ = mathmorra::Vector3::CrossProduct(
+        transform_component->right_,
+        transform_component->forward_
+    ).Normalized();
+
 
 }
 

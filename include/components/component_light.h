@@ -58,6 +58,12 @@ namespace Suffer {
         void SetSpecular(float x, float y, float z);
         void SetSpecular(mathmorra::Vector3 new_specular);
 
+        void SetLinear(float new_linear = 1.0f);
+        void SetConstant(float new_constant = 0.09f);
+        void SetQuadratic(float new_quadratic = 0.032f);
+        void SetCutOff(float new_cut_off = 0.9978f);
+        void SetOuterCutOff(float new_outer_cut_off = 0.99f);
+
 
         float* Color();
         bool   Active();

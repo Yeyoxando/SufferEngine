@@ -197,9 +197,8 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::ScriptComponent> script_component_;
   script_component_.alloc();
-  //go_sphere->AddComponent(script_component_.get());
-  //go_quad->AddComponent(script_component_.get());
-  //script_component_->AttachScript("../../../src/lua/lua_test_update.txt");
+  go_quad->AddComponent(script_component_.get());
+  script_component_->AttachScript("../../../src/lua/lua_test_update.txt");
 
   Suffer::ref_ptr<Suffer::ScriptComponent> script_component_cube;
   script_component_cube.alloc();

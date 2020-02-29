@@ -283,10 +283,6 @@ void Suffer::DrawGeometry::SetLights(){
       case LightManager::kLightKind_Spot: {
         //32
         spot_light = static_cast<LightManager::SpotLight*>(light);
-        mathmorra::Vector3 pos = suffer.GetCurrentScene()->GetMainCamera()->Position();
-        spot_light->SetPosition(pos);
-        mathmorra::Vector3 dir = suffer.GetCurrentScene()->GetMainCamera()->Target();
-        spot_light->SetDirection(dir);
         data_->u_data_[60 + (offset)] = spot_light->Direction()[0];
         data_->u_data_[61 + (offset)] = spot_light->Direction()[1];
         data_->u_data_[62 + (offset)] = spot_light->Direction()[2];

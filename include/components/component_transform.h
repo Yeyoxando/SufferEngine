@@ -26,6 +26,10 @@ namespace Suffer {
         void Rotate(mathmorra::Vector3 rotation);
         void Translate(mathmorra::Vector3 position);
 
+        float* Up();
+        float* Right();
+        float* Forward();
+
         float* GetScale();
         float* GetRotation();
         float* GetPosition();

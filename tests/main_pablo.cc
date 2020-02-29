@@ -186,17 +186,23 @@ int main(int argc, char* argv[]) {
     geometry_component_sphere->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
     geometry_component_sphere->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Sphere);
     go_sphere->AddComponent(geometry_component_sphere.get());
-    light_component->Init(Suffer::LightComponent::kLightKind_Point);
+    light_component->Init(Suffer::LightComponent::kLightKind_Spot);
 
+    light_component->SetPosition(mathmorra::Vector3(0.0f, 0.0f, -5.0f));
+    light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+    light_component->SetIntensity(1.0f);
+    light_component->SetAmbient(0.5f, 0.5f, 0.5f);
+    light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
+    light_component->SetSpecular(1.0f, 1.0f, 1.0f);
+    light_component->SetColor(0.0f, 0.0f, 1.0f);
+    light_component->SetLinear(1.0f);
+    light_component->SetConstant(0.09f);
+    light_component->SetQuadratic(0.032f);
+    light_component->SetCutOff(0.9978f);
+    light_component->SetOuterCutOff(0.99f);
 
     go_sphere->AddComponent(light_component.get());
 
-    light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-    light_component->SetIntensity(20.0f);
-    light_component->SetAmbient(0.0f, 1.0f, 1.0f);
-    light_component->SetDiffuse(0.0f, 1.0f, 1.0f);
-    light_component->SetSpecular(0.0f, 1.0f, 1.0f);
-    light_component->SetPosition(mathmorra::Vector3(rand() % 20, rand() % 20, rand() % 20));
 
     Suffer::ref_ptr<Suffer::ScriptComponent> script_component_2;
     script_component_2.alloc();
