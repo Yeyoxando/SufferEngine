@@ -953,67 +953,62 @@ bool mathmorra::Matrix4::IsIdentity(){
 
  mathmorra::Matrix4 mathmorra::Matrix4::LookAt(mathmorra::Vector3 eye, 
                                                mathmorra::Vector3 target, 
-                                               mathmorra::Vector3 up){
+                                               mathmorra::Vector3 tmp){
 
-     //Vector3 forward = eye - target;
-     //forward.Normalized();
+     mathmorra::Vector3 forward = (eye - target).Normalized();
+     mathmorra::Vector3 right = right.CrossProduct(tmp, forward);
+     mathmorra::Vector3 up = up.CrossProduct(forward, right);
 
-     //// compute the left vector
-     //Vector3 left = up.CrossProduct(up, forward); // cross product
-     //left.Normalized();
+     mathmorra::Matrix4 camToWorld;
 
-     //// recompute the orthonormal up vector
-     //Vector3 upDir = forward.CrossProduct(forward, left);    // cross product
+     camToWorld.m[0] = right.x_;
+     camToWorld.m[1] = right.y_;
+     camToWorld.m[2] = right.z_;
+     camToWorld.m[4] = up.x_;
+     camToWorld.m[5] = up.y_;
+     camToWorld.m[6] = up.z_;
+     camToWorld.m[8] = forward.x_;
+     camToWorld.m[9] = forward.y_;
+     camToWorld.m[10] = forward.z_;
 
-     //// init 4x4 matrix
-     //Matrix4 matrix;
-     //matrix.Identity();
+     camToWorld.m[12] = eye.x_;
+     camToWorld.m[13] = eye.y_;
+     camToWorld.m[14] = eye.z_;
+     camToWorld.m[15] = 1.0f;
 
-     //// set rotation part, inverse rotation matrix: M^-1 = M^T for Euclidean transform
-     //matrix.m[0] = left.x_;
-     //matrix.m[4] = left.y_;
-     //matrix.m[8] = left.z_;
-     //matrix.m[1] = upDir.x_;
-     //matrix.m[5] = upDir.y_;
-     //matrix.m[9] = upDir.z_;
-     //matrix.m[2] = forward.x_;
-     //matrix.m[6] = forward.y_;
-     //matrix.m[10] = forward.z_;
+     camToWorld.GetInverse(&camToWorld);
 
-     //// set translation part
-     //matrix.m[12] = -left.x_ * eye.x_ - left.y_ * eye.y_ - left.z_ * eye.z_;
-     //matrix.m[13] = -upDir.x_ * eye.x_ - upDir.y_ * eye.y_ - upDir.z_ * eye.z_;
-     //matrix.m[14] = -forward.x_ * eye.x_ - forward.y_ * eye.y_ - forward.z_ * eye.z_;
+     return camToWorld;
 
-   mathmorra::Matrix4 result;
-
-   mathmorra::Vector3 f = (target - eye).Normalized();
-   mathmorra::Vector3 u = up.Normalized();
-   mathmorra::Vector3 s = mathmorra::Vector3::CrossProduct(f, u).Normalized();
-
-   u = mathmorra::Vector3::CrossProduct(s, f);
-
-   result.m[0]  = s.x_;
-   result.m[1]  = s.y_;
-   result.m[2]  = s.z_;
-   result.m[3] = 0.0f;
-
-   result.m[4]  = u.x_;
-   result.m[5]  = u.y_;
-   result.m[6]  = u.z_;
-   result.m[7] = 0.0f;
-
-   result.m[8]  = -f.x_;
-   result.m[9]  = -f.y_;
-   result.m[10] = -f.z_;
-   result.m[11] =  0.0f;
-
-   result.m[12]  = -mathmorra::Vector3::DotProduct(s, eye);
-   result.m[13]  = -mathmorra::Vector3::DotProduct(u, eye);
-   result.m[14] =   mathmorra::Vector3::DotProduct(f, eye);
-   result.m[15] = 1.0f;
-
-   return result;
+     //mathmorra::Matrix4 result;
+     //
+     //mathmorra::Vector3 f = (target - eye).Normalized();
+     //mathmorra::Vector3 u = up.Normalized();
+     //mathmorra::Vector3 s = mathmorra::Vector3::CrossProduct(f, u).Normalized();
+     //
+     //u = mathmorra::Vector3::CrossProduct(s, f);
+     //
+     //result.m[0]  = s.x_;
+     //result.m[1]  = s.y_;
+     //result.m[2]  = s.z_;
+     //result.m[3] = 0.0f;
+     //
+     //result.m[4]  = u.x_;
+     //result.m[5]  = u.y_;
+     //result.m[6]  = u.z_;
+     //result.m[7] = 0.0f;
+     //
+     //result.m[8]  = -f.x_;
+     //result.m[9]  = -f.y_;
+     //result.m[10] = -f.z_;
+     //result.m[11] =  0.0f;
+     //
+     //result.m[12]  = -mathmorra::Vector3::DotProduct(s, eye);
+     //result.m[13]  = -mathmorra::Vector3::DotProduct(u, eye);
+     //result.m[14] =   mathmorra::Vector3::DotProduct(f, eye);
+     //result.m[15] = 1.0f;
+     //
+     //return result;
 
  }
 

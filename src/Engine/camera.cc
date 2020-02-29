@@ -181,9 +181,9 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera) {
   if (suffer.input_manager_.IsKeyPressed(InputManager::k_A)) {
 
     mathmorra::Matrix4 translations = translations.Translate(
-      -camera_right_.x_ * speed_ * time,
+      camera_right_.x_ * speed_ * time,
       0.0f,
-      -camera_right_.z_ * speed_ * time);
+      camera_right_.z_ * speed_ * time);
 
     //Transform Matrix4 / Vector3
     camera_position_ = translations.Transpose() * camera_position_;
@@ -193,9 +193,9 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera) {
   if (suffer.input_manager_.IsKeyPressed(InputManager::k_D)) {
 
     mathmorra::Matrix4 translations = translations.Translate(
-      camera_right_.x_ * speed_ * time,
+      -camera_right_.x_ * speed_ * time,
       0.0f,
-      camera_right_.z_ * speed_ * time);
+      -camera_right_.z_ * speed_ * time);
 
     //Transform Matrix4 / Vector3
     camera_position_ = translations.Transpose() * camera_position_;
@@ -268,28 +268,18 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera) {
   mathmorra::Vector3 x = mathmorra::Vector3(1.0f, 0.0f, 0.0f);
   mathmorra::Vector3 y = mathmorra::Vector3(0.0f, 1.0f, 0.0f);
 
-  mathmorra::Quaternion q = q.EulerAngles(x, -angleY);
-  mathmorra::Quaternion p = p.EulerAngles(y, angleX);
-  mathmorra::Quaternion quaternion = quaternion.Multiply(p, q);
+  mathmorra::Quaternion qx = qx.EulerAngles(x, -angleY);
+  mathmorra::Quaternion qy = qy.EulerAngles(y, angleX);
+  mathmorra::Quaternion quaternion = quaternion.Multiply(qy, qx);
 
   quaternion.Normalize();
 
-  mathmorra::Vector3 back;
-  back = { 0.0f, 0.0f, -1.0f };
-  back = quaternion.RotateVectorByQuaternion(back, quaternion);
-  back.Normalize();
+  camera_target_ = { 0.0f, 0.0f, 1.0f };
+  camera_target_ = quaternion.RotateVectorByQuaternion(camera_target_, quaternion);
+  camera_target_.Normalize();
 
-  camera_target_ = -back;
-
-  //glm::vec3 Front = glm::vec3(camera_target_.x_, camera_target_.y_, camera_target_.z_);
-  //glm::vec3 WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-  //glm::vec3 rig = glm::normalize(glm::cross(Front, WorldUp));
-  //glm::vec3 upp = glm::normalize(glm::cross(rig, Front));
-
-  camera_right_ = mathmorra::Vector3::CrossProduct(back, mathmorra::Vector3(0.0f, 1.0f, 0.0f)).Normalized();
-  camera_up_ = mathmorra::Vector3::CrossProduct(camera_right_, back).Normalized();
-
-  //camera_target_ = mathmorra::Vector3::CrossProduct(camera_right_, camera_up_).Normalized();
+  camera_right_ = mathmorra::Vector3::CrossProduct(camera_target_, y).Normalized();
+  camera_up_ = mathmorra::Vector3::CrossProduct(camera_right_, camera_target_).Normalized();
 
   printf("\nUP X: %f, Y: %f, Z: %f\n", camera_up_.x_, camera_up_.y_, camera_up_.z_);
   printf("RI X: %f, Y: %f, Z: %f\n", camera_right_.x_, camera_right_.y_, camera_right_.z_);
