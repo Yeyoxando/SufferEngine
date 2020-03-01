@@ -20,7 +20,10 @@
 #include <common_definitions.h>
 #include "internal_interface.h"
 #include <string>
+
+// Components
 #include "component_light.h"
+#include "component_geometry.h"
 
 ExampleAppLog Suffer::Interface::log;
 
@@ -552,8 +555,9 @@ void  Suffer::Interface::Log() {
 // --------------------------------------------------- //
 
 void  Suffer::Interface::Inspector(){
-	ImGui::Begin("Inspector", &is_inspector_opened_);
-	ImGui::Text("Inspector");
+	
+  ImGui::Begin("Inspector", &is_inspector_opened_);
+	ImGui::Separator();
 
   GameObject* reference = suffer.GetCurrentScene()->current_gameobjects_[game_object_selected_].get();
 	assert(reference != nullptr);
@@ -567,224 +571,228 @@ void  Suffer::Interface::Inspector(){
 			components_iterator_ != reference->components_.end(); ++components_iterator_) {
 			Component* component_reference = components_iterator_->second.get();
 			switch (component_reference->kind_) {
-			case Component::ComponentKind::kComponentKind_Invalid: {
-					break;
-			}
-			case Component::ComponentKind::kComponentKind_Transform: {
-					ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Transform");
-					Transform* transform = static_cast<Transform*>(component_reference);
-					ImGui::InputFloat3("Position", &transform->GetPosition()[0]);
-					ImGui::InputFloat3("Rotation", &transform->GetRotation()[0]);
-					ImGui::InputFloat3("Scale", &transform->GetScale()[0]);
-
-          ImGui::Separator();
-					break;
-			}
-			case Component::ComponentKind::kComponentKind_DebugGeometry: {
-
-          //ImGui::Separator();
-					break;
-			}
-			case Component::ComponentKind::kComponentKind_Geometry: {
-
-          //ImGui::Separator();
-					break;
-			}
-			case Component::ComponentKind::kComponentKind_Material: {
-
-          //ImGui::Separator();
-					break;
-			}
-			case Component::ComponentKind::kComponentKind_Audio: {
-
-          //ImGui::Separator();
-					break;
-			}
-			case Component::ComponentKind::kComponentKind_Light: {
-					LightComponent* light = static_cast<LightComponent*>(component_reference);
-					ImGui::Text("Light");
-					bool active = false;
-					float intensity = 0.0f;
-					if (light == nullptr) break;
-					int light_kind = (int)light->GetLightKind();
-					switch (light->GetLightKind()) {
-							case LightManager::kLightKind_Directional: {
-
-									ImGui::SameLine();
-
-									// Active
-									active = light->Active();
-									ImGui::Checkbox("Active", &active);
-									light->SetActive(active);
-
-									if (ImGui::Combo("Light Kind", &light_kind, lights, IM_ARRAYSIZE(lights))) {
-											light->SetLightKind((LightComponent::LightKind)(light_kind));
-									}
-
-									// Intensity
-									intensity = light->Intensity();
-									ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0f, 1.0f);
-									light->SetIntensity(intensity);
-
-									// Direction
-									mathmorra::Vector3 direction = light->Direction();
-									ImGui::DragFloat3("Direction", &direction.x_, 0.01f, -1.0f, 1.0f);
-									light->SetDirection(direction);
-
-									if (ImGui::CollapsingHeader("Color")) {
-											// Color
-											mathmorra::Vector3 color = light->Color();
-											ImGui::ColorEdit3("Base color", &color.x_);
-											light->SetColor(color);
-
-											mathmorra::Vector3 ambient = light->Ambient();
-											ImGui::ColorEdit3("Ambient", &ambient.x_);
-											light->SetAmbient(ambient);
-
-											mathmorra::Vector3 diffuse = light->Diffuse();
-											ImGui::ColorEdit3("Diffuse", &diffuse.x_);
-											light->SetDiffuse(diffuse);
-
-											mathmorra::Vector3 specular = light->Specular();
-											ImGui::ColorEdit3("Specular", &specular.x_);
-											light->SetSpecular(specular);
-									}
-
-									break;
-							}
-							case LightManager::kLightKind_Point: {
-
-									ImGui::SameLine();
-
-									// Active
-									active = light->Active();
-									ImGui::Checkbox("Active", &active);
-									light->SetActive(active);
-
-									if (ImGui::Combo("Light Kind", &light_kind, lights, IM_ARRAYSIZE(lights))) {
-											light->SetLightKind((LightComponent::LightKind)(light_kind));
-									}
-
-									// Intensity
-									intensity = light->Intensity();
-									ImGui::DragFloat("Intensity", &intensity, 0.1f, 0.0f, 100.0f);
-									light->SetIntensity(intensity);
-
-									// Quadratic - Linear - Constant
-									float quadratic = light->Quadratic();
-									float linear = light->Linear();
-									float constant = light->Constant();
-
-									if (ImGui::DragFloat("Constant", &constant, 0.001f, 0.0f, 1.0f)) {
-											light->SetConstant(constant);
-									}
-									if (ImGui::DragFloat("Linear", &linear, 0.001f, 0.0f, 1.0f)) {
-											light->SetLinear(linear);
-									}
-									if (ImGui::DragFloat("Quadratic", &quadratic, 0.001f, 0.0f, 1.0f)) {
-											light->SetQuadratic(quadratic);
-									}
-
-									if (ImGui::CollapsingHeader("Color")) {
-											// Color
-											mathmorra::Vector3 color = light->Color();
-											ImGui::ColorEdit3("Base color", &color.x_);
-											light->SetColor(color);
-
-											mathmorra::Vector3 ambient = light->Ambient();
-											ImGui::ColorEdit3("Ambient", &ambient.x_);
-											light->SetAmbient(ambient);
-
-											mathmorra::Vector3 diffuse = light->Diffuse();
-											ImGui::ColorEdit3("Diffuse", &diffuse.x_);
-											light->SetDiffuse(diffuse);
-
-											mathmorra::Vector3 specular = light->Specular();
-											ImGui::ColorEdit3("Specular", &specular.x_);
-											light->SetSpecular(specular);
-									}
-
-									break;
-							}
-							case LightManager::kLightKind_Spot: {
-
-									ImGui::SameLine();
-
-									// Active
-									active = light->Active();
-									ImGui::Checkbox("Active", &active);
-									light->SetActive(active);
-
-									if (ImGui::Combo("Light Kind", &light_kind, lights, IM_ARRAYSIZE(lights))) {
-											light->SetLightKind((LightComponent::LightKind)(light_kind));
-									}
-
-									// Intensity
-									intensity = light->Intensity();
-									ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0f, 1.0f);
-									light->SetIntensity(intensity);
-
-									// Direction
-									mathmorra::Vector3 direction = light->Direction();
-									ImGui::DragFloat3("Direction", &direction.x_, 0.01f, -1.0f, 1.0f);
-									light->SetDirection(direction);
-
-									// CutOff - OuterCutOff - Quadratic - Linear - Constant
-									float cutOff = light->CutOff();
-									float outerCutOff = light->OuterCutOff();
-									float quadratic = light->Quadratic();
-									float linear = light->Linear();
-									float constant = light->Constant();
-
-									if (ImGui::DragFloat("CutOff", &cutOff, 0.001f, 0.0f, 1.0f)) {
-											light->SetCutOff(cutOff);
-									}
-									if (ImGui::DragFloat("OuterCutOff", &outerCutOff, 0.001f, 0.0f, 1.0f)) {
-											light->SetOuterCutOff(outerCutOff);
-									}
-									if (ImGui::DragFloat("Constant", &constant, 0.001f, 0.0f, 1.0f)) {
-											light->SetConstant(constant);
-									}
-									if (ImGui::DragFloat("Linear", &linear, 0.001f, 0.0f, 1.0f)) {
-											light->SetLinear(linear);
-									}
-									if (ImGui::DragFloat("Quadratic", &quadratic, 0.001f, 0.0f, 1.0f)) {
-											light->SetQuadratic(quadratic);
-									}
-
-									if (ImGui::CollapsingHeader("Color")) {
-											// Color
-											mathmorra::Vector3 color = light->Color();
-											ImGui::ColorEdit3("Base color", &color.x_);
-											light->SetColor(color);
-
-											mathmorra::Vector3 ambient = light->Ambient();
-											ImGui::ColorEdit3("Ambient", &ambient.x_);
-											light->SetAmbient(ambient);
-
-											mathmorra::Vector3 diffuse = light->Diffuse();
-											ImGui::ColorEdit3("Diffuse", &diffuse.x_);
-											light->SetDiffuse(diffuse);
-
-											mathmorra::Vector3 specular = light->Specular();
-											ImGui::ColorEdit3("Specular", &specular.x_);
-											light->SetSpecular(specular);
-									}
-
-									break;
-							}
-							default: {
-									break;
-							}
+					case Component::ComponentKind::kComponentKind_Invalid: {
+							break;
 					}
-				ImGui::Separator();
-				break;
-			}
-			default: {
+					case Component::ComponentKind::kComponentKind_Transform: {
+							ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Transform");
+							Transform* transform = static_cast<Transform*>(component_reference);
+							ImGui::InputFloat3("Position", &transform->GetPosition()[0]);
+							ImGui::InputFloat3("Rotation", &transform->GetRotation()[0]);
+							ImGui::InputFloat3("Scale", &transform->GetScale()[0]);
 
-					break;
-			}
-      
+							ImGui::Separator();
+							break;
+					}
+					case Component::ComponentKind::kComponentKind_DebugGeometry: {
+
+							//ImGui::Separator();
+							break;
+					}
+					case Component::ComponentKind::kComponentKind_Geometry: {
+							GeometryComponent* geometry_component = static_cast<GeometryComponent*>(component_reference);
+							int geometry = (int)geometry_component->GetGeometry();
+              ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Geometry");
+              if (ImGui::Combo("Mesh", &geometry, geometries, IM_ARRAYSIZE(geometries))) {
+									geometry_component->CreateGeometryWithShape((GeometryComponent::BasicShapes)geometry);
+              }
+							ImGui::Separator();
+							break;
+					}
+					case Component::ComponentKind::kComponentKind_Material: {
+
+							//ImGui::Separator();
+							break;
+					}
+					case Component::ComponentKind::kComponentKind_Audio: {
+
+							//ImGui::Separator();
+							break;
+					}
+					case Component::ComponentKind::kComponentKind_Light: {
+							LightComponent* light = static_cast<LightComponent*>(component_reference);
+							ImGui::Text("Light");
+							bool active = false;
+							float intensity = 0.0f;
+							if (light == nullptr) break;
+							int light_kind = (int)light->GetLightKind();
+							switch (light->GetLightKind()) {
+									case LightManager::kLightKind_Directional: {
+
+											ImGui::SameLine();
+
+											// Active
+											active = light->Active();
+											ImGui::Checkbox("Active", &active);
+											light->SetActive(active);
+
+											if (ImGui::Combo("Type", &light_kind, lights, IM_ARRAYSIZE(lights))) {
+													light->SetLightKind((LightComponent::LightKind)(light_kind));
+											}
+
+											// Intensity
+											intensity = light->Intensity();
+											ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0f, 1.0f);
+											light->SetIntensity(intensity);
+
+											// Direction
+											mathmorra::Vector3 direction = light->Direction();
+											ImGui::DragFloat3("Direction", &direction.x_, 0.01f, -1.0f, 1.0f);
+											light->SetDirection(direction);
+
+											if (ImGui::CollapsingHeader("Color")) {
+													// Color
+													mathmorra::Vector3 color = light->Color();
+													ImGui::ColorEdit3("Base color", &color.x_);
+													light->SetColor(color);
+
+													mathmorra::Vector3 ambient = light->Ambient();
+													ImGui::ColorEdit3("Ambient", &ambient.x_);
+													light->SetAmbient(ambient);
+
+													mathmorra::Vector3 diffuse = light->Diffuse();
+													ImGui::ColorEdit3("Diffuse", &diffuse.x_);
+													light->SetDiffuse(diffuse);
+
+													mathmorra::Vector3 specular = light->Specular();
+													ImGui::ColorEdit3("Specular", &specular.x_);
+													light->SetSpecular(specular);
+											}
+
+											break;
+									}
+									case LightManager::kLightKind_Point: {
+
+											ImGui::SameLine();
+
+											// Active
+											active = light->Active();
+											ImGui::Checkbox("Active", &active);
+											light->SetActive(active);
+
+											if (ImGui::Combo("Type", &light_kind, lights, IM_ARRAYSIZE(lights))) {
+													light->SetLightKind((LightComponent::LightKind)(light_kind));
+											}
+
+											// Intensity
+											intensity = light->Intensity();
+											ImGui::DragFloat("Intensity", &intensity, 0.1f, 0.0f, 100.0f);
+											light->SetIntensity(intensity);
+
+											// Quadratic - Linear - Constant
+											float quadratic = light->Quadratic();
+											float linear = light->Linear();
+											float constant = light->Constant();
+
+											if (ImGui::DragFloat("Constant", &constant, 0.001f, 0.0f, 1.0f)) {
+													light->SetConstant(constant);
+											}
+											if (ImGui::DragFloat("Linear", &linear, 0.001f, 0.0f, 1.0f)) {
+													light->SetLinear(linear);
+											}
+											if (ImGui::DragFloat("Quadratic", &quadratic, 0.001f, 0.0f, 1.0f)) {
+													light->SetQuadratic(quadratic);
+											}
+
+											if (ImGui::CollapsingHeader("Color")) {
+													// Color
+													mathmorra::Vector3 color = light->Color();
+													ImGui::ColorEdit3("Base color", &color.x_);
+													light->SetColor(color);
+
+													mathmorra::Vector3 ambient = light->Ambient();
+													ImGui::ColorEdit3("Ambient", &ambient.x_);
+													light->SetAmbient(ambient);
+
+													mathmorra::Vector3 diffuse = light->Diffuse();
+													ImGui::ColorEdit3("Diffuse", &diffuse.x_);
+													light->SetDiffuse(diffuse);
+
+													mathmorra::Vector3 specular = light->Specular();
+													ImGui::ColorEdit3("Specular", &specular.x_);
+													light->SetSpecular(specular);
+											}
+
+											break;
+									}
+									case LightManager::kLightKind_Spot: {
+
+											ImGui::SameLine();
+
+											// Active
+											active = light->Active();
+											ImGui::Checkbox("Active", &active);
+											light->SetActive(active);
+
+											if (ImGui::Combo("Type", &light_kind, lights, IM_ARRAYSIZE(lights))) {
+													light->SetLightKind((LightComponent::LightKind)(light_kind));
+											}
+
+											// Intensity
+											intensity = light->Intensity();
+											ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0f, 1.0f);
+											light->SetIntensity(intensity);
+
+											// Direction
+											mathmorra::Vector3 direction = light->Direction();
+											ImGui::DragFloat3("Direction", &direction.x_, 0.01f, -1.0f, 1.0f);
+											light->SetDirection(direction);
+
+											// CutOff - OuterCutOff - Quadratic - Linear - Constant
+											float cutOff = light->CutOff();
+											float outerCutOff = light->OuterCutOff();
+											float quadratic = light->Quadratic();
+											float linear = light->Linear();
+											float constant = light->Constant();
+
+											if (ImGui::DragFloat("CutOff", &cutOff, 0.001f, 0.0f, 1.0f)) {
+													light->SetCutOff(cutOff);
+											}
+											if (ImGui::DragFloat("OuterCutOff", &outerCutOff, 0.001f, 0.0f, 1.0f)) {
+													light->SetOuterCutOff(outerCutOff);
+											}
+											if (ImGui::DragFloat("Constant", &constant, 0.001f, 0.0f, 1.0f)) {
+													light->SetConstant(constant);
+											}
+											if (ImGui::DragFloat("Linear", &linear, 0.001f, 0.0f, 1.0f)) {
+													light->SetLinear(linear);
+											}
+											if (ImGui::DragFloat("Quadratic", &quadratic, 0.001f, 0.0f, 1.0f)) {
+													light->SetQuadratic(quadratic);
+											}
+
+											if (ImGui::CollapsingHeader("Color")) {
+													// Color
+													mathmorra::Vector3 color = light->Color();
+													ImGui::ColorEdit3("Base color", &color.x_);
+													light->SetColor(color);
+
+													mathmorra::Vector3 ambient = light->Ambient();
+													ImGui::ColorEdit3("Ambient", &ambient.x_);
+													light->SetAmbient(ambient);
+
+													mathmorra::Vector3 diffuse = light->Diffuse();
+													ImGui::ColorEdit3("Diffuse", &diffuse.x_);
+													light->SetDiffuse(diffuse);
+
+													mathmorra::Vector3 specular = light->Specular();
+													ImGui::ColorEdit3("Specular", &specular.x_);
+													light->SetSpecular(specular);
+											}
+
+											break;
+									}
+									default: {
+											break;
+									}
+							}
+						ImGui::Separator();
+						break;
+					}
+					default: {
+
+							break;
+					}
       }
 	}
 

@@ -101,6 +101,13 @@ namespace Suffer {
       "Spot"
     };
 
+    const char* geometries[4] = {
+			"Triangle",
+			"Quad",
+			"Cube",
+			"Sphere"
+    };
+
 		struct Data;
 		Data* _ptr;
 
