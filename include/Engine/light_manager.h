@@ -13,14 +13,25 @@ namespace Suffer {
 
   class LightManager {
     friend class SufferManager;
+    friend class DrawGeometry;
+    friend class Interface;
 
   public:
 
+    enum LightKind {
+      kLightKind_Invalid = -1,
+      kLightKind_Directional = 0,
+      kLightKind_Point = 1,
+      kLightKind_Spot = 2,
+    };
+
     // ----------------------------------------------------------------------- //
 
-    class Light : public Referenced {
+    class DirectionalLight : public Referenced {
+    friend class LightComponent;
 
     public:
+      
       void SetActive(bool active);
       void SetIntensity(float new_intensity);
 
@@ -36,49 +47,85 @@ namespace Suffer {
       void SetDirection(float x, float y, float z);
       void SetDirection(mathmorra::Vector3 new_direction);
 
+      void SetAmbient(float* new_ambient);
+      void SetAmbient(float x, float y, float z);
+      void SetAmbient(mathmorra::Vector3 new_ambient);
+
+      void SetDiffuse(float* new_diffuse);
+      void SetDiffuse(float x, float y, float z);
+      void SetDiffuse(mathmorra::Vector3 new_diffuse);
+
+      void SetSpecular(float* new_specular);
+      void SetSpecular(float x, float y, float z);
+      void SetSpecular(mathmorra::Vector3 new_specular);
+
 
       float* Color();
       bool   Active();
       float* Position();
       float* Direction();
+      float* Ambient();
+      float* Diffuse();
+      float* Specular();
       float  Intensity();
+      u16 GetLightKind();
+      void SetLightKind(LightKind new_kind);
 
-    protected:
-      Light();
-      ~Light();
-
-      mathmorra::Vector3 color_;
-      mathmorra::Vector3 position_;
-      mathmorra::Vector3 direction_;
-      float intensity_;
-      bool active_;
-
-    };
-
-    // ----------------------------------------------------------------------- //
-
-    class DirectionalLight : public Light {
-    public:
       DirectionalLight();
       ~DirectionalLight();
 
+    protected:
+      mathmorra::Vector3 color_;
+      mathmorra::Vector3 position_;
+      mathmorra::Vector3 direction_;
+      mathmorra::Vector3 ambient_;
+      mathmorra::Vector3 diffuse_;
+      mathmorra::Vector3 specular_;
+      float intensity_;
+      bool active_;
+      u16 light_kind_;
+
+
     };
 
     // ----------------------------------------------------------------------- //
 
-    class PointLight : public Light {
+    class PointLight : public DirectionalLight {
     public:
       PointLight();
       ~PointLight();
 
+      void SetConstant(float new_constant);
+      void SetLinear(float new_linear);
+      void SetQuadratic(float new_quadratic);
+
+      float Constant();
+      float Linear();
+      float Quadratic();
+
+    protected:
+      float constant_;
+      float linear_;
+      float quadratic_;
+
     };
 
     // ----------------------------------------------------------------------- //
 
-    class SpotLight : public Light {
+    class SpotLight : public PointLight {
     public:
       SpotLight();
       ~SpotLight();
+
+      void SetCutOff(float new_cut_off);
+      void SetOuterCutOff(float new_outer_cut_off);
+
+      float CutOff();
+      float OuterCutOff();
+
+    private:
+      float cut_off_;
+      float outer_cut_off_;
 
     };
 
@@ -93,7 +140,7 @@ namespace Suffer {
     
 
     u32 current_lights_;
-    std::vector<Light*> lights_;
+    std::vector<ref_ptr<DirectionalLight>> lights_;
 
   };
 

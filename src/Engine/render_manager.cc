@@ -29,33 +29,12 @@ Suffer::RenderManager::~RenderManager(){
 
 void Suffer::RenderManager::StartUp(){
 
+	// Init here instead of constructor and call in engine init
   data_ = new RenderData();
 
-	// Init here instead of constructor and call in engine init
   dls_to_draw_ = 0;
-  frame_buffer_id_ = -1;
 
-  data_->screen_quad_.alloc();
-  data_->draw_quad_command_.alloc();
-
-  // Components
-  Suffer::ref_ptr< Suffer::GeometryComponent> geometry_component;
-  Suffer::ref_ptr< Suffer::MaterialComponent> material_component;
-  Suffer::ref_ptr<Suffer::MaterialComponent::RenderToTextureParams> material_params;
-
-  geometry_component.alloc();
-  material_component.alloc();
-  material_params.alloc();
-  
-  geometry_component->CreateGeometryWithShape(GeometryComponent::kBasicShapes_Quad);
-  geometry_component->SetDrawMode(GeometryComponent::kDrawMode_Triangles);
-
-  material_component->SetParams(material_params.get());
-
-  data_->screen_quad_->AddComponent(geometry_component.get());
-  data_->screen_quad_->AddComponent(material_component.get());
-
-  data_->reference_to_texture_params_ = material_params.get();
+  data_->post_command_.alloc();
 
 }
 
@@ -72,12 +51,18 @@ void Suffer::RenderManager::ShutDown() {
 
 // ------------------------------------------------------------------------- //
 
-void Suffer::RenderManager::AddToRenderQueue(DisplayList&& logic_dl){
+void Suffer::RenderManager::AddToRenderQueue(DisplayList&& logic_dl, ResourceManager::FrameBuffer* framebuffer){
 
 	dl_mutex_.lock();
 
 	// Moves given DL to current DL with std::move
 	if (logic_dl.GetDisplayListType() == DisplayList::kDisplayListType_Render) {
+    if (framebuffer != nullptr) {
+      logic_dl.frame_buffer_id_ = framebuffer->id_;
+    }
+    else {
+      logic_dl.frame_buffer_id_ = -1;
+    }
     list_of_dl_.push_back(std::move(logic_dl));
     dls_to_draw_++;
 	}
@@ -109,15 +94,15 @@ void Suffer::RenderManager::DoRender(){
     
     {
       
-      if (frame_buffer_id_ >= 0) {
+      if (render_dl_.frame_buffer_id_ >= 0) {
 
-        s32 id_frame_buffer = frame_buffer_id_;
+        s32 id_frame_buffer = render_dl_.frame_buffer_id_;
 
         if (suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ == 0) {
           glGenFramebuffers(1, &suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
         }
-
-        if (suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ < suffer.resource_manager_.data_->internal_vertex_buffers_[id_frame_buffer].version_) {
+        
+        if (suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ < suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].version_) {
 
           glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
 
@@ -129,7 +114,6 @@ void Suffer::RenderManager::DoRender(){
 
             if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ == 0) {
               glGenTextures(1, &suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
-              data_->reference_to_texture_params_->albedo_texture_id_ = suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].color_texture_id_;
             }
 
             if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ < suffer.resource_manager_.data_->internal_textures_[id_texture].version_) {
@@ -200,17 +184,17 @@ void Suffer::RenderManager::DoRender(){
 
           GLenum error;
           glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-            suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[suffer.render_manager_.frame_buffer_id_].color_texture_id_].current_texture_id_,
+            suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].color_texture_id_].current_texture_id_,
             0);
           error = glGetError();
 
           glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D,
-            suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[suffer.render_manager_.frame_buffer_id_].depth_texture_id_].current_texture_id_,
+            suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].depth_texture_id_].current_texture_id_,
             0);
           error = glGetError();
 
           GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-          assert(status == GL_FRAMEBUFFER_COMPLETE);
+          //assert(status == GL_FRAMEBUFFER_COMPLETE);
           if (status != GL_FRAMEBUFFER_COMPLETE) {
             printf("FrameBuffer not complete.\n");
             return;
@@ -218,10 +202,11 @@ void Suffer::RenderManager::DoRender(){
 
           suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ = suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].version_;
         }
-      
+     
         glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
-        //glViewport()
-
+        glViewport(0, 0, suffer.GetWindowSize().x_, suffer.GetWindowSize().y_);
+        
+        
       }
 
     }
@@ -239,31 +224,34 @@ void Suffer::RenderManager::DoRender(){
 
 
     render_dl_.Clear();
+    
+    //Set last framebuffer texture to draw it in imgui and use it in post processes
+    current_drawn_texture_id_ = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[render_dl_.frame_buffer_id_].color_texture_id_].current_texture_id_;
 
   }
- 
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  //glViewport()
-  glDisable(GL_DEPTH_TEST);
 
-  data_->draw_quad_command_->SetData(data_->screen_quad_.get());
-  data_->draw_quad_command_->Execute();
+  // Render to final framebuffer (screen quad)
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  //glDisable is on post proccess command
+  data_->post_command_->SetData(Postprocessing::PostproccessKind::kPostproccessKind_Default);
+  data_->post_command_->Execute();
 
 }
 
 // ------------------------------------------------------------------------- //
 
-void Suffer::RenderManager::SetFrameBuffer(ResourceManager::FrameBuffer* frame_buffer) {
-
-  assert(frame_buffer != nullptr);
-  if (frame_buffer == nullptr) {
-    printf("NULL FrameBuffer.\n");
-    return;
-  }
-
-  frame_buffer_id_ = frame_buffer->id_;
-
-}
+//void Suffer::RenderManager::SetFrameBuffer(ResourceManager::FrameBuffer* frame_buffer) {
+//
+//  assert(frame_buffer != nullptr);
+//  if (frame_buffer == nullptr) {
+//    printf("NULL FrameBuffer.\n");
+//    return;
+//  }
+//
+//  frame_buffer_id_ = frame_buffer->id_;
+//
+//}
 
 // ------------------------------------------------------------------------- //
 

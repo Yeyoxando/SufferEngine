@@ -205,45 +205,45 @@ void Suffer::InputManager::Update(){
 
 void MouseCallback(GLFWwindow* window, double xpos, double ypos) {
 
-  static bool first_mouse = true;
-  
-  // TODO: Fill this
+  //static bool first_mouse = true;
+  //
+  //// TODO: Fill this
   suffer.input_manager_.mouse_.x_ = (float)xpos;
   suffer.input_manager_.mouse_.y_ = (float)ypos;
 
-  Suffer::Camera* main_camera_ = suffer.GetCurrentScene()->GetMainCamera();
+  //Suffer::Camera* main_camera_ = suffer.GetCurrentScene()->GetMainCamera();
 
-  if (main_camera_ == nullptr) return;
-  if (!main_camera_->FPS()) return;
+  //if (main_camera_ == nullptr) return;
+  //if (!main_camera_->FPS()) return;
 
-  if (first_mouse) {
-    main_camera_->last_cursor_position_.x_ = (float)xpos;
-    main_camera_->last_cursor_position_.y_ = (float)ypos;
-    first_mouse = false;
-  }
+  //if (first_mouse) {
+  //  main_camera_->last_cursor_position_.x_ = (float)xpos;
+  //  main_camera_->last_cursor_position_.y_ = (float)ypos;
+  //  first_mouse = false;
+  //}
 
-  float x_offset = xpos - main_camera_->last_cursor_position_.x_;
-  float y_offset = main_camera_->last_cursor_position_.y_ - ypos;
+  //float x_offset = xpos - main_camera_->last_cursor_position_.x_;
+  //float y_offset = main_camera_->last_cursor_position_.y_ - ypos;
 
-  main_camera_->last_cursor_position_.x_ = (float)xpos;
-  main_camera_->last_cursor_position_.y_ = (float)ypos;
+  //main_camera_->last_cursor_position_.x_ = (float)xpos;
+  //main_camera_->last_cursor_position_.y_ = (float)ypos;
 
-  x_offset *= main_camera_->Sensitivity();
-  y_offset *= main_camera_->Sensitivity();
+  //x_offset *= main_camera_->Sensitivity();
+  //y_offset *= main_camera_->Sensitivity();
 
-  main_camera_->yaw_ += x_offset;
-  main_camera_->pitch_ += y_offset;
+  //main_camera_->yaw_ += x_offset;
+  //main_camera_->pitch_ += y_offset;
 
-  mathmorra::Vector3 auxiliar_direction;
-  auxiliar_direction.x_ = cosf(ThiefUtils::Math::Radians(main_camera_->yaw_)) *
-                          cosf(ThiefUtils::Math::Radians(main_camera_->pitch_));
+  //mathmorra::Vector3 auxiliar_direction;
+  //auxiliar_direction.x_ = cosf(ThiefUtils::Math::Radians(main_camera_->yaw_)) *
+  //                        cosf(ThiefUtils::Math::Radians(main_camera_->pitch_));
 
-  auxiliar_direction.y_ = sinf(ThiefUtils::Math::Radians(main_camera_->pitch_));
+  //auxiliar_direction.y_ = sinf(ThiefUtils::Math::Radians(main_camera_->pitch_));
 
-  auxiliar_direction.z_ = sinf(ThiefUtils::Math::Radians(main_camera_->yaw_)) *
-                          cosf(ThiefUtils::Math::Radians(main_camera_->pitch_));
+  //auxiliar_direction.z_ = sinf(ThiefUtils::Math::Radians(main_camera_->yaw_)) *
+  //                        cosf(ThiefUtils::Math::Radians(main_camera_->pitch_));
 
-  main_camera_->SetTarget(-auxiliar_direction.Normalized());
+  //main_camera_->SetTarget(-auxiliar_direction.Normalized());
 
 }
 
@@ -266,7 +266,16 @@ void ErrorCallback(int error, const char* description){
 // --------------------------------------------------- //
 
 void WindowResizeCallback(GLFWwindow* window, int width, int height) {
-    // TODO: Fill this
+  
+  // TODO: Fill this
+  suffer.SetWindowSize(width, height);
+
+}
+
+// --------------------------------------------------- //
+
+void WindowCloseCallback(GLFWwindow* window){
+  glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
 // --------------------------------------------------- //
@@ -278,10 +287,12 @@ void Suffer::InputManager::StartUp(){
     
     // Set callbacks
     glfwSetInputMode(glfwGetCurrentContext(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
     glfwSetKeyCallback(glfwGetCurrentContext(), KeyCallback);
     glfwSetCursorPosCallback(glfwGetCurrentContext(), MouseCallback);
     glfwSetScrollCallback(glfwGetCurrentContext(), ScrollCallback);
     glfwSetErrorCallback(ErrorCallback);
+    glfwSetWindowCloseCallback(glfwGetCurrentContext(), WindowCloseCallback);
     glfwSetWindowSizeCallback(glfwGetCurrentContext(), WindowResizeCallback);
 
 }

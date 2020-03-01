@@ -30,6 +30,7 @@ namespace Suffer {
      */
 		void SetData(GameObject* go);
 
+
     /**
      * @brief: Sets GameObject model matrix
      * @param: model matrix calculated in GameObject
@@ -50,6 +51,10 @@ namespace Suffer {
 		virtual ~DrawGeometry();
 
   private:
+    /**
+     * @brief: Sets the command with the info of the LightManager
+     */
+    void SetLights();
 
     /**
      * @brief: Executes the command with all necessary things to draw the GameObject

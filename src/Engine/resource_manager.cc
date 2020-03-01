@@ -345,10 +345,10 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
   {
     float quad[] = {
         // Positions             Normals            UV's
-        -1.0f,  -1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
-        -1.0f,   1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-        1.0f,  1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
-        1.0f, -1.0f, -1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
+        -1.0f,  -1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+        -1.0f,   1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
+        1.0f,  1.0f,   0.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
+        1.0f, -1.0f,   0.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
     };
 
     Array<u16> quad_indices;
@@ -561,7 +561,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
 void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   
   // Increase the number if you create a new one
-  internal_materials_.alloc(3);
+  internal_materials_.alloc(4);
   number_of_materials_ = 0;
 
   // To create a new material define the shaders in internal_shaders.h
@@ -581,20 +581,20 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
 
   // -------------------------- DefaultMaterial ---------------------------- //
 
-  // --------------------------- UnlitMaterial ----------------------------- //
+  // --------------------------- PhongMaterial ----------------------------- //
   
   {
   
     internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
   
-    internal_materials_[number_of_materials_].vertex_shader_ = Suffer::unlit_vertex_shader;
-    internal_materials_[number_of_materials_].fragment_shader_ = Suffer::unlit_fragment_shader;
+    internal_materials_[number_of_materials_].vertex_shader_ = Suffer::phong_vertex_shader;
+    internal_materials_[number_of_materials_].fragment_shader_ = Suffer::phong_fragment_shader;
   
     number_of_materials_++;
   
   }
 
-  // --------------------------- UnlitMaterial ----------------------------- //
+  // --------------------------- PhongMaterial ----------------------------- //
 
   // ---------------------- RenderToTextureMaterial ------------------------ //
 
@@ -611,6 +611,21 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
 
   // ---------------------- RenderToTextureMaterial ------------------------ //
 
+  // ----------------------- BlackAndWhiteMaterial ------------------------- //
+
+  {
+
+    internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
+
+    internal_materials_[number_of_materials_].vertex_shader_ = Suffer::black_and_white_vertex_;
+    internal_materials_[number_of_materials_].fragment_shader_ = Suffer::black_and_white_fragment_;
+
+    number_of_materials_++;
+
+  }
+
+  // ----------------------- BlackAndWhiteMaterial ------------------------- //
+
 }
 
 // ------------------------------------------------------------------------- //
@@ -620,6 +635,38 @@ void Suffer::ResourceManager::ResourceData::InitInternalFrameBuffers(){
   internal_frame_buffers_.alloc(MAX_FRAMEBUFFERS);
 
   number_of_frame_buffers_ = 0;
+  number_of_light_frame_buffers_ = 0;
+
+}
+
+// ------------------------------------------------------------------------- //
+
+void Suffer::ResourceManager::ResourceData::RefreshFrameBuffers() {
+  
+  for (u32 i = 0; i < number_of_frame_buffers_; ++i) {
+    internal_frame_buffers_[i].width_ = suffer.GetWindowSize().x_;
+    internal_frame_buffers_[i].height_ = suffer.GetWindowSize().y_;
+
+    // Color
+    //Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_color_texture;
+    //frame_buffer_color_texture.alloc();
+
+    internal_textures_[internal_frame_buffers_[i].color_texture_id_].width_ = suffer.GetWindowSize().x_;
+    internal_textures_[internal_frame_buffers_[i].color_texture_id_].height_ = suffer.GetWindowSize().y_;
+    internal_textures_[internal_frame_buffers_[i].color_texture_id_].number_channels_ = 3;
+    internal_textures_[internal_frame_buffers_[i].color_texture_id_].version_++;
+
+    // Depth
+   //Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_depth_texture;
+   //frame_buffer_depth_texture.alloc();
+
+    internal_textures_[internal_frame_buffers_[i].depth_texture_id_].width_ = suffer.GetWindowSize().x_;
+    internal_textures_[internal_frame_buffers_[i].depth_texture_id_].height_ = suffer.GetWindowSize().y_;
+    internal_textures_[internal_frame_buffers_[i].depth_texture_id_].number_channels_ = 1;
+    internal_textures_[internal_frame_buffers_[i].depth_texture_id_].version_++;
+
+    suffer.resource_manager_.data_->internal_frame_buffers_[i].version_++;
+  }
 
 }
 

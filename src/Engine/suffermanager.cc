@@ -11,9 +11,12 @@
 #include "scene.h"
 #include "audio_commands.h"
 #include "internal_suffermanager.h"
+#include "internal_resource_manager.h"
 #include <string>
 #include "system_render.h"
 #include "system_transform.h"
+#include "internal_window.h"
+#include "postprocessing.h"
 
 // --------------------------------------------------------------//
 
@@ -62,7 +65,7 @@ bool Suffer::SufferManager::Init(){
 
 	assert(data_ && "\n Data is null.");
 
-	data_->wind_.Open(WINDOW_WIDTH, WINDOW_HEIGHT);
+	data_->wind_.Open(800, 600);
 	data_->interface_.Init();
   data_->is_interface_active_ = true;
 	data_->window_should_close_ = false;
@@ -83,14 +86,24 @@ bool Suffer::SufferManager::Init(){
   transform_system_.alloc();
   suffer.AddSystem(transform_system_.get());
 
-  render_system_.alloc();
-  suffer.AddSystem(render_system_.get());
-
   script_system_.alloc();
   suffer.AddSystem(script_system_.get());
 
+  light_system_.alloc();
+  suffer.AddSystem(light_system_.get());
+
+  render_system_.alloc();
+  suffer.AddSystem(render_system_.get());
+
+
   //debug_render_system_.alloc();
   //suffer.AddSystem(debug_render_system_.get());
+
+  draw_frame_buffer_.alloc();
+  draw_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
+
+  postprocessing_frame_buffer_.alloc();
+  postprocessing_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
 
 	return true;
 
@@ -126,6 +139,10 @@ void Suffer::SufferManager::Input() {
     data_->is_interface_active_ = !data_->is_interface_active_;
   }
 
+  if (input_manager_.IsKeyDown(InputManager::k_B)) {
+    data_->black_and_white_ = !data_->black_and_white_;
+  }
+
   input_manager_.Update();
 
 }
@@ -141,7 +158,7 @@ void Suffer::SufferManager::Run() {
   logic_->NewTask(update_thread);
   logic_->WaitFor(logic_.get());
 
-	while (!data_->window_should_close_) {
+	while (Running()) {
 
     // TODO: remove from here
     mouse_position_.x_ = input_manager_.MousePositionX();
@@ -188,6 +205,20 @@ void Suffer::SufferManager::PrepareAudio() {
 
 }
 
+// --------------------------------------------------------------//
+
+void Suffer::SufferManager::PreparePostproccess(){
+
+  if (data_->black_and_white_) {
+    DisplayList postpro_dl;
+    ref_ptr<Postprocessing> black_white;
+    black_white.alloc();
+    black_white->SetData(Postprocessing::kPostproccessKind_BlackAndWhite);
+    postpro_dl.AddCommand(black_white.get());
+    render_manager_.AddToRenderQueue(std::move(postpro_dl), postprocessing_frame_buffer_.get());
+  }
+
+}
 
 // --------------------------------------------------------------//
 
@@ -204,7 +235,11 @@ void Suffer::SufferManager::Step(){
     }
   }
 
-  render_manager_.AddToRenderQueue(std::move(render_system_.get()->dl_));
+  //////////////////////////
+
+  render_manager_.AddToRenderQueue(std::move(render_system_.get()->dl_), draw_frame_buffer_.get());
+
+  PreparePostproccess();
 
 	// This will be the last function in UPDATE
 	PrepareAudio();
@@ -244,8 +279,36 @@ mathmorra::Vector2 Suffer::SufferManager::GetMousePosition(){
 
 }
 
+// --------------------------------------------------------------//
+
 void Suffer::SufferManager::SetCursorPosition(mathmorra::Vector2 newPosition){
     glfwSetCursorPos(glfwGetCurrentContext(), newPosition.x_, newPosition.y_);
+}
+
+// --------------------------------------------------------------//
+
+mathmorra::Vector2 Suffer::SufferManager::GetWindowSize(){
+  mathmorra::Vector2 ratio = mathmorra::Vector2(data_->wind_.data_->width_, data_->wind_.data_->height_);
+  return ratio;
+}
+
+// --------------------------------------------------------------//
+
+void Suffer::SufferManager::SetWindowSize(int width, int height){
+  
+  data_->wind_.data_->width_ = width;
+  data_->wind_.data_->height_ = height;
+
+  resource_manager_.data_->RefreshFrameBuffers();
+
+}
+
+// --------------------------------------------------------------//
+
+bool Suffer::SufferManager::Running(){
+  if (data_->window_should_close_) return false;
+  if (glfwWindowShouldClose(glfwGetCurrentContext())) return false;
+  return true;
 }
 
 // --------------------------------------------------------------//

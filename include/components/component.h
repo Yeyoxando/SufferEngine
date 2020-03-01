@@ -26,6 +26,7 @@ namespace Suffer {
       kComponentKind_Material,
       kComponentKind_Audio,
       kComponentKind_Script,
+      kComponentKind_Light,
       kComponentKind_User = 1000,
     };
 

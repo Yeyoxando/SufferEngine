@@ -11,6 +11,7 @@
 #include "referenced.h"
 #include "ref_ptr.h"
 #include "command.h"
+#include "resource_manager.h"
 
 namespace Suffer {
 
@@ -46,6 +47,7 @@ namespace Suffer {
 	  DisplayList(DisplayList&& d)
 		  : dl_commands_(std::move(d.dl_commands_)) {
 		  dl_type_ = std::move(d.dl_type_);
+      frame_buffer_id_ = d.frame_buffer_id_;
 	  }
 
     /**
@@ -68,7 +70,7 @@ namespace Suffer {
     /**
      * @return: return number of commands that DisplayList has currently
      */
-	  u32 Size();
+    u32 Size();
 
     /**
      * @brief: Add a new command at the last position of the DisplayList
@@ -76,9 +78,10 @@ namespace Suffer {
      */
 	  void AddCommand(const ref_ptr<Command> cmd);
 
-    private:
-      DisplayListType dl_type_;
-      std::vector<ref_ptr<Command>> dl_commands_;
+  private:
+    s32 frame_buffer_id_;
+    DisplayListType dl_type_;
+    std::vector<ref_ptr<Command>> dl_commands_;
 
   };
 

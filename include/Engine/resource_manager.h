@@ -18,11 +18,15 @@ namespace Suffer {
    */
   class ResourceManager {
     friend class DrawGeometry;
+    friend class Postprocessing;
+    friend class ShadowMap;
     friend class SufferManager;
     friend class RenderManager;
     friend class GeometryComponent;
     friend class DebugGeometryComponent;
     friend class Interface;
+    friend class LightComponent;
+
 
   public:
 
@@ -63,13 +67,21 @@ namespace Suffer {
 
     // ----------------------------- FrameBuffers -------------------------- //
 
-
+    /**
+     * @brief: class to allow render to texture to use for example with 
+     *         post processing or shadow mapping
+     */
     class FrameBuffer : public GPUResource {
 
     public:
       FrameBuffer();
       ~FrameBuffer();
 
+      /**
+       * @brief: Sets basic framebuffer attributes
+       * @param: framebuffer width
+       * @param: framebuffer height
+       */
       void InitFrameBuffer(u16 width, u16 height);
 
     protected:

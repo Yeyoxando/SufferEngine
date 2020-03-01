@@ -16,17 +16,13 @@
 #include "component_geometry.h"
 #include "component_material.h"
 #include "component_script.h"
+#include "component_light.h"
 
 // --------------------------------------------------------------//
 
 int main(int argc, char* argv[]) {
 
   suffer.Init();
-
-  Suffer::ref_ptr<Suffer::ResourceManager::FrameBuffer> frame_buffer_;
-  frame_buffer_.alloc();
-  frame_buffer_->InitFrameBuffer(WINDOW_WIDTH, WINDOW_HEIGHT);
-  suffer.render_manager_.SetFrameBuffer(frame_buffer_.get());
   
   Suffer::ref_ptr<Suffer::SystemAudio> audio_system_;
   audio_system_.alloc();
@@ -35,9 +31,54 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::Scene> scene;
   scene.alloc();
 
+ //Suffer::ref_ptr<Suffer::LightManager::PointLight> point_light;
+ //point_light.alloc();
+ //point_light->SetIntensity(20.0f);
+ //point_light->SetAmbient(0.0f, 0.0f, 1.0f);
+ //point_light->SetDiffuse(0.0f, 0.0f, 1.0f);
+ //point_light->SetSpecular(0.0f, 0.0f, 1.0f);
+ //point_light->SetColor(0.0f, 0.0f, 1.0f);
+ //point_light->SetLinear(1.0f);
+ //point_light->SetConstant(1.0f);
+ //point_light->SetQuadratic(1.0f);
+  
+  Suffer::ref_ptr<Suffer::LightComponent> test;
+
   Suffer::ref_ptr<Suffer::LightManager::DirectionalLight> directional_light_;
   directional_light_.alloc();
+  directional_light_->SetIntensity(1.0f);
+  directional_light_->SetAmbient(0.5f, 0.5f, 0.5f);
+  directional_light_->SetDiffuse(0.5f, 0.5f, 0.5f);
+  directional_light_->SetSpecular(0.5f, 0.5f, 0.5f);
+  directional_light_->SetActive(false);
+  directional_light_->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
 
+  Suffer::ref_ptr<Suffer::LightManager::SpotLight> spot_light_;
+  spot_light_.alloc();
+  spot_light_->SetPosition(mathmorra::Vector3(0.0f, 0.0f, -5.0f));
+  spot_light_->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+  spot_light_->SetIntensity(1.0f);
+  spot_light_->SetAmbient(0.5f, 0.5f, 0.5f);
+  spot_light_->SetDiffuse(1.0f, 1.0f, 1.0f);
+  spot_light_->SetSpecular(1.0f, 1.0f, 1.0f);
+  spot_light_->SetColor(0.0f, 0.0f, 1.0f);
+  spot_light_->SetLinear(1.0f);
+  spot_light_->SetConstant(0.09f);
+  spot_light_->SetQuadratic(0.032f);
+  spot_light_->SetCutOff(0.9978f);
+  spot_light_->SetOuterCutOff(0.99f);
+  
+  //Suffer::ref_ptr<Suffer::LightManager::PointLight> point;
+  //point.alloc();
+  //point->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+  //point->SetIntensity(2.0f);
+  //point->SetAmbient(1.0f, 0.0f, 0.0f);
+  //point->SetDiffuse(1.0f, 0.0f, 1.0f);
+  //point->SetSpecular(1.0f, 0.0f, 1.0f);
+  //point->SetPosition(mathmorra::Vector3(0.0f, 10.0f, 0.0f));
+  //point->SetLinear(1.0f);
+  //point->SetConstant(0.09f);
+  //point->SetQuadratic(0.032f);
 
   // Textures
   Suffer::ref_ptr<Suffer::ResourceManager::Texture> albedo_texture;
@@ -51,6 +92,12 @@ int main(int argc, char* argv[]) {
   albedo_texture2->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
   albedo_texture2->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
   albedo_texture2->LoadTextureData("../../../resources/images/earth.jpg");
+
+  Suffer::ref_ptr<Suffer::ResourceManager::Texture> specular_texture;
+  specular_texture.alloc();
+  specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
+  specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+  specular_texture->LoadTextureData("../../../resources/images/earth_specular.jpg");
 
 
   Suffer::ref_ptr<Suffer::GameObject> go_cube;
@@ -66,9 +113,8 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::MaterialComponent> material_component;
   material_component.alloc();
-  Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_params;
+  Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params;
   material_params.alloc();
-  material_params->albedo_texture_id_ = albedo_texture->id_;
   material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   material_component->SetParams(material_params.get());
   
@@ -82,24 +128,14 @@ int main(int argc, char* argv[]) {
   auto component_ = go_cube->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
   Suffer::Transform* component = reinterpret_cast<Suffer::Transform*>(component_);
 
-  // -------------------------------------------------------------------------------------//
-    //go_cube->StartUpLUA("../../../src/lua/lua_code_cube.txt");
-  //TODO: REMOVE THIS: go_cube->SetGeometry(geometry);
-  //TODO: REMOVE THIS: go_cube->SetMaterial(material);
-
   go_cube->SetName("Cube");
 
-  //component->Translate(mathmorra::Vector3(-3.0f, 0.0f, 0.0f));
 
-
+  // -------------------------------- COMPONENTS STUFF TESTS ------------------------------//
 
   Suffer::ref_ptr<Suffer::GameObject> go_sphere;
   go_sphere.alloc();
   //go_sphere->StartUpLUA("../../../src/lua/lua_code_sphere.txt");
-
-
-
-  // -------------------------------- COMPONENTS STUFF TESTS ------------------------------//
 
   Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_sphere;
   geometry_component_sphere.alloc();
@@ -109,29 +145,65 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::MaterialComponent> material_component_sphere;
   material_component_sphere.alloc();
-  Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_params2;
-  material_params2.alloc();
-  material_params2->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  material_params2->albedo_texture_id_ = albedo_texture2->id_;
-  material_component_sphere->SetParams(material_params2.get());
+  Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_params_sphere;
+  material_params_sphere.alloc();
+  material_params_sphere->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+  material_params_sphere->albedo_texture_id_ = albedo_texture2->id_;
+  material_params_sphere->specular_texture_id_ = specular_texture->id_;
+  material_component_sphere->SetParams(material_params_sphere.get());
   go_sphere->AddComponent(material_component_sphere.get());
 
   Suffer::ref_ptr<Suffer::Transform> transform_component_sphere_;
   transform_component_sphere_.alloc();
+  transform_component_sphere_->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+  transform_component_sphere_->Rotate(mathmorra::Vector3(90.0f, 0.0f, 0.0f));
   go_sphere->AddComponent(transform_component_sphere_.get());
+
+
+  // -------------------------------------------------------------------------------------//
+
+  Suffer::ref_ptr<Suffer::GameObject> go_quad;
+  go_quad.alloc();
+
+  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component2;
+  geometry_component2.alloc();
+  geometry_component2->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+  geometry_component2->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Quad);
+  go_quad->AddComponent(geometry_component2.get());
+
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_component2;
+  material_component2.alloc();
+  Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params2;
+  material_params2.alloc();
+  material_params2->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+  material_component2->SetParams(material_params_sphere.get());
+
+
+  go_quad->AddComponent(material_component2.get());
+
+  Suffer::ref_ptr<Suffer::Transform> transform_component_2;
+  transform_component_2.alloc();
+  transform_component_2->Scale(mathmorra::Vector3(5.0f, 5.0f, 5.0f));
+  transform_component_2->Translate(mathmorra::Vector3(0.0f, 0.0f, 10.0f));
+  transform_component_2->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+  go_quad->AddComponent(transform_component_2.get());
+
+  go_quad->SetName("Quad");
+
+
 
 
   // SCRIPTING TESTS
 
   Suffer::ref_ptr<Suffer::ScriptComponent> script_component_;
   script_component_.alloc();
-  go_sphere->AddComponent(script_component_.get());
+  go_quad->AddComponent(script_component_.get());
   script_component_->AttachScript("../../../src/lua/lua_test_update.txt");
 
   Suffer::ref_ptr<Suffer::ScriptComponent> script_component_cube;
   script_component_cube.alloc();
-  go_cube->AddComponent(script_component_cube.get());
-  script_component_cube->AttachScript("../../../src/lua/lua_test_update_cube.lua");
+  //go_cube->AddComponent(script_component_cube.get());
+  //script_component_cube->AttachScript("../../../src/lua/lua_test_update_cube.lua");
   //go_sphere->StartUpLUA("../../../src/lua/lua_test_update.txt");
 
   Suffer::ref_ptr<Suffer::Audio3D> audio_component_;
@@ -149,8 +221,9 @@ int main(int argc, char* argv[]) {
 
   go_sphere->SetName("Sphere");
 
-  scene->AddGameObject(go_sphere);
+  //scene->AddGameObject(go_sphere);
   scene->AddGameObject(go_cube);
+  scene->AddGameObject(go_quad);
 
 
   suffer.SetScene(scene);

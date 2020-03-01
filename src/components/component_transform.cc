@@ -30,6 +30,18 @@ void Suffer::Transform::Translate(mathmorra::Vector3 position){
     position_ = position;
 }
 
+float* Suffer::Transform::Up(){
+    return &up_.x_;
+}
+
+float* Suffer::Transform::Right(){
+    return &right_.x_;
+}
+
+float* Suffer::Transform::Forward(){
+    return &forward_.x_;
+}
+
 float* Suffer::Transform::GetScale(){
     return &scale_.x_;
 }
@@ -71,7 +83,7 @@ void Suffer::Transform::Init() {
     rotation_ = { 0.0f, 0.0f, 0.0f };
 
     up_ = { 0.0f, 1.0f, 0.0f };
-    right_ = { 1.0f, 0.0f, 0.0f };
+    right_ = { -1.0f, 0.0f, 0.0f };
     forward_ = mathmorra::Vector3::CrossProduct(up_, right_);
 
 }

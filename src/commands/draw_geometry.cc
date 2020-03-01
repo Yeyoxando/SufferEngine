@@ -8,6 +8,7 @@
 #include <gl/glew.h>
 #include "time.h"
 #include <data_types.h>
+#include "scene.h"
 #include "vector4.h"
 #include "suffermanager.h"
 #include "internal_resource_manager.h"
@@ -17,7 +18,8 @@
 #include <string>
 
 #define MAX_USED_TEXTURES 5
-#define MAX_USED_VEC4DATA 14
+//14 to uniforms, rest for lights
+#define MAX_USED_VEC4DATA 47 
 
 // ------------------------------------------------------------------------- //
 
@@ -69,8 +71,6 @@ Suffer::DrawGeometry::~DrawGeometry() {
 // ------------------------------------------------------------------------- //
 
 void Suffer::DrawGeometry::SetData(GameObject* go) {
-
-  // Cambiar toda esta movida para que vaya cn componentes
 
   // ---------------------------- SetGeometry ------------------------------ //
 
@@ -138,16 +138,27 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
     case MaterialComponent::ParamsType::kParamsType_Default: {
       MaterialComponent::DefaultParams* default_params_;
       default_params_ = reinterpret_cast<MaterialComponent::DefaultParams*>(params);
+      data_->u_data_[52] = suffer.GetCurrentScene()->GetMainCamera()->Position()[0];
+      data_->u_data_[53] = suffer.GetCurrentScene()->GetMainCamera()->Position()[1];
+      data_->u_data_[54] = suffer.GetCurrentScene()->GetMainCamera()->Position()[2];
+      data_->u_data_[55] = (float)Time();
 
       data_->texture_ids_[0] = default_params_->albedo_texture_id_;
-      data_->current_used_textures_ = 1;
+      data_->texture_ids_[1] = default_params_->specular_texture_id_;
+      data_->current_used_textures_ = 2;
+      SetLights();
     }
       break;
-    case MaterialComponent::ParamsType::kParamsType_Unlit: {
-      MaterialComponent::UnlitParams* phong_params_;
-      phong_params_ = reinterpret_cast<MaterialComponent::UnlitParams*>(params);
-      data_->u_data_[52] = (float)Time();
+    case MaterialComponent::ParamsType::kParamsType_Phong: {
+      MaterialComponent::PhongParams* phong_params_;
+      phong_params_ = reinterpret_cast<MaterialComponent::PhongParams*>(params);
+      data_->u_data_[52] = suffer.GetCurrentScene()->GetMainCamera()->Position()[0];
+      data_->u_data_[53] = suffer.GetCurrentScene()->GetMainCamera()->Position()[1];
+      data_->u_data_[54] = suffer.GetCurrentScene()->GetMainCamera()->Position()[2];
+      data_->u_data_[55] = (float)Time();
+
       data_->current_used_textures_ = 0;
+      SetLights();
     }
       break;
     case MaterialComponent::ParamsType::kParamsType_RenderToTexture: {
@@ -205,6 +216,115 @@ void Suffer::DrawGeometry::SetProjectionMatrix(mathmorra::Matrix4 projection) {
 }
 
 // ------------------------------------------------------------------------- //
+
+void Suffer::DrawGeometry::SetLights(){
+
+  // Lighting
+  u32 number_lights = 0;
+  u32 offset = 0;
+  u32 current_lights = suffer.light_manager_.current_lights_;
+  for (u32 i = 0; i < current_lights; ++i) {
+    LightManager::DirectionalLight* light = suffer.light_manager_.lights_[i].get();
+    if (light->Active()) {
+      number_lights++;
+      LightManager::PointLight* point_light;
+      LightManager::SpotLight* spot_light;
+      switch (light->GetLightKind()) {
+      case LightManager::kLightKind_Directional: {
+        //20
+        data_->u_data_[60 + (offset)] = light->Direction()[0];
+        data_->u_data_[61 + (offset)] = light->Direction()[1];
+        data_->u_data_[62 + (offset)] = light->Direction()[2];
+        data_->u_data_[63 + (offset)] = (float)light->Active();
+        data_->u_data_[64 + (offset)] = light->Color()[0];
+        data_->u_data_[65 + (offset)] = light->Color()[1];
+        data_->u_data_[66 + (offset)] = light->Color()[2];
+        data_->u_data_[67 + (offset)] = light->GetLightKind();
+        data_->u_data_[68 + (offset)] = light->Ambient()[0];
+        data_->u_data_[69 + (offset)] = light->Ambient()[1];
+        data_->u_data_[70 + (offset)] = light->Ambient()[2];
+        data_->u_data_[71 + (offset)] = light->Intensity();
+        data_->u_data_[72 + (offset)] = light->Diffuse()[0];
+        data_->u_data_[73 + (offset)] = light->Diffuse()[1];
+        data_->u_data_[74 + (offset)] = light->Diffuse()[2];
+        data_->u_data_[76 + (offset)] = light->Specular()[0];
+        data_->u_data_[77 + (offset)] = light->Specular()[1];
+        data_->u_data_[78 + (offset)] = light->Specular()[2];
+        offset += 20;
+      }
+        break;
+      case LightManager::kLightKind_Point: {
+        //24
+        point_light = static_cast<LightManager::PointLight*>(light);
+        data_->u_data_[60 + (offset)] = point_light->Position()[0];
+        data_->u_data_[61 + (offset)] = point_light->Position()[1];
+        data_->u_data_[62 + (offset)] = point_light->Position()[2];
+        data_->u_data_[63 + (offset)] = (float)light->Active();
+        data_->u_data_[64 + (offset)] = point_light->Color()[0];
+        data_->u_data_[65 + (offset)] = point_light->Color()[1];
+        data_->u_data_[66 + (offset)] = point_light->Color()[2];
+        data_->u_data_[67 + (offset)] = light->GetLightKind();
+        data_->u_data_[68 + (offset)] = point_light->Ambient()[0];
+        data_->u_data_[69 + (offset)] = point_light->Ambient()[1];
+        data_->u_data_[70 + (offset)] = point_light->Ambient()[2];
+        data_->u_data_[71 + (offset)] = point_light->Intensity();
+        data_->u_data_[72 + (offset)] = point_light->Diffuse()[0];
+        data_->u_data_[73 + (offset)] = point_light->Diffuse()[1];
+        data_->u_data_[74 + (offset)] = point_light->Diffuse()[2];
+        data_->u_data_[76 + (offset)] = point_light->Specular()[0];
+        data_->u_data_[77 + (offset)] = point_light->Specular()[1];
+        data_->u_data_[78 + (offset)] = point_light->Specular()[2];
+        data_->u_data_[80 + (offset)] = point_light->Constant();
+        data_->u_data_[81 + (offset)] = point_light->Linear();
+        data_->u_data_[82 + (offset)] = point_light->Quadratic();
+        offset += 24;
+      }
+        break;
+      case LightManager::kLightKind_Spot: {
+        //32
+        spot_light = static_cast<LightManager::SpotLight*>(light);
+        data_->u_data_[60 + (offset)] = spot_light->Direction()[0];
+        data_->u_data_[61 + (offset)] = spot_light->Direction()[1];
+        data_->u_data_[62 + (offset)] = spot_light->Direction()[2];
+        data_->u_data_[63 + (offset)] = (float)light->Active();
+        data_->u_data_[64 + (offset)] = spot_light->Position()[0];
+        data_->u_data_[65 + (offset)] = spot_light->Position()[1];
+        data_->u_data_[66 + (offset)] = spot_light->Position()[2];
+        data_->u_data_[67 + (offset)] = light->GetLightKind();
+        data_->u_data_[68 + (offset)] = spot_light->Color()[0];
+        data_->u_data_[69 + (offset)] = spot_light->Color()[1];
+        data_->u_data_[70 + (offset)] = spot_light->Color()[2];
+        data_->u_data_[72 + (offset)] = spot_light->Ambient()[0];
+        data_->u_data_[73 + (offset)] = spot_light->Ambient()[1];
+        data_->u_data_[74 + (offset)] = spot_light->Ambient()[2];
+        data_->u_data_[75 + (offset)] = spot_light->Intensity();
+        data_->u_data_[76 + (offset)] = spot_light->Diffuse()[0];
+        data_->u_data_[77 + (offset)] = spot_light->Diffuse()[1];
+        data_->u_data_[78 + (offset)] = spot_light->Diffuse()[2];
+        data_->u_data_[80 + (offset)] = spot_light->Specular()[0];
+        data_->u_data_[81 + (offset)] = spot_light->Specular()[1];
+        data_->u_data_[82 + (offset)] = spot_light->Specular()[2];
+        data_->u_data_[84 + (offset)] = spot_light->Constant();
+        data_->u_data_[85 + (offset)] = spot_light->Linear();
+        data_->u_data_[86 + (offset)] = spot_light->Quadratic();
+        data_->u_data_[88 + (offset)] = spot_light->CutOff();
+        data_->u_data_[89 + (offset)] = spot_light->OuterCutOff();
+        offset += 32;
+      }
+        break;
+      case LightManager::kLightKind_Invalid:
+
+        break;
+      default:
+        break;
+      }
+      
+    }
+
+  }
+  data_->u_data_[56] = number_lights;
+
+}
 
 void Suffer::DrawGeometry::Execute() const {
 
@@ -475,7 +595,7 @@ void Suffer::DrawGeometry::Execute() const {
       //return;
     }
 
-    glUniform4fv(u_pos, 14, data_->u_data_);
+    glUniform4fv(u_pos, MAX_USED_VEC4DATA, data_->u_data_);
     u_pos = -1;
   
 

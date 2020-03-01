@@ -12,6 +12,7 @@ struct Suffer::ResourceManager::ResourceData {
   ResourceData();
   ~ResourceData();
 
+
   struct InternalFrameBuffer {
     
     InternalFrameBuffer() { id_handle_ = -1; version_ = 0; gpu_version_ = 0; };
@@ -98,17 +99,20 @@ struct Suffer::ResourceManager::ResourceData {
   Array<InternalTexture> internal_textures_;
   Array<InternalMaterial> internal_materials_;
   Array<InternalFrameBuffer> internal_frame_buffers_;
+  Array<InternalFrameBuffer> internal_light_frame_buffers_;
 
   u32 number_of_vertex_buffers_;
   u32 number_of_index_buffers_;
   u32 number_of_textures_;
   u32 number_of_materials_;
   u32 number_of_frame_buffers_;
+  u32 number_of_light_frame_buffers_;
 
   void InitInternalBuffers();
   void InitInternalMaterials();
   void InitInternalTextures();
   void InitInternalFrameBuffers();
+  void RefreshFrameBuffers();
 
 };
 

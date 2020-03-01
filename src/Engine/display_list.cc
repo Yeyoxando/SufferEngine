@@ -11,6 +11,7 @@
 Suffer::DisplayList::DisplayList(){
 
 	dl_type_ = kDisplayListType_Invalid;
+  frame_buffer_id_ = -1;
 
 }
 
@@ -118,6 +119,7 @@ Suffer::DisplayList & Suffer::DisplayList::operator=(DisplayList && d){
 	std::swap(dl_commands_, d.dl_commands_);
 	dl_type_ = d.dl_type_;
 	d.dl_type_ = kDisplayListType_Invalid;
+  frame_buffer_id_ = d.frame_buffer_id_;
 
 	return *this;
 

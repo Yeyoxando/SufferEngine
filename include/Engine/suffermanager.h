@@ -15,6 +15,8 @@
 #include "system_transform.h"
 #include "system_render.h"
 #include "system_script.h"
+#include "system_light.h"
+
 
 namespace Suffer {
 
@@ -68,6 +70,11 @@ namespace Suffer {
     mathmorra::Vector2 GetMousePosition();
     void SetCursorPosition(mathmorra::Vector2 newPosition);
 
+    mathmorra::Vector2 GetWindowSize();
+    void SetWindowSize(int width, int height);
+
+    bool Running();
+
 		// Subsystems
     AudioManager audio_manager_;
     InputManager input_manager_;
@@ -109,6 +116,8 @@ namespace Suffer {
      */
     void PrepareAudio();
 
+    void PreparePostproccess();
+
 		// Threads
 		ref_ptr<Thread> logic_;
 		ref_ptr<Thread> input_;
@@ -117,10 +126,16 @@ namespace Suffer {
     mathmorra::Vector2 mouse_position_;
     std::vector<ref_ptr<System>> systems_;
     
-    Suffer::ref_ptr<Suffer::SystemRender> render_system_;
-    Suffer::ref_ptr<Suffer::SystemTransform> transform_system_;
-    Suffer::ref_ptr<Suffer::SystemScript> script_system_;
+    ref_ptr<SystemRender> render_system_;
+    ref_ptr<SystemTransform> transform_system_;
+    ref_ptr<SystemScript> script_system_;
+    ref_ptr<SystemLight> light_system_;
 
+
+    //Framebuffers
+    ref_ptr<ResourceManager::FrameBuffer> draw_frame_buffer_;
+    ref_ptr<ResourceManager::FrameBuffer> postprocessing_frame_buffer_;
+    
 		struct Data;
 		Data* data_;
 
