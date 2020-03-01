@@ -21,6 +21,7 @@
 Suffer::GameObject::GameObject() {
 
   name_ = "GameObject";
+  childs_.clear();
 
 }
 
@@ -69,6 +70,8 @@ bool Suffer::GameObject::HasComponent(Component::ComponentKind component){
 
 void Suffer::GameObject::AddComponent(ref_ptr<Component> new_component){
 
+  assert(new_component.get() != nullptr);
+  if (new_component.get() == nullptr) return;
   if(HasComponent(new_component->kind_)) 
     assert(false && "The GameObject already has a component of this kind");
 
@@ -136,9 +139,10 @@ void Suffer::GameObject::SetName(const char* name){
 
 // --------------------------------------------------- //
 
-Suffer::GameObject* Suffer::GameObject::GetChild(u32 child){
-    // TODO: Expand this
-    return &GameObject();
+Suffer::GameObject* Suffer::GameObject::GetChild(u32 child) {
+    std::list<ref_ptr<GameObject>>::iterator it = childs_.begin();
+    std::advance(it, child);
+    return it->get();
 }
 
 // --------------------------------------------------- //
@@ -153,12 +157,15 @@ u32 Suffer::GameObject::NumberChildsRecursively(GameObject* go){
 
     u32 number_of_childs = go->NumberChilds();
     u32 result = 0;
+    u32 total_game_objects = 0;
 
     for (u32 i = 0; i < number_of_childs; ++i) {
         result = go->NumberChildsRecursively(go->GetChild(i));
     }
 
-    return result;
+    total_game_objects += go->NumberChilds();
+
+    return total_game_objects;
 
 }
 

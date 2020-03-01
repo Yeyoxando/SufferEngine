@@ -117,8 +117,6 @@ int main(int argc, char* argv[]) {
   transform_component_2->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
   go_quad->AddComponent(transform_component_2.get());
 
-  go_quad->SetName("Quad");
-
 
 
 
@@ -150,7 +148,6 @@ int main(int argc, char* argv[]) {
 
 
   // SCRIPTING TESTS
-
   Suffer::ref_ptr<Suffer::ScriptComponent> script_component_;
   script_component_.alloc();
   go_quad->AddComponent(script_component_.get());
@@ -172,19 +169,17 @@ int main(int argc, char* argv[]) {
   audio_component_.alloc();
   go_sphere->AddComponent(audio_component_.get());
 
-  auto audio_ = go_sphere->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Audio);
-  Suffer::Audio3D* source = reinterpret_cast<Suffer::Audio3D*>(audio_);
-  source->Load("../../../resources/audio/plonk_wet.ogg");
-  source->Play3D();
-  source->SetLooping(true);
-
   // -------------------------------------------------------------------------------------//
 
-
+  go_quad->SetName("Quad");
   go_sphere->SetName("Sphere");
+  go_sphere2->SetName("Sphere 2");
 
-  go_quad->AddChild(go_sphere);
   go_quad->AddChild(go_sphere2);
+  go_sphere2->AddChild(go_sphere);
+
+
+  u32 childs = go_quad->NumberChildsRecursively(go_quad.get());
 
   scene->AddGameObject(go_sphere);
   scene->AddGameObject(go_quad);

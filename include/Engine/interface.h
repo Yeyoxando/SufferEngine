@@ -114,6 +114,8 @@ namespace Suffer {
 		bool is_audio_window_opened_;
 		bool is_lighting_window_opened_;
 
+		u32 game_object_selected_;
+
 	};
 
 }
