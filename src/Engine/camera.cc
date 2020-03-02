@@ -281,10 +281,6 @@ void Suffer::Camera::CameraMovement(ref_ptr<Camera> camera) {
   camera_right_ = mathmorra::Vector3::CrossProduct(camera_target_, y).Normalized();
   camera_up_ = mathmorra::Vector3::CrossProduct(camera_right_, camera_target_).Normalized();
 
-  printf("\nUP X: %f, Y: %f, Z: %f\n", camera_up_.x_, camera_up_.y_, camera_up_.z_);
-  printf("RI X: %f, Y: %f, Z: %f\n", camera_right_.x_, camera_right_.y_, camera_right_.z_);
-  //printf("POS X: %f, Y: %f, Z: %f\n", camera_position_.x_, camera_position_.y_, camera_position_.z_);
-
 }
 
 // --------------------------------------------------- //

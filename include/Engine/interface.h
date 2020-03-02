@@ -124,6 +124,7 @@ namespace Suffer {
 		bool is_lighting_window_opened_;
 
 		u32 game_object_selected_;
+		u32 game_objects_id_;
 
 	};
 

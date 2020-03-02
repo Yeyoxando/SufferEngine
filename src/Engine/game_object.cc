@@ -22,6 +22,8 @@ Suffer::GameObject::GameObject() {
 
   name_ = "GameObject";
   childs_.clear();
+  id_ = suffer.number_of_game_objects_;
+  suffer.number_of_game_objects_++;
 
 }
 
@@ -167,6 +169,12 @@ u32 Suffer::GameObject::NumberChildsRecursively(GameObject* go){
 
     return total_game_objects;
 
+}
+
+// --------------------------------------------------- //
+
+u32 Suffer::GameObject::ID(){
+    return id_;
 }
 
 // --------------------------------------------------- //

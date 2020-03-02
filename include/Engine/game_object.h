@@ -55,6 +55,7 @@ namespace Suffer {
     
     u32 NumberChilds();
     u32 NumberChildsRecursively(GameObject* go);
+    u32 ID();
 
     const char* Name();
     void SetName(const char* name);
@@ -71,6 +72,7 @@ namespace Suffer {
     void Step(float delta_time);
     void Destroy();
 
+    u32 id_;
     std::list<ref_ptr<GameObject>> childs_;
 
 	};

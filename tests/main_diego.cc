@@ -184,9 +184,6 @@ int main(int argc, char* argv[]) {
   go_quad->AddChild(go_sphere);
   go_sphere->AddChild(go_sphere2);
 
-
-  u32 childs = go_quad->NumberChildsRecursively(go_quad.get());
-
   scene->AddGameObject(go_sphere);
   scene->AddGameObject(go_quad);
   scene->AddGameObject(go_sphere2);

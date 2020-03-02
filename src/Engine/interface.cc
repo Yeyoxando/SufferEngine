@@ -84,6 +84,7 @@ Suffer::Interface::Interface(){
 	is_audio_window_opened_ = true;
 	is_lighting_window_opened_ = false;
 	game_object_selected_ = 0;
+	game_objects_id_ = 0;
 
 	_ptr = new Data();
 
@@ -560,11 +561,6 @@ void  Suffer::Interface::Hierarchy(Scene* current_scene_){
 
   for (int i = 0; i < scene_game_objects; ++i) {
 			GameObject* reference = current_scene_->current_gameobjects_[i].get();
-      //char label[128];
-      //sprintf(label, reference->Name(), i);
-      //if (ImGui::Selectable(label, game_object_selected_ == i))
-      //    game_object_selected_ = i;
-      //ImGui::Spacing();
 			if (!reference->HasComponent(Component::kComponentKind_Child)) {
 				int number_childs = reference->NumberChilds();
 				SearchChilds(number_childs, reference);
@@ -833,6 +829,7 @@ void  Suffer::Interface::Inspector(){
 void  Suffer::Interface::Project(){
 	ImGui::Begin("Project", &is_project_window_opened_);
 	ImGui::Text("I'm the project structure!");
+	ImGui::ShowMetricsWindow(&is_log_opened_);
 	ImGui::End();
 }
 
@@ -1201,8 +1198,10 @@ void Suffer::Interface::SearchChilds(u16 index, GameObject* go){
 		assert(go != nullptr && "ERROR: NULL GameObject");
 		if (go == nullptr) return;
 
+		
 		u16 number_childs = go->NumberChilds();
-		if (ImGui::TreeNode(go->Name())) {
+
+		if ((ImGui::TreeNode((void*)(intptr_t)go->ID(), "GameObject %d", go->ID()))) {
 			for (int i = 0; i < number_childs; ++i) {
 						SearchChilds(i, go->GetChild(i));
 			}
