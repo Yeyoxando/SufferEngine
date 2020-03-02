@@ -18,7 +18,7 @@ Suffer::Camera::Camera() {
 
   speed_ = 0.5f;
   sensitivity_ = 0.05f;
-  field_of_view_ = 50.0f;
+  field_of_view_ = 49.5999985;
   yaw_ = -90.0f;
   pitch_ = 0.0f;
 
@@ -27,7 +27,7 @@ Suffer::Camera::Camera() {
   camera_back_ = { 0.0f, 0.0f, -1.0f };
   camera_right_ = { 1.0f, 0.0f, 0.0f };
   camera_target_ = { 0.0f, 0.0f, 1.0f };
-  camera_position_ = { -1.5f, 0.0f, -30.0f };
+  camera_position_ = { -1.5f, 0.0f, -80.0f };
 
   last_cursor_position_.x_ = 800.0f * 0.5f;
   last_cursor_position_.y_ = 600.0f * 0.5f;

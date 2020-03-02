@@ -36,13 +36,19 @@ int main(int argc, char* argv[]) {
   albedo_texture.alloc();
   albedo_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
   albedo_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-  albedo_texture->LoadTextureData("../../../resources/images/box.jpg");
+  albedo_texture->LoadTextureData("../../../resources/images/box_2.png");
 
   Suffer::ref_ptr<Suffer::ResourceManager::Texture> albedo_texture2;
   albedo_texture2.alloc();
   albedo_texture2->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
   albedo_texture2->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
   albedo_texture2->LoadTextureData("../../../resources/images/earth.jpg");
+
+  Suffer::ref_ptr<Suffer::ResourceManager::Texture> specular_texture_box;
+  specular_texture_box.alloc();
+  specular_texture_box->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
+  specular_texture_box->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+  specular_texture_box->LoadTextureData("../../../resources/images/box_2_spec.png");
 
   Suffer::ref_ptr<Suffer::ResourceManager::Texture> specular_texture;
   specular_texture.alloc();
@@ -64,6 +70,17 @@ int main(int argc, char* argv[]) {
   geometry_component_sphere->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Sphere);
   go_sphere->AddComponent(geometry_component_sphere.get());
   go_sphere2->AddComponent(geometry_component_sphere.get());
+
+
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_component_cube;
+  material_component_cube.alloc();
+  Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_params_cube;
+  material_params_cube.alloc();
+  material_params_cube->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+  material_params_cube->albedo_texture_id_ = albedo_texture->id_;
+  material_params_cube->specular_texture_id_ = specular_texture->id_;
+  material_component_cube->SetParams(material_params_cube.get());
+
 
   Suffer::ref_ptr<Suffer::MaterialComponent> material_component_sphere;
   material_component_sphere.alloc();
@@ -108,7 +125,7 @@ int main(int argc, char* argv[]) {
   material_component2->SetParams(material_params_sphere.get());
 
 
-  go_quad->AddComponent(material_component2.get());
+  go_quad->AddComponent(material_component_cube.get());
 
   Suffer::ref_ptr<Suffer::Transform> transform_component_2;
   transform_component_2.alloc();
@@ -118,27 +135,13 @@ int main(int argc, char* argv[]) {
   go_quad->AddComponent(transform_component_2.get());
 
 
-
-
-
-  Suffer::ref_ptr<Suffer::LightComponent> light_component;
-  light_component.alloc();
-
-  light_component->Init(Suffer::LightComponent::kLightKind_Point);
-  light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-  light_component->SetIntensity(20.0f);
-  light_component->SetAmbient(0.0f, 1.0f, 1.0f);
-  light_component->SetDiffuse(0.0f, 1.0f, 1.0f);
-  light_component->SetSpecular(0.0f, 1.0f, 1.0f);
-  go_sphere->AddComponent(light_component.get());
-
-
+   
   Suffer::ref_ptr<Suffer::LightComponent> light_component2;
   light_component2.alloc();
 
   light_component2->Init(Suffer::LightComponent::kLightKind_Point);
   light_component2->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-  light_component2->SetIntensity(40.0f);
+  light_component2->SetIntensity(10.0f);
   light_component2->SetAmbient(1.0f, 1.0f, 1.0f);
   light_component2->SetDiffuse(1.0f, 1.0f, 1.0f);
   light_component2->SetSpecular(1.0f, 1.0f, 1.0f);
@@ -175,8 +178,8 @@ int main(int argc, char* argv[]) {
   go_sphere->SetName("Sphere");
   go_sphere2->SetName("Sphere 2");
 
-  go_quad->AddChild(go_sphere2);
-  go_sphere2->AddChild(go_sphere);
+  go_quad->AddChild(go_sphere);
+  go_sphere->AddChild(go_sphere2);
 
 
   u32 childs = go_quad->NumberChildsRecursively(go_quad.get());
