@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
 
         // Transform
         transform_component_cubes[i].alloc();
-        transform_component_cubes[i]->Translate(mathmorra::Vector3(-10.0f + (rand()%10),
+        transform_component_cubes[i]->Translate(mathmorra::Vector3(-10.0f + (rand() % 10),
                                                                    -10.0f + (rand()%10),
                                                                    -10.0f + (rand()%10)));
         transform_component_cubes[i]->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));

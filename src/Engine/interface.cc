@@ -1168,7 +1168,6 @@ void  Suffer::Interface::Game(s32 tex){
 		ImVec2 vec = ImGui::GetWindowPos();
 		ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)tex, vec, ImVec2(vec.x + width, vec.y + height));
 	}
-
 	ImGui::Text("I'm the Game!!");
 	ImGui::End();
 
@@ -1195,18 +1194,27 @@ void  Suffer::Interface::Options(){
 
 void Suffer::Interface::SearchChilds(u16 index, GameObject* go){
 
-		assert(go != nullptr && "ERROR: NULL GameObject");
-		if (go == nullptr) return;
+   assert(go != nullptr && "ERROR: NULL GameObject");
+   if (go == nullptr) return;
+   static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | 
+                                          ImGuiTreeNodeFlags_OpenOnDoubleClick | 
+                                          ImGuiTreeNodeFlags_SpanAvailWidth;
+   u16 number_childs = go->NumberChilds();
+	 int node_clicked = game_object_selected_;
+   
+   bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)go->ID(), base_flags, "GameObject %d", go->ID());
 
-		
-		u16 number_childs = go->NumberChilds();
+	 if (ImGui::IsItemClicked()) {
+     node_clicked = go->ID();
+		 game_object_selected_ = node_clicked;
+	 }
+   if (node_open){
+   	 for (int i = 0; i < number_childs; ++i) {
+   	   SearchChilds(i, go->GetChild(i));
+   	 }
+   	 ImGui::TreePop();
+   }
 
-		if ((ImGui::TreeNode((void*)(intptr_t)go->ID(), "GameObject %d", go->ID()))) {
-			for (int i = 0; i < number_childs; ++i) {
-						SearchChilds(i, go->GetChild(i));
-			}
-			ImGui::TreePop();
-		}
 }
 
 // --------------------------------------------------- //
