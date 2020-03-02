@@ -256,6 +256,10 @@ bool Suffer::SufferManager::Finish(){
   input_manager_.ShutDown();
   light_manager_.ShutDown();
 
+  for (int i = 0; i < GetCurrentScene()->current_gameobjects_.size(); ++i) {
+      GetCurrentScene()->current_gameobjects_[i].release();
+  }
+
   data_->wind_.Close();
 
 	return true;

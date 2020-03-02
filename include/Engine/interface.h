@@ -69,6 +69,8 @@ namespace Suffer {
 		// Windows that can be opened
 		void Options();
 
+		void SearchChilds(u16 index, GameObject* go);
+
 		enum InterfaceStyle {
       kInterfaceStyle_Invalid = -1,
       kInterfaceStyle_Default,

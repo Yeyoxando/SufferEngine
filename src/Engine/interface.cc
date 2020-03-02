@@ -278,7 +278,7 @@ void  Suffer::Interface::CreateDock(bool* p_open){
 	if(is_log_opened_) Log();
   s32 id = suffer.render_manager_.current_drawn_texture_id_;
 	if (is_game_window_opened_) Game(id);
-	
+
 
 	ImGui::End();
 
@@ -531,15 +531,44 @@ void  Suffer::Interface::Hierarchy(Scene* current_scene_){
 
 	ImGui::Begin("Hierarchy", &is_hierarchy_opened_);
 	ImGui::Text("Scene Hierarchy");
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	static bool auxiliar_window = false;
+	static ImVec2 window_pos = ImVec2(0.0f, 0.0f);
+
+
+	if (auxiliar_window) {
+			ImGui::SetNextWindowPos(window_pos);
+			ImGui::SetNextWindowSize(ImVec2(150.0f, 200.0f));
+			ImGui::Begin(" ");
+			ImGui::Button("Create empty");
+			ImGui::Button("3D Object");
+			ImGui::End();
+	}
+
+	if (suffer.input_manager_.MouseButtonDown(1) && ImGui::IsRootWindowOrAnyChildHovered()) {
+			auxiliar_window = true;
+			window_pos = { suffer.GetMousePosition().x_, suffer.GetMousePosition().y_ };
+	}
+
+  if (suffer.input_manager_.MouseButtonDown(0)) {
+      auxiliar_window = false;
+  }
 
   u32 scene_game_objects = current_scene_->current_gameobjects_.size();
 
   for (int i = 0; i < scene_game_objects; ++i) {
-      char label[128];
-      sprintf(label, "GameObject %d", i);
-      if (ImGui::Selectable(label, game_object_selected_ == i))
-          game_object_selected_ = i;
-      ImGui::Spacing();
+			GameObject* reference = current_scene_->current_gameobjects_[i].get();
+      //char label[128];
+      //sprintf(label, reference->Name(), i);
+      //if (ImGui::Selectable(label, game_object_selected_ == i))
+      //    game_object_selected_ = i;
+      //ImGui::Spacing();
+			if (!reference->HasComponent(Component::kComponentKind_Child)) {
+				int number_childs = reference->NumberChilds();
+				SearchChilds(number_childs, reference);
+			}
   }
 
 	ImGui::End();
@@ -1163,6 +1192,22 @@ void  Suffer::Interface::Options(){
 
 	ImGui::End();
 
+}
+
+// --------------------------------------------------- //
+
+void Suffer::Interface::SearchChilds(u16 index, GameObject* go){
+
+		assert(go != nullptr && "ERROR: NULL GameObject");
+		if (go == nullptr) return;
+
+		u16 number_childs = go->NumberChilds();
+		if (ImGui::TreeNode(go->Name())) {
+			for (int i = 0; i < number_childs; ++i) {
+						SearchChilds(i, go->GetChild(i));
+			}
+			ImGui::TreePop();
+		}
 }
 
 // --------------------------------------------------- //
