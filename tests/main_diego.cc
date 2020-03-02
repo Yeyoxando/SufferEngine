@@ -141,11 +141,14 @@ int main(int argc, char* argv[]) {
 
   light_component2->Init(Suffer::LightComponent::kLightKind_Point);
   light_component2->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-  light_component2->SetIntensity(10.0f);
+  light_component2->SetIntensity(15.0f);
+  light_component2->SetLinear(1.0f);
+  light_component2->SetConstant(0.0f);
+  light_component2->SetQuadratic(0.0f);
   light_component2->SetAmbient(1.0f, 1.0f, 1.0f);
   light_component2->SetDiffuse(1.0f, 1.0f, 1.0f);
   light_component2->SetSpecular(1.0f, 1.0f, 1.0f);
-  go_sphere2->AddComponent(light_component2.get());
+  go_quad->AddComponent(light_component2.get());
 
 
 
