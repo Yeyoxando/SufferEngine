@@ -2,6 +2,7 @@ function Start()
   print "Starting SPHERE from LUA!"
   SetGeometry("Cube")
   SetDrawMode("Triangles")
+  Scale(50.0, 50.0, 50.0)
 
 end
 
@@ -16,5 +17,6 @@ end
 local x = 0
 local speed = 0
 function Update()
-  Rotation()
+  --Rotation()
+  x = x + 0.001
 end

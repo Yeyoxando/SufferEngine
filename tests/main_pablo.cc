@@ -19,8 +19,9 @@
 #include "component_script.h"
 #include "component_light.h"
 #include "component.h"
+#include "audio.h"
 
-const u16 number_cubes = 20;
+const u16 number_cubes = 2;
 
 // --------------------------------------------------------------//
 
@@ -79,7 +80,7 @@ int main(int argc, char* argv[]) {
 
         // Geometry
         geometry_component_spheres[i].alloc();
-        geometry_component_spheres[i]->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+        geometry_component_spheres[i]->SetDrawMode(Suffer::GeometryComponent::kDrawMode_LineLoop);
         geometry_component_spheres[i]->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
         go_cubes[i]->AddComponent(geometry_component_spheres[i].get());
 
@@ -125,6 +126,13 @@ int main(int argc, char* argv[]) {
     }
 
     // -------------------------------------------------------------------------------------//
+
+    Suffer::ref_ptr<Suffer::Audio3D> audio_component_;
+    audio_component_.alloc();
+    audio_component_->Load("../../../resources/audio/tavern.ogg");
+    audio_component_->SetLooping(true);
+    audio_component_->Play3D();
+    go_cubes[1]->AddComponent(audio_component_.get());
 
     Suffer::ref_ptr<Suffer::LightComponent> light_component2;
     light_component2.alloc();

@@ -631,12 +631,75 @@ void  Suffer::Interface::Inspector(){
 					}
 					case Component::ComponentKind::kComponentKind_Audio: {
 
+							Audio3D* sound = static_cast<Audio3D*>(component_reference);
+
+              static bool swiped = false;
+              static bool sound_active_ = sound->active_;
+							static int max_value = 256;
+
+              float song_volume = sound->GetGain();
+              static mathmorra::Vector3 song_position = sound->GetSoundPosition();
+              static bool looping = sound->GetLooping();
+              bool paused = sound->isPaused();
+
+              ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Audio");
+
+              // Attributes
+
+              if (ImGui::SliderFloat("Volume", &song_volume, 0.0f, 2.0f)) {
+                  sound->SetGain(song_volume);
+              }
+              if (paused) {
+                  if (ImGui::Button("Play")) {
+                      ref_ptr<AudioCommands::Play> play_command_;
+                      play_command_.alloc();
+                      play_command_->audio_3d_ = sound;
+                      suffer.audio_manager_.audio_dl_.AddCommand(play_command_.get());
+                      play_command_.release();
+                  }
+              }
+              else {
+                  if (ImGui::Button("Pause")) {
+                      ref_ptr<AudioCommands::Pause> pause_command_;
+                      pause_command_.alloc();
+                      pause_command_->audio_3d_ = sound;
+                      suffer.audio_manager_.audio_dl_.AddCommand(pause_command_.get());
+                  }
+              }
+              ImGui::SameLine();
+              if (ImGui::Checkbox("Looping", &looping)) {
+                  sound->SetLooping(looping);
+              }
+
+              ImGui::SameLine();
+              if (ImGui::Checkbox("Is Active", &sound_active_)) {
+                  sound->SetActive(sound_active_);
+              }
+              ImGui::Spacing();
+              float* buf = sound->Wave();
+              float* fft = sound->FFT();
+
+              // Diagrams
+              if (ImGui::Button("Swipe")) swiped = !swiped;
+              ImGui::SameLine();
+              ImGui::SliderInt("Graphic values", &max_value, 0, 256);
+              if (!swiped) {
+                  ImGui::PlotHistogram("##Wave", buf, max_value, 0, "Wave", -1, 1, ImVec2(264, 80));
+                  ImGui::SameLine();
+                  ImGui::PlotHistogram("##Fast Fourier Transform (FFT)", fft, max_value * 0.5f, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
+              }
+              else {
+                  ImGui::PlotLines("##Wave", buf, max_value, 0, "Wave", -1, 1, ImVec2(264, 80));
+                  ImGui::SameLine();
+                  ImGui::PlotLines("##Fast Fourier Transform (FFT)", fft, max_value * 0.5f, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
+              }
+              ImGui::Separator();
 							//ImGui::Separator();
 							break;
 					}
 					case Component::ComponentKind::kComponentKind_Light: {
 							LightComponent* light = static_cast<LightComponent*>(component_reference);
-							ImGui::Text("Light");
+							ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Light");
 							bool active = false;
 							float intensity = 0.0f;
 							if (light == nullptr) break;
@@ -829,7 +892,6 @@ void  Suffer::Interface::Inspector(){
 void  Suffer::Interface::Project(){
 	ImGui::Begin("Project", &is_project_window_opened_);
 	ImGui::Text("I'm the project structure!");
-	ImGui::ShowMetricsWindow(&is_log_opened_);
 	ImGui::End();
 }
 
@@ -1199,6 +1261,7 @@ void Suffer::Interface::SearchChilds(u16 index, GameObject* go){
    static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | 
                                           ImGuiTreeNodeFlags_OpenOnDoubleClick | 
                                           ImGuiTreeNodeFlags_SpanAvailWidth;
+
    u16 number_childs = go->NumberChilds();
 	 int node_clicked = game_object_selected_;
    
