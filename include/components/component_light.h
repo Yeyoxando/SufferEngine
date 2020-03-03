@@ -73,6 +73,11 @@ namespace Suffer {
         float* Diffuse();
         float* Specular();
         float  Intensity();
+        float  CutOff();
+        float  OuterCutOff();
+        float  Quadratic();
+        float  Linear();
+        float  Constant();
         u16 GetLightKind();
         void SetLightKind(LightKind new_kind);
 

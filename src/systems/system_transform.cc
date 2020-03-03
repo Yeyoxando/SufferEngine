@@ -7,6 +7,7 @@
 #include "system_transform.h"
 #include "math_utils.h"
 #include "quaternion.h"
+#include "component_child.h"
 
 // --------------------------------------------------- //
 
@@ -28,7 +29,7 @@ void Suffer::SystemTransform::Execute(GameObject* go){
     if (!go->HasComponent(Component::ComponentKind::kComponentKind_Transform)) return;
 
     auto component_ = go->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
-    Suffer::Transform* transform_component = reinterpret_cast<Suffer::Transform*>(component_);
+    Suffer::Transform* transform_component = static_cast<Suffer::Transform*>(component_);
 
     mathmorra::Matrix4 translation_mat;
     translation_mat = translation_mat.Translate(
@@ -50,6 +51,19 @@ void Suffer::SystemTransform::Execute(GameObject* go){
         transform_component->scale_.z_);
 
     transform_component->model_ = scale_mat * (rotation_mat_x * rotation_mat_y * rotation_mat_z) * translation_mat;
+
+    // Hierarchy Stuff
+    if (go->HasComponent(Component::ComponentKind::kComponentKind_Child)) {
+        auto component_ = go->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Child);
+        Suffer::ChildComponent* child_component = static_cast<Suffer::ChildComponent*>(component_);
+        GameObject* parent = child_component->parent_reference_;
+        if (parent->HasComponent(Component::ComponentKind::kComponentKind_Transform)) {
+            auto component_ = parent->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
+            Suffer::Transform* parent_transform_component = static_cast<Suffer::Transform*>(component_);
+            mathmorra::Matrix4 parent_model = parent_transform_component->GetModelMatrix();
+            transform_component->model_ = transform_component->model_ * parent_model;
+        }
+    }
 
     // Update the Forward vector
     mathmorra::Vector3 x = mathmorra::Vector3(1.0f, 0.0f, 0.0f);

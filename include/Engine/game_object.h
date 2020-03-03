@@ -12,6 +12,7 @@
 #include <ref_ptr.h>
 #include <command.h>
 #include "display_list.h"
+#include <list>
 
 // Mathematic Headers
 #include <vector3.h>
@@ -47,16 +48,17 @@ namespace Suffer {
 
 
     // Hierarchy Stuff
+    void AddChild(ref_ptr<GameObject> child);
     void DetachChildren();
     void RemoveChild(u32 child);
     GameObject* GetChild(u32 child);
     
     u32 NumberChilds();
     u32 NumberChildsRecursively(GameObject* go);
+    u32 ID();
 
     const char* Name();
     void SetName(const char* name);
-    void StartUpLUA(const char* luaCodeFile);
 
 	protected:
 		virtual ~GameObject();
@@ -70,8 +72,8 @@ namespace Suffer {
     void Step(float delta_time);
     void Destroy();
 
-    struct Data;
-    Data* data_;
+    u32 id_;
+    std::list<ref_ptr<GameObject>> childs_;
 
 	};
 

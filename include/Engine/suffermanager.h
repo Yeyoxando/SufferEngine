@@ -16,6 +16,7 @@
 #include "system_render.h"
 #include "system_script.h"
 #include "system_light.h"
+#include "system_audio.h"
 
 
 namespace Suffer {
@@ -75,6 +76,9 @@ namespace Suffer {
 
     bool Running();
 
+
+    u32 number_of_game_objects_;
+
 		// Subsystems
     AudioManager audio_manager_;
     InputManager input_manager_;
@@ -126,10 +130,11 @@ namespace Suffer {
     mathmorra::Vector2 mouse_position_;
     std::vector<ref_ptr<System>> systems_;
     
-    ref_ptr<SystemRender> render_system_;
+    ref_ptr<SystemLight>     light_system_;
+    ref_ptr<SystemAudio>     audio_system_;
+    ref_ptr<SystemRender>    render_system_;
+    ref_ptr<SystemScript>    script_system_;
     ref_ptr<SystemTransform> transform_system_;
-    ref_ptr<SystemScript> script_system_;
-    ref_ptr<SystemLight> light_system_;
 
 
     //Framebuffers

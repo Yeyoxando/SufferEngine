@@ -44,6 +44,7 @@ namespace Suffer {
     };
 
     void CreateGeometryWithShape(BasicShapes shape);
+    BasicShapes GetGeometry();
 
     void SetDrawMode(DrawMode newMode);
     DrawMode GetDrawMode();

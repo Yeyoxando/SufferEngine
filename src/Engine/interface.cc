@@ -21,6 +21,10 @@
 #include "internal_interface.h"
 #include <string>
 
+// Components
+#include "component_light.h"
+#include "component_geometry.h"
+
 ExampleAppLog Suffer::Interface::log;
 
 // --------------------------------------------------- //
@@ -79,6 +83,8 @@ Suffer::Interface::Interface(){
 	is_project_window_opened_ = true;
 	is_audio_window_opened_ = true;
 	is_lighting_window_opened_ = false;
+	game_object_selected_ = 0;
+	game_objects_id_ = 0;
 
 	_ptr = new Data();
 
@@ -273,7 +279,7 @@ void  Suffer::Interface::CreateDock(bool* p_open){
 	if(is_log_opened_) Log();
   s32 id = suffer.render_manager_.current_drawn_texture_id_;
 	if (is_game_window_opened_) Game(id);
-	
+
 
 	ImGui::End();
 
@@ -526,18 +532,39 @@ void  Suffer::Interface::Hierarchy(Scene* current_scene_){
 
 	ImGui::Begin("Hierarchy", &is_hierarchy_opened_);
 	ImGui::Text("Scene Hierarchy");
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	static bool auxiliar_window = false;
+	static ImVec2 window_pos = ImVec2(0.0f, 0.0f);
+
+
+	if (auxiliar_window) {
+			ImGui::SetNextWindowPos(window_pos);
+			ImGui::SetNextWindowSize(ImVec2(150.0f, 200.0f));
+			ImGui::Begin(" ");
+			ImGui::Button("Create empty");
+			ImGui::Button("3D Object");
+			ImGui::End();
+	}
+
+	if (suffer.input_manager_.MouseButtonDown(1) && ImGui::IsRootWindowOrAnyChildHovered()) {
+			auxiliar_window = true;
+			window_pos = { suffer.GetMousePosition().x_, suffer.GetMousePosition().y_ };
+	}
+
+  if (suffer.input_manager_.MouseButtonDown(0)) {
+      auxiliar_window = false;
+  }
 
   u32 scene_game_objects = current_scene_->current_gameobjects_.size();
 
   for (int i = 0; i < scene_game_objects; ++i) {
-      u32 number_of_childs = current_scene_->current_gameobjects_.at(i).get()->NumberChilds();
-      if (ImGui::CollapsingHeader(current_scene_->current_gameobjects_.at(i).get()->Name())) {
-          for (int i = 0; i < number_of_childs; ++i) {
-              if (ImGui::TreeNode("Childs")) {
-                  ImGui::TreePop();
-              }
-          }
-      }
+			GameObject* reference = current_scene_->current_gameobjects_[i].get();
+			if (!reference->HasComponent(Component::kComponentKind_Child)) {
+				int number_childs = reference->NumberChilds();
+				SearchChilds(number_childs, reference);
+			}
   }
 
 	ImGui::End();
@@ -553,15 +580,308 @@ void  Suffer::Interface::Log() {
 // --------------------------------------------------- //
 
 void  Suffer::Interface::Inspector(){
-	ImGui::Begin("Inspector", &is_inspector_opened_);
-	ImGui::Text("I'm the Inspector");
+	
+  ImGui::Begin("Inspector", &is_inspector_opened_);
+	ImGui::Separator();
 
-	if (!ImGui::CollapsingHeader("GO_Attributes")) {
-		for (int i = 0; i < 20; ++i) {
-			if (ImGui::TreeNode("Attributes_")) {
-				ImGui::TreePop();
-			}
-		}
+  GameObject* reference = suffer.GetCurrentScene()->current_gameobjects_[game_object_selected_].get();
+	assert(reference != nullptr);
+	u32 number_of_components = reference->components_.size();
+	std::map <s32, ref_ptr<Component>>::iterator components_iterator_;
+
+  ImGui::Text(reference->Name());
+	ImGui::Separator();
+
+	for (components_iterator_ = reference->components_.begin();
+			components_iterator_ != reference->components_.end(); ++components_iterator_) {
+			Component* component_reference = components_iterator_->second.get();
+			switch (component_reference->kind_) {
+					case Component::ComponentKind::kComponentKind_Invalid: {
+							break;
+					}
+					case Component::ComponentKind::kComponentKind_Transform: {
+							ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Transform");
+							Transform* transform = static_cast<Transform*>(component_reference);
+							ImGui::InputFloat3("Position", &transform->GetPosition()[0]);
+							ImGui::InputFloat3("Rotation", &transform->GetRotation()[0]);
+							ImGui::InputFloat3("Scale", &transform->GetScale()[0]);
+
+							ImGui::Separator();
+							break;
+					}
+					case Component::ComponentKind::kComponentKind_DebugGeometry: {
+
+							//ImGui::Separator();
+							break;
+					}
+					case Component::ComponentKind::kComponentKind_Geometry: {
+							GeometryComponent* geometry_component = static_cast<GeometryComponent*>(component_reference);
+							int geometry = (int)geometry_component->GetGeometry();
+              ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Geometry");
+              if (ImGui::Combo("Mesh", &geometry, geometries, IM_ARRAYSIZE(geometries))) {
+									geometry_component->CreateGeometryWithShape((GeometryComponent::BasicShapes)geometry);
+              }
+							ImGui::Separator();
+							break;
+					}
+					case Component::ComponentKind::kComponentKind_Material: {
+
+							//ImGui::Separator();
+							break;
+					}
+					case Component::ComponentKind::kComponentKind_Audio: {
+
+							Audio3D* sound = static_cast<Audio3D*>(component_reference);
+
+              static bool swiped = false;
+              static bool sound_active_ = sound->active_;
+							static int max_value = 256;
+
+              float song_volume = sound->GetGain();
+              static mathmorra::Vector3 song_position = sound->GetSoundPosition();
+              static bool looping = sound->GetLooping();
+              bool paused = sound->isPaused();
+
+              ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Audio");
+
+              // Attributes
+
+              if (ImGui::SliderFloat("Volume", &song_volume, 0.0f, 2.0f)) {
+                  sound->SetGain(song_volume);
+              }
+              if (paused) {
+                  if (ImGui::Button("Play")) {
+                      ref_ptr<AudioCommands::Play> play_command_;
+                      play_command_.alloc();
+                      play_command_->audio_3d_ = sound;
+                      suffer.audio_manager_.audio_dl_.AddCommand(play_command_.get());
+                      play_command_.release();
+                  }
+              }
+              else {
+                  if (ImGui::Button("Pause")) {
+                      ref_ptr<AudioCommands::Pause> pause_command_;
+                      pause_command_.alloc();
+                      pause_command_->audio_3d_ = sound;
+                      suffer.audio_manager_.audio_dl_.AddCommand(pause_command_.get());
+                  }
+              }
+              ImGui::SameLine();
+              if (ImGui::Checkbox("Looping", &looping)) {
+                  sound->SetLooping(looping);
+              }
+
+              ImGui::SameLine();
+              if (ImGui::Checkbox("Is Active", &sound_active_)) {
+                  sound->SetActive(sound_active_);
+              }
+              ImGui::Spacing();
+              float* buf = sound->Wave();
+              float* fft = sound->FFT();
+
+              // Diagrams
+              if (ImGui::Button("Swipe")) swiped = !swiped;
+              ImGui::SameLine();
+              ImGui::SliderInt("Graphic values", &max_value, 0, 256);
+              if (!swiped) {
+                  ImGui::PlotHistogram("##Wave", buf, max_value, 0, "Wave", -1, 1, ImVec2(264, 80));
+                  ImGui::SameLine();
+                  ImGui::PlotHistogram("##Fast Fourier Transform (FFT)", fft, max_value * 0.5f, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
+              }
+              else {
+                  ImGui::PlotLines("##Wave", buf, max_value, 0, "Wave", -1, 1, ImVec2(264, 80));
+                  ImGui::SameLine();
+                  ImGui::PlotLines("##Fast Fourier Transform (FFT)", fft, max_value * 0.5f, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
+              }
+              ImGui::Separator();
+							//ImGui::Separator();
+							break;
+					}
+					case Component::ComponentKind::kComponentKind_Light: {
+							LightComponent* light = static_cast<LightComponent*>(component_reference);
+							ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Light");
+							bool active = false;
+							float intensity = 0.0f;
+							if (light == nullptr) break;
+							int light_kind = (int)light->GetLightKind();
+							switch (light->GetLightKind()) {
+									case LightManager::kLightKind_Directional: {
+
+											ImGui::SameLine();
+
+											// Active
+											active = light->Active();
+											ImGui::Checkbox("Active", &active);
+											light->SetActive(active);
+
+											if (ImGui::Combo("Type", &light_kind, lights, IM_ARRAYSIZE(lights))) {
+													light->SetLightKind((LightComponent::LightKind)(light_kind));
+											}
+
+											// Intensity
+											intensity = light->Intensity();
+											ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0f, 1.0f);
+											light->SetIntensity(intensity);
+
+											// Direction
+											mathmorra::Vector3 direction = light->Direction();
+											ImGui::DragFloat3("Direction", &direction.x_, 0.01f, -1.0f, 1.0f);
+											light->SetDirection(direction);
+
+											if (ImGui::CollapsingHeader("Color")) {
+													// Color
+													mathmorra::Vector3 color = light->Color();
+													ImGui::ColorEdit3("Base color", &color.x_);
+													light->SetColor(color);
+
+													mathmorra::Vector3 ambient = light->Ambient();
+													ImGui::ColorEdit3("Ambient", &ambient.x_);
+													light->SetAmbient(ambient);
+
+													mathmorra::Vector3 diffuse = light->Diffuse();
+													ImGui::ColorEdit3("Diffuse", &diffuse.x_);
+													light->SetDiffuse(diffuse);
+
+													mathmorra::Vector3 specular = light->Specular();
+													ImGui::ColorEdit3("Specular", &specular.x_);
+													light->SetSpecular(specular);
+											}
+
+											break;
+									}
+									case LightManager::kLightKind_Point: {
+
+											ImGui::SameLine();
+
+											// Active
+											active = light->Active();
+											ImGui::Checkbox("Active", &active);
+											light->SetActive(active);
+
+											if (ImGui::Combo("Type", &light_kind, lights, IM_ARRAYSIZE(lights))) {
+													light->SetLightKind((LightComponent::LightKind)(light_kind));
+											}
+
+											// Intensity
+											intensity = light->Intensity();
+											ImGui::DragFloat("Intensity", &intensity, 0.1f, 0.0f, 100.0f);
+											light->SetIntensity(intensity);
+
+											// Quadratic - Linear - Constant
+											float quadratic = light->Quadratic();
+											float linear = light->Linear();
+											float constant = light->Constant();
+
+											if (ImGui::DragFloat("Constant", &constant, 0.001f, 0.0f, 1.0f)) {
+													light->SetConstant(constant);
+											}
+											if (ImGui::DragFloat("Linear", &linear, 0.001f, 0.0f, 1.0f)) {
+													light->SetLinear(linear);
+											}
+											if (ImGui::DragFloat("Quadratic", &quadratic, 0.001f, 0.0f, 1.0f)) {
+													light->SetQuadratic(quadratic);
+											}
+
+											if (ImGui::CollapsingHeader("Color")) {
+													// Color
+													mathmorra::Vector3 color = light->Color();
+													ImGui::ColorEdit3("Base color", &color.x_);
+													light->SetColor(color);
+
+													mathmorra::Vector3 ambient = light->Ambient();
+													ImGui::ColorEdit3("Ambient", &ambient.x_);
+													light->SetAmbient(ambient);
+
+													mathmorra::Vector3 diffuse = light->Diffuse();
+													ImGui::ColorEdit3("Diffuse", &diffuse.x_);
+													light->SetDiffuse(diffuse);
+
+													mathmorra::Vector3 specular = light->Specular();
+													ImGui::ColorEdit3("Specular", &specular.x_);
+													light->SetSpecular(specular);
+											}
+
+											break;
+									}
+									case LightManager::kLightKind_Spot: {
+
+											ImGui::SameLine();
+
+											// Active
+											active = light->Active();
+											ImGui::Checkbox("Active", &active);
+											light->SetActive(active);
+
+											if (ImGui::Combo("Type", &light_kind, lights, IM_ARRAYSIZE(lights))) {
+													light->SetLightKind((LightComponent::LightKind)(light_kind));
+											}
+
+											// Intensity
+											intensity = light->Intensity();
+											ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0f, 1.0f);
+											light->SetIntensity(intensity);
+
+											// Direction
+											mathmorra::Vector3 direction = light->Direction();
+											ImGui::DragFloat3("Direction", &direction.x_, 0.01f, -1.0f, 1.0f);
+											light->SetDirection(direction);
+
+											// CutOff - OuterCutOff - Quadratic - Linear - Constant
+											float cutOff = light->CutOff();
+											float outerCutOff = light->OuterCutOff();
+											float quadratic = light->Quadratic();
+											float linear = light->Linear();
+											float constant = light->Constant();
+
+											if (ImGui::DragFloat("CutOff", &cutOff, 0.001f, 0.0f, 1.0f)) {
+													light->SetCutOff(cutOff);
+											}
+											if (ImGui::DragFloat("OuterCutOff", &outerCutOff, 0.001f, 0.0f, 1.0f)) {
+													light->SetOuterCutOff(outerCutOff);
+											}
+											if (ImGui::DragFloat("Constant", &constant, 0.001f, 0.0f, 1.0f)) {
+													light->SetConstant(constant);
+											}
+											if (ImGui::DragFloat("Linear", &linear, 0.001f, 0.0f, 1.0f)) {
+													light->SetLinear(linear);
+											}
+											if (ImGui::DragFloat("Quadratic", &quadratic, 0.001f, 0.0f, 1.0f)) {
+													light->SetQuadratic(quadratic);
+											}
+
+											if (ImGui::CollapsingHeader("Color")) {
+													// Color
+													mathmorra::Vector3 color = light->Color();
+													ImGui::ColorEdit3("Base color", &color.x_);
+													light->SetColor(color);
+
+													mathmorra::Vector3 ambient = light->Ambient();
+													ImGui::ColorEdit3("Ambient", &ambient.x_);
+													light->SetAmbient(ambient);
+
+													mathmorra::Vector3 diffuse = light->Diffuse();
+													ImGui::ColorEdit3("Diffuse", &diffuse.x_);
+													light->SetDiffuse(diffuse);
+
+													mathmorra::Vector3 specular = light->Specular();
+													ImGui::ColorEdit3("Specular", &specular.x_);
+													light->SetSpecular(specular);
+											}
+
+											break;
+									}
+									default: {
+											break;
+									}
+							}
+						ImGui::Separator();
+						break;
+					}
+					default: {
+
+							break;
+					}
+      }
 	}
 
 	ImGui::End();
@@ -910,7 +1230,6 @@ void  Suffer::Interface::Game(s32 tex){
 		ImVec2 vec = ImGui::GetWindowPos();
 		ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)tex, vec, ImVec2(vec.x + width, vec.y + height));
 	}
-
 	ImGui::Text("I'm the Game!!");
 	ImGui::End();
 
@@ -930,6 +1249,34 @@ void  Suffer::Interface::Options(){
 	}
 
 	ImGui::End();
+
+}
+
+// --------------------------------------------------- //
+
+void Suffer::Interface::SearchChilds(u16 index, GameObject* go){
+
+   assert(go != nullptr && "ERROR: NULL GameObject");
+   if (go == nullptr) return;
+   static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | 
+                                          ImGuiTreeNodeFlags_OpenOnDoubleClick | 
+                                          ImGuiTreeNodeFlags_SpanAvailWidth;
+
+   u16 number_childs = go->NumberChilds();
+	 int node_clicked = game_object_selected_;
+   
+   bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)go->ID(), base_flags, "GameObject %d", go->ID());
+
+	 if (ImGui::IsItemClicked()) {
+     node_clicked = go->ID();
+		 game_object_selected_ = node_clicked;
+	 }
+   if (node_open){
+   	 for (int i = 0; i < number_childs; ++i) {
+   	   SearchChilds(i, go->GetChild(i));
+   	 }
+   	 ImGui::TreePop();
+   }
 
 }
 

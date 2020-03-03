@@ -23,9 +23,16 @@ void Suffer::GeometryComponent::SetIndexBuffer(ref_ptr<Suffer::ResourceManager::
 
 void Suffer::GeometryComponent::CreateGeometryWithShape(BasicShapes shape) {
 
+  shape_ = shape;
   vertex_buffer_id_ = suffer.resource_manager_.data_->internal_vertex_buffers_[(s32)shape].id_handle_;
   index_buffer_id_ = suffer.resource_manager_.data_->internal_index_buffers_[(s32)shape].id_handle_;
 
+}
+
+// --------------------------------------------------- //
+
+Suffer::GeometryComponent::BasicShapes Suffer::GeometryComponent::GetGeometry(){
+    return shape_;
 }
 
 // --------------------------------------------------- //

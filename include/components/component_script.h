@@ -21,7 +21,7 @@ namespace Suffer {
     void AttachScript(char* script_path);
 
   protected:
-    virtual ~ScriptComponent() override;
+    ~ScriptComponent();
 
   private:
     ScriptComponent(const ScriptComponent&) = delete;

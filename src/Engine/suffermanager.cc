@@ -86,6 +86,9 @@ bool Suffer::SufferManager::Init(){
   transform_system_.alloc();
   suffer.AddSystem(transform_system_.get());
 
+  audio_system_.alloc();
+  suffer.AddSystem(audio_system_.get());
+
   script_system_.alloc();
   suffer.AddSystem(script_system_.get());
 
@@ -104,6 +107,8 @@ bool Suffer::SufferManager::Init(){
 
   postprocessing_frame_buffer_.alloc();
   postprocessing_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
+
+  number_of_game_objects_ = 0;
 
 	return true;
 
@@ -255,6 +260,10 @@ bool Suffer::SufferManager::Finish(){
   audio_manager_.ShutDown();
   input_manager_.ShutDown();
   light_manager_.ShutDown();
+
+  for (int i = 0; i < GetCurrentScene()->current_gameobjects_.size(); ++i) {
+      GetCurrentScene()->current_gameobjects_[i].release();
+  }
 
   data_->wind_.Close();
 
