@@ -121,6 +121,7 @@ namespace Suffer {
 
     void main(){
       //Do nothing because normally draws depth buffer itself
+      gl_FragDepth = gl_FragCoord.z;
     }
   
   )FSHADOWDEPTH";

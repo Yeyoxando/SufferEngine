@@ -24,10 +24,6 @@
 int main(int argc, char* argv[]) {
 
   suffer.Init();
-  
-  Suffer::ref_ptr<Suffer::SystemAudio> audio_system_;
-  audio_system_.alloc();
-  suffer.AddSystem(audio_system_.get());
 
   Suffer::ref_ptr<Suffer::Scene> scene;
   scene.alloc();
@@ -107,9 +103,9 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::Transform> transform_component_3;
   transform_component_3.alloc();
-  transform_component_3->Scale(mathmorra::Vector3(5.0f, 5.0f, 5.0f));
-  transform_component_3->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
-  transform_component_3->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(90.0f), 0.0f, 0.0f));
+  transform_component_3->Scale(mathmorra::Vector3(1.0f, 1.0f, 1.0f));
+  transform_component_3->Translate(mathmorra::Vector3(5.0f, 5.0f, 5.0f));
+  transform_component_3->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, ThiefUtils::Math::Radians(180.0f)));
   go_light->AddComponent(transform_component_3.get());
 
   Suffer::ref_ptr<Suffer::LightComponent> light_component;
@@ -117,7 +113,7 @@ int main(int argc, char* argv[]) {
 
   light_component->Init(Suffer::LightComponent::kLightKind_Directional);
   light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-  light_component->SetIntensity(15.0f);
+  light_component->SetIntensity(1.0f);
   light_component->SetAmbient(1.0f, 1.0f, 1.0f);
   light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
   light_component->SetSpecular(1.0f, 1.0f, 1.0f);

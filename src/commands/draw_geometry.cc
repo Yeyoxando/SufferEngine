@@ -218,7 +218,7 @@ void Suffer::DrawGeometry::SetProjectionMatrix(mathmorra::Matrix4 projection) {
 // ------------------------------------------------------------------------- //
 
 void Suffer::DrawGeometry::SetLights(){
-
+  u32 start = 60;
   // Lighting
   u32 number_lights = 0;
   u32 offset = 0;
