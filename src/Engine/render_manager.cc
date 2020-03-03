@@ -228,18 +228,20 @@ void Suffer::RenderManager::DoRender(){
     if (render_dl_.frame_buffer_id_ >= 0)
       current_drawn_texture_id_ = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[render_dl_.frame_buffer_id_].color_texture_id_].current_texture_id_;
 #else
-    if (render_dl_.frame_buffer_id_ < 0)
+    if (render_dl_.frame_buffer_id_ < 0) {
       current_drawn_texture_id_ = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[0].depth_texture_id_].current_texture_id_;
+      printf("\n%d", current_drawn_texture_id_);
+    }
 #endif
 
     render_dl_.Clear();
     
   }
 
-  // Render to final framebuffer (screen quad)
+  //// Render to final framebuffer (screen quad)
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-  //glDisable is on post proccess command
+  //
+  ////glDisable is on post proccess command
   data_->post_command_->SetData(Postprocessing::PostproccessKind::kPostproccessKind_Default);
   data_->post_command_->Execute();
 

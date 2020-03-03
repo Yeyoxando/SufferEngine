@@ -36,6 +36,8 @@ struct Suffer::DrawGeometry::Data {
   // Textures has to be separated
   s32 texture_ids_[MAX_USED_TEXTURES];
   u32 current_used_textures_;
+  s32 light_texture_ids_[MAX_LIGHTS];
+  u32 current_light_used_textures_;
 
   u32 material_type_;
 
@@ -157,8 +159,7 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
       data_->u_data_[54] = suffer.GetCurrentScene()->GetMainCamera()->Position()[2];
       data_->u_data_[55] = (float)Time();
 
-      data_->texture_ids_[0] = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[0].depth_texture_id_].current_texture_id_;
-      data_->current_used_textures_ = 1;
+      data_->current_used_textures_ = 0;
       SetLights();
     }
       break;
@@ -223,11 +224,8 @@ void Suffer::DrawGeometry::SetLights(){
   LightManager::DirectionalLight* light_for_shadow = suffer.light_manager_.lights_[0].get();
   
   for (u32 i = 0; i < 16; ++i) {
-      data_->u_data_[60 + i] = light_for_shadow->view_mat_.m[i];
-  }
-
-  for (u32 i = 0; i < 16; ++i) {
-      data_->u_data_[76 + i] = light_for_shadow->projection_mat_.m[i];
+    data_->u_data_[60 + i] = light_for_shadow->view_mat_.m[i];
+    data_->u_data_[76 + i] = light_for_shadow->projection_mat_.m[i];
   }
 
   u32 start = 92;
@@ -334,6 +332,10 @@ void Suffer::DrawGeometry::SetLights(){
     }
 
   }
+
+  data_->light_texture_ids_[0] = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[0].depth_texture_id_].current_texture_id_;
+  data_->current_light_used_textures_ = 1;
+
   data_->u_data_[56] = number_lights;
 
 }
@@ -631,6 +633,27 @@ void Suffer::DrawGeometry::Execute() const {
       glUniform1i(u_pos, i);
       u_pos = -1;
     
+    }
+
+    // -- LightTextures --
+    base_tex_name = "u_light_tex";
+
+    for (int i = 0; i < data_->current_light_used_textures_; ++i) {
+
+      std::string tex_name = base_tex_name + std::to_string(i);
+      const char* str = tex_name.c_str();
+      u_pos = glGetUniformLocation(program_id, str);
+      if (u_pos < 0) {
+        printf("\nERROR: light texture %d uniform not exists.", i);
+        //return;
+      }
+
+      glActiveTexture(GL_TEXTURE0 + i);
+      glBindTexture(GL_TEXTURE_2D, data_->texture_ids_[i]);
+
+      glUniform1i(u_pos, i);
+      u_pos = -1;
+
     }
 
   }

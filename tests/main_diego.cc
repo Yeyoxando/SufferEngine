@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::Transform> transform_component_2;
   transform_component_2.alloc();
-  transform_component_2->Scale(mathmorra::Vector3(5.0f, 5.0f, 5.0f));
+  transform_component_2->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
   transform_component_2->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
   transform_component_2->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(90.0f), 0.0f, 0.0f));
   go_quad->AddComponent(transform_component_2.get());
@@ -100,6 +100,20 @@ int main(int argc, char* argv[]) {
    
   Suffer::ref_ptr<Suffer::GameObject> go_light;
   go_light.alloc();
+
+  //Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component3;
+  //geometry_component3.alloc();
+  //geometry_component3->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+  //geometry_component3->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
+  //go_light->AddComponent(geometry_component3.get());
+  //
+  //Suffer::ref_ptr<Suffer::MaterialComponent> material_component3;
+  //material_component3.alloc();
+  //Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params3;
+  //material_params3.alloc();
+  //material_params3->color_ = mathmorra::Vector4(1.0f, 0.5f, 1.0f, 1.0f);
+  //material_component3->SetParams(material_params3.get());
+  //go_light->AddComponent(material_component3.get());
 
   Suffer::ref_ptr<Suffer::Transform> transform_component_3;
   transform_component_3.alloc();
@@ -114,7 +128,7 @@ int main(int argc, char* argv[]) {
   light_component->Init(Suffer::LightComponent::kLightKind_Directional);
   light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
   light_component->SetIntensity(1.0f);
-  light_component->SetAmbient(1.0f, 1.0f, 1.0f);
+  light_component->SetAmbient(0.5f, 0.5f, 0.5f);
   light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
   light_component->SetSpecular(1.0f, 1.0f, 1.0f);
   go_light->AddComponent(light_component.get());
