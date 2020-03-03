@@ -8,7 +8,7 @@
 #define __SHADOW_MAP_H__
 
 #include "command.h"
-#include "game_object.h"
+#include "component_light.h"
 #include "ref_ptr.h"
 #include "matrix4.h"
 
@@ -24,7 +24,7 @@ namespace Suffer {
   public:
     ShadowMap();
 
-    //void SetData(Light* light)
+    void SetData(LightComponent* light);
 
   protected:
     virtual ~ShadowMap();

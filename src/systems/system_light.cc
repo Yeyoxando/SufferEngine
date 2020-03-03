@@ -7,8 +7,15 @@
 #include "system_light.h"
 #include "component_light.h"
 #include "component_transform.h"
+#include "common_definitions.h"
+#include "suffermanager.h"
+#include "draw_depth.h"
+#include "shadow_map.h"
 #include "interface.h"
+#include "scene.h"
+#include "display_list.h"
 #include "imgui.h"
+#include "matrix4.h"
 
 struct ExampleAppLog {
     void    AddLog(const char* fmt, ...) IM_FMTARGS(2);
@@ -56,9 +63,49 @@ void Suffer::SystemLight::Execute(GameObject* go) {
         light_component->SetDirection(transform_component->Forward());
         light_component->SetPosition(transform_component->GetPosition());
 
-    }
 
     // SHADOWS STUFF
+      
+      // Calculate light view and projection matrix (Directional only for the moment)
+      mathmorra::Matrix4 view_matrix_ = mathmorra::Matrix4::LookAt(light_component->Position(),
+        mathmorra::Vector3(0.0f, 0.0f, 0.0f), 
+        mathmorra::Vector3(0.0f, 1.0f, 0.0f));
+      
+      mathmorra::Matrix4 projection_matrix_ = projection_matrix_.OrthoMatrix(-20.0f, 20.0f, 1.0f, 10.0f);
+
+
+      Scene* scene = suffer.GetCurrentScene();
+      u32 current_gameobjects = scene->current_gameobjects_.size();
+      
+      DisplayList light_dl;
+
+      ref_ptr<ShadowMap> shadow_cmd;
+      shadow_cmd.alloc();
+      shadow_cmd->SetData(light_component);
+
+      light_dl.AddCommand(shadow_cmd.get());
+
+      // Create a depth render command for each object in the scene
+      GameObject* aux_gameobject; 
+      for (u32 i = 0; i < current_gameobjects; ++i) {
+
+        ref_ptr<DrawDepth> depth_cmd;
+        depth_cmd.alloc();
+        aux_gameobject = scene->current_gameobjects_[i].get();
+        depth_cmd->SetData(aux_gameobject);
+
+        auto component = aux_gameobject->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
+        Suffer::Transform* transform_component = reinterpret_cast<Suffer::Transform*>(component);
+        depth_cmd->SetMatrix(transform_component->GetModelMatrix(),
+          view_matrix_, projection_matrix_);
+
+        light_dl.AddCommand(depth_cmd.get());
+
+      }
+
+      suffer.render_manager_.AddToRenderQueue(std::move(light_dl), nullptr);
+
+    }
 }
 
 // --------------------------------------------------- //

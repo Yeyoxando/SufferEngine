@@ -76,6 +76,57 @@ namespace Suffer {
 
   // ----------------------- RenderToTextureShaders ------------------------ //
 
+  // ------------------------- ShadowDepthShaders -------------------------- //
+
+  static const char* shadow_depth_vertex_shader_ = R"VSHADOWDEPTH(
+    #version 330
+
+    layout(location = 0) in vec3 a_position;
+    
+    uniform vec4 u_data[12];
+
+    #define model0 u_data[0]
+    #define model1 u_data[1]
+    #define model2 u_data[2]
+    #define model3 u_data[3]
+
+    #define view0 u_data[4]
+    #define view1 u_data[5]
+    #define view2 u_data[6]
+    #define view3 u_data[7]
+
+    #define projection0 u_data[8]
+    #define projection1 u_data[9]
+    #define projection2 u_data[10]
+    #define projection3 u_data[11]
+    
+    mat4 CompoundMatrix(vec4 vector1, vec4 vector2, vec4 vector3, vec4 vector4){
+      return mat4(vector1, vector2, vector3, vector4);
+    }
+
+    void main(){
+      mat4 u_m_matrix = CompoundMatrix(model0, model1, model2, model3);
+      mat4 u_v_matrix = CompoundMatrix(view0, view1, view2, view3);
+      mat4 u_p_matrix = CompoundMatrix(projection0, projection1, projection2, projection3); 
+
+      mat4 accum_matrix = u_p_matrix * u_v_matrix * u_m_matrix;
+
+	    gl_Position = accum_matrix * vec4(a_position, 1.0f);
+    }  
+  
+  )VSHADOWDEPTH";
+
+  static const char* shadow_depth_fragment_shader_ = R"FSHADOWDEPTH(
+    #version 330
+
+    void main(){
+      //Do nothing because normally draws depth buffer itself
+    }
+  
+  )FSHADOWDEPTH";
+
+  // ------------------------- ShadowDepthShaders -------------------------- //
+
   // --------------------------- DefaultShaders ---------------------------- //
 
   // -- Default vertex shader --
@@ -189,11 +240,13 @@ namespace Suffer {
     uniform vec4 u_data[47];
     uniform sampler2D u_tex0;
     uniform sampler2D u_tex1;
+    uniform sampler2D u_tex2;
 
     #define camera_pos vec3(u_data[13].x, u_data[13].y, u_data[13].z)
     #define num_lights u_data[14].x
     #define u_albedo u_tex0
     #define u_specular u_tex1
+    #define u_shadow_map u_tex2
     #define max_lights 4
 
     out vec4 fragColor;
@@ -211,6 +264,25 @@ namespace Suffer {
     DirectionalLight directional_lights[max_lights];
     PointLight point_lights[max_lights];
     SpotLight spot_lights[max_lights];
+
+    // --------------------------------------------------------------------- //
+
+    float CalculateShadow(vec4 frag_pos_light_space){
+      // Clip projection coords
+      vec3 proj_coords = frag_pos_light_space.xyz / frag_pos_light_space.w;
+      // Convert from [-1, 1] to [0, 1]
+      proj_coords = proj_coords * 0.5f + 0.5;
+      // Get shadow map fragment
+      float closest_depth = texture(u_shadow_map, proj_coords.xy).r;
+      // Current depth fragment from light perspective
+      float current_depth = proj_coords.z;
+      // Compare current and closest to check if its in shadow or not
+      float shadow = current_depth > closest_depth ? 1.0f : 0.0f;
+
+      return shadow;
+
+      //Final color later in fragment = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;
+    }
 
     // --------------------------------------------------------------------- //
 

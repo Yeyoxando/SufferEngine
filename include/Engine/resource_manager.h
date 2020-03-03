@@ -18,6 +18,7 @@ namespace Suffer {
    */
   class ResourceManager {
     friend class DrawGeometry;
+    friend class DrawDepth;
     friend class Postprocessing;
     friend class ShadowMap;
     friend class SufferManager;

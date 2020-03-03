@@ -43,23 +43,24 @@ void Suffer::LightComponent::Init(LightKind kind){
       }
     }
 
-    //s32 id = suffer.resource_manager_.data_->number_of_light_frame_buffers_;
-    //suffer.resource_manager_.data_->internal_light_frame_buffers_[id].height_ = SHADOW_SIZE;
-    //suffer.resource_manager_.data_->internal_light_frame_buffers_[id].width_ = SHADOW_SIZE;
-    //
-    //// Depth
-    //Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_depth_texture;
-    //frame_buffer_depth_texture.alloc();
-    //
-    //suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_ = frame_buffer_depth_texture->id_;
-    //suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].width_ = SHADOW_SIZE;
-    //suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].height_ = SHADOW_SIZE;
-    //suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].number_channels_ = 1;
-    //suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].version_++;
-    //
-    //suffer.resource_manager_.data_->internal_light_frame_buffers_[id].version_++;
-    //
-    //framebuffer_id_ = id;
+    s32 id = suffer.resource_manager_.data_->number_of_light_frame_buffers_;
+    suffer.resource_manager_.data_->internal_light_frame_buffers_[id].height_ = SHADOW_SIZE;
+    suffer.resource_manager_.data_->internal_light_frame_buffers_[id].width_ = SHADOW_SIZE;
+
+    // Depth
+    Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_depth_texture;
+    frame_buffer_depth_texture.alloc();
+
+    suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_ = frame_buffer_depth_texture->id_;
+    suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].width_ = SHADOW_SIZE;
+    suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].height_ = SHADOW_SIZE;
+    suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].number_channels_ = 1;
+    suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].version_++;
+
+    suffer.resource_manager_.data_->internal_light_frame_buffers_[id].version_++;
+
+    framebuffer_id_ = id;
+
     initialized_ = true;
 
 }

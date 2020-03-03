@@ -11,7 +11,6 @@
 
 struct Suffer::ShadowMap::Data {
 
-
   s32 light_framebuffer_id_;
 
 };
@@ -22,6 +21,15 @@ Suffer::ShadowMap::ShadowMap(){
 
   cmd_type_ = Command::kCommandType_Render;
   data_ = new Data();
+
+}
+
+// ------------------------------------------------------------------------- //
+
+void Suffer::ShadowMap::SetData(LightComponent* light){
+
+  // TODO: friend class shadow map in lightcomponent
+  //data_->light_framebuffer_id_ = light->framebuffer_id_;
 
 }
 
@@ -39,10 +47,6 @@ Suffer::ShadowMap::~ShadowMap(){
 // ------------------------------------------------------------------------- //
 
 void Suffer::ShadowMap::Execute() const{
-
-  //Instead of creating the framebuffer as a ref_ptr, we should do that same thing but at the moment of Light creation
-  // and store their reference.
-
 
   s32 id_frame_buffer = data_->light_framebuffer_id_;
 
@@ -124,7 +128,6 @@ void Suffer::ShadowMap::Execute() const{
 
 
   // --------------------------------- Draw -------------------------------- //
-  // I will need a quad to render the scene 
 
   {
 
