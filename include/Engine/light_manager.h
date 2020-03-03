@@ -8,6 +8,7 @@
 #include "ref_ptr.h"
 #include "vector3.h"
 #include <vector>
+#include "matrix4.h"
 
 namespace Suffer {
 
@@ -74,6 +75,9 @@ namespace Suffer {
       DirectionalLight();
       ~DirectionalLight();
 
+      mathmorra::Matrix4 view_mat_;
+      mathmorra::Matrix4 projection_mat_;
+
     protected:
       mathmorra::Vector3 color_;
       mathmorra::Vector3 position_;
@@ -84,7 +88,6 @@ namespace Suffer {
       float intensity_;
       bool active_;
       u16 light_kind_;
-
 
     };
 

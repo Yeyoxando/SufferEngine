@@ -17,6 +17,7 @@ namespace Suffer {
         friend class SystemLight;
         friend class GameObject;
         friend class ShadowMap;
+        friend class DrawGeometry;
 
     public:
         enum LightKind {
@@ -87,8 +88,6 @@ namespace Suffer {
         s32 framebuffer_id_;
         bool initialized_;
         LightManager::DirectionalLight* reference_;
-        mathmorra::Matrix4 view_mat_;
-        mathmorra::Matrix4 projection_mat_;
 
     };
 

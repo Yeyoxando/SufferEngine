@@ -71,11 +71,11 @@ void Suffer::SystemLight::Execute(GameObject* go) {
         mathmorra::Vector3(0.0f, 0.0f, 0.0f),
         mathmorra::Vector3(0.0f, 1.0f, 0.0f));
 
-      light_component->view_mat_ = view_matrix_;
+      light_component->reference_->view_mat_ = view_matrix_;
       
       mathmorra::Matrix4 projection_matrix_ = projection_matrix_.OrthoMatrix(-20.0f, 20.0f, 1.0f, 20.0f).Transpose();
 
-      light_component->projection_mat_ = projection_matrix_;
+      light_component->reference_->projection_mat_ = projection_matrix_;
 
       Scene* scene = suffer.GetCurrentScene();
       u32 current_gameobjects = scene->current_gameobjects_.size();
