@@ -69,6 +69,8 @@ namespace Suffer {
 		// Windows that can be opened
 		void Options();
 
+		void SearchChilds(u16 index, GameObject* go);
+
 		enum InterfaceStyle {
       kInterfaceStyle_Invalid = -1,
       kInterfaceStyle_Default,
@@ -101,6 +103,13 @@ namespace Suffer {
       "Spot"
     };
 
+    const char* geometries[4] = {
+			"Triangle",
+			"Quad",
+			"Cube",
+			"Sphere"
+    };
+
 		struct Data;
 		Data* _ptr;
 
@@ -113,6 +122,9 @@ namespace Suffer {
 		bool is_game_window_opened_;
 		bool is_audio_window_opened_;
 		bool is_lighting_window_opened_;
+
+		u32 game_object_selected_;
+		u32 game_objects_id_;
 
 	};
 

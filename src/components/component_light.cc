@@ -274,6 +274,67 @@ float Suffer::LightComponent::Intensity(){
 
 // ----------------------------------------------------------------------- //
 
+float Suffer::LightComponent::CutOff(){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return -1.0f;
+    if (reference_->GetLightKind() != kLightKind_Spot) return -1.0f;
+
+    Suffer::LightManager::SpotLight* light = static_cast<Suffer::LightManager::SpotLight*>(reference_);
+    if (light == nullptr) return -1.0f;
+    return light->CutOff();
+}
+
+// ----------------------------------------------------------------------- //
+
+float Suffer::LightComponent::OuterCutOff(){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return -1.0f;
+    if (reference_->GetLightKind() != kLightKind_Spot) return -1.0f;
+
+    Suffer::LightManager::SpotLight* light = static_cast<Suffer::LightManager::SpotLight*>(reference_);
+    if (light == nullptr) return -1.0f;
+    return light->OuterCutOff();
+}
+
+// ----------------------------------------------------------------------- //
+
+float Suffer::LightComponent::Quadratic(){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return -1.0f;
+    if (reference_->GetLightKind() == LightManager::kLightKind_Directional) return -1.0f;
+
+    Suffer::LightManager::PointLight* light = static_cast<Suffer::LightManager::PointLight*>(reference_);
+    if (light == nullptr) return -1.0f;
+    return light->Quadratic();
+}
+
+// ----------------------------------------------------------------------- //
+
+float Suffer::LightComponent::Linear(){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return -1.0f;
+    if (reference_->GetLightKind() == LightManager::kLightKind_Directional) return -1.0f;
+
+    Suffer::LightManager::PointLight* light = static_cast<Suffer::LightManager::PointLight*>(reference_);
+    if (light == nullptr) return -1.0f;
+    return light->Linear();
+}
+
+// ----------------------------------------------------------------------- //
+
+float Suffer::LightComponent::Constant(){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return -1.0f;
+    if (reference_->GetLightKind() == LightManager::kLightKind_Directional) return -1.0f;
+
+    Suffer::LightManager::PointLight* light = static_cast<Suffer::LightManager::PointLight*>(reference_);
+    if (light == nullptr) return -1.0f;
+    return light->Constant();
+}
+
+// ----------------------------------------------------------------------- //
+
+
 u16 Suffer::LightComponent::GetLightKind(){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) abort();

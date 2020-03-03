@@ -1,5 +1,0 @@
-Translate(-3.0, 0.0, 0.0)
-Rotate(0.01, 0.0, 0.0)
-Scale(1.0, 1.0, 1.0)
-SetDrawMode("Triangles")
-SetPredefinedGeometry("Cube")
