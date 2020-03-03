@@ -9,12 +9,14 @@
 
 #include "component.h"
 #include "light_manager.h"
+#include "matrix4.h"
 
 namespace Suffer {
 
     class LightComponent : public Component {
         friend class SystemLight;
         friend class GameObject;
+        friend class ShadowMap;
 
     public:
         enum LightKind {
@@ -85,6 +87,8 @@ namespace Suffer {
         s32 framebuffer_id_;
         bool initialized_;
         LightManager::DirectionalLight* reference_;
+        mathmorra::Matrix4 view_mat_;
+        mathmorra::Matrix4 projection_mat_;
 
     };
 

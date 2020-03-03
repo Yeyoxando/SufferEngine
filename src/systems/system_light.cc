@@ -68,11 +68,14 @@ void Suffer::SystemLight::Execute(GameObject* go) {
       
       // Calculate light view and projection matrix (Directional only for the moment)
       mathmorra::Matrix4 view_matrix_ = mathmorra::Matrix4::LookAt(light_component->Position(),
-        mathmorra::Vector3(0.0f, 0.0f, 0.0f), 
+        mathmorra::Vector3(light_component->Position()) + mathmorra::Vector3(0.0f, 0.0f, 0.0f),
         mathmorra::Vector3(0.0f, 1.0f, 0.0f));
+
+      light_component->view_mat_ = view_matrix_;
       
       mathmorra::Matrix4 projection_matrix_ = projection_matrix_.OrthoMatrix(-20.0f, 20.0f, 1.0f, 10.0f);
 
+      light_component->projection_mat_ = projection_matrix_;
 
       Scene* scene = suffer.GetCurrentScene();
       u32 current_gameobjects = scene->current_gameobjects_.size();

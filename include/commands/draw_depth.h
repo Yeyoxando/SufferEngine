@@ -4,8 +4,8 @@
  * Draw Depth command Header
  */
 
-#ifndef __DRAW_GEOMETRY_H__
-#define __DRAW_GEOMETRY_H__
+#ifndef __DRAW_DEPTH_H__
+#define __DRAW_DEPTH_H__
 
 #include "command.h"
 #include "game_object.h"

@@ -224,10 +224,12 @@ void Suffer::RenderManager::DoRender(){
 
 
     //Set last framebuffer texture to draw it in imgui and use it in post processes
+#if 0
     if (render_dl_.frame_buffer_id_ >= 0)
       current_drawn_texture_id_ = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[render_dl_.frame_buffer_id_].color_texture_id_].current_texture_id_;
-
-    //current_drawn_texture_id_ = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[0].depth_texture_id_].current_texture_id_;
+#else
+    current_drawn_texture_id_ = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[0].depth_texture_id_].current_texture_id_;
+#endif
 
     render_dl_.Clear();
     

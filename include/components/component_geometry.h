@@ -20,6 +20,8 @@ namespace Suffer {
 
   public:
     friend class DrawGeometry;
+    friend class DrawDepth;
+
     GeometryComponent();
 
     enum DrawMode {

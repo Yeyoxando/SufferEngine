@@ -61,12 +61,15 @@ void Suffer::DrawDepth::SetData(GameObject* go) {
 
   {
 
+    if (go->HasComponent(Component::ComponentKind::kComponentKind_Light)) {
+      return;
+    }
+
     auto geometry_component = go->GetComponent(Suffer::Component::kComponentKind_Geometry);
     GeometryComponent* geometry_ = reinterpret_cast<GeometryComponent*>(geometry_component);
 
-    // TODO: friend class draw_depth in geometry component
-    //data_->vertex_buffer_id_ = geometry_->vertex_buffer_id_;
-    //data_->index_buffer_id_ = geometry_->index_buffer_id_;
+    data_->vertex_buffer_id_ = geometry_->vertex_buffer_id_;
+    data_->index_buffer_id_ = geometry_->index_buffer_id_;
 
   }
 
