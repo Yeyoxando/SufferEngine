@@ -61,7 +61,7 @@ void Suffer::DrawDepth::SetData(GameObject* go) {
 
   {
 
-    if (go->HasComponent(Component::ComponentKind::kComponentKind_Light)) {
+    if (!go->HasComponent(Component::ComponentKind::kComponentKind_Geometry)) {
       return;
     }
 

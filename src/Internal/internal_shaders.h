@@ -356,9 +356,9 @@ namespace Suffer {
       // Current depth fragment from light perspective
       float current_depth = proj_coords.z;
       // Compare current and closest to check if its in shadow or not
-      //float bias = max(0.05f * (1.0f - dot(normal, lightDir)), 0.005f);
-      //float shadow = (current_depth - bias) > closest_depth ? 1.0f : 0.0f;
-      float shadow = current_depth > closest_depth ? 1.0f : 0.0f;
+      float bias = max(0.05f * (1.0f - dot(normal, lightDir)), 0.005f);
+      float shadow = (current_depth - bias) > closest_depth ? 1.0f : 0.0f;
+      //float shadow = current_depth > closest_depth ? 1.0f : 0.0f;
 
       return shadow;
     }
@@ -373,8 +373,8 @@ namespace Suffer {
       vec3 reflectDir = reflect(-lightDir, normal);
       float spec = pow(max(dot(viewDir, reflectDir), 0.0f), 32);
 
-      vec3 ambient  = light.ambient  * light.intensity * texture(u_shadow_map, uvs).xyz;
-      vec3 diffuse  = light.diffuse  * light.intensity * diff * texture(u_shadow_map, uvs).xyz;
+      vec3 ambient  = light.ambient  * light.intensity * texture(u_albedo, uvs).xyz;
+      vec3 diffuse  = light.diffuse  * light.intensity * diff * texture(u_albedo, uvs).xyz;
       vec3 specular = light.specular * light.intensity * spec * texture(u_specular, uvs).xyz;
       
       float shadow = CalculateShadow(FragPosLight, lightDir);
@@ -696,9 +696,9 @@ namespace Suffer {
       // Current depth fragment from light perspective
       float current_depth = proj_coords.z;
       // Compare current and closest to check if its in shadow or not
-      //float bias = max(0.05f * (1.0f - dot(normal, lightDir)), 0.005f);
-      //float shadow = (current_depth - bias) > closest_depth ? 1.0f : 0.0f;
-      float shadow = current_depth > closest_depth ? 1.0f : 0.0f;
+      float bias = max(0.05f * (1.0f - dot(normal, lightDir)), 0.005f);
+      float shadow = (current_depth - bias) > closest_depth ? 1.0f : 0.0f;
+      //float shadow = current_depth > closest_depth ? 1.0f : 0.0f;
 
 
       return shadow;

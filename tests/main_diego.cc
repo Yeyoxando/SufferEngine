@@ -17,6 +17,7 @@
 #include "component_material.h"
 #include "component_script.h"
 #include "component_light.h"
+#include "component_child.h"
 #include "math_utils.h"
 
 // --------------------------------------------------------------//
@@ -85,7 +86,7 @@ int main(int argc, char* argv[]) {
   material_component2.alloc();
   Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params2;
   material_params2.alloc();
-  material_params2->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+  material_params2->color_ = mathmorra::Vector4(0.0f, 1.0f, 0.0f, 1.0f);
   material_component2->SetParams(material_params2.get());
   go_quad->AddComponent(material_component2.get());
 
@@ -101,24 +102,24 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::GameObject> go_light;
   go_light.alloc();
 
-  //Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component3;
-  //geometry_component3.alloc();
-  //geometry_component3->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
-  //geometry_component3->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
-  //go_light->AddComponent(geometry_component3.get());
-  //
-  //Suffer::ref_ptr<Suffer::MaterialComponent> material_component3;
-  //material_component3.alloc();
-  //Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params3;
-  //material_params3.alloc();
-  //material_params3->color_ = mathmorra::Vector4(1.0f, 0.5f, 1.0f, 1.0f);
-  //material_component3->SetParams(material_params3.get());
-  //go_light->AddComponent(material_component3.get());
+  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component3;
+  geometry_component3.alloc();
+  geometry_component3->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+  geometry_component3->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
+  go_light->AddComponent(geometry_component3.get());
+
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_component3;
+  material_component3.alloc();
+  Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params3;
+  material_params3.alloc();
+  material_params3->color_ = mathmorra::Vector4(1.0f, 0.5f, 1.0f, 1.0f);
+  material_component3->SetParams(material_params3.get());
+  go_light->AddComponent(material_component3.get());
 
   Suffer::ref_ptr<Suffer::Transform> transform_component_3;
   transform_component_3.alloc();
   transform_component_3->Scale(mathmorra::Vector3(1.0f, 1.0f, 1.0f));
-  transform_component_3->Translate(mathmorra::Vector3(5.0f, 5.0f, 5.0f));
+  transform_component_3->Translate(mathmorra::Vector3(5.0f, 0.0f, 5.0f));
   transform_component_3->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, ThiefUtils::Math::Radians(180.0f)));
   go_light->AddComponent(transform_component_3.get());
 
@@ -133,6 +134,24 @@ int main(int argc, char* argv[]) {
   light_component->SetSpecular(1.0f, 1.0f, 1.0f);
   go_light->AddComponent(light_component.get());
 
+  // -------------------------------------------------------------------------------------//
+
+
+  Suffer::ref_ptr<Suffer::GameObject> go_rotator;
+  go_rotator.alloc();
+
+  Suffer::ref_ptr<Suffer::Transform> transform_component_4;
+  transform_component_4.alloc();
+  transform_component_4->Scale(mathmorra::Vector3(1.0f, 1.0f, 1.0f));
+  transform_component_4->Translate(mathmorra::Vector3(0.0f, 5.0f, 0.0f));
+  go_rotator->AddComponent(transform_component_4.get());
+
+  Suffer::ref_ptr<Suffer::ScriptComponent> script_component_;
+  script_component_.alloc();
+  go_rotator->AddComponent(script_component_.get());
+  script_component_->AttachScript("../../../src/lua/lua_rotator.lua");
+
+  go_rotator->AddChild(go_light);
 
   // -------------------------------------------------------------------------------------//
 
@@ -142,6 +161,7 @@ int main(int argc, char* argv[]) {
 
   scene->AddGameObject(go_quad);
   scene->AddGameObject(go_cube);
+  scene->AddGameObject(go_rotator);
   scene->AddGameObject(go_light);
 
 
