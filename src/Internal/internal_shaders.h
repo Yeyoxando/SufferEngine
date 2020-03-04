@@ -352,7 +352,7 @@ namespace Suffer {
       // Convert from [-1, 1] to [0, 1]
       proj_coords = proj_coords * 0.5f + 0.5;
       // Get shadow map fragment
-      float closest_depth = texture(u_shadow_map, proj_coords.xy).r;
+      float closest_depth = texture(u_shadow_map, proj_coords.xy).z;
       // Current depth fragment from light perspective
       float current_depth = proj_coords.z;
       // Compare current and closest to check if its in shadow or not
@@ -692,7 +692,7 @@ namespace Suffer {
       // Convert from [-1, 1] to [0, 1]
       proj_coords = proj_coords * 0.5f + 0.5;
       // Get shadow map fragment
-      float closest_depth = texture(u_shadow_map, proj_coords.xy).r;
+      float closest_depth = texture(u_shadow_map, proj_coords.xy).z;
       // Current depth fragment from light perspective
       float current_depth = proj_coords.z;
       // Compare current and closest to check if its in shadow or not

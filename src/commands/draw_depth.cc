@@ -61,16 +61,20 @@ void Suffer::DrawDepth::SetData(GameObject* go) {
 
   {
 
-    if (!go->HasComponent(Component::ComponentKind::kComponentKind_Geometry)) {
-      return;
+    if (!go->HasComponent(Component::ComponentKind::kComponentKind_Geometry) ||
+      go->HasComponent(Component::ComponentKind::kComponentKind_Light)) {
+      data_->vertex_buffer_id_ = -1;
+      data_->index_buffer_id_ = -1;
     }
+    else {
 
-    auto geometry_component = go->GetComponent(Suffer::Component::kComponentKind_Geometry);
-    GeometryComponent* geometry_ = reinterpret_cast<GeometryComponent*>(geometry_component);
+      auto geometry_component = go->GetComponent(Suffer::Component::kComponentKind_Geometry);
+      GeometryComponent* geometry_ = reinterpret_cast<GeometryComponent*>(geometry_component);
 
-    data_->vertex_buffer_id_ = geometry_->vertex_buffer_id_;
-    data_->index_buffer_id_ = geometry_->index_buffer_id_;
+      data_->vertex_buffer_id_ = geometry_->vertex_buffer_id_;
+      data_->index_buffer_id_ = geometry_->index_buffer_id_;
 
+    }
   }
 
   // ---------------------------- SetGeometry ------------------------------ //
@@ -98,11 +102,10 @@ void Suffer::DrawDepth::Execute() const {
 
   GLenum error;
 
+
   // ---------------------- IsBufferCreated (Vertex) ----------------------- //
 
   {
-
-    assert(data_->vertex_buffer_id_ >= 0);
 
     if (data_->vertex_buffer_id_ < 0) return;
 
@@ -133,9 +136,8 @@ void Suffer::DrawDepth::Execute() const {
 
   {
 
-    assert(data_->index_buffer_id_ >= 0);
-
     if (data_->index_buffer_id_ < 0) return;
+
     s32 id_index = data_->index_buffer_id_;
     if (suffer.resource_manager_.data_->internal_index_buffers_[id_index].gpu_version_ == 0) {
       glGenBuffers(1, &suffer.resource_manager_.data_->internal_index_buffers_[id_index].current_gl_buffer_);

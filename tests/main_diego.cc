@@ -119,7 +119,7 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::Transform> transform_component_3;
   transform_component_3.alloc();
   transform_component_3->Scale(mathmorra::Vector3(1.0f, 1.0f, 1.0f));
-  transform_component_3->Translate(mathmorra::Vector3(5.0f, 0.0f, 5.0f));
+  transform_component_3->Translate(mathmorra::Vector3(5.0f, 5.0f, 5.0f));
   transform_component_3->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, ThiefUtils::Math::Radians(180.0f)));
   go_light->AddComponent(transform_component_3.get());
 
@@ -151,7 +151,7 @@ int main(int argc, char* argv[]) {
   go_rotator->AddComponent(script_component_.get());
   script_component_->AttachScript("../../../src/lua/lua_rotator.lua");
 
-  go_rotator->AddChild(go_light);
+  //go_rotator->AddChild(go_light);
 
   // -------------------------------------------------------------------------------------//
 
