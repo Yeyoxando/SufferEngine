@@ -654,7 +654,7 @@ void Suffer::DrawGeometry::Execute() const {
       glActiveTexture(GL_TEXTURE0 + i + used_textures);
       glBindTexture(GL_TEXTURE_2D, data_->light_texture_ids_[i]);
 
-      glUniform1i(u_pos, i);
+      glUniform1i(u_pos, i + used_textures);
       u_pos = -1;
 
     }
