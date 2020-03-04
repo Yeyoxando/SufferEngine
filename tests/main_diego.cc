@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
   transform_component_2.alloc();
   transform_component_2->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
   transform_component_2->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
-  transform_component_2->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(90.0f), 0.0f, 0.0f));
+  transform_component_2->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, 0.0f));
   go_quad->AddComponent(transform_component_2.get());
 
   // -------------------------------------------------------------------------------------//
@@ -154,6 +154,11 @@ int main(int argc, char* argv[]) {
   //go_rotator->AddChild(go_light);
 
   // -------------------------------------------------------------------------------------//
+
+  Suffer::ref_ptr<Suffer::ScriptComponent> script;
+  script.alloc();
+  go_light->AddComponent(script.alloc());
+  script->AttachScript("../../../src/lua/light.lua");
 
   go_quad->SetName("Quad");
   go_cube->SetName("Cube");
