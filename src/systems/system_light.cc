@@ -73,7 +73,7 @@ void Suffer::SystemLight::Execute(GameObject* go) {
 
       light_component->reference_->view_mat_ = view_matrix_;
       
-      mathmorra::Matrix4 projection_matrix_ = projection_matrix_.OrthoMatrix(-40.0f, 40.0f, 1.0f, 80.0f).Transpose();
+      mathmorra::Matrix4 projection_matrix_ = projection_matrix_.OrthoMatrix(-40.0f, 40.0f, 0.01f, 60.0f).Transpose();
 
       light_component->reference_->projection_mat_ = projection_matrix_;
 

@@ -101,6 +101,7 @@ void Suffer::DrawDepth::SetMatrix(mathmorra::Matrix4 model, mathmorra::Matrix4 v
 void Suffer::DrawDepth::Execute() const {
 
   GLenum error;
+  glEnable(GL_CULL_FACE);
 
 
   // ---------------------- IsBufferCreated (Vertex) ----------------------- //
@@ -310,6 +311,8 @@ void Suffer::DrawDepth::Execute() const {
   // --------------------------------- Draw -------------------------------- //
 
   {
+
+    glCullFace(GL_FRONT);
 
     u32 number_elements = suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_id_].data_.size();
 

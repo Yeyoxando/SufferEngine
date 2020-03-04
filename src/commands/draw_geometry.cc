@@ -706,6 +706,8 @@ void Suffer::DrawGeometry::Execute() const {
 
   {
 
+    glCullFace(GL_BACK);
+
     u32 number_elements = suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_id_].data_.size();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_id_].current_gl_buffer_);

@@ -352,11 +352,12 @@ namespace Suffer {
       // Convert from [-1, 1] to [0, 1]
       proj_coords = proj_coords * 0.5f + 0.5;
       // Get shadow map fragment
-      float closest_depth = texture(u_shadow_map, proj_coords.xy).z;
+      float closest_depth = texture(u_shadow_map, proj_coords.xy).r;
       // Current depth fragment from light perspective
       float current_depth = proj_coords.z;
       // Compare current and closest to check if its in shadow or not
-      float bias = max(0.05f * (1.0f - dot(normal, lightDir)), 0.005f);
+      //float bias = 0.002f;
+      float bias = max(0.002f * (1.0f - dot(normal, lightDir)), 0.001f);
       float shadow = (current_depth - bias) > closest_depth ? 1.0f : 0.0f;
       //float shadow = current_depth > closest_depth ? 1.0f : 0.0f;
 
@@ -692,11 +693,12 @@ namespace Suffer {
       // Convert from [-1, 1] to [0, 1]
       proj_coords = proj_coords * 0.5f + 0.5;
       // Get shadow map fragment
-      float closest_depth = texture(u_shadow_map, proj_coords.xy).z;
+      float closest_depth = texture(u_shadow_map, proj_coords.xy).r;
       // Current depth fragment from light perspective
       float current_depth = proj_coords.z;
       // Compare current and closest to check if its in shadow or not
-      float bias = max(0.05f * (1.0f - dot(normal, lightDir)), 0.005f);
+      //float bias = 0.002f;
+      float bias = max(0.002f * (1.0f - dot(normal, lightDir)), 0.001f);
       float shadow = (current_depth - bias) > closest_depth ? 1.0f : 0.0f;
       //float shadow = current_depth > closest_depth ? 1.0f : 0.0f;
 
