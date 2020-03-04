@@ -616,6 +616,7 @@ void Suffer::DrawGeometry::Execute() const {
 
     // -- Textures --
     std::string base_tex_name = "u_tex";
+    u32 used_textures = 0;
 
     for (int i = 0; i < data_->current_used_textures_; ++i) {
       
@@ -632,7 +633,9 @@ void Suffer::DrawGeometry::Execute() const {
 
       glUniform1i(u_pos, i);
       u_pos = -1;
-    
+      
+      used_textures++;
+
     }
 
     // -- LightTextures --
@@ -648,8 +651,8 @@ void Suffer::DrawGeometry::Execute() const {
         //return;
       }
 
-      glActiveTexture(GL_TEXTURE0 + i);
-      glBindTexture(GL_TEXTURE_2D, data_->texture_ids_[i]);
+      glActiveTexture(GL_TEXTURE0 + i + used_textures);
+      glBindTexture(GL_TEXTURE_2D, data_->light_texture_ids_[i]);
 
       glUniform1i(u_pos, i);
       u_pos = -1;

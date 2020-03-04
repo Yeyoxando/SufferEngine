@@ -373,8 +373,8 @@ namespace Suffer {
       vec3 reflectDir = reflect(-lightDir, normal);
       float spec = pow(max(dot(viewDir, reflectDir), 0.0f), 32);
 
-      vec3 ambient  = light.ambient  * light.intensity * texture(u_albedo, uvs).xyz;
-      vec3 diffuse  = light.diffuse  * light.intensity * diff * texture(u_albedo, uvs).xyz;
+      vec3 ambient  = light.ambient  * light.intensity * texture(u_shadow_map, uvs).xyz;
+      vec3 diffuse  = light.diffuse  * light.intensity * diff * texture(u_shadow_map, uvs).xyz;
       vec3 specular = light.specular * light.intensity * spec * texture(u_specular, uvs).xyz;
       
       float shadow = CalculateShadow(FragPosLight, lightDir);
