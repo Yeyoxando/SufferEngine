@@ -14,6 +14,7 @@ Suffer::ScriptComponent::ScriptComponent() : Component(Component::kComponentKind
   initialized_ = false;
   script_attached_ = false;
   data_ = new ScriptData();
+  game_object_reference_ = nullptr;
 
 }
 
@@ -103,8 +104,10 @@ void Suffer::ScriptComponent::Start(){
 Suffer::ScriptComponent::~ScriptComponent(){
 
   if (data_->state_ != nullptr) {
-    lua_close(data_->state_);
-    data_->state_ = nullptr;
+    if (game_object_reference_ != nullptr) {
+        lua_close(data_->state_);
+        data_->state_ = nullptr;
+    }
   }
 
   if (data_ == nullptr) return;

@@ -146,10 +146,10 @@ int main(int argc, char* argv[]) {
   transform_component_4->Translate(mathmorra::Vector3(0.0f, 5.0f, 0.0f));
   go_rotator->AddComponent(transform_component_4.get());
 
-  Suffer::ref_ptr<Suffer::ScriptComponent> script_component_;
-  script_component_.alloc();
-  go_rotator->AddComponent(script_component_.get());
-  script_component_->AttachScript("../../../src/lua/lua_rotator.lua");
+  //Suffer::ref_ptr<Suffer::ScriptComponent> script_component_;
+  //script_component_.alloc();
+  //go_rotator->AddComponent(script_component_.get());
+  //script_component_->AttachScript("../../../src/lua/lua_rotator.lua");
 
   //go_rotator->AddChild(go_light);
 
@@ -157,8 +157,15 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::ScriptComponent> script;
   script.alloc();
-  //go_light->AddComponent(script.alloc());
-  //script->AttachScript("../../../src/lua/light.lua");
+  go_cube->AddComponent(script.get());
+  script->AttachScript("../../../src/lua/lua_test_update.lua");
+
+  //Suffer::ref_ptr<Suffer::Audio3D> audio_component_;
+  //audio_component_.alloc();
+  //audio_component_->Load("../../../resources/audio/crossfade/wing_cap.ogg");
+  //audio_component_->SetLooping(true);
+  //audio_component_->Play3D();
+  //go_cube->AddComponent(audio_component_.get());
 
   go_quad->SetName("Quad");
   go_cube->SetName("Cube");

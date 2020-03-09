@@ -20,6 +20,9 @@
 #include <common_definitions.h>
 #include "internal_interface.h"
 #include <string>
+#include "IconsFontAwesome5.h"
+#include "imgui_internal.h"
+#include "math_utils.h"
 
 // Components
 #include "component_light.h"
@@ -81,8 +84,8 @@ Suffer::Interface::Interface(){
 	is_inspector_opened_ = true;
 	is_game_window_opened_ = true;
 	is_project_window_opened_ = true;
-	is_audio_window_opened_ = true;
-	is_lighting_window_opened_ = false;
+	//is_audio_window_opened_ = true;
+	//is_lighting_window_opened_ = false;
 	game_object_selected_ = 0;
 	game_objects_id_ = 0;
 
@@ -171,7 +174,7 @@ void Suffer::Interface::DrawMenuBar(){
 	}
 
 	// OPTIONS
-	if (ImGui::BeginMenu("Tools")) {
+	if (ImGui::BeginMenu(ICON_FA_HAMMER " Tools")) {
 		if (ImGui::MenuItem("Options")) {
 			options_window_ = !options_window_;
 		}
@@ -179,7 +182,7 @@ void Suffer::Interface::DrawMenuBar(){
 	}
 
 	// WINDOWS
-	if (ImGui::BeginMenu("Windows")) {
+	if (ImGui::BeginMenu(ICON_FA_WINDOW_RESTORE " Windows")) {
 		if (ImGui::MenuItem("Hierarchy")) {
 			is_hierarchy_opened_ = !is_hierarchy_opened_;
 		}
@@ -192,15 +195,15 @@ void Suffer::Interface::DrawMenuBar(){
 		if (ImGui::MenuItem("Game")) {
 			is_game_window_opened_ = !is_game_window_opened_;
     }		
-		if (ImGui::MenuItem("Lighting")) {
-			is_lighting_window_opened_ = !is_lighting_window_opened_;
-    }
+		//if (ImGui::MenuItem("Lighting")) {
+		//	is_lighting_window_opened_ = !is_lighting_window_opened_;
+    //}
 		if (ImGui::MenuItem("Log")) {
 			is_log_opened_ = !is_log_opened_;
 		}
-		if (ImGui::MenuItem("Audio")) {
-			is_audio_window_opened_ = !is_audio_window_opened_;
-		}
+    //if (ImGui::MenuItem("Audio")) {
+    //	is_audio_window_opened_ = !is_audio_window_opened_;
+    //}
 		ImGui::EndMenu();
 	}
 
@@ -259,13 +262,13 @@ void  Suffer::Interface::CreateDock(bool* p_open){
 		ImGuiID dock_id_top = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Up, 0.65f, NULL, &dock_main_id);
 		ImGuiID dock_id_bottom = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.20f, NULL, &dock_main_id);
 
-		ImGui::DockBuilderDockWindow("Inspector", dock_id_right);
+		ImGui::DockBuilderDockWindow(ICON_FA_EYE " Inspector", dock_id_right);
 		ImGui::DockBuilderDockWindow("Lighting", dock_id_right);
 		ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
-		ImGui::DockBuilderDockWindow("Project", dock_id_bottom);
+		ImGui::DockBuilderDockWindow(ICON_FA_FOLDER " Project", dock_id_bottom);
 		ImGui::DockBuilderDockWindow("Audio", dock_id_bottom);
-		ImGui::DockBuilderDockWindow("Log", dock_id_bottom);
-		ImGui::DockBuilderDockWindow("Game", dock_id_top);
+		ImGui::DockBuilderDockWindow(ICON_FA_STICKY_NOTE " Log", dock_id_bottom);
+		ImGui::DockBuilderDockWindow(ICON_FA_GAMEPAD " Game", dock_id_top);
 		ImGui::DockBuilderFinish(dockspace_id);
 		
 	}
@@ -273,7 +276,7 @@ void  Suffer::Interface::CreateDock(bool* p_open){
 	ImGui::DockSpace(ImGui::GetID("SufferDockSpace"), ImVec2(0.0f, 0.0f), dockspace_flags);
 
 	if(is_inspector_opened_) Inspector();
-	if(is_lighting_window_opened_) Lighting(suffer.GetCurrentScene());
+	//if(is_lighting_window_opened_) Lighting(suffer.GetCurrentScene());
 	if(is_hierarchy_opened_) Hierarchy(SufferManager::instance().GetCurrentScene());
 	if(is_project_window_opened_) Project();
 	if(is_log_opened_) Log();
@@ -505,10 +508,16 @@ void  Suffer::Interface::ChangeEditorStyle(){
 			colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 			colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
 			colors[ImGuiCol_ResizeGripActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
-			colors[ImGuiCol_PlotLines] = COL(204.0f, 82.0f, 122.0f);
+
+			colors[ImGuiCol_PlotLines] = COL(023.0f, 255.0f, 12.0f);
+			colors[ImGuiCol_PlotHistogram] = COL(022.0f, 255.0f, 12.0f);
+
+			//colors[ImGuiCol_PlotLines] = COL(204.0f, 82.0f, 122.0f);
+			//colors[ImGuiCol_PlotHistogram] = COL(232.0f, 23.0f, 92.0f);
+
 			colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
-			colors[ImGuiCol_PlotHistogram] = COL(232.0f, 23.0f, 92.0f);
 			colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
+
 			colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
 			colors[ImGuiCol_ModalWindowDarkening] = ImVec4(1.00f, 0.98f, 0.95f, 0.73f);
 
@@ -531,20 +540,33 @@ void  Suffer::Interface::Hierarchy(Scene* current_scene_){
 #endif
 
 	ImGui::Begin("Hierarchy", &is_hierarchy_opened_);
-	ImGui::Text("Scene Hierarchy");
+	ImGui::Text(ICON_FA_GRIP_VERTICAL " Scene Hierarchy");
 	ImGui::Separator();
 	ImGui::Spacing();
 
 	static bool auxiliar_window = false;
 	static ImVec2 window_pos = ImVec2(0.0f, 0.0f);
 
-
 	if (auxiliar_window) {
 			ImGui::SetNextWindowPos(window_pos);
 			ImGui::SetNextWindowSize(ImVec2(150.0f, 200.0f));
-			ImGui::Begin(" ");
-			ImGui::Button("Create empty");
-			ImGui::Button("3D Object");
+			ImGuiWindowFlags window_flags_ = 0;
+			window_flags_ |= ImGuiWindowFlags_NoTitleBar;
+
+			ImGui::Begin("FFF ", nullptr, window_flags_);
+			ImGui::MenuItem("Create empty");
+
+			if (ImGui::BeginMenu("3D Object")) {
+          ImGui::MenuItem("Cube");
+          ImGui::MenuItem("Sphere");
+					ImGui::EndMenu();
+			}
+
+      if (ImGui::BeginMenu("2D Object")) {
+          ImGui::MenuItem("Triangle");
+          ImGui::MenuItem("Quad");
+          ImGui::EndMenu();
+      }
 			ImGui::End();
 	}
 
@@ -553,7 +575,7 @@ void  Suffer::Interface::Hierarchy(Scene* current_scene_){
 			window_pos = { suffer.GetMousePosition().x_, suffer.GetMousePosition().y_ };
 	}
 
-  if (suffer.input_manager_.MouseButtonDown(0)) {
+  if (suffer.input_manager_.MouseButtonDown(0) && ImGui::IsWindowFocused()) {
       auxiliar_window = false;
   }
 
@@ -574,14 +596,14 @@ void  Suffer::Interface::Hierarchy(Scene* current_scene_){
 // --------------------------------------------------- //
 
 void  Suffer::Interface::Log() {
-	log.Draw("Log", &is_log_opened_);
+	log.Draw(ICON_FA_STICKY_NOTE " Log", &is_log_opened_);
 }
 
 // --------------------------------------------------- //
 
 void  Suffer::Interface::Inspector(){
 	
-  ImGui::Begin("Inspector", &is_inspector_opened_);
+  ImGui::Begin(ICON_FA_EYE " Inspector", &is_inspector_opened_);
 	ImGui::Separator();
 
   GameObject* reference = suffer.GetCurrentScene()->current_gameobjects_[game_object_selected_].get();
@@ -589,8 +611,12 @@ void  Suffer::Interface::Inspector(){
 	u32 number_of_components = reference->components_.size();
 	std::map <s32, ref_ptr<Component>>::iterator components_iterator_;
 
-  ImGui::Text(reference->Name());
+	const char* name = reference->Name();
+  ImGui::Text(ICON_FA_CUBE "  Cube");
 	ImGui::Separator();
+
+	s16 component_to_remove = -1;
+	bool remove = false;
 
 	for (components_iterator_ = reference->components_.begin();
 			components_iterator_ != reference->components_.end(); ++components_iterator_) {
@@ -600,10 +626,25 @@ void  Suffer::Interface::Inspector(){
 							break;
 					}
 					case Component::ComponentKind::kComponentKind_Transform: {
-							ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Transform");
+							ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), ICON_FA_DRAW_POLYGON " Transform");
+							ImGui::SameLine();
+              if (ImGui::SmallButton("Remove")) {
+                  remove = true;
+                  component_to_remove = Suffer::Component::kComponentKind_Transform;
+              }
 							Transform* transform = static_cast<Transform*>(component_reference);
+							mathmorra::Vector3 rotation_in_degrees;
+							rotation_in_degrees.x_ = ThiefUtils::Math::Degrees(transform->GetRotation()[0]);
+							rotation_in_degrees.y_ = ThiefUtils::Math::Degrees(transform->GetRotation()[1]);
+							rotation_in_degrees.z_ = ThiefUtils::Math::Degrees(transform->GetRotation()[2]);
 							ImGui::InputFloat3("Position", &transform->GetPosition()[0]);
-							ImGui::InputFloat3("Rotation", &transform->GetRotation()[0]);
+							if (ImGui::InputFloat3("Rotation", &rotation_in_degrees.x_)) {
+                  mathmorra::Vector3 rotation_in_radians;
+                  rotation_in_radians.x_ = ThiefUtils::Math::Radians(rotation_in_degrees.x_);
+                  rotation_in_radians.y_ = ThiefUtils::Math::Radians(rotation_in_degrees.y_);
+                  rotation_in_radians.z_ = ThiefUtils::Math::Radians(rotation_in_degrees.z_);
+                  transform->Rotate(rotation_in_radians);
+							}
 							ImGui::InputFloat3("Scale", &transform->GetScale()[0]);
 
 							ImGui::Separator();
@@ -617,7 +658,7 @@ void  Suffer::Interface::Inspector(){
 					case Component::ComponentKind::kComponentKind_Geometry: {
 							GeometryComponent* geometry_component = static_cast<GeometryComponent*>(component_reference);
 							int geometry = (int)geometry_component->GetGeometry();
-              ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Geometry");
+              ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), ICON_FA_DRAFTING_COMPASS " Geometry");
               if (ImGui::Combo("Mesh", &geometry, geometries, IM_ARRAYSIZE(geometries))) {
 									geometry_component->CreateGeometryWithShape((GeometryComponent::BasicShapes)geometry);
               }
@@ -629,20 +670,32 @@ void  Suffer::Interface::Inspector(){
 							//ImGui::Separator();
 							break;
 					}
+          case Component::ComponentKind::kComponentKind_Script: {
+							ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), ICON_FA_ENVELOPE_OPEN_TEXT " Script");
+							ImGui::SameLine();
+							ImGui::PushID(Suffer::Component::kComponentKind_Script);
+              if (ImGui::SmallButton("Remove")) {
+                  remove = true;
+                  component_to_remove = Suffer::Component::kComponentKind_Script;
+              }
+							ImGui::PopID();
+              ImGui::Separator();
+              break;
+          }
 					case Component::ComponentKind::kComponentKind_Audio: {
 
 							Audio3D* sound = static_cast<Audio3D*>(component_reference);
 
               static bool swiped = false;
               static bool sound_active_ = sound->active_;
-							static int max_value = 256;
+							static int max_value = 110;
 
               float song_volume = sound->GetGain();
               static mathmorra::Vector3 song_position = sound->GetSoundPosition();
               static bool looping = sound->GetLooping();
               bool paused = sound->isPaused();
 
-              ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Audio");
+              ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), ICON_FA_VOLUME_UP " Audio");
 
               // Attributes
 
@@ -650,19 +703,21 @@ void  Suffer::Interface::Inspector(){
                   sound->SetGain(song_volume);
               }
               if (paused) {
-                  if (ImGui::Button("Play")) {
-                      ref_ptr<AudioCommands::Play> play_command_;
+                  if (ImGui::Button(ICON_FA_PLAY " Play")) {
+                      ref_ptr<AudioCommands::Pause> play_command_;
                       play_command_.alloc();
                       play_command_->audio_3d_ = sound;
+											play_command_->audio_3d_->SetPaused(false);
                       suffer.audio_manager_.audio_dl_.AddCommand(play_command_.get());
                       play_command_.release();
                   }
               }
               else {
-                  if (ImGui::Button("Pause")) {
+                  if (ImGui::Button(ICON_FA_PAUSE " Pause")) {
                       ref_ptr<AudioCommands::Pause> pause_command_;
                       pause_command_.alloc();
                       pause_command_->audio_3d_ = sound;
+											pause_command_->audio_3d_->SetPaused(true);
                       suffer.audio_manager_.audio_dl_.AddCommand(pause_command_.get());
                   }
               }
@@ -685,12 +740,12 @@ void  Suffer::Interface::Inspector(){
               ImGui::SliderInt("Graphic values", &max_value, 0, 256);
               if (!swiped) {
                   ImGui::PlotHistogram("##Wave", buf, max_value, 0, "Wave", -1, 1, ImVec2(264, 80));
-                  ImGui::SameLine();
+                  //ImGui::SameLine();
                   ImGui::PlotHistogram("##Fast Fourier Transform (FFT)", fft, max_value * 0.5f, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
               }
               else {
                   ImGui::PlotLines("##Wave", buf, max_value, 0, "Wave", -1, 1, ImVec2(264, 80));
-                  ImGui::SameLine();
+                  //ImGui::SameLine();
                   ImGui::PlotLines("##Fast Fourier Transform (FFT)", fft, max_value * 0.5f, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
               }
               ImGui::Separator();
@@ -699,7 +754,12 @@ void  Suffer::Interface::Inspector(){
 					}
 					case Component::ComponentKind::kComponentKind_Light: {
 							LightComponent* light = static_cast<LightComponent*>(component_reference);
-							ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Light");
+							ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.7f, 1.0f), ICON_FA_LIGHTBULB " Light");
+							ImGui::SameLine();
+							if (ImGui::SmallButton("Remove")) {
+									remove = true;
+									component_to_remove = Suffer::Component::kComponentKind_Light;
+							}
 							bool active = false;
 							float intensity = 0.0f;
 							if (light == nullptr) break;
@@ -728,7 +788,7 @@ void  Suffer::Interface::Inspector(){
 											ImGui::DragFloat3("Direction", &direction.x_, 0.01f, -1.0f, 1.0f);
 											light->SetDirection(direction);
 
-											if (ImGui::CollapsingHeader("Color")) {
+											if (ImGui::CollapsingHeader(ICON_FA_PALETTE " Color")) {
 													// Color
 													mathmorra::Vector3 color = light->Color();
 													ImGui::ColorEdit3("Base color", &color.x_);
@@ -884,333 +944,93 @@ void  Suffer::Interface::Inspector(){
       }
 	}
 
+	if (remove) {
+		reference->RemoveComponent((Suffer::Component::ComponentKind)component_to_remove);
+    log.AddLog("\n\t[" _information_ "] Deleted component %d from the GameObject with ID %d.", component_to_remove, reference->ID());
+    printf("\n\t[" _information_ "] Deleted component %d from the GameObject with ID %d.", component_to_remove, reference->ID());
+		component_to_remove = -1;
+		remove = false;
+	}
+
+	ImGuiButtonFlags button_flags_ = 0;
+	button_flags_ |= ImGuiButtonFlags_AlignTextBaseLine;
+	if (ImGui::ButtonEx("AddComponent", ImVec2(100.0f, 35.0f), button_flags_)) {
+			ImGui::OpenPopup("Components");
+	}
+
+	if (ImGui::BeginPopup("Components")){
+			if (ImGui::Selectable("Transform")) {
+					if (reference->HasComponent(Suffer::Component::kComponentKind_Transform)) {
+							log.AddLog("\n\t[" _warning_ "] The GameObject already has a component of this kind. Nothing added.");
+							printf("\n\t[" _warning_ "] The GameObject already has a component of this kind. Nothing added.");
+					}
+					else {
+							Suffer::ref_ptr<Suffer::Transform> transform_component;
+							transform_component.alloc();
+							reference->AddComponent(transform_component.get());
+              log.AddLog("\n\t[" _information_ "] Added component %d to the GameObject with ID %d.", Suffer::Component::kComponentKind_Transform, reference->ID());
+              printf("\n\t[" _information_ "] Added component %d to the GameObject with ID %d.", Suffer::Component::kComponentKind_Transform, reference->ID());
+					}
+			}
+      if (ImGui::Selectable("Geometry")) {
+          if (reference->HasComponent(Suffer::Component::kComponentKind_Geometry)) {
+              log.AddLog("\n\t[" _warning_ "] The GameObject already has a component of this kind. Nothing added.");
+							printf("\n\t[" _warning_ "] The GameObject already has a component of this kind. Nothing added.");
+          }
+          else {
+
+          }
+      }
+      if (ImGui::Selectable("Material")) {
+          if (reference->HasComponent(Suffer::Component::kComponentKind_Material)) {
+              log.AddLog("\n\t[" _warning_ "] The GameObject already has a component of this kind. Nothing added.");
+              printf("\n\t[" _warning_ "] The GameObject already has a component of this kind. Nothing added.");
+          }
+          else {
+
+          }
+      }
+      if (ImGui::Selectable("Audio")) {
+          if (reference->HasComponent(Suffer::Component::kComponentKind_Audio)) {
+              log.AddLog("\n\t[" _warning_ "] The GameObject already has a component of this kind. Nothing added.");
+              printf("\n\t[" _warning_ "] The GameObject already has a component of this kind. Nothing added.");
+          }
+          else {
+              Suffer::ref_ptr<Suffer::Audio3D> audio_component;
+							audio_component.alloc();
+              reference->AddComponent(audio_component.get());
+          }
+      }
+      if (ImGui::Selectable("Script")) {
+          if (reference->HasComponent(Suffer::Component::kComponentKind_Script)) {
+              log.AddLog("\n\t[" _warning_ "] The GameObject already has a component of this kind. Nothing added.");
+              printf("\n\t[" _warning_ "] The GameObject already has a component of this kind. Nothing added.");
+          }
+          else {
+
+          }
+      }
+      if (ImGui::Selectable("Light")) {
+          if (reference->HasComponent(Suffer::Component::kComponentKind_Light)) {
+              log.AddLog("\n\t[" _warning_ "] The GameObject already has a component of this kind. Nothing added.");
+              printf("\n\t[" _warning_ "] The GameObject already has a component of this kind. Nothing added.");
+          }
+          else {
+
+          }
+      }
+			ImGui::EndPopup();
+	}
+	
 	ImGui::End();
 }
 
 // --------------------------------------------------- //
 
 void  Suffer::Interface::Project(){
-	ImGui::Begin("Project", &is_project_window_opened_);
+	ImGui::Begin(ICON_FA_FOLDER " Project", &is_project_window_opened_);
 	ImGui::Text("I'm the project structure!");
 	ImGui::End();
-}
-
-// --------------------------------------------------- //
-
-void Suffer::Interface::Lighting(Scene* current_scene){
-
-  assert(current_scene != nullptr);
-  if(current_scene == nullptr) return;
-
-	u8 number_lights = suffer.light_manager_.current_lights_;
-
-	static float intensity = 0.0f;
-	static bool  active = false;
-
-	ImGui::Begin("Lighting");
-
-	for (u8 i = 0; i < number_lights; ++i) {
-	  LightManager::DirectionalLight* light = suffer.light_manager_.lights_[i].get();
-		if (light == nullptr) break;
-	  LightManager::PointLight* point_light;
-	  LightManager::SpotLight* spot_light;
-    int light_kind = (int)light->GetLightKind();
-		switch (light->GetLightKind()){
-			case LightManager::kLightKind_Directional: {
-
-        ImGui::Separator();
-        ImGui::PushID(i);
-
-        ImGui::TextColored(ImVec4(0.0, 1.0, 0.0, 1.0), "Directional Light %d", i);
-				ImGui::SameLine();
-
-				// Active
-				active = light->Active();
-				ImGui::Checkbox("Active", &active);
-				light->SetActive(active);
-
-        if (ImGui::Combo("Light Kind", &light_kind, lights, IM_ARRAYSIZE(lights))) {
-            light->SetLightKind((LightManager::LightKind)(light_kind));
-        }
-
-				// Intensity
-        intensity = light->Intensity();
-        ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0f, 1.0f);
-				light->SetIntensity(intensity);
-
-				// Direction
-				mathmorra::Vector3 direction = light->Direction();
-				ImGui::DragFloat3("Direction", &direction.x_, 0.01f, -1.0f, 1.0f);
-				light->SetDirection(direction);
-
-				if (ImGui::CollapsingHeader("Color")) {
-           // Color
-           mathmorra::Vector3 color = light->Color();
-           ImGui::ColorEdit3("Base color", &color.x_);
-           light->SetColor(color);
-           
-           mathmorra::Vector3 ambient = light->Ambient();
-           ImGui::ColorEdit3("Ambient", &ambient.x_);
-           light->SetAmbient(ambient);
-           
-           mathmorra::Vector3 diffuse = light->Diffuse();
-           ImGui::ColorEdit3("Diffuse", &diffuse.x_);
-           light->SetDiffuse(diffuse);
-           
-           mathmorra::Vector3 specular = light->Specular();
-           ImGui::ColorEdit3("Specular", &specular.x_);
-           light->SetSpecular(specular);
-				}
-
-        ImGui::PopID();
-        ImGui::Separator();
-
-			  break;
-			}
-			case LightManager::kLightKind_Point: {
-
-				point_light = static_cast<LightManager::PointLight*>(light);
-
-        ImGui::PushID(i);
-
-				ImGui::TextColored(ImVec4(1.0, 0.0, 0.0, 1.0), "Point Light");
-        ImGui::SameLine();
-
-        // Active
-        active = point_light->Active();
-        ImGui::Checkbox("Active", &active);
-				point_light->SetActive(active);
-
-        if (ImGui::Combo("Light Kind", &light_kind, lights, IM_ARRAYSIZE(lights))) {
-            light->SetLightKind((LightManager::LightKind)(light_kind));
-        }
-
-				// Intensity
-				intensity = point_light->Intensity();
-				ImGui::DragFloat("Intensity", &intensity, 0.1f, 0.0f, 100.0f);
-				point_light->SetIntensity(intensity);
-
-        // Quadratic - Linear - Constant
-        float quadratic = point_light->Quadratic();
-        float linear = point_light->Linear();
-        float constant = point_light->Constant();
-
-        if (ImGui::DragFloat("Constant", &constant, 0.001f, 0.0f, 1.0f)) {
-						point_light->SetConstant(constant);
-        }
-        if (ImGui::DragFloat("Linear", &linear, 0.001f, 0.0f, 1.0f)) {
-						point_light->SetLinear(linear);
-        }
-        if (ImGui::DragFloat("Quadratic", &quadratic, 0.001f, 0.0f, 1.0f)) {
-						point_light->SetQuadratic(quadratic);
-        }
-
-        if (ImGui::CollapsingHeader("Color")) {
-            // Color
-            mathmorra::Vector3 color = point_light->Color();
-            ImGui::ColorEdit3("Base color", &color.x_);
-						point_light->SetColor(color);
-
-            mathmorra::Vector3 ambient = point_light->Ambient();
-            ImGui::ColorEdit3("Ambient", &ambient.x_);
-						point_light->SetAmbient(ambient);
-
-            mathmorra::Vector3 diffuse = point_light->Diffuse();
-            ImGui::ColorEdit3("Diffuse", &diffuse.x_);
-						point_light->SetDiffuse(diffuse);
-
-            mathmorra::Vector3 specular = point_light->Specular();
-            ImGui::ColorEdit3("Specular", &specular.x_);
-						point_light->SetSpecular(specular);
-        }
-
-				ImGui::PopID();
-			  break;
-			}
-			case LightManager::kLightKind_Spot: {
-
-          spot_light = static_cast<LightManager::SpotLight*>(light);
-
-          ImGui::Separator();
-          ImGui::PushID(i);
-
-          ImGui::TextColored(ImVec4(0.0, 0.0, 1.0, 1.0), "Spot Light %d", i);
-          ImGui::SameLine();
-
-          // Active
-          active = spot_light->Active();
-          ImGui::Checkbox("Active", &active);
-					spot_light->SetActive(active);
-
-          if (ImGui::Combo("Light Kind", &light_kind, lights, IM_ARRAYSIZE(lights))) {
-							spot_light->SetLightKind((LightManager::LightKind)(light_kind));
-          }
-
-          // Intensity
-          intensity = spot_light->Intensity();
-          ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0f, 1.0f);
-					spot_light->SetIntensity(intensity);
-
-          // Direction
-          mathmorra::Vector3 direction = spot_light->Direction();
-          ImGui::DragFloat3("Direction", &direction.x_, 0.01f, -1.0f, 1.0f);
-					spot_light->SetDirection(direction);
-
-					// CutOff - OuterCutOff - Quadratic - Linear - Constant
-					float cutOff = spot_light->CutOff();
-					float outerCutOff = spot_light->OuterCutOff();
-					float quadratic = spot_light->Quadratic();
-					float linear = spot_light->Linear();
-					float constant = spot_light->Constant();
-
-					if (ImGui::DragFloat("CutOff", &cutOff, 0.001f, 0.0f, 1.0f)) {
-							spot_light->SetCutOff(cutOff);
-					}
-          if (ImGui::DragFloat("OuterCutOff", &outerCutOff, 0.001f, 0.0f, 1.0f)) {
-              spot_light->SetOuterCutOff(outerCutOff);
-          }
-          if (ImGui::DragFloat("Constant", &constant, 0.001f, 0.0f, 1.0f)) {
-              spot_light->SetConstant(constant);
-          }
-          if (ImGui::DragFloat("Linear", &linear, 0.001f, 0.0f, 1.0f)) {
-              spot_light->SetLinear(linear);
-          }
-          if (ImGui::DragFloat("Quadratic", &quadratic, 0.001f, 0.0f, 1.0f)) {
-              spot_light->SetQuadratic(quadratic);
-          }
-
-          if (ImGui::CollapsingHeader("Color")) {
-              // Color
-              mathmorra::Vector3 color = spot_light->Color();
-              ImGui::ColorEdit3("Base color", &color.x_);
-							spot_light->SetColor(color);
-
-              mathmorra::Vector3 ambient = spot_light->Ambient();
-              ImGui::ColorEdit3("Ambient", &ambient.x_);
-							spot_light->SetAmbient(ambient);
-
-              mathmorra::Vector3 diffuse = spot_light->Diffuse();
-              ImGui::ColorEdit3("Diffuse", &diffuse.x_);
-							spot_light->SetDiffuse(diffuse);
-
-              mathmorra::Vector3 specular = spot_light->Specular();
-              ImGui::ColorEdit3("Specular", &specular.x_);
-							spot_light->SetSpecular(specular);
-          }
-
-          ImGui::PopID();
-          ImGui::Separator();
-
-			  break;
-			}
-			default: {
-	
-			break;
-			}
-		}
-	}
-
-	ImGui::End();
-
-
-}
-
-// --------------------------------------------------- //
-
-void  Suffer::Interface::Audio(Audio3D* sound){
-
-	static char buffer[255] = "\0";
-	static char pre_buffer_[255] = "../../../resources/audio/";
-	static char aux_buffer[255] = "../../../resources/audio/";
-	static bool swiped = false;
-  static bool sound_active_ = sound->active_;
-	static int max_value = 256;
-  static int sounds_id = 0;
-
-  std::string attributes_ = "\0";
-
-	ImGui::Begin("Audio Tests");
-
-  float song_volume = sound->GetGain();
-  static mathmorra::Vector3 song_position = sound->GetSoundPosition();
-  static bool looping = sound->GetLooping();
-  bool paused = sound->isPaused();
-
-  // Attributes
-  ImGui::TextColored(ImVec4(1.0, 0.0, 0.0, 1.0), sound->name_);
-
-  attributes_ = sound->name_;
-  attributes_.append(" volume");
-  if (ImGui::SliderFloat(attributes_.c_str(), &song_volume, 0.0f, 2.0f)) {
-    sound->SetGain(song_volume);
-  }
-  if (ImGui::InputFloat3("Sound Position", &song_position.x_, 0.1f)) {
-    sound->SetSoundPosition(song_position);
-  }
-  if (paused) {
-    if (ImGui::Button("Play")) {
-      ref_ptr<AudioCommands::Play> play_command_;
-      play_command_.alloc();
-      play_command_->audio_3d_ = sound;
-      //suffer.AddCommand(&suffer.audio_dl_, play_command_.get());
-      play_command_.release();
-    }
-  }
-  else {
-    if (ImGui::Button("Pause")) {
-      ref_ptr<AudioCommands::Pause> pause_command_;
-      pause_command_.alloc();
-      pause_command_->audio_3d_ = sound;
-      //suffer.AddCommand(&suffer.audio_dl_, pause_command_.get());
-      pause_command_.release();
-    }
-  }
-  ImGui::SameLine();
-  if (ImGui::Checkbox("Looping", &looping)) {
-    sound->SetLooping(looping);
-  }
-
-  ImGui::SameLine();
-  ImGui::PushID(sounds_id);
-  if (ImGui::Checkbox("Is Active", &sound_active_)) {
-    sound->SetActive(sound_active_);
-  }
-  sounds_id++;
-  ImGui::PopID();
-
-  if (sounds_id > MAX_SAMPLES) sounds_id = 0;
-
-	ImGui::InputText("Song", buffer, sizeof(buffer));
-	ImGui::SameLine();
-	if (ImGui::Button("Load")) {
-		strcat(pre_buffer_, buffer);
-		sound->Load(pre_buffer_);
-		for (int i = 0; i < sizeof(buffer); ++i) buffer[i] = '\0';
-		strcpy(pre_buffer_, aux_buffer);
-	}
-
-	ImGui::Spacing();
-	float* buf = sound->Wave();
-	float* fft = sound->FFT();
-
-	// Diagrams
-	if (ImGui::Button("Swipe")) swiped = !swiped;
-	ImGui::SameLine();
-	ImGui::SliderInt("Graphic values", &max_value, 0, 256);
-	if (!swiped) {
-		ImGui::PlotHistogram("##Wave", buf, max_value, 0, "Wave", -1, 1, ImVec2(264, 80));
-		ImGui::SameLine();
-		ImGui::PlotHistogram("##Fast Fourier Transform (FFT)", fft, max_value * 0.5f, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
-	}
-	else {
-		ImGui::PlotLines("##Wave", buf, max_value, 0, "Wave", -1, 1, ImVec2(264, 80));
-		ImGui::SameLine();
-		ImGui::PlotLines("##Fast Fourier Transform (FFT)", fft, max_value * 0.5f, 0, "FFT", 0, 10, ImVec2(264, 80), 8);
-	}
-	ImGui::Separator();
-
-	ImGui::End();
-
 }
 
 // --------------------------------------------------- //
@@ -1221,7 +1041,7 @@ void  Suffer::Interface::Game(s32 tex){
 	assert(tex >= 0 && "Texture ID not valid.\n");
 #endif
 
-	ImGui::Begin("Game", &is_game_window_opened_);
+	ImGui::Begin(ICON_FA_GAMEPAD " Game", &is_game_window_opened_);
 
 	if (tex > 0) {
 		int width = ImGui::GetWindowWidth();
@@ -1230,7 +1050,6 @@ void  Suffer::Interface::Game(s32 tex){
 		ImVec2 vec = ImGui::GetWindowPos();
 		ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)tex, vec, ImVec2(vec.x + width, vec.y + height));
 	}
-	ImGui::Text("I'm the Game!!");
 	ImGui::End();
 
 }

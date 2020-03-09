@@ -107,6 +107,9 @@ void Suffer::GameObject::RemoveComponent(Component::ComponentKind component){
   if (component == Component::ComponentKind::kComponentKind_Invalid)
     assert(false && "Invalid ComponentKind.");
 
+  //if (component == Component::ComponentKind::kComponentKind_Light)
+  //    suffer.light_manager_.lights_.clear(0);
+
   components_.erase(component);
 
 }

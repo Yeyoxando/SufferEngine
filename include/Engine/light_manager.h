@@ -16,6 +16,7 @@ namespace Suffer {
     friend class SufferManager;
     friend class DrawGeometry;
     friend class Interface;
+    friend class GameObject;
 
   public:
 
@@ -105,6 +106,8 @@ namespace Suffer {
       float Constant();
       float Linear();
       float Quadratic();
+
+      mathmorra::Matrix4 view_matrices_[6];
 
     protected:
       float constant_;

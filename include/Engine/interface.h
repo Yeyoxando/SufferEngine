@@ -52,13 +52,13 @@ namespace Suffer {
 		void Log();                            // LOG engine window
 		void Inspector();                      // GameObjects inspector
 		void Project();                        // Project folder
-		void Lighting(Scene* current_scene);   // Lights customization
+		//void Lighting(Scene* current_scene);   // Lights customization
 
     /**
      * @brief: Processes the sound passed by parameter in the interface
      * @param: the audio source that will be processed.
      */
-		void Audio(Audio3D* sound);
+		//void Audio(Audio3D* sound);
 
     /**
      * @brief: render the texture in the Game window in the interface
@@ -120,8 +120,8 @@ namespace Suffer {
 		bool is_inspector_opened_;
 		bool is_project_window_opened_;
 		bool is_game_window_opened_;
-		bool is_audio_window_opened_;
-		bool is_lighting_window_opened_;
+		//bool is_audio_window_opened_;
+		//bool is_lighting_window_opened_;
 
 		u32 game_object_selected_;
 		u32 game_objects_id_;

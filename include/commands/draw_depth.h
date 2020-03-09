@@ -35,6 +35,7 @@ namespace Suffer {
      * @param: model matrix calculated in GameObject
      */
     void SetMatrix(mathmorra::Matrix4 model, mathmorra::Matrix4 view, mathmorra::Matrix4 projection);
+    void SetMatrices(mathmorra::Matrix4 model, mathmorra::Matrix4 view_mat[6], mathmorra::Matrix4 projection);
 
   protected:
     virtual ~DrawDepth();

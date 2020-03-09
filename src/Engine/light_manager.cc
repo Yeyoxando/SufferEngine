@@ -422,6 +422,9 @@ Suffer::LightManager::SpotLight::SpotLight(){
   active_ = true;
   intensity_ = 1.0f;
 
+  cut_off_ = 0.0f;
+  outer_cut_off_ = 0.0f;
+
   light_kind_ = kLightKind_Spot;
 
 }

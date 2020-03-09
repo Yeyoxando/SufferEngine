@@ -18,5 +18,5 @@ local x = 0
 local speed = 0
 function Update()
   --Rotation()
-  Translate(math.sin(os.clock()) * 20.0, 3.0, 5.0)
+  Translate(math.sin(os.clock()) * 10.0, 5.0, math.cos(os.clock()) * 10.0)
 end
