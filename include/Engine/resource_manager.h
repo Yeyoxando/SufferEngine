@@ -19,8 +19,10 @@ namespace Suffer {
   class ResourceManager {
     friend class DrawGeometry;
     friend class DrawDepth;
+    friend class DrawPointDepth;
     friend class Postprocessing;
     friend class ShadowMap;
+    friend class ShadowCubemap;
     friend class SufferManager;
     friend class RenderManager;
     friend class GeometryComponent;
@@ -51,6 +53,7 @@ namespace Suffer {
         kResourceType_IndexBuffer,
         kResourceType_Texture,
         kResourceType_FrameBuffer,
+        kResourceType_Cubemap,
       };
 
       s32 id_;
@@ -262,6 +265,15 @@ namespace Suffer {
     };
 
     // ------------------------------- Texture ----------------------------- //
+
+
+    // ------------------------------- Cubemap ----------------------------- //
+
+    class Cubemap : public Texture {
+      public:
+          Cubemap();
+          ~Cubemap();
+    };
 
 
 

@@ -17,6 +17,7 @@ namespace Suffer {
         friend class SystemLight;
         friend class GameObject;
         friend class ShadowMap;
+        friend class ShadowCubemap;
         friend class DrawGeometry;
 
     public:

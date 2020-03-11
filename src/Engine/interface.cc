@@ -944,6 +944,9 @@ void  Suffer::Interface::Inspector(){
       }
 	}
 
+#define TO_LOG(i) log.AddLog("\n\t[" i "] The GameObject already has a component of this kind. Nothing added."); \
+									printf("\n\t[" i "] The GameObject already has a component of this kind. Nothing added.");
+
 	if (remove) {
 		reference->RemoveComponent((Suffer::Component::ComponentKind)component_to_remove);
     log.AddLog("\n\t[" _information_ "] Deleted component %d from the GameObject with ID %d.", component_to_remove, reference->ID());
@@ -961,15 +964,13 @@ void  Suffer::Interface::Inspector(){
 	if (ImGui::BeginPopup("Components")){
 			if (ImGui::Selectable("Transform")) {
 					if (reference->HasComponent(Suffer::Component::kComponentKind_Transform)) {
-							log.AddLog("\n\t[" _warning_ "] The GameObject already has a component of this kind. Nothing added.");
-							printf("\n\t[" _warning_ "] The GameObject already has a component of this kind. Nothing added.");
+							TO_LOG(_warning_)
 					}
 					else {
 							Suffer::ref_ptr<Suffer::Transform> transform_component;
 							transform_component.alloc();
 							reference->AddComponent(transform_component.get());
-              log.AddLog("\n\t[" _information_ "] Added component %d to the GameObject with ID %d.", Suffer::Component::kComponentKind_Transform, reference->ID());
-              printf("\n\t[" _information_ "] Added component %d to the GameObject with ID %d.", Suffer::Component::kComponentKind_Transform, reference->ID());
+							TO_LOG(_information_)
 					}
 			}
       if (ImGui::Selectable("Geometry")) {

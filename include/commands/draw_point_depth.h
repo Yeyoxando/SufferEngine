@@ -4,8 +4,8 @@
  * Draw Depth command Header
  */
 
-#ifndef __DRAW_DEPTH_H__
-#define __DRAW_DEPTH_H__
+#ifndef __DRAW_POINT_DEPTH_H__
+#define __DRAW_POINT_DEPTH_H__
 
 #include "command.h"
 #include "game_object.h"
@@ -19,25 +19,25 @@ namespace Suffer {
   /**
    * @brief: Command to draw GameObjects depth for shadows
    */
-  class DrawDepth : public Command {
+  class DrawPointDepth : public Command {
     friend class RenderManager;
   public:
-    DrawDepth();
+      DrawPointDepth();
 
     /**
      * @brief: Sets the command with the info of the GameObject
      * @param: GameObject to get info
      */
-    void SetData(GameObject* go);
+    void SetData(GameObject* go, mathmorra::Vector3 light_position, float far_plane);
 
     /**
      * @brief: Sets GameObject model matrix
      * @param: model matrix calculated in GameObject
      */
-    void SetMatrix(mathmorra::Matrix4 model, mathmorra::Matrix4 view, mathmorra::Matrix4 projection);
+    void SetMatrices(mathmorra::Matrix4 model, mathmorra::Matrix4 view_mat[6]);
 
   protected:
-    virtual ~DrawDepth();
+    virtual ~DrawPointDepth();
 
   private:
 
@@ -55,4 +55,4 @@ namespace Suffer {
 
 } // End of Suffer namespace
 
-#endif // __DRAW_DEPTH_H__
+#endif // __DRAW_POINT_DEPTH_H__
