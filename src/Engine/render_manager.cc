@@ -240,7 +240,7 @@ void Suffer::RenderManager::DoRender(){
 
   //// Render to final framebuffer (screen quad)
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  //
+
   ////glDisable is on post proccess command
   //data_->post_command_->SetData(Postprocessing::PostproccessKind::kPostproccessKind_Default);
   //data_->post_command_->Execute();
