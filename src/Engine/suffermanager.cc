@@ -92,6 +92,9 @@ bool Suffer::SufferManager::Init(){
   script_system_.alloc();
   suffer.AddSystem(script_system_.get());
 
+  hierarchy_system_.alloc();
+  suffer.AddSystem(hierarchy_system_.get());
+
   light_system_.alloc();
   suffer.AddSystem(light_system_.get());
 

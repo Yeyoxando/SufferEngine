@@ -1,6 +1,6 @@
 /*
 * Author: Pablo Bano Benito <banyobe@esat-alumni.com>
-* Date: 02-27-2019
+* Date: 02-27-2020
 * ComponentLight Source
 */
 
@@ -46,6 +46,10 @@ void Suffer::LightComponent::Init(LightKind kind){
           point->SetActive(false);
           reference_ = point.get();
 
+          //point->SetConstant(0.0f);
+          //point->SetQuadratic(0.0f);
+          //point->SetLinear(0.0f);
+
           // Depth
           Suffer::ref_ptr<Suffer::ResourceManager::Cubemap> cubemap_depth_;
           cubemap_depth_.alloc();
@@ -65,6 +69,14 @@ void Suffer::LightComponent::Init(LightKind kind){
           spot.alloc();
           spot->SetActive(false);
           reference_ = spot.get();
+
+          spot->SetConstant(0.0f);
+          spot->SetQuadratic(0.0f);
+          spot->SetLinear(0.0f);
+          
+          spot->SetOuterCutOff(0.0f);
+          spot->SetCutOff(0.0f);
+
           break;
       }
       default: {

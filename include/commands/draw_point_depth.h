@@ -1,8 +1,8 @@
 /*
- * Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
- * Date: 03-03-2020
- * Draw Depth command Header
- */
+* Author: Pablo Bano Benito <banyobe@esat-alumni.com>
+* Date: 03-11-2020
+* DrawPointDepth Header
+*/
 
 #ifndef __DRAW_POINT_DEPTH_H__
 #define __DRAW_POINT_DEPTH_H__

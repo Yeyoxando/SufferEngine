@@ -1,8 +1,8 @@
 /*
- * Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
- * Date: 03-03-2020
- * Draw Depth command source
- */
+* Author: Pablo Bano Benito <banyobe@esat-alumni.com>
+* Date: 03-11-2020
+* DrawPointDepth Source
+*/
 
 #include <draw_point_depth.h>
 #include <gl/glew.h>

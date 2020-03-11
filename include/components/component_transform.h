@@ -15,6 +15,8 @@ namespace Suffer {
 
     class Transform : public Component {
         friend class SystemTransform;
+        friend class SystemHierarchy;
+
     public:
       Transform() : Component(kComponentKind_Transform) { Init(); };
 

@@ -584,8 +584,7 @@ void  Suffer::Interface::Hierarchy(Scene* current_scene_){
   for (int i = 0; i < scene_game_objects; ++i) {
 			GameObject* reference = current_scene_->current_gameobjects_[i].get();
 			if (!reference->HasComponent(Component::kComponentKind_Child)) {
-				int number_childs = reference->NumberChilds();
-				SearchChilds(number_childs, reference);
+				SearchChilds(reference);
 			}
   }
 
@@ -1074,7 +1073,7 @@ void  Suffer::Interface::Options(){
 
 // --------------------------------------------------- //
 
-void Suffer::Interface::SearchChilds(u16 index, GameObject* go){
+void Suffer::Interface::SearchChilds(GameObject* go){
 
    assert(go != nullptr && "ERROR: NULL GameObject");
    if (go == nullptr) return;
@@ -1093,7 +1092,7 @@ void Suffer::Interface::SearchChilds(u16 index, GameObject* go){
 	 }
    if (node_open){
    	 for (int i = 0; i < number_childs; ++i) {
-   	   SearchChilds(i, go->GetChild(i));
+   	   SearchChilds(go->GetChild(i));
    	 }
    	 ImGui::TreePop();
    }
