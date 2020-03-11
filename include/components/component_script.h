@@ -19,6 +19,7 @@ namespace Suffer {
     ScriptComponent();
 
     void AttachScript(char* script_path);
+    void Reload(char* new_path);
 
   protected:
     ~ScriptComponent();

@@ -27,11 +27,13 @@ struct Suffer::ScriptComponent::ScriptData {
 
   lua_State* state_;
   GameObject* go_reference_;
+  char* script_path_;
 
   static GameObject* GetReference(lua_State* L);
 
   static int lua_Start(lua_State* L);
   static int lua_Update(lua_State* L);
+  static int lua_Reload(lua_State* L, char* path);
 
   static int lua_AddComponent(lua_State* L);
   static int lua_RemoveComponent(lua_State* L);
@@ -61,6 +63,21 @@ int Suffer::ScriptComponent::ScriptData::lua_Update(lua_State* L){
   lua_call(L, 0, 0);
 
   return 0;
+
+}
+
+// --------------------------------------------------- //
+
+int Suffer::ScriptComponent::ScriptData::lua_Reload(lua_State * L, char* path){
+    
+    u8 status = luaL_dofile(L, path);
+
+    if (status) {
+        const char* error = lua_tostring(L, -1);
+        printf("ERROR: %s\n", error);
+        lua_pop(L, 1);
+        return status;
+    }
 
 }
 

@@ -27,6 +27,7 @@
 // Components
 #include "component_light.h"
 #include "component_geometry.h"
+#include "component_script.h"
 
 ExampleAppLog Suffer::Interface::log;
 
@@ -670,12 +671,20 @@ void  Suffer::Interface::Inspector(){
 							break;
 					}
           case Component::ComponentKind::kComponentKind_Script: {
+              ScriptComponent* script = static_cast<ScriptComponent*>(component_reference);
+
+              static char buffer[128] = "\0";
+
 							ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), ICON_FA_ENVELOPE_OPEN_TEXT " Script");
 							ImGui::SameLine();
 							ImGui::PushID(Suffer::Component::kComponentKind_Script);
               if (ImGui::SmallButton("Remove")) {
                   remove = true;
                   component_to_remove = Suffer::Component::kComponentKind_Script;
+              }
+              ImGui::InputText("Script path", buffer, IM_ARRAYSIZE(buffer));
+              if (ImGui::Button("Reload script")) {
+                  script->Reload(buffer);
               }
 							ImGui::PopID();
               ImGui::Separator();

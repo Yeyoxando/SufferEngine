@@ -99,6 +99,12 @@ void Suffer::ScriptComponent::Start(){
 
 }
 
+void Suffer::ScriptComponent::Reload(char* new_path){
+
+    data_->lua_Reload(data_->state_, new_path);
+
+}
+
 // --------------------------------------------------- //
 
 Suffer::ScriptComponent::~ScriptComponent(){

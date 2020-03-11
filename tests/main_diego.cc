@@ -167,9 +167,15 @@ int main(int argc, char* argv[]) {
   go_cube->SetName("Cube");
   go_light->SetName("DirectionalLight");
 
+  Suffer::ref_ptr<Suffer::GameObject> new_game_object;
+  new_game_object.alloc();
+
+  new_game_object->SetArchetype(Suffer::GameObject::Archetype::kArchetype_Drawable);
+
   scene->AddGameObject(go_cube);
   scene->AddGameObject(go_quad);
   scene->AddGameObject(go_light);
+  scene->AddGameObject(new_game_object);
 
 
   suffer.SetScene(scene);

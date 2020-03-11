@@ -30,12 +30,12 @@ namespace Suffer {
 	class GameObject : public virtual Referenced {
       friend class Scene;
 
+	public:
       enum Archetype {
           kArchetype_Invalid,
           kArchetype_Drawable,
       };
 
-	public:
 
 		GameObject();
 		GameObject(const GameObject& go);
