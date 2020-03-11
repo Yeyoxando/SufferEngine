@@ -110,6 +110,15 @@ namespace Suffer {
 			"Sphere"
     };
 
+    const char* draw_modes[6] = {
+      "Triangles",
+      "Lines",
+      "LineLoop",
+      "LineStrip",
+      "Patches",
+      "Points"
+    };
+
 		struct Data;
 		Data* _ptr;
 

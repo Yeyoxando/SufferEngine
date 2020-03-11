@@ -662,6 +662,11 @@ void  Suffer::Interface::Inspector(){
               if (ImGui::Combo("Mesh", &geometry, geometries, IM_ARRAYSIZE(geometries))) {
 									geometry_component->CreateGeometryWithShape((GeometryComponent::BasicShapes)geometry);
               }
+
+              int draw_mode = (int)geometry_component->GetDrawMode();
+              if (ImGui::Combo("Draw mode", &draw_mode, draw_modes, IM_ARRAYSIZE(draw_modes))) {
+                  geometry_component->SetDrawMode((GeometryComponent::DrawMode)draw_mode);
+              }
 							ImGui::Separator();
 							break;
 					}
