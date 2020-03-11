@@ -128,7 +128,7 @@ int main(int argc, char* argv[]) {
 
   light_component->Init(Suffer::LightComponent::kLightKind_Point);
   light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-  light_component->SetIntensity(1.0f);
+  light_component->SetIntensity(3.0f);
   light_component->SetAmbient(0.5f, 0.5f, 0.5f);
   light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
   light_component->SetSpecular(1.0f, 1.0f, 1.0f);
@@ -167,16 +167,11 @@ int main(int argc, char* argv[]) {
   go_cube->SetName("Cube");
   go_light->SetName("DirectionalLight");
 
-  Suffer::ref_ptr<Suffer::GameObject> new_game_object;
-  new_game_object.alloc();
-
-  new_game_object->SetArchetype(Suffer::GameObject::Archetype::kArchetype_Drawable);
+  go_cube->AddChild(go_light.get());
 
   scene->AddGameObject(go_cube);
   scene->AddGameObject(go_quad);
   scene->AddGameObject(go_light);
-  scene->AddGameObject(new_game_object);
-
 
   suffer.SetScene(scene);
 

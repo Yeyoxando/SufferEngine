@@ -52,7 +52,9 @@ void Suffer::SystemTransform::Execute(GameObject* go){
 
     transform_component->model_ = scale_mat * (rotation_mat_x * rotation_mat_y * rotation_mat_z) * translation_mat;
 
-
+    if (!go->HasComponent(Component::kComponentKind_Child)) {
+        transform_component->global_position_ = transform_component->position_;
+    }
 
     // Update the Forward vector
     mathmorra::Vector3 x = mathmorra::Vector3(1.0f, 0.0f, 0.0f);

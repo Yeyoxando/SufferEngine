@@ -34,4 +34,8 @@ void Suffer::SystemHierarchy::Execute(GameObject* go){
     mathmorra::Matrix4 parent_model = parent_transform_component->GetModelMatrix();
     transform_component->model_ = transform_component->model_ * parent_model;
 
+    transform_component->global_position_.x_ = transform_component->model_.m[12];
+    transform_component->global_position_.y_ = transform_component->model_.m[13];
+    transform_component->global_position_.z_ = transform_component->model_.m[14];
+
 }

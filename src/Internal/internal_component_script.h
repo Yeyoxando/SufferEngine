@@ -69,6 +69,61 @@ int Suffer::ScriptComponent::ScriptData::lua_Update(lua_State* L){
 // --------------------------------------------------- //
 
 int Suffer::ScriptComponent::ScriptData::lua_Reload(lua_State * L, char* path){
+
+    assert(path != nullptr && "Invalid GameObject.");
+
+    if (L == nullptr) {
+        L = luaL_newstate();
+    }
+    else {
+
+        u8 status = luaL_dofile(L, path);
+
+        if (status) {
+            const char* error = lua_tostring(L, -1);
+            printf("ERROR: %s\n", error);
+            lua_pop(L, 1);
+            return status;
+        }
+        return 0;
+    }
+
+    luaL_openlibs(L);
+
+
+    // PUSH FUNCTIONS FOR LUA
+    //lua_pushcfunction(data_->state_, data_->lua_Update);    // +1
+    //lua_setglobal(data_->state_, "Update");                 // -1
+
+    lua_pushcfunction(L, lua_Rotate); // +1
+    lua_setglobal(L, "Rotate");              // -1
+
+    lua_pushcfunction(L, lua_Scale); // +1
+    lua_setglobal(L, "Scale");              // -1
+
+    lua_pushcfunction(L, lua_Translate); // +1
+    lua_setglobal(L, "Translate");              // -1
+
+    lua_pushcfunction(L, lua_AddComponent); // +1
+    lua_setglobal(L, "AddComponent");              // -1
+
+    lua_pushcfunction(L, lua_RemoveComponent); // +1
+    lua_setglobal(L, "RemoveComponent");              // -1
+
+    lua_pushcfunction(L, lua_SetGeometry); // +1
+    lua_setglobal(L, "SetGeometry");              // -1
+
+    lua_pushcfunction(L, lua_SetDrawMode); // +1
+    lua_setglobal(L, "SetDrawMode");              // -1
+
+    lua_pushcfunction(L, lua_PlayAudio); // +1
+    lua_setglobal(L, "PlayAudio");              // -1
+
+    lua_register(L, "Update", lua_Update);
+
+    lua_pushstring(L, "THIS");
+    lua_pushlightuserdata(L, GetReference(L));
+    lua_settable(L, LUA_REGISTRYINDEX);
     
     u8 status = luaL_dofile(L, path);
 

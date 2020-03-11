@@ -25,8 +25,7 @@ void Suffer::SystemScript::Execute(GameObject* go){
   ScriptComponent* script = static_cast<ScriptComponent*>(script_component);
 
   if (!script->script_attached_) {
-    printf("ERROR: the GameObject has not a script attached.\n");
-    abort();
+    return;
   }
 
 

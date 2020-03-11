@@ -70,11 +70,11 @@ void Suffer::ScriptComponent::AttachScript(char* script_path){
   u8 status = luaL_dofile(data_->state_, script_path);
 
   if (status) {
-    const char* error = lua_tostring(data_->state_, -1);
-    printf("ERROR: %s\n", error);
-    assert(!status);
-    lua_pop(data_->state_, 1);
-    return;
+      const char* error = lua_tostring(data_->state_, -1);
+      printf("ERROR: %s\n", error);
+      assert(!status);
+      lua_pop(data_->state_, 1);
+      return;
   }
 
   script_attached_ = true;

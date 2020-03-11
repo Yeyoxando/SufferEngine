@@ -14,6 +14,7 @@ namespace Suffer {
 
   class ScriptComponent : public Component {
     friend class SystemScript;
+    friend class Interface;
 
   public:
     ScriptComponent();

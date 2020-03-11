@@ -66,7 +66,7 @@ void Suffer::SystemLight::Execute(GameObject* go) {
         }
 
         light_component->SetDirection(transform_component->Forward());
-        light_component->SetPosition(transform_component->GetPosition());
+        light_component->SetPosition(transform_component->GetGlobalPosition());
 
 
     // SHADOWS STUFF

@@ -611,8 +611,11 @@ void  Suffer::Interface::Inspector(){
 	u32 number_of_components = reference->components_.size();
 	std::map <s32, ref_ptr<Component>>::iterator components_iterator_;
 
-	const char* name = reference->Name();
-  ImGui::Text(ICON_FA_CUBE "  Cube");
+	std::string name;
+	name.append(ICON_FA_CUBE);
+	name.append(" ");
+	name.append(reference->Name());
+  ImGui::Text(name.c_str());
 	ImGui::Separator();
 
 	s16 component_to_remove = -1;
@@ -1021,7 +1024,9 @@ void  Suffer::Interface::Inspector(){
               printf("\n\t[" _warning_ "] The GameObject already has a component of this kind. Nothing added.");
           }
           else {
-
+							//Suffer::ref_ptr<ScriptComponent> script;
+							//script.alloc();
+							//reference->AddComponent(script.get());
           }
       }
       if (ImGui::Selectable("Light")) {
@@ -1097,8 +1102,12 @@ void Suffer::Interface::SearchChilds(GameObject* go){
 
    u16 number_childs = go->NumberChilds();
 	 int node_clicked = game_object_selected_;
+
+	 std::string game_object_name;
+	 game_object_name.append(go->Name());
+	 game_object_name.append(" (%d)");
    
-   bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)go->ID(), base_flags, "GameObject %d", go->ID());
+   bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)go->ID(), base_flags, game_object_name.c_str(), go->ID());
 
 	 if (ImGui::IsItemClicked()) {
      node_clicked = go->ID();
