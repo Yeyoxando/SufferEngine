@@ -137,14 +137,10 @@ int main(int argc, char* argv[]) {
   // -------------------------------------------------------------------------------------//
 
 
-  Suffer::ref_ptr<Suffer::GameObject> go_rotator;
-  go_rotator.alloc();
-
   Suffer::ref_ptr<Suffer::Transform> transform_component_4;
   transform_component_4.alloc();
   transform_component_4->Scale(mathmorra::Vector3(1.0f, 1.0f, 1.0f));
   transform_component_4->Translate(mathmorra::Vector3(0.0f, 5.0f, 0.0f));
-  go_rotator->AddComponent(transform_component_4.get());
 
   //Suffer::ref_ptr<Suffer::ScriptComponent> script_component_;
   //script_component_.alloc();
@@ -171,9 +167,8 @@ int main(int argc, char* argv[]) {
   go_cube->SetName("Cube");
   go_light->SetName("DirectionalLight");
 
-  scene->AddGameObject(go_quad);
   scene->AddGameObject(go_cube);
-  scene->AddGameObject(go_rotator);
+  scene->AddGameObject(go_quad);
   scene->AddGameObject(go_light);
 
 

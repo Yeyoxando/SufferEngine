@@ -29,6 +29,12 @@ namespace Suffer {
 
 	class GameObject : public virtual Referenced {
       friend class Scene;
+
+      enum Archetype {
+          kArchetype_Invalid,
+          kArchetype_Drawable,
+      };
+
 	public:
 
 		GameObject();
@@ -56,6 +62,8 @@ namespace Suffer {
     u32 NumberChilds();
     u32 NumberChildsRecursively(GameObject* go);
     u32 ID();
+
+    void SetArchetype(Archetype new_archetype);
 
     const char* Name();
     void SetName(const char* name);

@@ -182,6 +182,27 @@ u32 Suffer::GameObject::ID(){
 
 // --------------------------------------------------- //
 
+void Suffer::GameObject::SetArchetype(Archetype new_archetype){
+
+    switch (new_archetype){
+        case Suffer::GameObject::kArchetype_Invalid:
+            break;
+        case Suffer::GameObject::kArchetype_Drawable: {
+            if (!HasComponent(Suffer::Component::kComponentKind_Transform)) {
+                Suffer::ref_ptr<Transform> transform_component_;
+                transform_component_.alloc();
+                AddComponent(transform_component_.get());
+            }
+            break;
+        }
+        default:
+            break;
+    }
+
+}
+
+// --------------------------------------------------- //
+
 void Suffer::GameObject::Step(float delta_time){
 
     // Updates
