@@ -3,6 +3,7 @@ function Start()
   SetGeometry("Cube")
   SetDrawMode("Triangles")
   Scale(1.0, 1.0, 1.0)
+  AddComponent(6)
 
 end
 

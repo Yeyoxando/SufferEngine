@@ -527,8 +527,6 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
     }
 
-
-
     internal_index_buffers_[number_of_index_buffers_].data_.copy(sphere_indices);
     internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(&sphere_vertices[0].vertices_.x_, &sphere_vertices[(number_points * number_revolutions) - 1].vertices_.z_);
 

@@ -9,6 +9,7 @@
 #include "component_material.h"
 #include "component_debug_geometry.h"
 #include "audio.h"
+#include "component_light.h"
 
 // --------------------------------------------------- //
 
@@ -76,6 +77,9 @@ int Suffer::ScriptComponent::ScriptData::lua_Reload(lua_State * L, char* path){
         L = luaL_newstate();
     }
     else {
+
+        ScriptComponent* script = static_cast<ScriptComponent*>(GetReference(L)->GetComponent(Suffer::Component::kComponentKind_Script));
+        script->initialized_ = false;
 
         u8 status = luaL_dofile(L, path);
 
@@ -307,6 +311,17 @@ int Suffer::ScriptComponent::ScriptData::lua_AddComponent(lua_State* L){
       audio_component_.alloc();
       game_object_reference->AddComponent(audio_component_.get());
       break;
+    }
+    case Suffer::Component::kComponentKind_Light: {
+        Suffer::ref_ptr<Suffer::LightComponent> light_component_;
+        light_component_.alloc();
+        light_component_->Init(LightComponent::kLightKind_Point);
+        light_component_->SetIntensity(3.0f);
+        light_component_->SetAmbient(0.5f, 0.5f, 0.5f);
+        light_component_->SetDiffuse(1.0f, 1.0f, 1.0f);
+        light_component_->SetSpecular(1.0f, 1.0f, 1.0f);
+        game_object_reference->AddComponent(light_component_.get());
+        break;
     }
     default: {
       printf("Invalid component.\n");

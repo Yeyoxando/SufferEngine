@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::Transform> transform_component_cube;
   transform_component_cube.alloc();
-  transform_component_cube->Translate(mathmorra::Vector3(0.0f, 1.0f, 0.0f));
+  transform_component_cube->Translate(mathmorra::Vector3(7.0f, 1.0f, 0.0f));
   transform_component_cube->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
   go_cube->AddComponent(transform_component_cube.get());
 
@@ -106,6 +106,7 @@ int main(int argc, char* argv[]) {
   geometry_component3.alloc();
   geometry_component3->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
   geometry_component3->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
+  geometry_component3->LoadFromOBJ("../../../resources/obj/mario.obj", "../../../resources/obj");
   go_light->AddComponent(geometry_component3.get());
 
   Suffer::ref_ptr<Suffer::MaterialComponent> material_component3;
@@ -156,6 +157,17 @@ int main(int argc, char* argv[]) {
   go_cube->AddComponent(script.get());
   script->AttachScript("../../../src/lua/lua_test_update.lua");
 
+
+
+  Suffer::ref_ptr<Suffer::GameObject> go_sphere;
+  go_sphere.alloc();
+  go_sphere->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+
+  Suffer::ref_ptr<Suffer::ScriptComponent> script_rotator;
+  script_rotator.alloc();
+  go_sphere->AddComponent(script_rotator.get());
+  script_rotator->AttachScript("../../../src/lua/lua_rotator.lua");
+
   //Suffer::ref_ptr<Suffer::Audio3D> audio_component_;
   //audio_component_.alloc();
   //audio_component_->Load("../../../resources/audio/crossfade/wing_cap.ogg");
@@ -163,15 +175,21 @@ int main(int argc, char* argv[]) {
   //audio_component_->Play3D();
   //go_cube->AddComponent(audio_component_.get());
 
+  Suffer::Transform* transform = static_cast<Suffer::Transform*>(go_sphere->GetComponent(Suffer::Component::kComponentKind_Transform));
+  transform->Translate(-5.0f, 3.0f, 0.0f);
+
   go_quad->SetName("Quad");
   go_cube->SetName("Cube");
   go_light->SetName("DirectionalLight");
+  go_sphere->SetName("Sphere");
 
+  go_sphere->AddChild(go_cube.get());
   go_cube->AddChild(go_light.get());
 
   scene->AddGameObject(go_cube);
   scene->AddGameObject(go_quad);
   scene->AddGameObject(go_light);
+  scene->AddGameObject(go_sphere);
 
   suffer.SetScene(scene);
 

@@ -74,6 +74,8 @@ namespace Suffer {
      */
     void SetBuffers(ref_ptr<Suffer::ResourceManager::VertexBuffer> vertex_buffer, ref_ptr<Suffer::ResourceManager::IndexBuffer> index_buffer);
 
+    void LoadFromOBJ(const char* obj_path, const char* material_path);
+
   protected:
     virtual ~GeometryComponent();
 

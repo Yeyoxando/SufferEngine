@@ -187,6 +187,8 @@ void Suffer::SufferManager::Run() {
 
 		data_->delta_time_ = (data_->current_time_ - data_->previous_time_) * 0.0001f;
 		data_->previous_time_ = data_->current_time_;
+    printf("DELTA: %f\n", data_->delta_time_);
+    printf("FRAMES PER SECOND: %f\n", 1000.0f / data_->delta_time_);
 
 	}
 

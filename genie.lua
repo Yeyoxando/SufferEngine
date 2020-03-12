@@ -90,6 +90,7 @@ project "SufferCore"
 		"./deps/stb/",
 		"./deps/mathmorra/",
 		"./deps/mathmorra/include",
+		"./deps/tiny/",
 	}
 
 	--Common files
@@ -104,7 +105,7 @@ project "SufferCore"
 		"./include/memory_management/*.h",
 		"./src/*.cc",
 		"./src/commands/*.cc",
-    "./src/components/*.cc",
+		"./src/components/*.cc",
 		"./src/systems/*.cc",
 		"./src/engine/*.cc",
 		"./src/internal/*.h",
@@ -122,10 +123,13 @@ project "SufferCore"
 		"./src/deps/GLFW/src/mappings.h",
 		"./src/deps/GLFW/include/GLFW/glfw3.h",
 		"./src/deps/GLFW/include/GLFW/glfw3native.h",
+
+		--Tiny
+		"./deps/tiny/*.h",
 		
-    --Mathmorra 
-    "./deps/mathmorra/src/*.cc",
-    "./deps/mathmorra/include/*.h",
+		--Mathmorra 
+		"./deps/mathmorra/src/*.cc",
+		"./deps/mathmorra/include/*.h",
 
 		--GLM
 		"./deps/glm/*.h",

@@ -19,15 +19,15 @@ namespace Suffer {
 
     enum ComponentKind {
       // INIT WITH THE LAST ELEMENT OF THE USER ENUMS
-      kComponentKind_Invalid = -1,
-      kComponentKind_Transform,
-      kComponentKind_DebugGeometry,
-      kComponentKind_Geometry,
-      kComponentKind_Material,
-      kComponentKind_Audio,
-      kComponentKind_Script,
-      kComponentKind_Light,
-      kComponentKind_Child,
+      kComponentKind_Invalid        = -1,
+      kComponentKind_Transform      =  0,
+      kComponentKind_DebugGeometry  =  1,
+      kComponentKind_Geometry       =  2,
+      kComponentKind_Material       =  3,
+      kComponentKind_Audio          =  4,
+      kComponentKind_Script         =  5,
+      kComponentKind_Light          =  6,
+      kComponentKind_Child          =  7,
       kComponentKind_User = 1000,
     };
 
