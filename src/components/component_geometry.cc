@@ -80,6 +80,7 @@ void Suffer::GeometryComponent::LoadFromOBJ(const char* obj_path, const char* ma
 
     bool ret = LoadObj(&attrib, &shapes, &materials, &error, nullptr, obj_path, material_path);
 
+    printf("ERROR: %s\n", error.c_str());
 
     u32 number_vertices_ = 0;
     u32 number_normals_ = 0;
@@ -114,7 +115,7 @@ void Suffer::GeometryComponent::LoadFromOBJ(const char* obj_path, const char* ma
                 tinyobj::real_t vz = attrib.vertices[3 * idx.vertex_index + 2];
 
                 vertex_buffers_[index_].vertices_.x_ = vx;
-                vertex_buffers_[index_].vertices_.y_ = vy;
+                vertex_buffers_[index_].vertices_.y_ = vy; 
                 vertex_buffers_[index_].vertices_.z_ = vz;
 
 
