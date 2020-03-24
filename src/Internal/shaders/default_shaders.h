@@ -194,6 +194,15 @@ namespace Suffer {
             p_light.linear    = u_data[start + 5 + (offset)].y;
             p_light.quadratic = u_data[start + 5 + (offset)].z;
             p_light.intensity = u_data[start + 2 + offset].a;
+
+            // View-Projection Matrices
+            for(int f = 0; f < 6; f++){
+              d_light.view_projection_matrix = mat4(u_data[start + offset + 5 + (4 * f)],   
+                                                    u_data[start + offset + 6 + (4 * f)], 
+                                                    u_data[start + offset + 7 + (4 * f)], 
+                                                    u_data[start + offset + 8 + (4 * f)]);
+            }
+
             point_lights[num_points] = p_light;
             num_points++;
             offset += 30;
@@ -203,18 +212,25 @@ namespace Suffer {
             s_light.direction = vec3(u_data[start + 0 + (offset)].x, u_data[start + 0 + (offset)].y, u_data[start + 0 + (offset)].z);
             s_light.position  = vec3(u_data[start + 1 + (offset)].x, u_data[start + 1 + (offset)].y, u_data[start + 1 + (offset)].z);
             s_light.color     = vec3(u_data[start + 2 + (offset)].x, u_data[start + 2 + (offset)].y, u_data[start + 2 + (offset)].z);
+            s_light.intensity = u_data[start + 3 + offset].a;         
             s_light.ambient   = vec3(u_data[start + 3 + (offset)].x, u_data[start + 3 + (offset)].y, u_data[start + 3 + (offset)].z);
             s_light.diffuse   = vec3(u_data[start + 4 + (offset)].x, u_data[start + 4 + (offset)].y, u_data[start + 4 + (offset)].z);
             s_light.specular  = vec3(u_data[start + 5 + (offset)].x, u_data[start + 5 + (offset)].y, u_data[start + 5 + (offset)].z);
             s_light.constant  = u_data[start + 6 + (offset)].x;
             s_light.linear    = u_data[start + 6 + (offset)].y;
-            s_light.quadratic = u_data[start + 6 + (offset)].z;            
-            s_light.cutOff    = u_data[start + 7 + (offset)].x;            
+            s_light.quadratic = u_data[start + 6 + (offset)].z;
+            s_light.cutOff    = u_data[start + 7 + (offset)].x;
             s_light.outerCutOff = u_data[start + 7 + (offset)].y; 
-            s_light.intensity = u_data[start + 3 + offset].a;           
+
+            // View-Projection Matrix
+            d_light.view_projection_matrix = mat4(u_data[start + offset + 8], 
+                                                  u_data[start + offset + 9], 
+                                                  u_data[start + offset + 10], 
+                                                  u_data[start + offset + 11]);
+  
             spot_lights[num_spots] = s_light;
             num_spots++;
-            offset += 8;
+            offset += 12;
             break;
         }
       }

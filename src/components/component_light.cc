@@ -77,6 +77,20 @@ void Suffer::LightComponent::Init(LightKind kind){
           spot->SetOuterCutOff(0.0f);
           spot->SetCutOff(0.0f);
 
+
+          // Depth
+          Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_depth_texture;
+          frame_buffer_depth_texture.alloc();
+
+          suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_ = frame_buffer_depth_texture->id_;
+          suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].width_ = SHADOW_SIZE;
+          suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].height_ = SHADOW_SIZE;
+          suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].number_channels_ = 1;
+          suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].version_++;
+
+          suffer.resource_manager_.data_->internal_light_frame_buffers_[id].version_++;
+
+
           break;
       }
       default: {

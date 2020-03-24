@@ -260,8 +260,8 @@ void Suffer::DrawGeometry::SetLights(){
 
         offset += 36;
 
-      }
         break;
+      }
       case LightManager::kLightKind_Point: {
         //24
         point_light = static_cast<LightManager::PointLight*>(light);
@@ -286,9 +286,18 @@ void Suffer::DrawGeometry::SetLights(){
         data_->u_data_[start + 20 + (offset)] = point_light->Constant();
         data_->u_data_[start + 21 + (offset)] = point_light->Linear();
         data_->u_data_[start + 22 + (offset)] = point_light->Quadratic();
-        offset += 24;
-      }
+
+        u32 index = 0;
+        for (u32 j = 0; j < 6; ++j) {
+           for (u32 i = 0; i < 16; ++i) {
+               data_->u_data_[start + i + offset + 24 + index] = light->view_projection_mat_.m[i];
+           }
+           index += 16;
+        }
+
+        offset += 88;
         break;
+      }
       case LightManager::kLightKind_Spot: {
         //32
         spot_light = static_cast<LightManager::SpotLight*>(light);
@@ -318,9 +327,14 @@ void Suffer::DrawGeometry::SetLights(){
         data_->u_data_[start + 26 + (offset)] = spot_light->Quadratic();
         data_->u_data_[start + 28 + (offset)] = spot_light->CutOff();
         data_->u_data_[start + 29 + (offset)] = spot_light->OuterCutOff();
-        offset += 32;
-      }
+
+        for (u32 i = 0; i < 16; ++i) {
+            data_->u_data_[start + i + offset + 32] = light->view_projection_mat_.m[i];
+        }
+
+        offset += 48; //32
         break;
+      }
       case LightManager::kLightKind_Invalid:
 
         break;
