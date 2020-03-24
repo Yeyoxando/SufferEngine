@@ -76,8 +76,7 @@ namespace Suffer {
       DirectionalLight();
       ~DirectionalLight();
 
-      mathmorra::Matrix4 view_mat_;
-      mathmorra::Matrix4 projection_mat_;
+      mathmorra::Matrix4 view_projection_mat_;
 
     protected:
       mathmorra::Vector3 color_;

@@ -16,7 +16,7 @@ namespace Suffer {
     layout(location = 2) in vec2 a_uvs;
     
 // ......... UNIFORMS .........
-    uniform vec4 u_data[55];
+    uniform vec4 u_data[135];
 
 // ......... DEFINES ..........
     #define model0 u_data[0]
@@ -34,17 +34,6 @@ namespace Suffer {
     #define projection2 u_data[10]
     #define projection3 u_data[11]
 
-
-    #define view_light_0 u_data[15]
-    #define view_light_1 u_data[16]
-    #define view_light_2 u_data[17]
-    #define view_light_3 u_data[18]
-
-    #define projection_light_0 u_data[19]
-    #define projection_light_1 u_data[20]
-    #define projection_light_2 u_data[21]
-    #define projection_light_3 u_data[22]
-
     #define u_color u_data[12]
 
     #define u_time u_data[13].x
@@ -53,7 +42,6 @@ namespace Suffer {
     out vec4 color;
     out vec3 normal;
     out vec3 frag_pos;
-    out vec4 frag_pos_light;
     out vec2 uvs;
     out float time;
 
@@ -64,15 +52,11 @@ namespace Suffer {
       mat4 u_v_matrix = mat4(view0, view1, view2, view3);
       mat4 u_p_matrix = mat4(projection0, projection1, projection2, projection3);    
 
-      mat4 light_v_matrix = mat4(view_light_0, view_light_1, view_light_2, view_light_3);
-      mat4 light_p_matrix = mat4(projection_light_0, projection_light_1, projection_light_2, projection_light_3);      
-
       mat4 accum_matrix = u_p_matrix * u_v_matrix * u_m_matrix;
 
       color = u_color;
       normal = normalize((accum_matrix * vec4(a_normal, 0.0))).xyz;
       frag_pos = (u_m_matrix * vec4(a_position, 1.0f)).xyz;
-      frag_pos_light = (light_p_matrix * light_v_matrix) * vec4(frag_pos, 1.0f);
       uvs = a_uvs;
       time = u_time;
 
@@ -95,7 +79,8 @@ namespace Suffer {
       vec3 ambient;
       vec3 color;
 
-      float intensity;      
+      mat4 view_projection_matrix;
+      float intensity;
 
     };
 
@@ -110,6 +95,8 @@ namespace Suffer {
       float constant;
       float linear;
       float quadratic;
+
+      mat4 view_projection_matrix[6];
 
       float intensity;      
 
@@ -130,12 +117,14 @@ namespace Suffer {
       float linear;
       float quadratic;
 
+      mat4 view_projection_matrix;
+
       float intensity;      
 
     };
 
 // ......... UNIFORMS .........
-    uniform vec4 u_data[55];
+    uniform vec4 u_data[135];
     uniform sampler2D u_tex0;
     uniform sampler2D u_tex1;
     uniform sampler2D u_light_tex0;    
@@ -145,7 +134,7 @@ namespace Suffer {
     #define num_lights u_data[14].x
 
     #define max_lights 4
-    #define start 23
+    #define start 15
 
     #define u_albedo u_tex0
     #define u_specular u_tex1
@@ -157,7 +146,6 @@ namespace Suffer {
     in vec3 frag_pos;
     in vec2 uvs;
     in float time;
-    in vec4 frag_pos_light;
 
     out vec4 fragColor;
 
@@ -177,15 +165,23 @@ namespace Suffer {
         switch(int(u_data[16 + (offset)].a)){
           case 0:
             DirectionalLight d_light;
+
             d_light.direction = vec3(u_data[start + 0 + (offset)].x, u_data[start + 0 + (offset)].y, u_data[start + 0 + (offset)].z);
             d_light.color     = vec3(u_data[start + 1 + (offset)].x, u_data[start + 1 + (offset)].y, u_data[start + 1 + (offset)].z);
+            d_light.intensity = u_data[start + 2 + offset].a;
             d_light.ambient   = vec3(u_data[start + 2 + (offset)].x, u_data[start + 2 + (offset)].y, u_data[start + 2 + (offset)].z);
             d_light.diffuse   = vec3(u_data[start + 3 + (offset)].x, u_data[start + 3 + (offset)].y, u_data[start + 3 + (offset)].z);
             d_light.specular  = vec3(u_data[start + 4 + (offset)].x, u_data[start + 4 + (offset)].y, u_data[start + 4 + (offset)].z);
-            d_light.intensity = u_data[start + 2 + offset].a;
+
+            // View-Projection Matrix
+            d_light.view_projection_matrix = mat4(u_data[start + offset + 5], 
+                                                  u_data[start + offset + 6], 
+                                                  u_data[start + offset + 7], 
+                                                  u_data[start + offset + 8]);
+
             directional_lights[num_directionals] = d_light;
             num_directionals++;
-            offset += 5;
+            offset += 9;
             break;
           case 1:
             PointLight p_light;
@@ -200,7 +196,7 @@ namespace Suffer {
             p_light.intensity = u_data[start + 2 + offset].a;
             point_lights[num_points] = p_light;
             num_points++;
-            offset += 6;
+            offset += 30;
             break;
           case 2:
             SpotLight s_light;
@@ -258,7 +254,7 @@ namespace Suffer {
       vec3 diffuse  = light.diffuse  * light.intensity * diff * texture(u_albedo, uvs).xyz;
       vec3 specular = light.specular * light.intensity * spec * texture(u_specular, uvs).xyz;
       
-      float shadow = CalculateShadow(frag_pos_light, light_dir);
+      float shadow = CalculateShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir);
 
       return (ambient + (1.0 - shadow) * (diffuse + specular));
 

@@ -19,7 +19,7 @@
 
 #define MAX_USED_TEXTURES 5
 //14 to uniforms, rest for lights
-#define MAX_USED_VEC4DATA 55 
+#define MAX_USED_VEC4DATA 135
 
 // ------------------------------------------------------------------------- //
 
@@ -221,14 +221,7 @@ void Suffer::DrawGeometry::SetProjectionMatrix(mathmorra::Matrix4 projection) {
 
 void Suffer::DrawGeometry::SetLights(){
 
-  LightManager::DirectionalLight* light_for_shadow = suffer.light_manager_.lights_[0].get();
-  
-  for (u32 i = 0; i < 16; ++i) {
-    data_->u_data_[60 + i] = light_for_shadow->view_mat_.m[i];
-    data_->u_data_[76 + i] = light_for_shadow->projection_mat_.m[i];
-  }
-
-  u32 start = 92;
+  u32 start = 60;
   // Lighting
   u32 number_lights = 0;
   u32 offset = 0;
@@ -260,7 +253,13 @@ void Suffer::DrawGeometry::SetLights(){
         data_->u_data_[start + 16 + (offset)] = light->Specular()[0];
         data_->u_data_[start + 17 + (offset)] = light->Specular()[1];
         data_->u_data_[start + 18 + (offset)] = light->Specular()[2];
-        offset += 20;
+
+        for (u32 i = 0; i < 16; ++i) {
+            data_->u_data_[start + i + offset + 20] = light->view_projection_mat_.m[i];
+        }
+
+        offset += 36;
+
       }
         break;
       case LightManager::kLightKind_Point: {

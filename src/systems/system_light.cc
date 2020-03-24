@@ -81,11 +81,9 @@ void Suffer::SystemLight::Execute(GameObject* go) {
                 mathmorra::Vector3(0.0f, 0.0f, 0.0f),
                 mathmorra::Vector3(0.0f, 1.0f, 0.0f));
 
-            light_component->reference_->view_mat_ = view_matrix_;
-
             mathmorra::Matrix4 projection_matrix_ = projection_matrix_.OrthoMatrix(-40.0f, 40.0f, 0.01f, 60.0f).Transpose();
 
-            light_component->reference_->projection_mat_ = projection_matrix_;
+            light_component->reference_->view_projection_mat_ = view_matrix_ * projection_matrix_;
 
             Scene* scene = suffer.GetCurrentScene();
             u32 current_gameobjects = scene->current_gameobjects_.size();
@@ -131,8 +129,7 @@ void Suffer::SystemLight::Execute(GameObject* go) {
             }
 
             // Matrices stuff
-            point_light->projection_mat_ = point_light->projection_mat_ .PerspectiveMatrix(ThiefUtils::Math::Radians(90.0f), (float)suffer.GetWindowSize().x_ / (float)suffer.GetWindowSize().y_, 1.0f, far_plane);
-
+            mathmorra::Matrix4 projection_matrix = projection_matrix.PerspectiveMatrix(ThiefUtils::Math::Radians(90.0f), (float)suffer.GetWindowSize().x_ / (float)suffer.GetWindowSize().y_, 1.0f, far_plane);
             mathmorra::Vector3 light_position = point_light->Position();
 
             point_light->view_matrices_[0] = mathmorra::Matrix4::LookAt(light_position, light_position + mathmorra::Vector3( 1.0f,  0.0f,  0.0f), mathmorra::Vector3(0.0f, -1.0f,  0.0f));
@@ -142,12 +139,12 @@ void Suffer::SystemLight::Execute(GameObject* go) {
             point_light->view_matrices_[4] = mathmorra::Matrix4::LookAt(light_position, light_position + mathmorra::Vector3( 0.0f,  0.0f,  1.0f), mathmorra::Vector3(0.0f, -1.0f,  0.0f));
             point_light->view_matrices_[5] = mathmorra::Matrix4::LookAt(light_position, light_position + mathmorra::Vector3( 0.0f,  0.0f, -1.0f), mathmorra::Vector3(0.0f, -1.0f,  0.0f));
 
-            point_light->view_matrices_[0] = point_light->projection_mat_ * point_light->view_matrices_[0];
-            point_light->view_matrices_[1] = point_light->projection_mat_ * point_light->view_matrices_[1];
-            point_light->view_matrices_[2] = point_light->projection_mat_ * point_light->view_matrices_[2];
-            point_light->view_matrices_[3] = point_light->projection_mat_ * point_light->view_matrices_[3];
-            point_light->view_matrices_[4] = point_light->projection_mat_ * point_light->view_matrices_[4];
-            point_light->view_matrices_[5] = point_light->projection_mat_ * point_light->view_matrices_[5];
+            point_light->view_matrices_[0] = projection_matrix * point_light->view_matrices_[0];
+            point_light->view_matrices_[1] = projection_matrix * point_light->view_matrices_[1];
+            point_light->view_matrices_[2] = projection_matrix * point_light->view_matrices_[2];
+            point_light->view_matrices_[3] = projection_matrix * point_light->view_matrices_[3];
+            point_light->view_matrices_[4] = projection_matrix * point_light->view_matrices_[4];
+            point_light->view_matrices_[5] = projection_matrix * point_light->view_matrices_[5];
 
 
             Scene* scene = suffer.GetCurrentScene();
