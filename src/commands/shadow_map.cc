@@ -28,7 +28,7 @@ Suffer::ShadowMap::ShadowMap(){
 
 void Suffer::ShadowMap::SetData(LightComponent* light){
 
-  data_->light_framebuffer_id_ = light->framebuffer_id_;
+  data_->light_framebuffer_id_ = light->reference_->framebuffer_id_;
 
 }
 

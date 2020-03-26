@@ -98,8 +98,9 @@ void Suffer::LightComponent::Init(LightKind kind){
           break;
       }
     }
+    reference_->framebuffer_id_ = id;
 
-    framebuffer_id_ = id;
+    suffer.resource_manager_.data_->number_of_light_frame_buffers_++;
     initialized_ = true;
 
 }

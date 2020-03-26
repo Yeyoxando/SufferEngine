@@ -68,7 +68,7 @@ void Suffer::SystemTransform::Execute(GameObject* go){
     quaternion = quaternion.Multiply(quaternion, qx);
 
     quaternion.Normalize();
-    transform_component->forward_  = { 0.0f, 0.0f, 1.0f };
+    transform_component->forward_ = { 0.0f, 0.0f, 1.0f };
     transform_component->forward_ = quaternion.RotateVectorByQuaternion(transform_component->forward_, quaternion);
     transform_component->forward_.Normalize();
 

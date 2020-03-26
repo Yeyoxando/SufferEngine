@@ -86,7 +86,6 @@ namespace Suffer {
         void SetLightKind(LightKind new_kind);
 
     private:
-        s32 framebuffer_id_;
         bool initialized_;
         LightManager::DirectionalLight* reference_;
 

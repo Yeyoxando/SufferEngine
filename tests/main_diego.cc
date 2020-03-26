@@ -126,13 +126,34 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::LightComponent> light_component;
   light_component.alloc();
 
-  light_component->Init(Suffer::LightComponent::kLightKind_Spot);
+  light_component->Init(Suffer::LightComponent::kLightKind_Directional);
   light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-  light_component->SetIntensity(3.0f);
+  light_component->SetIntensity(1.0f);
   light_component->SetAmbient(0.5f, 0.5f, 0.5f);
   light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
   light_component->SetSpecular(1.0f, 1.0f, 1.0f);
   go_light->AddComponent(light_component.get());
+
+  // -------------------------------------------------------------------------------------//
+
+  Suffer::ref_ptr<Suffer::GameObject> go_light2;
+  go_light2.alloc();
+
+  go_light2->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+
+  Suffer::Transform* transform = static_cast<Suffer::Transform*>(go_light2->GetComponent(Suffer::Component::kComponentKind_Transform));
+  transform->Translate(mathmorra::Vector3(-5.0f, 5.0f, -5.0f));
+
+  Suffer::ref_ptr<Suffer::LightComponent> light_component2;
+  light_component2.alloc();
+
+  light_component2->Init(Suffer::LightComponent::kLightKind_Directional);
+  light_component2->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+  light_component2->SetIntensity(1.0f);
+  light_component2->SetAmbient(0.5f, 0.5f, 0.5f);
+  light_component2->SetDiffuse(1.0f, 1.0f, 1.0f);
+  light_component2->SetSpecular(1.0f, 1.0f, 1.0f);
+  go_light2->AddComponent(light_component2.get());
 
   // -------------------------------------------------------------------------------------//
 
@@ -168,10 +189,12 @@ int main(int argc, char* argv[]) {
   go_light->SetName("DirectionalLight");
 
   go_cube->AddChild(go_light.get());
+  go_cube->AddChild(go_light2.get());
 
   scene->AddGameObject(go_cube);
   scene->AddGameObject(go_quad);
   scene->AddGameObject(go_light);
+  scene->AddGameObject(go_light2);
 
   suffer.SetScene(scene);
 

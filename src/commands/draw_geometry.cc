@@ -257,6 +257,9 @@ void Suffer::DrawGeometry::SetLights(){
         for (u32 i = 0; i < 16; ++i) {
             data_->u_data_[start + i + offset + 20] = light->view_projection_mat_.m[i];
         }
+        s32 id = light->framebuffer_id_;
+        data_->light_texture_ids_[data_->current_light_used_textures_] = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
+        data_->current_light_used_textures_++;
 
         offset += 36;
 
@@ -346,8 +349,6 @@ void Suffer::DrawGeometry::SetLights(){
 
   }
 
-  data_->light_texture_ids_[0] = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[0].depth_texture_id_].current_texture_id_;
-  data_->current_light_used_textures_ = 1;
 
   data_->u_data_[56] = number_lights;
 
@@ -652,11 +653,11 @@ void Suffer::DrawGeometry::Execute() const {
     }
 
     // -- LightTextures --
-    base_tex_name = "u_light_tex";
+    base_tex_name = "u_light_textures";
 
     for (int i = 0; i < data_->current_light_used_textures_; ++i) {
 
-      std::string tex_name = base_tex_name + std::to_string(i);
+      std::string tex_name = base_tex_name + "[" + std::to_string(i) + "]";
       const char* str = tex_name.c_str();
       u_pos = glGetUniformLocation(program_id, str);
       if (u_pos < 0) {

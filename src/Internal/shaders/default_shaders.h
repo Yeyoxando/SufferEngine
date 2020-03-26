@@ -80,6 +80,8 @@ namespace Suffer {
       vec3 color;
 
       mat4 view_projection_matrix;
+      int light_tex_pos;
+
       float intensity;
 
     };
@@ -97,6 +99,7 @@ namespace Suffer {
       float quadratic;
 
       mat4 view_projection_matrix[6];
+      int light_tex_pos;
 
       float intensity;      
 
@@ -118,6 +121,7 @@ namespace Suffer {
       float quadratic;
 
       mat4 view_projection_matrix;
+      int light_tex_pos;
 
       float intensity;      
 
@@ -126,19 +130,19 @@ namespace Suffer {
 // ......... UNIFORMS .........
     uniform vec4 u_data[135];
     uniform sampler2D u_tex0;
-    uniform sampler2D u_tex1;
-    uniform sampler2D u_light_tex0;    
+    uniform sampler2D u_tex1;   
+
+    #define max_lights 4
+    uniform sampler2D u_light_textures[max_lights];
 
 // ......... DEFINES ..........
     #define camera_pos vec3(u_data[13].x, u_data[13].y, u_data[13].z)
     #define num_lights u_data[14].x
 
-    #define max_lights 4
     #define start 15
 
     #define u_albedo u_tex0
     #define u_specular u_tex1
-    #define u_shadow_map u_light_tex0
 
 // ....... IN / OUT ........
     in vec4 color;
@@ -178,6 +182,8 @@ namespace Suffer {
                                                   u_data[start + offset + 6], 
                                                   u_data[start + offset + 7], 
                                                   u_data[start + offset + 8]);
+            
+            d_light.light_tex_pos = i;
 
             directional_lights[num_directionals] = d_light;
             num_directionals++;
@@ -238,13 +244,13 @@ namespace Suffer {
 
     // --------------------------------------------------------------------- //
 
-    float CalculateShadow(vec4 frag_pos_light_space, vec3 light_dir){
+    float CalculateShadow(vec4 frag_pos_light_space, vec3 light_dir, int shadow_map_pos){
       // Clip projection coords
       vec3 proj_coords = frag_pos_light_space.xyz / frag_pos_light_space.w;
       // Convert from [-1, 1] to [0, 1]
       proj_coords = proj_coords * 0.5f + 0.5;
       // Get shadow map fragment
-      float closest_depth = texture(u_shadow_map, proj_coords.xy).r;
+      float closest_depth = texture(u_light_textures[shadow_map_pos], proj_coords.xy).r;
       // Current depth fragment from light perspective
       float current_depth = proj_coords.z;
       // Compare current and closest to check if its in shadow or not
@@ -270,7 +276,7 @@ namespace Suffer {
       vec3 diffuse  = light.diffuse  * light.intensity * diff * texture(u_albedo, uvs).xyz;
       vec3 specular = light.specular * light.intensity * spec * texture(u_specular, uvs).xyz;
       
-      float shadow = CalculateShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir);
+      float shadow = CalculateShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light.light_tex_pos);
 
       return (ambient + (1.0 - shadow) * (diffuse + specular));
 

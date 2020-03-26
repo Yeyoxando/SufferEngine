@@ -31,6 +31,9 @@ namespace Suffer {
 
     class DirectionalLight : public Referenced {
     friend class LightComponent;
+    friend class DrawGeometry;
+    friend class ShadowMap;
+    friend class ShadowCubemap;
 
     public:
       
@@ -88,6 +91,8 @@ namespace Suffer {
       float intensity_;
       bool active_;
       u16 light_kind_;
+
+      s32 framebuffer_id_;
 
     };
 
