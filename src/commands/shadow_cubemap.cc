@@ -97,7 +97,8 @@ void Suffer::ShadowCubemap::Execute() const{
     // Set both to none, we only want to use the depth texture
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
-    //glBindFramebuffer(GL_FRAMEBUFFER, 0);  
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 

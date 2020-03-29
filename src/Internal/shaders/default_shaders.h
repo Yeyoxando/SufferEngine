@@ -317,8 +317,8 @@ namespace Suffer {
       float attenuation = 1.0 / (light.constant + light.linear * distance + 
   			       light.quadratic * (distance * distance));    
 
-      vec3 ambient  = light.ambient ;
-      vec3 diffuse  = light.diffuse ;
+      vec3 ambient  = light.ambient;
+      vec3 diffuse  = light.diffuse;
       vec3 specular = light.specular;
       ambient  *= attenuation * light.intensity * texture(u_albedo, uvs).xyz;
       diffuse  *= attenuation * light.intensity * diff * texture(u_albedo, uvs).xyz;
