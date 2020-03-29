@@ -36,6 +36,7 @@ struct Suffer::DrawGeometry::Data {
   // Textures has to be separated
   s32 texture_ids_[MAX_USED_TEXTURES];
   u32 current_used_textures_;
+  u32 light_type[MAX_LIGHTS];
   s32 light_texture_ids_[MAX_LIGHTS];
   u32 current_light_used_textures_;
 
@@ -257,8 +258,8 @@ void Suffer::DrawGeometry::SetLights(){
         for (u32 i = 0; i < 16; ++i) {
             data_->u_data_[start + i + offset + 20] = light->view_projection_mat_.m[i];
         }
-        s32 id = light->framebuffer_id_;
         data_->light_texture_ids_[data_->current_light_used_textures_] = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
+        data_->light_type[data_->current_light_used_textures_] = 0;
         data_->current_light_used_textures_++;
 
         offset += 36;
@@ -298,6 +299,10 @@ void Suffer::DrawGeometry::SetLights(){
            index += 16;
         }
 
+        data_->light_texture_ids_[data_->current_light_used_textures_] = suffer.resource_manager_.data_->internal_cubemaps_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
+        data_->light_type[data_->current_light_used_textures_] = 1;
+        data_->current_light_used_textures_++;
+
         offset += 88;
         break;
       }
@@ -334,6 +339,10 @@ void Suffer::DrawGeometry::SetLights(){
         for (u32 i = 0; i < 16; ++i) {
             data_->u_data_[start + i + offset + 32] = light->view_projection_mat_.m[i];
         }
+
+        data_->light_texture_ids_[data_->current_light_used_textures_] = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
+        data_->light_type[data_->current_light_used_textures_] = 2;
+        data_->current_light_used_textures_++;
 
         offset += 48; //32
         break;
@@ -653,27 +662,58 @@ void Suffer::DrawGeometry::Execute() const {
     }
 
     // -- LightTextures --
-    base_tex_name = "u_light_textures";
+    
 
     for (int i = 0; i < data_->current_light_used_textures_; ++i) {
 
-      std::string tex_name = base_tex_name + "[" + std::to_string(i) + "]";
-      const char* str = tex_name.c_str();
-      u_pos = glGetUniformLocation(program_id, str);
-      if (u_pos < 0) {
-        printf("\nERROR: light texture %d uniform not exists.", i);
-        //return;
-      }
+        switch (data_->light_type[i]){
+          case 0: {
+            base_tex_name = "u_light_textures";
+            std::string tex_name = base_tex_name + "[" + std::to_string(i) + "]";
+            const char* str = tex_name.c_str();
+            u_pos = glGetUniformLocation(program_id, str);
+            if (u_pos < 0) {
+                printf("\nERROR: light texture %d uniform not exists.", i);
+                //return;
+            }
 
-      glActiveTexture(GL_TEXTURE0 + i + used_textures);
-      glBindTexture(GL_TEXTURE_2D, data_->light_texture_ids_[i]);
+            glActiveTexture(GL_TEXTURE0 + used_textures);
+            glBindTexture(GL_TEXTURE_2D, data_->light_texture_ids_[i]);
 
-      glUniform1i(u_pos, i + used_textures);
-      u_pos = -1;
+            glUniform1i(u_pos, used_textures);
+            u_pos = -1;
+            
+              break;
+          }
+          case 1: {
+              base_tex_name = "u_cubelight_textures";
+              std::string tex_name = base_tex_name + "[" + std::to_string(i) + "]";
+              const char* str = tex_name.c_str();
+              u_pos = glGetUniformLocation(program_id, str);
+              if (u_pos < 0) {
+                  printf("\nERROR: cubelight texture %d uniform not exists.", i);
+                  //return;
+              }
+
+              glActiveTexture(GL_TEXTURE0 + used_textures);
+              glBindTexture(GL_TEXTURE_CUBE_MAP, data_->light_texture_ids_[i]);
+
+              glUniform1i(u_pos, used_textures);
+              u_pos = -1;
+              break;
+          }
+          default:
+              break;
+        }
+
+        used_textures++;
 
     }
 
   }
+
+
+
 
   // ------------------------------- Uniforms ------------------------------ //
 

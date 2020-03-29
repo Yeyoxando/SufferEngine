@@ -134,6 +134,8 @@ namespace Suffer {
     
     #define max_lights 4
     uniform sampler2D u_light_textures[max_lights];
+    uniform samplerCube u_cubelight_textures[max_lights];
+
 
 // ......... DEFINES ..........
     #define camera_pos vec3(u_data[13].x, u_data[13].y, u_data[13].z)
@@ -200,12 +202,13 @@ namespace Suffer {
 
             // View-Projection Matrices
             for(int f = 0; f < 6; f++){
-              d_light.view_projection_matrix = mat4(u_data[start + offset + 5 + (4 * f)],   
-                                                    u_data[start + offset + 6 + (4 * f)], 
-                                                    u_data[start + offset + 7 + (4 * f)], 
-                                                    u_data[start + offset + 8 + (4 * f)]);
+              p_light.view_projection_matrix[f] = mat4(u_data[start + offset + 6 + (4 * f)],   
+                                                       u_data[start + offset + 7 + (4 * f)], 
+                                                       u_data[start + offset + 8 + (4 * f)], 
+                                                       u_data[start + offset + 9 + (4 * f)]);
             }
 
+            p_light.light_tex_pos = i;
             point_lights[num_points] = p_light;
             num_points++;
             offset += 30;
@@ -261,6 +264,24 @@ namespace Suffer {
 
     // --------------------------------------------------------------------- //
 
+    float CalculatePointShadows(vec3 light_position, vec3 light_dir, int shadow_map_pos){
+        // get vector between fragment position and light position
+        vec3 fragToLight = frag_pos - light_position;
+        // use the light to fragment vector to sample from the depth map    
+        float closestDepth = texture(u_cubelight_textures[shadow_map_pos], fragToLight).r;
+        // it is currently in linear range between [0,1]. Re-transform back to original value
+        closestDepth *= 25.0f; // 25.0f == FAR PLANE -> LOOK system_light
+        // now get current linear depth as the length between the fragment and light position
+        float currentDepth = length(fragToLight);
+        // now test for shadows
+        float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
+        float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
+
+        return shadow;
+    } 
+
+    // --------------------------------------------------------------------- //
+
     vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_dir){
   
       vec3 light_dir = normalize(-light.direction);
@@ -302,7 +323,9 @@ namespace Suffer {
       diffuse  *= attenuation * light.intensity * diff;
       specular *= attenuation * light.intensity * spec;
 
-      return (ambient + diffuse + specular) * color.xyz;
+      float shadow = CalculatePointShadows(light.position, light_dir, light.light_tex_pos);
+
+      return (ambient + (1.0f - shadow) * (diffuse + specular)) * color.xyz;
 
     }
 

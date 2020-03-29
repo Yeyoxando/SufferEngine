@@ -126,7 +126,7 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::LightComponent> light_component;
   light_component.alloc();
 
-  light_component->Init(Suffer::LightComponent::kLightKind_Directional);
+  light_component->Init(Suffer::LightComponent::kLightKind_Point);
   light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
   light_component->SetIntensity(1.0f);
   light_component->SetAmbient(0.5f, 0.5f, 0.5f);
@@ -153,7 +153,7 @@ int main(int argc, char* argv[]) {
   light_component2->SetAmbient(0.5f, 0.5f, 0.5f);
   light_component2->SetDiffuse(1.0f, 1.0f, 1.0f);
   light_component2->SetSpecular(1.0f, 1.0f, 1.0f);
-  go_light2->AddComponent(light_component2.get());
+  //go_light2->AddComponent(light_component2.get());
 
   // -------------------------------------------------------------------------------------//
 
@@ -194,7 +194,7 @@ int main(int argc, char* argv[]) {
   scene->AddGameObject(go_cube);
   scene->AddGameObject(go_quad);
   scene->AddGameObject(go_light);
-  scene->AddGameObject(go_light2);
+  //scene->AddGameObject(go_light2);
 
   suffer.SetScene(scene);
 
