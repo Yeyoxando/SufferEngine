@@ -140,12 +140,12 @@ void Suffer::SystemLight::Execute(GameObject* go) {
             point_light->view_matrices_[4] = mathmorra::Matrix4::LookAt(light_position, light_position + mathmorra::Vector3( 0.0f,  0.0f,  1.0f), mathmorra::Vector3(0.0f, -1.0f,  0.0f));
             point_light->view_matrices_[5] = mathmorra::Matrix4::LookAt(light_position, light_position + mathmorra::Vector3( 0.0f,  0.0f, -1.0f), mathmorra::Vector3(0.0f, -1.0f,  0.0f));
 
-            point_light->view_matrices_[0] = projection_matrix * point_light->view_matrices_[0];
-            point_light->view_matrices_[1] = projection_matrix * point_light->view_matrices_[1];
-            point_light->view_matrices_[2] = projection_matrix * point_light->view_matrices_[2];
-            point_light->view_matrices_[3] = projection_matrix * point_light->view_matrices_[3];
-            point_light->view_matrices_[4] = projection_matrix * point_light->view_matrices_[4];
-            point_light->view_matrices_[5] = projection_matrix * point_light->view_matrices_[5];
+            point_light->view_matrices_[0] = point_light->view_matrices_[0] * projection_matrix;
+            point_light->view_matrices_[1] = point_light->view_matrices_[1] * projection_matrix;
+            point_light->view_matrices_[2] = point_light->view_matrices_[2] * projection_matrix;
+            point_light->view_matrices_[3] = point_light->view_matrices_[3] * projection_matrix;
+            point_light->view_matrices_[4] = point_light->view_matrices_[4] * projection_matrix;
+            point_light->view_matrices_[5] = point_light->view_matrices_[5] * projection_matrix;
 
 
             Scene* scene = suffer.GetCurrentScene();

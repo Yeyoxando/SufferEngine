@@ -323,9 +323,9 @@ namespace Suffer {
       diffuse  *= attenuation * light.intensity * diff;
       specular *= attenuation * light.intensity * spec;
 
-      float shadow = CalculatePointShadows(light.position, light_dir, light.light_tex_pos);
+      //float shadow = CalculatePointShadows(light.position, light_dir, light.light_tex_pos);
 
-      return (ambient + (1.0f - shadow) * (diffuse + specular)) * color.xyz;
+      return (ambient + (1.0f - 0.0) * (diffuse + specular)) * color.xyz;
 
     }
 

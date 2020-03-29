@@ -79,11 +79,11 @@ void Suffer::DrawPointDepth::SetData(GameObject* go, mathmorra::Vector3 light_po
       data_->index_buffer_id_ = geometry_->index_buffer_id_;
     }
 
-    data_->u_data_[111] = light_position.x_;
-    data_->u_data_[112] = light_position.y_;
-    data_->u_data_[113] = light_position.z_;
+    data_->u_data_[112] = light_position.x_;
+    data_->u_data_[113] = light_position.y_;
+    data_->u_data_[114] = light_position.z_;
 
-    data_->u_data_[114] = far_plane;
+    data_->u_data_[115] = far_plane;
 
   }
 
@@ -210,7 +210,7 @@ void Suffer::DrawPointDepth::Execute() const {
       // Upload geometry shader data
       glShaderSource(suffer.resource_manager_.data_->internal_materials_[mat_type].geometry_shader_id_,
           1, &suffer.resource_manager_.data_->internal_materials_[mat_type].geometry_shader_,
-          &vertex_size);
+          &geometry_size);
 
       // Upload fragment shader data
       glShaderSource(suffer.resource_manager_.data_->internal_materials_[mat_type].fragment_shader_id_,
@@ -234,6 +234,7 @@ void Suffer::DrawPointDepth::Execute() const {
 
 
       // Compile geometry shader
+      s16 vrtsh = suffer.resource_manager_.data_->internal_materials_[mat_type].geometry_shader_id_;
       glCompileShader(suffer.resource_manager_.data_->internal_materials_[mat_type].geometry_shader_id_);
       status = 0;
       glGetShaderiv(suffer.resource_manager_.data_->internal_materials_[mat_type].geometry_shader_id_, GL_COMPILE_STATUS, &status);
