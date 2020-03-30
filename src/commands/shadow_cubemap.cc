@@ -57,16 +57,18 @@ void Suffer::ShadowCubemap::Execute() const{
 
   if (suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].gpu_version_ < suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].version_) {
 
-    glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
+    //glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
 
     // --------------------------- IsTextureCreated -------------------------- //
+    
+    auto d = suffer.resource_manager_.data_->internal_cubemaps_[0].current_texture_id_;
+    s32 id_texture = suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].depth_texture_id_;
 
     {
       // DEPTH TEXTURE
-      s32 id_texture = suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].depth_texture_id_;
 
       if (suffer.resource_manager_.data_->internal_cubemaps_[id_texture].gpu_version_ == 0) {
-        glGenTextures(1, &suffer.resource_manager_.data_->internal_cubemaps_[id_texture].current_texture_id_);
+          glGenTextures(1, &suffer.resource_manager_.data_->internal_cubemaps_[id_texture].current_texture_id_);
       }
 
       if (suffer.resource_manager_.data_->internal_cubemaps_[id_texture].gpu_version_ < suffer.resource_manager_.data_->internal_cubemaps_[id_texture].version_) {
@@ -91,14 +93,12 @@ void Suffer::ShadowCubemap::Execute() const{
     // --------------------------- IsTextureCreated -------------------------- //
 
     glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
-
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].current_gl_framebuffer_, 0);
+    
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, suffer.resource_manager_.data_->internal_cubemaps_[id_texture].current_texture_id_, 0);
 
     // Set both to none, we only want to use the depth texture
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 

@@ -247,16 +247,13 @@ namespace Suffer {
     // --------------------------------------------------------------------- //
 
     float CalculatePointShadows(vec3 light_position, vec3 light_dir, int shadow_map_pos){
-        // get vector between fragment position and light position
+
         vec3 fragToLight = frag_pos - light_position;
-        // use the light to fragment vector to sample from the depth map    
         float closestDepth = texture(u_cubelight_textures[shadow_map_pos], fragToLight).r;
-        // it is currently in linear range between [0,1]. Re-transform back to original value
         closestDepth *= 25.0f; // 25.0f == FAR PLANE -> LOOK system_light
-        // now get current linear depth as the length between the fragment and light position
         float currentDepth = length(fragToLight);
-        // now test for shadows
-        float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
+        float bias = 0.05;
+        //float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
         float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
 
         return shadow;
@@ -298,7 +295,7 @@ namespace Suffer {
       
       float shadow = CalculateShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light.light_tex_pos);
 
-      return (ambient + (1.0 - shadow) * (diffuse + specular));
+      return (ambient + (1.0 - 0.0) * (diffuse + specular));
 
     }
 
@@ -308,10 +305,13 @@ namespace Suffer {
 
       vec3 light_dir = normalize(light.position - frag_pos);
 
-      float diff = max(dot(normal, light_dir), 0.0f);
+      float diff = max(dot(light_dir, normal), 0.0f);
+
+      view_dir = normalize(camera_pos - frag_pos);
+      vec3 halfwayDir = normalize(light_dir + view_dir); 
 
       vec3 reflect_dir = reflect(-light_dir, normal);
-      float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), 32);
+      float spec = pow(max(dot(normal, halfwayDir), 0.0f), 64.0);
 
       float distance    = length(light.position - frag_pos);
       float attenuation = 1.0 / (light.constant + light.linear * distance + 
@@ -326,7 +326,7 @@ namespace Suffer {
 
       float shadow = CalculatePointShadows(light.position, light_dir, light.light_tex_pos);
 
-      return (ambient + (1.0f - shadow) * (diffuse + specular));
+      return (ambient + (1.0f - 0.0) * (diffuse + specular));
 
     }
 

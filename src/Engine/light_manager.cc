@@ -353,6 +353,9 @@ Suffer::LightManager::PointLight::PointLight(){
 
   light_kind_ = kLightKind_Point;
 
+  auto d = suffer.light_manager_;
+  light_kind_ = kLightKind_Point;
+
 }
 
 // ----------------------------------------------------------------------- //

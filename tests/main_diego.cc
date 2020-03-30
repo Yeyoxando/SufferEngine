@@ -128,7 +128,7 @@ int main(int argc, char* argv[]) {
 
   light_component->Init(Suffer::LightComponent::kLightKind_Point);
   light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-  light_component->SetIntensity(1.0f);
+  light_component->SetIntensity(4.0f);
   light_component->SetAmbient(0.5f, 0.5f, 0.5f);
   light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
   light_component->SetSpecular(1.0f, 1.0f, 1.0f);
@@ -144,15 +144,15 @@ int main(int argc, char* argv[]) {
   Suffer::Transform* transform = static_cast<Suffer::Transform*>(go_light2->GetComponent(Suffer::Component::kComponentKind_Transform));
   transform->Translate(mathmorra::Vector3(-5.0f, 5.0f, -5.0f));
 
-  Suffer::ref_ptr<Suffer::LightComponent> light_component2;
-  light_component2.alloc();
-
-  light_component2->Init(Suffer::LightComponent::kLightKind_Directional);
-  light_component2->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-  light_component2->SetIntensity(1.0f);
-  light_component2->SetAmbient(0.5f, 0.5f, 0.5f);
-  light_component2->SetDiffuse(1.0f, 1.0f, 1.0f);
-  light_component2->SetSpecular(1.0f, 1.0f, 1.0f);
+  //Suffer::ref_ptr<Suffer::LightComponent> light_component2;
+  //light_component2.alloc();
+  //
+  //light_component2->Init(Suffer::LightComponent::kLightKind_Directional);
+  //light_component2->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+  //light_component2->SetIntensity(1.0f);
+  //light_component2->SetAmbient(0.5f, 0.5f, 0.5f);
+  //light_component2->SetDiffuse(1.0f, 1.0f, 1.0f);
+  //light_component2->SetSpecular(1.0f, 1.0f, 1.0f);
   //go_light2->AddComponent(light_component2.get());
 
   // -------------------------------------------------------------------------------------//
@@ -194,7 +194,7 @@ int main(int argc, char* argv[]) {
   scene->AddGameObject(go_cube);
   scene->AddGameObject(go_quad);
   scene->AddGameObject(go_light);
-  //scene->AddGameObject(go_light2);
+  scene->AddGameObject(go_light2);
 
   suffer.SetScene(scene);
 

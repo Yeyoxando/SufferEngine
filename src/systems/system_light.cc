@@ -130,7 +130,7 @@ void Suffer::SystemLight::Execute(GameObject* go) {
             }
 
             // Matrices stuff
-            mathmorra::Matrix4 projection_matrix = projection_matrix.PerspectiveMatrix(ThiefUtils::Math::Radians(90.0f), (float)suffer.GetWindowSize().x_ / (float)suffer.GetWindowSize().y_, 1.0f, far_plane);
+            mathmorra::Matrix4 projection_matrix = projection_matrix.PerspectiveMatrix(ThiefUtils::Math::Radians(90.0f), (float)SHADOW_SIZE / (float)SHADOW_SIZE, 1.0f, far_plane);
             mathmorra::Vector3 light_position = point_light->Position();
 
             point_light->view_matrices_[0] = mathmorra::Matrix4::LookAt(light_position, light_position + mathmorra::Vector3( 1.0f,  0.0f,  0.0f), mathmorra::Vector3(0.0f, -1.0f,  0.0f));

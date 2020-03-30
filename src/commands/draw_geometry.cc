@@ -696,6 +696,7 @@ void Suffer::DrawGeometry::Execute() const {
               }
 
               glActiveTexture(GL_TEXTURE0 + used_textures);
+              auto d = data_->light_texture_ids_[i];
               glBindTexture(GL_TEXTURE_CUBE_MAP, data_->light_texture_ids_[i]);
 
               glUniform1i(u_pos, used_textures);

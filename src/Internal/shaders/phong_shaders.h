@@ -81,6 +81,8 @@ namespace Suffer {
       vec3 ambient;
       vec3 color;
 
+      bool active;
+
       mat4 view_projection_matrix;
       int light_tex_pos;
 
@@ -95,6 +97,8 @@ namespace Suffer {
       vec3 diffuse;
       vec3 ambient;
       vec3 color;
+
+      bool active;
 
       float constant;
       float linear;
@@ -117,6 +121,8 @@ namespace Suffer {
       vec3 diffuse;
       vec3 ambient;
       vec3 color;
+
+      bool active;
 
       float constant;
       float linear;
@@ -164,11 +170,19 @@ namespace Suffer {
 // ....... FUNCTIONS ........
     void CompoundLights(){
       int offset = 0;
+      
+      for(int j = 0; j < max_lights; ++j){
+        directional_lights[j].active = false;
+        point_lights[j].active = false;
+        spot_lights[j].active = false;
+      }
+
       for(int i = 0; i < num_lights; ++i){
         switch(int(u_data[start + 1 + (offset)].a)){
-          case 0:
+          case 0:{
             DirectionalLight d_light;
 
+            d_light.active    = bool(u_data[start + 0 + (offset)].a);
             d_light.direction = vec3(u_data[start + 0 + (offset)].x, u_data[start + 0 + (offset)].y, u_data[start + 0 + (offset)].z);
             d_light.color     = vec3(u_data[start + 1 + (offset)].x, u_data[start + 1 + (offset)].y, u_data[start + 1 + (offset)].z);
             d_light.intensity = u_data[start + 2 + offset].a;
@@ -188,8 +202,11 @@ namespace Suffer {
             num_directionals++;
             offset += 9;
             break;
-          case 1:
+          }
+          case 1:{
+
             PointLight p_light;
+            p_light.active    = bool(u_data[start + 0 + (offset)].a);
             p_light.position  = vec3(u_data[start + 0 + (offset)].x, u_data[start + 0 + (offset)].y, u_data[start + 0 + (offset)].z);
             p_light.color     = vec3(u_data[start + 1 + (offset)].x, u_data[start + 1 + (offset)].y, u_data[start + 1 + (offset)].z);
             p_light.ambient   = vec3(u_data[start + 2 + (offset)].x, u_data[start + 2 + (offset)].y, u_data[start + 2 + (offset)].z);
@@ -213,8 +230,11 @@ namespace Suffer {
             num_points++;
             offset += 30;
             break;
-          case 2:
+          }
+          case 2:{
+
             SpotLight s_light;
+            s_light.active    = bool(u_data[start + 0 + (offset)].a);
             s_light.direction = vec3(u_data[start + 0 + (offset)].x, u_data[start + 0 + (offset)].y, u_data[start + 0 + (offset)].z);
             s_light.position  = vec3(u_data[start + 1 + (offset)].x, u_data[start + 1 + (offset)].y, u_data[start + 1 + (offset)].z);
             s_light.color     = vec3(u_data[start + 2 + (offset)].x, u_data[start + 2 + (offset)].y, u_data[start + 2 + (offset)].z);
@@ -229,7 +249,7 @@ namespace Suffer {
             s_light.outerCutOff = u_data[start + 7 + (offset)].y; 
 
             // View-Projection Matrix
-            d_light.view_projection_matrix = mat4(u_data[start + offset + 8], 
+            s_light.view_projection_matrix = mat4(u_data[start + offset + 8], 
                                                   u_data[start + offset + 9], 
                                                   u_data[start + offset + 10], 
                                                   u_data[start + offset + 11]);
@@ -238,6 +258,7 @@ namespace Suffer {
             num_spots++;
             offset += 12;
             break;
+           }
         }
       }
     }
@@ -265,16 +286,13 @@ namespace Suffer {
     // --------------------------------------------------------------------- //
 
     float CalculatePointShadows(vec3 light_position, vec3 light_dir, int shadow_map_pos){
-        // get vector between fragment position and light position
+
         vec3 fragToLight = frag_pos - light_position;
-        // use the light to fragment vector to sample from the depth map    
         float closestDepth = texture(u_cubelight_textures[shadow_map_pos], fragToLight).r;
-        // it is currently in linear range between [0,1]. Re-transform back to original value
         closestDepth *= 25.0f; // 25.0f == FAR PLANE -> LOOK system_light
-        // now get current linear depth as the length between the fragment and light position
         float currentDepth = length(fragToLight);
-        // now test for shadows
-        float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
+        float bias = 0.05;
+        //float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
         float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
 
         return shadow;
@@ -307,17 +325,19 @@ namespace Suffer {
 
       vec3 light_dir = normalize(light.position - frag_pos);
 
-      float diff = max(dot(normal, light_dir), 0.0f);
+      float diff = max(dot(light_dir, normal), 0.0f);
 
       vec3 reflect_dir = reflect(-light_dir, normal);
-      float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), 32);
+      vec3 viewDir = normalize(camera_pos - frag_pos);
+      vec3 halfwayDir = normalize(light_dir + viewDir);  
+      float spec = pow(max(dot(normal, halfwayDir), 0.0f), 64.0);
 
       float distance    = length(light.position - frag_pos);
       float attenuation = 1.0 / (light.constant + light.linear * distance + 
   			       light.quadratic * (distance * distance));    
 
-      vec3 ambient  = light.ambient ;
-      vec3 diffuse  = light.diffuse ;
+      vec3 ambient  = light.ambient;
+      vec3 diffuse  = light.diffuse;
       vec3 specular = light.specular;
       ambient  *= attenuation * light.intensity;
       diffuse  *= attenuation * light.intensity * diff;
@@ -369,18 +389,24 @@ namespace Suffer {
       vec3 view_dir = normalize(camera_pos - frag_pos);
 
       vec3 directionals = vec3(0.0f, 0.0f, 0.0f);
-      for(int i = 0; i < num_directionals; ++i){
-        directionals += CalculateDirectionalLight(directional_lights[i], normal, view_dir);
+      for(int i = 0; i < 4; ++i){
+        if(directional_lights[i].active){
+            directionals += CalculateDirectionalLight(directional_lights[i], normal, view_dir);
+        }
       }
        
       vec3 point = vec3(0.0f, 0.0f, 0.0f);
-      for(int i = 0; i < num_points; ++i){
-        point += CalculatePointLight(point_lights[i], normal, view_dir);
+      for(int i = 0; i < 4; ++i){
+        if(point_lights[i].active){
+            point += CalculatePointLight(point_lights[i], normal, view_dir);
+        }
       }
        
       vec3 spot = vec3(0.0f, 0.0f, 0.0f);
-      for(int i = 0; i < num_spots; ++i){
-        spot += CalculateSpotLight(spot_lights[i], normal);
+      for(int i = 0; i < 4; ++i){
+        if(spot_lights[i].active){
+            spot += CalculateSpotLight(spot_lights[i], normal);
+        }
       }
 
       vec3 result = directionals + point + spot;

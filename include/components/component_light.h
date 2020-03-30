@@ -23,9 +23,9 @@ namespace Suffer {
     public:
         enum LightKind {
             kLightKind_Invalid = -1,
-            kLightKind_Directional,
-            kLightKind_Point,
-            kLightKind_Spot
+            kLightKind_Directional = 0,
+            kLightKind_Point = 1,
+            kLightKind_Spot = 2
         };
 
         LightComponent() : Component(kComponentKind_Light) { initialized_ = false;  };
