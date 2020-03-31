@@ -18,7 +18,7 @@ namespace Suffer {
     layout(location = 2) in vec2 a_uvs;
     
 // ......... UNIFORMS .........
-    uniform vec4 u_data[135];
+    uniform vec4 u_data[190];
 
 // ......... DEFINES ..........
     #define model0 u_data[0]
@@ -84,7 +84,6 @@ namespace Suffer {
       bool active;
 
       mat4 view_projection_matrix;
-      int light_tex_pos;
 
       float intensity;
 
@@ -105,7 +104,6 @@ namespace Suffer {
       float quadratic;
 
       mat4 view_projection_matrix[6];
-      int light_tex_pos;
 
       float intensity;      
 
@@ -129,19 +127,30 @@ namespace Suffer {
       float quadratic;
 
       mat4 view_projection_matrix;
-      int light_tex_pos;
 
       float intensity;      
 
     };
 
 // ......... UNIFORMS .........
-    uniform vec4 u_data[135];
+    uniform vec4 u_data[190];
     
     #define max_lights 4
-    uniform sampler2D u_light_textures[max_lights];
-    uniform samplerCube u_cubelight_textures[max_lights];
 
+    uniform sampler2D u_dir_light_texture0;
+    uniform sampler2D u_dir_light_texture1;
+    uniform sampler2D u_dir_light_texture2;
+    uniform sampler2D u_dir_light_texture3;
+
+    uniform samplerCube u_point_light_texture0;
+    uniform samplerCube u_point_light_texture1;
+    uniform samplerCube u_point_light_texture2;
+    uniform samplerCube u_point_light_texture3;
+
+    uniform sampler2D u_spot_light_texture0;
+    uniform sampler2D u_spot_light_texture1;
+    uniform sampler2D u_spot_light_texture2;
+    uniform sampler2D u_spot_light_texture3;
 
 // ......... DEFINES ..........
     #define camera_pos vec3(u_data[13].x, u_data[13].y, u_data[13].z)
@@ -159,101 +168,120 @@ namespace Suffer {
     out vec4 fragColor;
 
 // ....... VARIABLES ........
-    int num_directionals = 0;
-    int num_points = 0;
-    int num_spots = 0;
-
-    DirectionalLight directional_lights[max_lights];
-    PointLight point_lights[max_lights];
-    SpotLight spot_lights[max_lights];
 
 // ....... FUNCTIONS ........
-    void CompoundLights(){
-      int offset = 0;
+    DirectionalLight GetDirectionalLight(int index){
+      DirectionalLight d_light;
+      int offset = 9 * index;
+
+      // 18 is start of directional lights array (72/4)
+      d_light.active    = bool(u_data[18 + 0 + offset].a);
+      d_light.direction = vec3(u_data[18 + 0 + offset].x, u_data[18 + 0 + offset].y, u_data[18 + 0 + offset].z);
+      d_light.color     = vec3(u_data[18 + 1 + offset].x, u_data[18 + 1 + offset].y, u_data[18 + 1 + offset].z);
+      d_light.intensity =      u_data[18 + 2 + offset].a;
+      d_light.ambient   = vec3(u_data[18 + 2 + offset].x, u_data[18 + 2 + offset].y, u_data[18 + 2 + offset].z);
+      d_light.diffuse   = vec3(u_data[18 + 3 + offset].x, u_data[18 + 3 + offset].y, u_data[18 + 3 + offset].z);
+      d_light.specular  = vec3(u_data[18 + 4 + offset].x, u_data[18 + 4 + offset].y, u_data[18 + 4 + offset].z);
+
+      // View-Projection Matrix
+      d_light.view_projection_matrix = mat4(u_data[18 + offset + 5], 
+                                            u_data[18 + offset + 6], 
+                                            u_data[18 + offset + 7], 
+                                            u_data[18 + offset + 8]);
+
+
+      return d_light;
+    }
+
+    sampler2D GetDirectionalLightTexture(int index){
       
-      for(int j = 0; j < max_lights; ++j){
-        directional_lights[j].active = false;
-        point_lights[j].active = false;
-        spot_lights[j].active = false;
+      if(index == 0){
+        return u_dir_light_texture0;
+      }
+      if(index == 1){
+        return u_dir_light_texture1;
+      }
+      if(index == 2){
+        return u_dir_light_texture2;
+      }
+      if(index == 3){
+        return u_dir_light_texture3;
       }
 
-      for(int i = 0; i < num_lights; ++i){
-        switch(int(u_data[start + 1 + (offset)].a)){
-          case 0:{
-            DirectionalLight d_light;
+    }
 
-            d_light.active    = bool(u_data[start + 0 + (offset)].a);
-            d_light.direction = vec3(u_data[start + 0 + (offset)].x, u_data[start + 0 + (offset)].y, u_data[start + 0 + (offset)].z);
-            d_light.color     = vec3(u_data[start + 1 + (offset)].x, u_data[start + 1 + (offset)].y, u_data[start + 1 + (offset)].z);
-            d_light.intensity = u_data[start + 2 + offset].a;
-            d_light.ambient   = vec3(u_data[start + 2 + (offset)].x, u_data[start + 2 + (offset)].y, u_data[start + 2 + (offset)].z);
-            d_light.diffuse   = vec3(u_data[start + 3 + (offset)].x, u_data[start + 3 + (offset)].y, u_data[start + 3 + (offset)].z);
-            d_light.specular  = vec3(u_data[start + 4 + (offset)].x, u_data[start + 4 + (offset)].y, u_data[start + 4 + (offset)].z);
+    PointLight GetPointLight(int index){
+      PointLight p_light;
+      int offset = 30 * index;
 
-            // View-Projection Matrix
-            d_light.view_projection_matrix = mat4(u_data[start + offset + 5], 
-                                                  u_data[start + offset + 6], 
-                                                  u_data[start + offset + 7], 
-                                                  u_data[start + offset + 8]);
-            
-            d_light.light_tex_pos = i;
-        
-            directional_lights[num_directionals] = d_light;
-            num_directionals++;
-            offset += 9;
-            break;
-          }
-          case 1:{
+      p_light.active    = bool(u_data[54 + 0 + offset].a);
+      p_light.position  = vec3(u_data[54 + 0 + offset].x, u_data[54 + 0 + offset].y, u_data[54 + 0 + offset].z);
+      p_light.color     = vec3(u_data[54 + 1 + offset].x, u_data[54 + 1 + offset].y, u_data[54 + 1 + offset].z);
+      p_light.ambient   = vec3(u_data[54 + 2 + offset].x, u_data[54 + 2 + offset].y, u_data[54 + 2 + offset].z);
+      p_light.intensity =      u_data[54 + 2 + offset].a;
+      p_light.diffuse   = vec3(u_data[54 + 3 + offset].x, u_data[54 + 3 + offset].y, u_data[54 + 3 + offset].z);
+      p_light.specular  = vec3(u_data[54 + 4 + offset].x, u_data[54 + 4 + offset].y, u_data[54 + 4 + offset].z);
+      p_light.constant  = u_data[54 + 5 + offset].x;
+      p_light.linear    = u_data[54 + 5 + offset].y;
+      p_light.quadratic = u_data[54 + 5 + offset].z;
 
-            PointLight p_light;
-            p_light.active    = bool(u_data[start + 0 + (offset)].a);
-            p_light.position  = vec3(u_data[start + 0 + (offset)].x, u_data[start + 0 + (offset)].y, u_data[start + 0 + (offset)].z);
-            p_light.color     = vec3(u_data[start + 1 + (offset)].x, u_data[start + 1 + (offset)].y, u_data[start + 1 + (offset)].z);
-            p_light.ambient   = vec3(u_data[start + 2 + (offset)].x, u_data[start + 2 + (offset)].y, u_data[start + 2 + (offset)].z);
-            p_light.diffuse   = vec3(u_data[start + 3 + (offset)].x, u_data[start + 3 + (offset)].y, u_data[start + 3 + (offset)].z);
-            p_light.specular  = vec3(u_data[start + 4 + (offset)].x, u_data[start + 4 + (offset)].y, u_data[start + 4 + (offset)].z);
-            p_light.constant  = u_data[start + 5 + (offset)].x;
-            p_light.linear    = u_data[start + 5 + (offset)].y;
-            p_light.quadratic = u_data[start + 5 + (offset)].z;
-            p_light.intensity = u_data[start + 2 + offset].a;
+      // View-Projection Matrices
+      for(int f = 0; f < 6; f++){
+        p_light.view_projection_matrix[f] = mat4(u_data[54 + 6 + offset + (4 * f)],   
+                                                 u_data[54 + 7 + offset + (4 * f)], 
+                                                 u_data[54 + 8 + offset + (4 * f)], 
+                                                 u_data[54 + 9 + offset + (4 * f)]);
+      }
 
-            // View-Projection Matrices
-            for(int f = 0; f < 6; f++){
-              p_light.view_projection_matrix[f] = mat4(u_data[start + offset + 6 + (4 * f)],   
-                                                       u_data[start + offset + 7 + (4 * f)], 
-                                                       u_data[start + offset + 8 + (4 * f)], 
-                                                       u_data[start + offset + 9 + (4 * f)]);
-            }
+      return p_light;
+    }
 
-            p_light.light_tex_pos = i;
-            point_lights[num_points] = p_light;
-            num_points++;
-            offset += 30;
-            break;
-          }
+    samplerCube GetPointLightTexture(int index){
+      if(index == 0){
+        return u_point_light_texture0;
+      }
+      if(index == 1){
+        return u_point_light_texture1;
+      }
+      if(index == 2){
+        return u_point_light_texture2;
+      }
+      if(index == 3){
+        return u_point_light_texture3;
+      }
+    }
+
+    /*SpotLight GetSpotLight(int index){
+      SpotLight s_light;
+
+      s_light.active    = bool(u_data[start + 0 + (offset)].a);
+      s_light.direction = vec3(u_data[start + 0 + (offset)].x, u_data[start + 0 + (offset)].y, u_data[start + 0 + (offset)].z);
+      s_light.position  = vec3(u_data[start + 1 + (offset)].x, u_data[start + 1 + (offset)].y, u_data[start + 1 + (offset)].z);
+      s_light.color     = vec3(u_data[start + 2 + (offset)].x, u_data[start + 2 + (offset)].y, u_data[start + 2 + (offset)].z);
+      s_light.intensity =      u_data[start + 3 + offset].a;         
+      s_light.ambient   = vec3(u_data[start + 3 + (offset)].x, u_data[start + 3 + (offset)].y, u_data[start + 3 + (offset)].z);
+      s_light.diffuse   = vec3(u_data[start + 4 + (offset)].x, u_data[start + 4 + (offset)].y, u_data[start + 4 + (offset)].z);
+      s_light.specular  = vec3(u_data[start + 5 + (offset)].x, u_data[start + 5 + (offset)].y, u_data[start + 5 + (offset)].z);
+      s_light.constant  = u_data[start + 6 + (offset)].x;
+      s_light.linear    = u_data[start + 6 + (offset)].y;
+      s_light.quadratic = u_data[start + 6 + (offset)].z;
+      s_light.cutOff    = u_data[start + 7 + (offset)].x;
+      s_light.outerCutOff = u_data[start + 7 + (offset)].y; 
+
+      // View-Projection Matrix
+      s_light.view_projection_matrix = mat4(u_data[start + offset + 8], 
+                                            u_data[start + offset + 9], 
+                                            u_data[start + offset + 10], 
+                                            u_data[start + offset + 11]);
+      return s_light;
+    }
+
+    void CompoundLights(){
+
           case 2:{
 
             SpotLight s_light;
-            s_light.active    = bool(u_data[start + 0 + (offset)].a);
-            s_light.direction = vec3(u_data[start + 0 + (offset)].x, u_data[start + 0 + (offset)].y, u_data[start + 0 + (offset)].z);
-            s_light.position  = vec3(u_data[start + 1 + (offset)].x, u_data[start + 1 + (offset)].y, u_data[start + 1 + (offset)].z);
-            s_light.color     = vec3(u_data[start + 2 + (offset)].x, u_data[start + 2 + (offset)].y, u_data[start + 2 + (offset)].z);
-            s_light.intensity = u_data[start + 3 + offset].a;         
-            s_light.ambient   = vec3(u_data[start + 3 + (offset)].x, u_data[start + 3 + (offset)].y, u_data[start + 3 + (offset)].z);
-            s_light.diffuse   = vec3(u_data[start + 4 + (offset)].x, u_data[start + 4 + (offset)].y, u_data[start + 4 + (offset)].z);
-            s_light.specular  = vec3(u_data[start + 5 + (offset)].x, u_data[start + 5 + (offset)].y, u_data[start + 5 + (offset)].z);
-            s_light.constant  = u_data[start + 6 + (offset)].x;
-            s_light.linear    = u_data[start + 6 + (offset)].y;
-            s_light.quadratic = u_data[start + 6 + (offset)].z;
-            s_light.cutOff    = u_data[start + 7 + (offset)].x;
-            s_light.outerCutOff = u_data[start + 7 + (offset)].y; 
-
-            // View-Projection Matrix
-            s_light.view_projection_matrix = mat4(u_data[start + offset + 8], 
-                                                  u_data[start + offset + 9], 
-                                                  u_data[start + offset + 10], 
-                                                  u_data[start + offset + 11]);
-  
+           
             spot_lights[num_spots] = s_light;
             num_spots++;
             offset += 12;
@@ -261,17 +289,17 @@ namespace Suffer {
            }
         }
       }
-    }
+    }*/
 
     // --------------------------------------------------------------------- //
 
-    float CalculateShadow(vec4 frag_pos_light_space, vec3 light_dir, int shadow_map_pos){
+    float CalculateShadow(vec4 frag_pos_light_space, vec3 light_dir, int light_index){
       // Clip projection coords
       vec3 proj_coords = frag_pos_light_space.xyz / frag_pos_light_space.w;
       // Convert from [-1, 1] to [0, 1]
       proj_coords = proj_coords * 0.5f + 0.5;
       // Get shadow map fragment
-      float closest_depth = texture(u_light_textures[shadow_map_pos], proj_coords.xy).r;
+      float closest_depth = texture(GetDirectionalLightTexture(light_index), proj_coords.xy).r;
       // Current depth fragment from light perspective
       float current_depth = proj_coords.z;
       // Compare current and closest to check if its in shadow or not
@@ -285,22 +313,7 @@ namespace Suffer {
 
     // --------------------------------------------------------------------- //
 
-    float CalculatePointShadows(vec3 light_position, vec3 light_dir, int shadow_map_pos){
-
-        vec3 fragToLight = frag_pos - light_position;
-        float closestDepth = texture(u_cubelight_textures[shadow_map_pos], fragToLight).r;
-        closestDepth *= 25.0f; // 25.0f == FAR PLANE -> LOOK system_light
-        float currentDepth = length(fragToLight);
-        float bias = 0.05;
-        //float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
-        float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
-
-        return shadow;
-    } 
-
-    // --------------------------------------------------------------------- //
-
-    vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_dir){
+    vec3 CalculateDirectionalLight(DirectionalLight light, int light_index, vec3 normal, vec3 view_dir){
   
       vec3 light_dir = normalize(-light.direction);
       
@@ -312,16 +325,30 @@ namespace Suffer {
       vec3 diffuse  = light.diffuse  * light.intensity * diff;
       vec3 specular = light.specular * light.intensity * spec;
       
-      float shadow = CalculateShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light.light_tex_pos);
-      //shadow += CalculateShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, u_shadow_map1);
-
-      return (ambient + (1.0f - 0.0) * (diffuse + specular)) * color.xyz;
+      float shadow = CalculateShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light_index);
+      
+      return (ambient + (1.0f - shadow) * (diffuse + specular)) * color.xyz;
 
     }
 
     // --------------------------------------------------------------------- //
 
-    vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 view_dir) {
+    float CalculatePointShadows(vec3 light_position, vec3 light_dir, int light_index){
+
+        vec3 fragToLight = frag_pos - light_position;
+        float closestDepth = texture(GetPointLightTexture(light_index), fragToLight).r;
+        closestDepth *= 25.0f; // 25.0f == FAR PLANE -> LOOK system_light
+        float currentDepth = length(fragToLight);
+        float bias = 0.05;
+        //float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
+        float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
+
+        return shadow;
+    } 
+
+    // --------------------------------------------------------------------- //
+
+    vec3 CalculatePointLight(PointLight light, int light_index, vec3 normal, vec3 view_dir) {
 
       vec3 light_dir = normalize(light.position - frag_pos);
 
@@ -343,7 +370,7 @@ namespace Suffer {
       diffuse  *= attenuation * light.intensity * diff;
       specular *= attenuation * light.intensity * spec;
 
-      float shadow = CalculatePointShadows(light.position, light_dir, light.light_tex_pos);
+      float shadow = CalculatePointShadows(light.position, light_dir, light_index);
 
       return (ambient + (1.0f - shadow) * (diffuse + specular)) * color.xyz;
 
@@ -385,31 +412,28 @@ namespace Suffer {
 // ......... MAIN ..........
     void main() {
 
-      CompoundLights();
+      //CompoundLights();
       
       vec3 view_dir = normalize(camera_pos - frag_pos);
 
       vec3 directionals = vec3(0.0f, 0.0f, 0.0f);
-      for(int i = 0; i < num_directionals; ++i){
-         directional_lights[i].active = false;
-         if(directional_lights[i].active){
-            directionals += CalculateDirectionalLight(directional_lights[i], normal, view_dir);
-         }
-      }
-       
       vec3 point = vec3(0.0f, 0.0f, 0.0f);
-      for(int i = 0; i < num_points; ++i){
-            point += CalculatePointLight(point_lights[i], normal, view_dir);
-      }
-       
-      vec3 spot = vec3(0.0f, 0.0f, 0.0f);
-      for(int i = 0; i < num_spots; ++i){
-            spot += CalculateSpotLight(spot_lights[i], normal);
-      }
+     //for(int i = 0; i < max_lights; ++i){
+     //   directionals += CalculateDirectionalLight(GetDirectionalLight(i), i, normal, view_dir) * float(GetDirectionalLight(i).active);
+     //   point += CalculatePointLight(GetPointLight(i), i, normal, view_dir) * float(GetPointLight(i).active);
+     //}
+      // directionals += CalculateDirectionalLight(GetDirectionalLight(0), 0, normal, view_dir) * float(GetDirectionalLight(0).active);
+         point += CalculatePointLight(GetPointLight(0), 0, normal, view_dir) * float(GetPointLight(0).active);
+     
 
-      vec3 result = directionals + point + spot;
+      //vec3 spot = vec3(0.0f, 0.0f, 0.0f);
+      //for(int i = 0; i < num_spots; ++i){
+      //      spot += CalculateSpotLight(spot_lights[i], normal);
+      //}
+      //
+      //vec3 result = directionals + point + spot;
       
-      fragColor = vec4(result, 1.0f);
+      fragColor = vec4(directionals + point, 1.0f);
     }
 
   )FPHONGSHADER";

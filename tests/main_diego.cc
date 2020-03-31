@@ -128,7 +128,7 @@ int main(int argc, char* argv[]) {
 
   light_component->Init(Suffer::LightComponent::kLightKind_Point);
   light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-  light_component->SetIntensity(4.0f);
+  light_component->SetIntensity(1.0f);
   light_component->SetAmbient(0.5f, 0.5f, 0.5f);
   light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
   light_component->SetSpecular(1.0f, 1.0f, 1.0f);

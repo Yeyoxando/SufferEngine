@@ -16,7 +16,6 @@
 #include "component_material.h"
 #include "common_definitions.h"
 
-#define MAX_USED_TEXTURES 5
 #define MAX_USED_VEC4DATA 29 
 
 // ------------------------------------------------------------------------- //
@@ -181,7 +180,7 @@ void Suffer::DrawPointDepth::Execute() const {
 
     // 4 equals to resource manager internal depth material
     u32 mat_type = 5;
-
+    auto ptr = suffer.resource_manager_.data_->internal_materials_[mat_type];
     // If internal material is not created, creates it
     if (!suffer.resource_manager_.data_->internal_materials_[mat_type].is_created_) {
 
@@ -358,7 +357,7 @@ void Suffer::DrawPointDepth::Execute() const {
 
   {
 
-    glCullFace(GL_FRONT);
+    //glCullFace(GL_FRONT);
 
     u32 number_elements = suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_id_].data_.size();
 

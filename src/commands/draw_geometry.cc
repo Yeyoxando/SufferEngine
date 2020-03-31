@@ -763,8 +763,8 @@ void Suffer::DrawGeometry::Execute() const {
 
         switch (data_->light_type[i]){
           case 0: {
-            base_tex_name = "u_light_textures";
-            std::string tex_name = base_tex_name + "[" + std::to_string(i) + "]";
+            base_tex_name = "u_dir_light_texture";
+            std::string tex_name = base_tex_name + std::to_string(i);
             const char* str = tex_name.c_str();
             u_pos = glGetUniformLocation(program_id, str);
             if (u_pos < 0) {
@@ -781,12 +781,12 @@ void Suffer::DrawGeometry::Execute() const {
               break;
           }
           case 1: {
-              base_tex_name = "u_cubelight_textures";
-              std::string tex_name = base_tex_name + "[" + std::to_string(i) + "]";
+              base_tex_name = "u_point_light_texture";
+              std::string tex_name = base_tex_name + std::to_string(i);
               const char* str = tex_name.c_str();
               u_pos = glGetUniformLocation(program_id, str);
               if (u_pos < 0) {
-                  printf("\nERROR: cubelight texture %d uniform not exists.", i);
+                  printf("\nERROR: point light texture %d uniform not exists.", i);
                   //return;
               }
 
@@ -797,6 +797,24 @@ void Suffer::DrawGeometry::Execute() const {
               glUniform1i(u_pos, used_textures);
               u_pos = -1;
               break;
+          }
+          case 2: {
+            base_tex_name = "u_spot_light_texture";
+            std::string tex_name = base_tex_name + std::to_string(i);
+            const char* str = tex_name.c_str();
+            u_pos = glGetUniformLocation(program_id, str);
+            if (u_pos < 0) {
+              printf("\nERROR: spotlight texture %d uniform not exists.", i);
+              //return;
+            }
+
+            glActiveTexture(GL_TEXTURE0 + used_textures);
+            auto d = data_->light_texture_ids_[i];
+            glBindTexture(GL_TEXTURE_2D, data_->light_texture_ids_[i]);
+
+            glUniform1i(u_pos, used_textures);
+            u_pos = -1;
+            break;
           }
           default:
               break;
