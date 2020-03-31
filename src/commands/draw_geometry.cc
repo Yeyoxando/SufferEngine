@@ -19,7 +19,7 @@
 
 #define MAX_USED_TEXTURES 5
 //14 to uniforms, rest for lights
-#define MAX_USED_VEC4DATA 135
+#define MAX_USED_VEC4DATA 190
 
 // ------------------------------------------------------------------------- //
 
@@ -222,142 +222,237 @@ void Suffer::DrawGeometry::SetProjectionMatrix(mathmorra::Matrix4 projection) {
 
 void Suffer::DrawGeometry::SetLights(){
 
-  u32 start = 60;
+  u32 start = 72;
   // Lighting
   u32 number_lights = 0;
   u32 offset = 0;
   u32 current_lights = suffer.light_manager_.current_lights_;
-  for (u32 i = 0; i < current_lights; ++i) {
-    LightManager::DirectionalLight* light = suffer.light_manager_.lights_[i].get();
-    if (light->Active()) {
-      number_lights++;
-      LightManager::PointLight* point_light;
-      LightManager::SpotLight* spot_light;
-      switch (light->GetLightKind()) {
-      case LightManager::kLightKind_Directional: {
-        //20
-        data_->u_data_[start + 0  + (offset)] = light->Direction()[0];
-        data_->u_data_[start + 1  + (offset)] = light->Direction()[1];
-        data_->u_data_[start + 2  + (offset)] = light->Direction()[2];
-        data_->u_data_[start + 3  + (offset)] = (float)light->Active();
-        data_->u_data_[start + 4  + (offset)] = light->Color()[0];
-        data_->u_data_[start + 5  + (offset)] = light->Color()[1];
-        data_->u_data_[start + 6  + (offset)] = light->Color()[2];
-        data_->u_data_[start + 7  + (offset)] = light->GetLightKind();
-        data_->u_data_[start + 8  + (offset)] = light->Ambient()[0];
-        data_->u_data_[start + 9  + (offset)] = light->Ambient()[1];
-        data_->u_data_[start + 10 + (offset)] = light->Ambient()[2];
-        data_->u_data_[start + 11 + (offset)] = light->Intensity();
-        data_->u_data_[start + 12 + (offset)] = light->Diffuse()[0];
-        data_->u_data_[start + 13 + (offset)] = light->Diffuse()[1];
-        data_->u_data_[start + 14 + (offset)] = light->Diffuse()[2];
-        data_->u_data_[start + 16 + (offset)] = light->Specular()[0];
-        data_->u_data_[start + 17 + (offset)] = light->Specular()[1];
-        data_->u_data_[start + 18 + (offset)] = light->Specular()[2];
 
-        for (u32 i = 0; i < 16; ++i) {
-            data_->u_data_[start + i + offset + 20] = light->view_projection_mat_.m[i];
-        }
-        data_->light_texture_ids_[data_->current_light_used_textures_] = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
-        data_->light_type[data_->current_light_used_textures_] = 0;
-        data_->current_light_used_textures_++;
+  u8 light_index = 0;
 
-        offset += 36;
+  LightManager::PointLight* point_light;
+  LightManager::SpotLight* spot_light;
+        
+  for (u32 i = 0; i < MAX_LIGHTS; ++i) {
 
-        break;
+      LightManager::DirectionalLight* light = suffer.light_manager_.lights_[light_index].get();
+      //DIRECTIONALS
+      if (light != nullptr && light->GetLightKind() == Suffer::LightManager::kLightKind_Directional) {
+          data_->u_data_[start + 0 + (offset)] = light->Direction()[0];
+          data_->u_data_[start + 1 + (offset)] = light->Direction()[1];
+          data_->u_data_[start + 2 + (offset)] = light->Direction()[2];
+          data_->u_data_[start + 3 + (offset)] = (float)light->Active();
+          data_->u_data_[start + 4 + (offset)] = light->Color()[0];
+          data_->u_data_[start + 5 + (offset)] = light->Color()[1];
+          data_->u_data_[start + 6 + (offset)] = light->Color()[2];
+          data_->u_data_[start + 7 + (offset)] = light->GetLightKind();
+          data_->u_data_[start + 8 + (offset)] = light->Ambient()[0];
+          data_->u_data_[start + 9 + (offset)] = light->Ambient()[1];
+          data_->u_data_[start + 10 + (offset)] = light->Ambient()[2];
+          data_->u_data_[start + 11 + (offset)] = light->Intensity();
+          data_->u_data_[start + 12 + (offset)] = light->Diffuse()[0];
+          data_->u_data_[start + 13 + (offset)] = light->Diffuse()[1];
+          data_->u_data_[start + 14 + (offset)] = light->Diffuse()[2];
+          data_->u_data_[start + 16 + (offset)] = light->Specular()[0];
+          data_->u_data_[start + 17 + (offset)] = light->Specular()[1];
+          data_->u_data_[start + 18 + (offset)] = light->Specular()[2];
+
+          for (u32 i = 0; i < 16; ++i) {
+              data_->u_data_[start + i + offset + 20] = light->view_projection_mat_.m[i];
+          }
+
+          data_->light_texture_ids_[data_->current_light_used_textures_] = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
+          data_->light_type[data_->current_light_used_textures_] = 0;
+          data_->current_light_used_textures_++;
+
       }
-      case LightManager::kLightKind_Point: {
-        //24
-        point_light = static_cast<LightManager::PointLight*>(light);
-        data_->u_data_[start + 0  + (offset)] = point_light->Position()[0];
-        data_->u_data_[start + 1  + (offset)] = point_light->Position()[1];
-        data_->u_data_[start + 2  + (offset)] = point_light->Position()[2];
-        data_->u_data_[start + 3  + (offset)] = (float)light->Active();
-        data_->u_data_[start + 4  + (offset)] = point_light->Color()[0];
-        data_->u_data_[start + 5  + (offset)] = point_light->Color()[1];
-        data_->u_data_[start + 6  + (offset)] = point_light->Color()[2];
-        data_->u_data_[start + 7  + (offset)] = light->GetLightKind();
-        data_->u_data_[start + 8  + (offset)] = point_light->Ambient()[0];
-        data_->u_data_[start + 9  + (offset)] = point_light->Ambient()[1];
-        data_->u_data_[start + 10 + (offset)] = point_light->Ambient()[2];
-        data_->u_data_[start + 11 + (offset)] = point_light->Intensity();
-        data_->u_data_[start + 12 + (offset)] = point_light->Diffuse()[0];
-        data_->u_data_[start + 13 + (offset)] = point_light->Diffuse()[1];
-        data_->u_data_[start + 14 + (offset)] = point_light->Diffuse()[2];
-        data_->u_data_[start + 16 + (offset)] = point_light->Specular()[0];
-        data_->u_data_[start + 17 + (offset)] = point_light->Specular()[1];
-        data_->u_data_[start + 18 + (offset)] = point_light->Specular()[2];
-        data_->u_data_[start + 20 + (offset)] = point_light->Constant();
-        data_->u_data_[start + 21 + (offset)] = point_light->Linear();
-        data_->u_data_[start + 22 + (offset)] = point_light->Quadratic();
+      else {
+          data_->u_data_[start + 0 + (offset)] = 0.0f;
+          data_->u_data_[start + 1 + (offset)] = 0.0f;
+          data_->u_data_[start + 2 + (offset)] = 0.0f;
+          data_->u_data_[start + 3 + (offset)] = 0.0f;
+          data_->u_data_[start + 4 + (offset)] = 0.0f;
+          data_->u_data_[start + 5 + (offset)] = 0.0f;
+          data_->u_data_[start + 6 + (offset)] = 0.0f;
+          data_->u_data_[start + 7 + (offset)] = 0.0f;
+          data_->u_data_[start + 8 + (offset)] = 0.0f;
+          data_->u_data_[start + 9 + (offset)] = 0.0f;
+          data_->u_data_[start + 10 + (offset)] = 0.0f;
+          data_->u_data_[start + 11 + (offset)] = 0.0f;
+          data_->u_data_[start + 12 + (offset)] = 0.0f;
+          data_->u_data_[start + 13 + (offset)] = 0.0f;
+          data_->u_data_[start + 14 + (offset)] = 0.0f;
+          data_->u_data_[start + 16 + (offset)] = 0.0f;
+          data_->u_data_[start + 17 + (offset)] = 0.0f;
+          data_->u_data_[start + 18 + (offset)] = 0.0f;
 
-        u32 index = 0;
-        for (u32 j = 0; j < 6; ++j) {
-           for (u32 i = 0; i < 16; ++i) {
-               data_->u_data_[start + i + offset + 24 + index] = light->view_projection_mat_.m[i];
-           }
-           index += 16;
-        }
+          for (u32 i = 0; i < 16; ++i) {
+              data_->u_data_[start + i + offset + 20] = 0.0f;
+          }
 
-        data_->light_texture_ids_[data_->current_light_used_textures_] = suffer.resource_manager_.data_->internal_cubemaps_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
-        data_->light_type[data_->current_light_used_textures_] = 1;
-        data_->current_light_used_textures_++;
-
-        offset += 88;
-        break;
       }
-      case LightManager::kLightKind_Spot: {
-        //32
-        spot_light = static_cast<LightManager::SpotLight*>(light);
-        data_->u_data_[start + 0  + (offset)] = spot_light->Direction()[0];
-        data_->u_data_[start + 1  + (offset)] = spot_light->Direction()[1];
-        data_->u_data_[start + 2  + (offset)] = spot_light->Direction()[2];
-        data_->u_data_[start + 3  + (offset)] = (float)light->Active();
-        data_->u_data_[start + 4  + (offset)] = spot_light->Position()[0];
-        data_->u_data_[start + 5  + (offset)] = spot_light->Position()[1];
-        data_->u_data_[start + 6  + (offset)] = spot_light->Position()[2];
-        data_->u_data_[start + 7  + (offset)] = light->GetLightKind();
-        data_->u_data_[start + 8  + (offset)] = spot_light->Color()[0];
-        data_->u_data_[start + 9  + (offset)] = spot_light->Color()[1];
-        data_->u_data_[start + 10 + (offset)] = spot_light->Color()[2];
-        data_->u_data_[start + 12 + (offset)] = spot_light->Ambient()[0];
-        data_->u_data_[start + 13 + (offset)] = spot_light->Ambient()[1];
-        data_->u_data_[start + 14 + (offset)] = spot_light->Ambient()[2];
-        data_->u_data_[start + 15 + (offset)] = spot_light->Intensity();
-        data_->u_data_[start + 16 + (offset)] = spot_light->Diffuse()[0];
-        data_->u_data_[start + 17 + (offset)] = spot_light->Diffuse()[1];
-        data_->u_data_[start + 18 + (offset)] = spot_light->Diffuse()[2];
-        data_->u_data_[start + 20 + (offset)] = spot_light->Specular()[0];
-        data_->u_data_[start + 21 + (offset)] = spot_light->Specular()[1];
-        data_->u_data_[start + 22 + (offset)] = spot_light->Specular()[2];
-        data_->u_data_[start + 24 + (offset)] = spot_light->Constant();
-        data_->u_data_[start + 25 + (offset)] = spot_light->Linear();
-        data_->u_data_[start + 26 + (offset)] = spot_light->Quadratic();
-        data_->u_data_[start + 28 + (offset)] = spot_light->CutOff();
-        data_->u_data_[start + 29 + (offset)] = spot_light->OuterCutOff();
+      offset += 36;
+      light_index++;
+  }
+  
+  light_index = 0;
 
-        for (u32 i = 0; i < 16; ++i) {
-            data_->u_data_[start + i + offset + 32] = light->view_projection_mat_.m[i];
-        }
+  // POINTS
+  for (u32 i = 0; i < MAX_LIGHTS; ++i) {
 
-        data_->light_texture_ids_[data_->current_light_used_textures_] = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
-        data_->light_type[data_->current_light_used_textures_] = 2;
-        data_->current_light_used_textures_++;
+      LightManager::DirectionalLight* light = suffer.light_manager_.lights_[light_index].get();
+      if (light != nullptr && light->GetLightKind() == Suffer::LightManager::kLightKind_Point) {
+          point_light = static_cast<LightManager::PointLight*>(light);
+          data_->u_data_[start + 0 + (offset)] = point_light->Position()[0];
+          data_->u_data_[start + 1 + (offset)] = point_light->Position()[1];
+          data_->u_data_[start + 2 + (offset)] = point_light->Position()[2];
+          data_->u_data_[start + 3 + (offset)] = (float)light->Active();
+          data_->u_data_[start + 4 + (offset)] = point_light->Color()[0];
+          data_->u_data_[start + 5 + (offset)] = point_light->Color()[1];
+          data_->u_data_[start + 6 + (offset)] = point_light->Color()[2];
+          data_->u_data_[start + 7 + (offset)] = light->GetLightKind();
+          data_->u_data_[start + 8 + (offset)] = point_light->Ambient()[0];
+          data_->u_data_[start + 9 + (offset)] = point_light->Ambient()[1];
+          data_->u_data_[start + 10 + (offset)] = point_light->Ambient()[2];
+          data_->u_data_[start + 11 + (offset)] = point_light->Intensity();
+          data_->u_data_[start + 12 + (offset)] = point_light->Diffuse()[0];
+          data_->u_data_[start + 13 + (offset)] = point_light->Diffuse()[1];
+          data_->u_data_[start + 14 + (offset)] = point_light->Diffuse()[2];
+          data_->u_data_[start + 16 + (offset)] = point_light->Specular()[0];
+          data_->u_data_[start + 17 + (offset)] = point_light->Specular()[1];
+          data_->u_data_[start + 18 + (offset)] = point_light->Specular()[2];
+          data_->u_data_[start + 20 + (offset)] = point_light->Constant();
+          data_->u_data_[start + 21 + (offset)] = point_light->Linear();
+          data_->u_data_[start + 22 + (offset)] = point_light->Quadratic();
 
-        offset += 48; //32
-        break;
+          u32 index = 0;
+          for (u32 j = 0; j < 6; ++j) {
+              for (u32 i = 0; i < 16; ++i) {
+                  data_->u_data_[start + i + offset + 24 + index] = light->view_projection_mat_.m[i];
+              }
+              index += 16;
+          }
+
+          data_->light_texture_ids_[data_->current_light_used_textures_] = suffer.resource_manager_.data_->internal_cubemaps_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
+          data_->light_type[data_->current_light_used_textures_] = 1;
+          data_->current_light_used_textures_++;
+
       }
-      case LightManager::kLightKind_Invalid:
+      else {
+          data_->u_data_[start + 0 + (offset)] = 0.0f;
+          data_->u_data_[start + 1 + (offset)] = 0.0f;
+          data_->u_data_[start + 2 + (offset)] = 0.0f;
+          data_->u_data_[start + 3 + (offset)] = 0.0f;
+          data_->u_data_[start + 4 + (offset)] = 0.0f;
+          data_->u_data_[start + 5 + (offset)] = 0.0f;
+          data_->u_data_[start + 6 + (offset)] = 0.0f;
+          data_->u_data_[start + 7 + (offset)] = 0.0f;
+          data_->u_data_[start + 8 + (offset)] = 0.0f;
+          data_->u_data_[start + 9 + (offset)] = 0.0f;
+          data_->u_data_[start + 10 + (offset)] = 0.0f;
+          data_->u_data_[start + 11 + (offset)] = 0.0f;
+          data_->u_data_[start + 12 + (offset)] = 0.0f;
+          data_->u_data_[start + 13 + (offset)] = 0.0f;
+          data_->u_data_[start + 14 + (offset)] = 0.0f;
+          data_->u_data_[start + 16 + (offset)] = 0.0f;
+          data_->u_data_[start + 17 + (offset)] = 0.0f;
+          data_->u_data_[start + 18 + (offset)] = 0.0f;
+          data_->u_data_[start + 20 + (offset)] = 0.0f;
+          data_->u_data_[start + 21 + (offset)] = 0.0f;
+          data_->u_data_[start + 22 + (offset)] = 0.0f;
 
-        break;
-      default:
-        break;
+          u32 index = 0;
+          for (u32 j = 0; j < 6; ++j) {
+              for (u32 i = 0; i < 16; ++i) {
+                  data_->u_data_[start + i + offset + 24 + index] = 0.0f;
+              }
+              index += 16;
+          }
       }
-      
-    }
-
+      offset += 88;
+      light_index++;
   }
 
+  light_index = 0;
+
+  // SPOTS
+  for (u32 i = 0; i < MAX_LIGHTS; ++i) {
+
+      LightManager::DirectionalLight* light = suffer.light_manager_.lights_[light_index].get();
+      if (light != nullptr && light->GetLightKind() == Suffer::LightManager::kLightKind_Spot) {
+          spot_light = static_cast<LightManager::SpotLight*>(light);
+          data_->u_data_[start + 0 + (offset)] = spot_light->Direction()[0];
+          data_->u_data_[start + 1 + (offset)] = spot_light->Direction()[1];
+          data_->u_data_[start + 2 + (offset)] = spot_light->Direction()[2];
+          data_->u_data_[start + 3 + (offset)] = (float)light->Active();
+          data_->u_data_[start + 4 + (offset)] = spot_light->Position()[0];
+          data_->u_data_[start + 5 + (offset)] = spot_light->Position()[1];
+          data_->u_data_[start + 6 + (offset)] = spot_light->Position()[2];
+          data_->u_data_[start + 7 + (offset)] = light->GetLightKind();
+          data_->u_data_[start + 8 + (offset)] = spot_light->Color()[0];
+          data_->u_data_[start + 9 + (offset)] = spot_light->Color()[1];
+          data_->u_data_[start + 10 + (offset)] = spot_light->Color()[2];
+          data_->u_data_[start + 12 + (offset)] = spot_light->Ambient()[0];
+          data_->u_data_[start + 13 + (offset)] = spot_light->Ambient()[1];
+          data_->u_data_[start + 14 + (offset)] = spot_light->Ambient()[2];
+          data_->u_data_[start + 15 + (offset)] = spot_light->Intensity();
+          data_->u_data_[start + 16 + (offset)] = spot_light->Diffuse()[0];
+          data_->u_data_[start + 17 + (offset)] = spot_light->Diffuse()[1];
+          data_->u_data_[start + 18 + (offset)] = spot_light->Diffuse()[2];
+          data_->u_data_[start + 20 + (offset)] = spot_light->Specular()[0];
+          data_->u_data_[start + 21 + (offset)] = spot_light->Specular()[1];
+          data_->u_data_[start + 22 + (offset)] = spot_light->Specular()[2];
+          data_->u_data_[start + 24 + (offset)] = spot_light->Constant();
+          data_->u_data_[start + 25 + (offset)] = spot_light->Linear();
+          data_->u_data_[start + 26 + (offset)] = spot_light->Quadratic();
+          data_->u_data_[start + 28 + (offset)] = spot_light->CutOff();
+          data_->u_data_[start + 29 + (offset)] = spot_light->OuterCutOff();
+
+          for (u32 i = 0; i < 16; ++i) {
+              data_->u_data_[start + i + offset + 32] = light->view_projection_mat_.m[i];
+          }
+
+          data_->light_texture_ids_[data_->current_light_used_textures_] = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
+          data_->light_type[data_->current_light_used_textures_] = 2;
+          data_->current_light_used_textures_++;
+      }
+      else {
+          data_->u_data_[start + 0 + (offset)]  = 0.0f;
+          data_->u_data_[start + 1 + (offset)]  = 0.0f;
+          data_->u_data_[start + 2 + (offset)]  = 0.0f;
+          data_->u_data_[start + 3 + (offset)]  = 0.0f;
+          data_->u_data_[start + 4 + (offset)]  = 0.0f;
+          data_->u_data_[start + 5 + (offset)]  = 0.0f;
+          data_->u_data_[start + 6 + (offset)]  = 0.0f;
+          data_->u_data_[start + 7 + (offset)]  = 0.0f;
+          data_->u_data_[start + 8 + (offset)]  = 0.0f;
+          data_->u_data_[start + 9 + (offset)]  = 0.0f;
+          data_->u_data_[start + 10 + (offset)] = 0.0f;
+          data_->u_data_[start + 12 + (offset)] = 0.0f;
+          data_->u_data_[start + 13 + (offset)] = 0.0f;
+          data_->u_data_[start + 14 + (offset)] = 0.0f;
+          data_->u_data_[start + 15 + (offset)] = 0.0f;
+          data_->u_data_[start + 16 + (offset)] = 0.0f;
+          data_->u_data_[start + 17 + (offset)] = 0.0f;
+          data_->u_data_[start + 18 + (offset)] = 0.0f;
+          data_->u_data_[start + 20 + (offset)] = 0.0f;
+          data_->u_data_[start + 21 + (offset)] = 0.0f;
+          data_->u_data_[start + 22 + (offset)] = 0.0f;
+          data_->u_data_[start + 24 + (offset)] = 0.0f;
+          data_->u_data_[start + 25 + (offset)] = 0.0f;
+          data_->u_data_[start + 26 + (offset)] = 0.0f;
+          data_->u_data_[start + 28 + (offset)] = 0.0f;
+          data_->u_data_[start + 29 + (offset)] = 0.0f;
+
+          for (u32 i = 0; i < 16; ++i) {
+              data_->u_data_[start + i + offset + 32] = 0.0f;
+          }
+      }
+
+      offset += 48;
+      light_index++;
+
+  }
 
   data_->u_data_[56] = number_lights;
 

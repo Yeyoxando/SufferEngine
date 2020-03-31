@@ -25,6 +25,7 @@ Suffer::LightManager::~LightManager() {
 void Suffer::LightManager::StartUp(){
 
   current_lights_ = 0;
+  lights_.alloc(MAX_LIGHTS);
 
 }
 
@@ -324,8 +325,8 @@ Suffer::LightManager::DirectionalLight::DirectionalLight(){
 
   light_kind_ = kLightKind_Directional;
 
+  suffer.light_manager_.lights_[suffer.light_manager_.current_lights_] =  this;
   suffer.light_manager_.current_lights_++;
-  suffer.light_manager_.lights_.push_back(this);
 
 }
 
@@ -351,9 +352,6 @@ Suffer::LightManager::PointLight::PointLight(){
   constant_ = 0.09f;
   quadratic_ = 0.032f;
 
-  light_kind_ = kLightKind_Point;
-
-  auto d = suffer.light_manager_;
   light_kind_ = kLightKind_Point;
 
 }

@@ -150,7 +150,7 @@ namespace Suffer {
     
 
     u32 current_lights_;
-    std::vector<ref_ptr<DirectionalLight>> lights_;
+    Array<ref_ptr<DirectionalLight>> lights_;
 
   };
 

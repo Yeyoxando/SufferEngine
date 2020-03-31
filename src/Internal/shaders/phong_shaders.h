@@ -315,7 +315,7 @@ namespace Suffer {
       float shadow = CalculateShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light.light_tex_pos);
       //shadow += CalculateShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, u_shadow_map1);
 
-      return (ambient + (1.0f - shadow) * (diffuse + specular)) * color.xyz;
+      return (ambient + (1.0f - 0.0) * (diffuse + specular)) * color.xyz;
 
     }
 
@@ -384,29 +384,27 @@ namespace Suffer {
 
 // ......... MAIN ..........
     void main() {
+
       CompoundLights();
       
       vec3 view_dir = normalize(camera_pos - frag_pos);
 
       vec3 directionals = vec3(0.0f, 0.0f, 0.0f);
-      for(int i = 0; i < 4; ++i){
-        if(directional_lights[i].active){
+      for(int i = 0; i < num_directionals; ++i){
+         directional_lights[i].active = false;
+         if(directional_lights[i].active){
             directionals += CalculateDirectionalLight(directional_lights[i], normal, view_dir);
-        }
+         }
       }
        
       vec3 point = vec3(0.0f, 0.0f, 0.0f);
-      for(int i = 0; i < 4; ++i){
-        if(point_lights[i].active){
+      for(int i = 0; i < num_points; ++i){
             point += CalculatePointLight(point_lights[i], normal, view_dir);
-        }
       }
        
       vec3 spot = vec3(0.0f, 0.0f, 0.0f);
-      for(int i = 0; i < 4; ++i){
-        if(spot_lights[i].active){
+      for(int i = 0; i < num_spots; ++i){
             spot += CalculateSpotLight(spot_lights[i], normal);
-        }
       }
 
       vec3 result = directionals + point + spot;
