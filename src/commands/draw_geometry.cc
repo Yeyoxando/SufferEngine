@@ -56,6 +56,10 @@ Suffer::DrawGeometry::DrawGeometry() {
     data_->texture_ids_[i] = -1;
   }
 
+  for (u32 j = 0; j < MAX_LIGHTS; ++j) {
+    data_->light_type[j] = -1;
+  }
+
   data_->material_type_ = MaterialComponent::kParamsType_Invalid;
 
 }
@@ -261,8 +265,8 @@ void Suffer::DrawGeometry::SetLights(){
               data_->u_data_[start + i + offset + 20] = light->view_projection_mat_.m[i];
           }
 
-          data_->light_texture_ids_[data_->current_light_used_textures_] = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
-          data_->light_type[data_->current_light_used_textures_] = 0;
+          data_->light_texture_ids_[i] = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
+          data_->light_type[i] = 0;
           data_->current_light_used_textures_++;
 
       }
@@ -333,8 +337,8 @@ void Suffer::DrawGeometry::SetLights(){
               index += 16;
           }
 
-          data_->light_texture_ids_[data_->current_light_used_textures_] = suffer.resource_manager_.data_->internal_cubemaps_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
-          data_->light_type[data_->current_light_used_textures_] = 1;
+          data_->light_texture_ids_[i] = suffer.resource_manager_.data_->internal_cubemaps_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
+          data_->light_type[i] = 1;
           data_->current_light_used_textures_++;
 
       }
@@ -412,8 +416,8 @@ void Suffer::DrawGeometry::SetLights(){
               data_->u_data_[start + i + offset + 32] = light->view_projection_mat_.m[i];
           }
 
-          data_->light_texture_ids_[data_->current_light_used_textures_] = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
-          data_->light_type[data_->current_light_used_textures_] = 2;
+          data_->light_texture_ids_[i] = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[light->framebuffer_id_].depth_texture_id_].current_texture_id_;
+          data_->light_type[i] = 2;
           data_->current_light_used_textures_++;
       }
       else {

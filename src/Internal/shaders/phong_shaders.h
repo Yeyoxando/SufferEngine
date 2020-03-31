@@ -314,7 +314,7 @@ namespace Suffer {
     // --------------------------------------------------------------------- //
 
     vec3 CalculateDirectionalLight(DirectionalLight light, int light_index, vec3 normal, vec3 view_dir){
-  
+
       vec3 light_dir = normalize(-light.direction);
       
       float diff = max(dot(normal, light_dir), 0.0f);
@@ -418,13 +418,15 @@ namespace Suffer {
 
       vec3 directionals = vec3(0.0f, 0.0f, 0.0f);
       vec3 point = vec3(0.0f, 0.0f, 0.0f);
-     //for(int i = 0; i < max_lights; ++i){
-     //   directionals += CalculateDirectionalLight(GetDirectionalLight(i), i, normal, view_dir) * float(GetDirectionalLight(i).active);
-     //   point += CalculatePointLight(GetPointLight(i), i, normal, view_dir) * float(GetPointLight(i).active);
-     //}
-      // directionals += CalculateDirectionalLight(GetDirectionalLight(0), 0, normal, view_dir) * float(GetDirectionalLight(0).active);
-         point += CalculatePointLight(GetPointLight(0), 0, normal, view_dir) * float(GetPointLight(0).active);
-     
+      //for(int i = 0; i < 1; ++i){
+      //  directionals += CalculateDirectionalLight(GetDirectionalLight(i), i, normal, view_dir) * float(GetDirectionalLight(i).active);
+      //  point += CalculatePointLight(GetPointLight(i), i, normal, view_dir) * float(GetPointLight(i).active);
+      //}
+    
+
+      directionals += CalculateDirectionalLight(GetDirectionalLight(0), 1, normal, view_dir) * float(GetDirectionalLight(0).active);
+      directionals += CalculateDirectionalLight(GetDirectionalLight(1), 1, normal, view_dir) * float(GetDirectionalLight(1).active);
+      point += CalculatePointLight(GetPointLight(0), 0, normal, view_dir) * float(GetPointLight(0).active);
 
       //vec3 spot = vec3(0.0f, 0.0f, 0.0f);
       //for(int i = 0; i < num_spots; ++i){
