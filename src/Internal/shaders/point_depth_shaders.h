@@ -8,7 +8,7 @@ namespace Suffer {
   // ------------------------- PointShadowDepthShaders -------------------------- //
   // -- (vertex) --
   static const char* point_shadow_depth_vertex_shader_ = R"VPOINTDEPTH(
-    #version 330
+    #version 440
     layout(location = 0) in vec3 a_position;
     
 // ......... UNIFORMS .........
@@ -32,7 +32,7 @@ namespace Suffer {
 
   // -- (geometry) --
   static const char* point_shadow_depth_geometry_shader_ = R"GPOINTDEPTH(
-        #version 330
+        #version 440
         layout (triangles) in;
         layout (triangle_strip, max_vertices=18) out;
 
@@ -79,7 +79,7 @@ namespace Suffer {
 
   // -- (fragment) --
   static const char* point_shadow_depth_fragment_shader_ = R"FPOINTDEPTH(
-    #version 330
+    #version 440
 
 // ......... UNIFORMS .........
     uniform vec4 u_data[29];

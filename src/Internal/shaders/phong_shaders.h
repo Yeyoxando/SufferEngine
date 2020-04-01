@@ -343,7 +343,7 @@ namespace Suffer {
 
         vec3 fragToLight = frag_pos - light_pos;
         float closestDepth = texture(GetPointLightTexture(light_index), fragToLight).r;
-        closestDepth *= 25.0f; // 25.0f == FAR PLANE -> LOOK system_light
+        closestDepth *= 100.0f; // 25.0f == FAR PLANE -> LOOK system_light
         float currentDepth = length(fragToLight);
         //float bias = 0.05;
         float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);

@@ -121,7 +121,7 @@ void Suffer::SystemLight::Execute(GameObject* go) {
         case Suffer::LightManager::LightKind::kLightKind_Point: {
 
             // Take a look in the shaders;
-            float far_plane = 25.0f;
+            float far_plane = 100.0f;
 
             auto point_light = static_cast<Suffer::LightManager::PointLight*>(light_component->reference_);
             if (point_light == nullptr) {

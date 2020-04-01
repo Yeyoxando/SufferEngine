@@ -8,7 +8,7 @@ namespace Suffer {
   // ----------------------- RenderToTextureShaders ------------------------ //
   // -- (vertex) --
   static const char* render_to_texture_vertex_ = R"VTOTEXTURE(
-    #version 330
+    #version 440
     layout(location = 0) in vec3 a_position;
     layout(location = 1) in vec3 a_normal;
     layout(location = 2) in vec2 a_uvs;
@@ -28,7 +28,7 @@ namespace Suffer {
 
   // -- (fragment) --
   static const char* render_to_texture_fragment_ = R"FTOTEXTURE(
-    #version 330
+    #version 440
 
 // ....... IN / OUT ........
     in vec2 tex_coords;
@@ -53,7 +53,7 @@ namespace Suffer {
   // ------------------------ BlackAndWhiteShaders ------------------------- //
   // -- (vertex) --
   static const char* black_and_white_vertex_ = R"VBLACKWHITE(
-    #version 330
+    #version 440
     layout(location = 0) in vec3 a_position;
     layout(location = 1) in vec3 a_normal;
     layout(location = 2) in vec2 a_uvs;
@@ -73,7 +73,7 @@ namespace Suffer {
 
   // -- (fragment) --
   static const char* black_and_white_fragment_ = R"FBLACKWHITE(
-    #version 330
+    #version 440
 
 // ....... IN / OUT ........
     in vec2 tex_coords;

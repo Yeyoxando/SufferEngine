@@ -8,7 +8,7 @@ namespace Suffer {
   // ------------------------- ShadowDepthShaders -------------------------- //
   // -- (vertex) --
   static const char* shadow_depth_vertex_shader_ = R"VSHADOWDEPTH(
-    #version 330
+    #version 440
     layout(location = 0) in vec3 a_position;
     
 // ......... UNIFORMS .........
@@ -46,7 +46,7 @@ namespace Suffer {
 
   // -- (fragment) --
   static const char* shadow_depth_fragment_shader_ = R"FSHADOWDEPTH(
-    #version 330
+    #version 440
 
 // ......... MAIN ..........
     void main(){

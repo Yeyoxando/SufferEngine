@@ -772,6 +772,7 @@ void  Suffer::Interface::Inspector(){
 							LightComponent* light = static_cast<LightComponent*>(component_reference);
 							ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.7f, 1.0f), ICON_FA_LIGHTBULB " Light");
 							ImGui::SameLine();
+							ImGui::PushID(Suffer::Component::kComponentKind_Light);
 							if (ImGui::SmallButton("Remove")) {
 									remove = true;
 									component_to_remove = Suffer::Component::kComponentKind_Light;
@@ -950,7 +951,8 @@ void  Suffer::Interface::Inspector(){
 											break;
 									}
 							}
-						ImGui::Separator();
+							ImGui::PopID();
+							ImGui::Separator();
 						break;
 					}
 					default: {

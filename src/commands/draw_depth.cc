@@ -312,7 +312,7 @@ void Suffer::DrawDepth::Execute() const {
 
   {
 
-    glCullFace(GL_FRONT);
+    //glCullFace(GL_FRONT);
 
     u32 number_elements = suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_id_].data_.size();
 

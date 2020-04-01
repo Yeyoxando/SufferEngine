@@ -57,7 +57,7 @@ void Suffer::ShadowCubemap::Execute() const{
 
   if (suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].gpu_version_ < suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].version_) {
 
-    glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
+    //glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
 
     // --------------------------- IsTextureCreated -------------------------- //
     

@@ -24,215 +24,269 @@
 
 int main(int argc, char* argv[]) {
 
-  suffer.Init();
+    suffer.Init();
 
-  Suffer::ref_ptr<Suffer::Scene> scene;
-  scene.alloc();
+    Suffer::ref_ptr<Suffer::Scene> scene;
+    scene.alloc();
 
-  // Textures
-  Suffer::ref_ptr<Suffer::ResourceManager::Texture> albedo_texture;
-  albedo_texture.alloc();
-  albedo_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
-  albedo_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-  albedo_texture->LoadTextureData("../../../resources/images/box_2.png");
+    // Textures
+    Suffer::ref_ptr<Suffer::ResourceManager::Texture> albedo_texture;
+    albedo_texture.alloc();
+    albedo_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
+    albedo_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+    albedo_texture->LoadTextureData("../../../resources/images/box_2.png");
 
-  Suffer::ref_ptr<Suffer::ResourceManager::Texture> specular_texture_box;
-  specular_texture_box.alloc();
-  specular_texture_box->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-  specular_texture_box->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-  specular_texture_box->LoadTextureData("../../../resources/images/box_2_spec.png");
-
-
-  // -------------------------------- COMPONENTS STUFF TESTS ------------------------------//
-
-  Suffer::ref_ptr<Suffer::GameObject> go_cube;
-  go_cube.alloc();
-
-  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_cube;
-  geometry_component_cube.alloc();
-  geometry_component_cube->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
-  geometry_component_cube->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
-  go_cube->AddComponent(geometry_component_cube.get());
-
-  Suffer::ref_ptr<Suffer::MaterialComponent> material_component_cube;
-  material_component_cube.alloc();
-  Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params_cube;
-  material_params_cube.alloc();
-  material_params_cube->color_ = mathmorra::Vector4(0.5f, 1.0f, 1.0f, 1.0f);
-  material_component_cube->SetParams(material_params_cube.get());
-  go_cube->AddComponent(material_component_cube.get());
-
-  Suffer::ref_ptr<Suffer::Transform> transform_component_cube;
-  transform_component_cube.alloc();
-  transform_component_cube->Translate(mathmorra::Vector3(0.0f, 1.0f, 0.0f));
-  transform_component_cube->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
-  go_cube->AddComponent(transform_component_cube.get());
+    Suffer::ref_ptr<Suffer::ResourceManager::Texture> specular_texture_box;
+    specular_texture_box.alloc();
+    specular_texture_box->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
+    specular_texture_box->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+    specular_texture_box->LoadTextureData("../../../resources/images/box_2_spec.png");
 
 
-  // -------------------------------------------------------------------------------------//
+    // -------------------------------- COMPONENTS STUFF TESTS ------------------------------//
 
-  Suffer::ref_ptr<Suffer::GameObject> go_quad;
-  go_quad.alloc();
+    Suffer::ref_ptr<Suffer::GameObject> go_cube;
+    go_cube.alloc();
 
-  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component2;
-  geometry_component2.alloc();
-  geometry_component2->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
-  geometry_component2->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Quad);
-  go_quad->AddComponent(geometry_component2.get());
+    Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_cube;
+    geometry_component_cube.alloc();
+    geometry_component_cube->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+    geometry_component_cube->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
+    go_cube->AddComponent(geometry_component_cube.get());
 
-  Suffer::ref_ptr<Suffer::MaterialComponent> material_component2;
-  material_component2.alloc();
-  Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params2;
-  material_params2.alloc();
-  material_params2->color_ = mathmorra::Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-  material_component2->SetParams(material_params2.get());
-  go_quad->AddComponent(material_component2.get());
+    Suffer::ref_ptr<Suffer::MaterialComponent> material_component_cube;
+    material_component_cube.alloc();
+    Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_params_cube;
+    material_params_cube.alloc();
+    material_params_cube->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+    material_params_cube->albedo_texture_id_ = albedo_texture->id_;
+    material_params_cube->specular_texture_id_ = specular_texture_box->id_;
+    material_component_cube->SetParams(material_params_cube.get());
+    go_cube->AddComponent(material_component_cube.get());
 
-  Suffer::ref_ptr<Suffer::Transform> transform_component_2;
-  transform_component_2.alloc();
-  transform_component_2->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
-  transform_component_2->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
-  transform_component_2->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, 0.0f));
-  go_quad->AddComponent(transform_component_2.get());
-
-
-
-
-  Suffer::ref_ptr<Suffer::GameObject> go_quad2;
-  go_quad2.alloc();
+    Suffer::ref_ptr<Suffer::Transform> transform_component_cube;
+    transform_component_cube.alloc();
+    transform_component_cube->Translate(mathmorra::Vector3(0.0f, 1.0f, 0.0f));
+    transform_component_cube->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+    go_cube->AddComponent(transform_component_cube.get());
 
 
-  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component4;
-  geometry_component4.alloc();
-  geometry_component4->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
-  geometry_component4->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Quad);
-  go_quad2->AddComponent(geometry_component4.get());
+    // -------------------------------------------------------------------------------------//
 
-  Suffer::ref_ptr<Suffer::MaterialComponent> material_component4;
-  material_component4.alloc();
-  Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params4;
-  material_params4.alloc();
-  material_params4->color_ = mathmorra::Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-  material_component4->SetParams(material_params4.get());
-  go_quad2->AddComponent(material_component4.get());
+    Suffer::ref_ptr<Suffer::GameObject> go_quad;
+    go_quad.alloc();
 
-  Suffer::ref_ptr<Suffer::Transform> transform_component_5;
-  transform_component_5.alloc();
-  transform_component_5->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
-  transform_component_5->Translate(mathmorra::Vector3(0.0f, 20.0f, 20.0f));
-  transform_component_5->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
-  go_quad2->AddComponent(transform_component_5.get());
+    Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component2;
+    geometry_component2.alloc();
+    geometry_component2->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+    geometry_component2->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Quad);
+    go_quad->AddComponent(geometry_component2.get());
 
-  // -------------------------------------------------------------------------------------//
-   
-  Suffer::ref_ptr<Suffer::GameObject> go_light;
-  go_light.alloc();
+    Suffer::ref_ptr<Suffer::MaterialComponent> material_component2;
+    material_component2.alloc();
+    Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params2;
+    material_params2.alloc();
+    material_params2->color_ = mathmorra::Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+    material_component2->SetParams(material_params2.get());
+    go_quad->AddComponent(material_component2.get());
 
-  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component3;
-  geometry_component3.alloc();
-  geometry_component3->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
-  geometry_component3->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
-  go_light->AddComponent(geometry_component3.get());
-
-  Suffer::ref_ptr<Suffer::MaterialComponent> material_component3;
-  material_component3.alloc();
-  Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params3;
-  material_params3.alloc();
-  material_params3->color_ = mathmorra::Vector4(1.0f, 0.5f, 1.0f, 1.0f);
-  material_component3->SetParams(material_params3.get());
-  go_light->AddComponent(material_component3.get());
-
-  Suffer::ref_ptr<Suffer::Transform> transform_component_3;
-  transform_component_3.alloc();
-  transform_component_3->Scale(mathmorra::Vector3(1.0f, 1.0f, 1.0f));
-  transform_component_3->Translate(mathmorra::Vector3(5.0f, 5.0f, 5.0f));
-  transform_component_3->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, ThiefUtils::Math::Radians(180.0f)));
-  go_light->AddComponent(transform_component_3.get());
-
-  Suffer::ref_ptr<Suffer::LightComponent> light_component;
-  light_component.alloc();
-
-  light_component->Init(Suffer::LightComponent::kLightKind_Point);
-  light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-  light_component->SetIntensity(1.0f);
-  light_component->SetAmbient(0.5f, 0.5f, 0.5f);
-  light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
-  light_component->SetSpecular(1.0f, 1.0f, 1.0f);
-  //go_light->AddComponent(light_component.get());
-
-  // -------------------------------------------------------------------------------------//
-
-  Suffer::ref_ptr<Suffer::GameObject> go_light2;
-  go_light2.alloc();
-
-  go_light2->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
-
-  Suffer::Transform* transform = static_cast<Suffer::Transform*>(go_light2->GetComponent(Suffer::Component::kComponentKind_Transform));
-  transform->Translate(mathmorra::Vector3(-5.0f, 5.0f, -5.0f));
-
-  Suffer::ref_ptr<Suffer::LightComponent> light_component2;
-  light_component2.alloc();
-
-  light_component2->Init(Suffer::LightComponent::kLightKind_Directional);
-  light_component2->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-  light_component2->SetIntensity(1.0f);
-  light_component2->SetAmbient(0.5f, 0.5f, 0.5f);
-  light_component2->SetDiffuse(1.0f, 1.0f, 1.0f);
-  light_component2->SetSpecular(1.0f, 1.0f, 1.0f);
-  go_light2->AddComponent(light_component2.get());
-
-  // -------------------------------------------------------------------------------------//
+    Suffer::ref_ptr<Suffer::Transform> transform_component_2;
+    transform_component_2.alloc();
+    transform_component_2->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
+    transform_component_2->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+    transform_component_2->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, 0.0f));
+    go_quad->AddComponent(transform_component_2.get());
 
 
-  Suffer::ref_ptr<Suffer::Transform> transform_component_4;
-  transform_component_4.alloc();
-  transform_component_4->Scale(mathmorra::Vector3(1.0f, 1.0f, 1.0f));
-  transform_component_4->Translate(mathmorra::Vector3(0.0f, 5.0f, 0.0f));
-
-  //Suffer::ref_ptr<Suffer::ScriptComponent> script_component_;
-  //script_component_.alloc();
-  //go_rotator->AddComponent(script_component_.get());
-  //script_component_->AttachScript("../../../src/lua/lua_rotator.lua");
-
-  //go_rotator->AddChild(go_light);
-
-  // -------------------------------------------------------------------------------------//
-
-  Suffer::ref_ptr<Suffer::ScriptComponent> script;
-  script.alloc();
-  go_cube->AddComponent(script.get());
-  script->AttachScript("../../../src/lua/lua_test_update.lua");
-
-  //Suffer::ref_ptr<Suffer::Audio3D> audio_component_;
-  //audio_component_.alloc();
-  //audio_component_->Load("../../../resources/audio/crossfade/wing_cap.ogg");
-  //audio_component_->SetLooping(true);
-  //audio_component_->Play3D();
-  //go_cube->AddComponent(audio_component_.get());
-
-  go_quad->SetName("Floor");
-  go_quad2->SetName("Wall");
-  go_cube->SetName("Box");
-  go_light->SetName("PointLight");
-  go_light2->SetName("DirectionalLight");
-
-  go_cube->AddChild(go_light.get());
-  go_cube->AddChild(go_light2.get());
-
-  scene->AddGameObject(go_cube);
-  scene->AddGameObject(go_quad);
-  scene->AddGameObject(go_quad2);
-  scene->AddGameObject(go_light);
-  scene->AddGameObject(go_light2);
-
-  suffer.SetScene(scene);
 
 
-  suffer.Run();
+    Suffer::ref_ptr<Suffer::GameObject> go_quad4;
+    go_quad4.alloc();
+    Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component6;
+    geometry_component6.alloc();
+    geometry_component6->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+    geometry_component6->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Quad);
+    go_quad4->AddComponent(geometry_component6.get());
 
-  suffer.Finish();
+    Suffer::ref_ptr<Suffer::MaterialComponent> material_component6;
+    material_component6.alloc();
+    Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params6;
+    material_params6.alloc();
+    material_params6->color_ = mathmorra::Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+    material_component6->SetParams(material_params6.get());
+    go_quad4->AddComponent(material_component6.get());
 
-  return 0;
+    Suffer::ref_ptr<Suffer::Transform> transform_component_7;
+    transform_component_7.alloc();
+    transform_component_7->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
+    transform_component_7->Translate(mathmorra::Vector3(-10.0f, 20.0f, 0.0f));
+    transform_component_7->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(90.0f), 0.0f));
+    go_quad4->AddComponent(transform_component_7.get());
+
+
+
+
+    Suffer::ref_ptr<Suffer::GameObject> go_quad2;
+    go_quad2.alloc();
+
+    Suffer::ref_ptr<Suffer::GameObject> go_quad3;
+    go_quad3.alloc();
+    Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component5;
+    geometry_component5.alloc();
+    geometry_component5->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+    geometry_component5->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Quad);
+    go_quad3->AddComponent(geometry_component5.get());
+
+    Suffer::ref_ptr<Suffer::MaterialComponent> material_component5;
+    material_component5.alloc();
+    Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params5;
+    material_params5.alloc();
+    material_params5->color_ = mathmorra::Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+    material_component5->SetParams(material_params5.get());
+    go_quad3->AddComponent(material_component5.get());
+
+    Suffer::ref_ptr<Suffer::Transform> transform_component_6;
+    transform_component_6.alloc();
+    transform_component_6->Scale(mathmorra::Vector3(20.0f, -20.0f, 20.0f));
+    transform_component_6->Translate(mathmorra::Vector3(10.0f, 20.0f, 0.0f));
+    transform_component_6->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(90.0f), 0.0f));
+    go_quad3->AddComponent(transform_component_6.get());
+
+
+    Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component4;
+    geometry_component4.alloc();
+    geometry_component4->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+    geometry_component4->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Quad);
+    go_quad2->AddComponent(geometry_component4.get());
+
+    Suffer::ref_ptr<Suffer::MaterialComponent> material_component4;
+    material_component4.alloc();
+    Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params4;
+    material_params4.alloc();
+    material_params4->color_ = mathmorra::Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+    material_component4->SetParams(material_params4.get());
+    go_quad2->AddComponent(material_component4.get());
+
+    Suffer::ref_ptr<Suffer::Transform> transform_component_5;
+    transform_component_5.alloc();
+    transform_component_5->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
+    transform_component_5->Translate(mathmorra::Vector3(0.0f, 20.0f, 10.0f));
+    transform_component_5->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+    go_quad2->AddComponent(transform_component_5.get());
+
+    // -------------------------------------------------------------------------------------//
+
+    Suffer::ref_ptr<Suffer::GameObject> go_light;
+    go_light.alloc();
+
+    Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component3;
+    geometry_component3.alloc();
+    geometry_component3->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+    geometry_component3->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
+    go_light->AddComponent(geometry_component3.get());
+
+    Suffer::ref_ptr<Suffer::MaterialComponent> material_component3;
+    material_component3.alloc();
+    Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params3;
+    material_params3.alloc();
+    material_params3->color_ = mathmorra::Vector4(1.0f, 0.5f, 1.0f, 1.0f);
+    material_component3->SetParams(material_params3.get());
+    go_light->AddComponent(material_component3.get());
+
+    Suffer::ref_ptr<Suffer::Transform> transform_component_3;
+    transform_component_3.alloc();
+    transform_component_3->Scale(mathmorra::Vector3(1.0f, 1.0f, 1.0f));
+    transform_component_3->Translate(mathmorra::Vector3(5.0f, 5.0f, 5.0f));
+    transform_component_3->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, ThiefUtils::Math::Radians(180.0f)));
+    go_light->AddComponent(transform_component_3.get());
+
+    Suffer::ref_ptr<Suffer::LightComponent> light_component;
+    light_component.alloc();
+
+    light_component->Init(Suffer::LightComponent::kLightKind_Point);
+    light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+    light_component->SetIntensity(4.0f);
+    light_component->SetAmbient(0.5f, 0.5f, 0.5f);
+    light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
+    light_component->SetSpecular(1.0f, 1.0f, 1.0f);
+    go_light->AddComponent(light_component.get());
+
+    // -------------------------------------------------------------------------------------//
+
+    Suffer::ref_ptr<Suffer::GameObject> go_light2;
+    go_light2.alloc();
+
+    go_light2->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+
+    Suffer::Transform* transform = static_cast<Suffer::Transform*>(go_light2->GetComponent(Suffer::Component::kComponentKind_Transform));
+    transform->Translate(mathmorra::Vector3(-5.0f, 5.0f, -5.0f));
+
+    Suffer::ref_ptr<Suffer::LightComponent> light_component2;
+    light_component2.alloc();
+
+    light_component2->Init(Suffer::LightComponent::kLightKind_Directional);
+    light_component2->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+    light_component2->SetIntensity(0.2f);
+    light_component2->SetAmbient(0.5f, 0.5f, 0.5f);
+    light_component2->SetDiffuse(1.0f, 1.0f, 1.0f);
+    light_component2->SetSpecular(1.0f, 1.0f, 1.0f);
+    go_light2->AddComponent(light_component2.get());
+    light_component2->SetActive(true);
+
+    // -------------------------------------------------------------------------------------//
+
+
+    Suffer::ref_ptr<Suffer::Transform> transform_component_4;
+    transform_component_4.alloc();
+    transform_component_4->Scale(mathmorra::Vector3(1.0f, 1.0f, 1.0f));
+    transform_component_4->Translate(mathmorra::Vector3(0.0f, 5.0f, 0.0f));
+
+    //Suffer::ref_ptr<Suffer::ScriptComponent> script_component_;
+    //script_component_.alloc();
+    //go_rotator->AddComponent(script_component_.get());
+    //script_component_->AttachScript("../../../src/lua/lua_rotator.lua");
+
+    //go_rotator->AddChild(go_light);
+
+    // -------------------------------------------------------------------------------------//
+
+    Suffer::ref_ptr<Suffer::ScriptComponent> script;
+    script.alloc();
+    go_cube->AddComponent(script.get());
+    script->AttachScript("../../../src/lua/lua_test_update.lua");
+
+    //Suffer::ref_ptr<Suffer::Audio3D> audio_component_;
+    //audio_component_.alloc();
+    //audio_component_->Load("../../../resources/audio/crossfade/wing_cap.ogg");
+    //audio_component_->SetLooping(true);
+    //audio_component_->Play3D();
+    //go_cube->AddComponent(audio_component_.get());
+
+    go_quad->SetName("Floor");
+    go_quad2->SetName("Wall");
+    go_cube->SetName("Box");
+    go_light->SetName("PointLight");
+    go_light2->SetName("DirectionalLight");
+
+    go_cube->AddChild(go_light.get());
+    go_cube->AddChild(go_light2.get());
+
+    scene->AddGameObject(go_cube);
+    scene->AddGameObject(go_quad);
+    scene->AddGameObject(go_quad2);
+    scene->AddGameObject(go_quad3);
+    scene->AddGameObject(go_quad4);
+    scene->AddGameObject(go_light);
+    scene->AddGameObject(go_light2);
+
+    suffer.SetScene(scene);
+
+
+    suffer.Run();
+
+    suffer.Finish();
+
+    return 0;
 
 }
 

@@ -9,7 +9,7 @@ namespace Suffer {
 
   // -- (vertex) --
   static const char* default_vertex_shader_ = R"VDEFAULTSHADER(
-    #version 330
+    #version 440
 
     layout(location = 0) in vec3 a_position;
     layout(location = 1) in vec3 a_normal;
@@ -68,7 +68,7 @@ namespace Suffer {
 
   // -- (fragment) --
   static const char* default_fragment_shader_ = R"FSHADER(
-    #version 330
+    #version 440
  
 // ....... STRUCTS ........
     struct DirectionalLight{
@@ -250,7 +250,7 @@ namespace Suffer {
 
         vec3 fragToLight = frag_pos - light_position;
         float closestDepth = texture(u_cubelight_textures[shadow_map_pos], fragToLight).r;
-        closestDepth *= 25.0f; // 25.0f == FAR PLANE -> LOOK system_light
+        closestDepth *= 100.0f; // 25.0f == FAR PLANE -> LOOK system_light
         float currentDepth = length(fragToLight);
         float bias = 0.05;
         //float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
