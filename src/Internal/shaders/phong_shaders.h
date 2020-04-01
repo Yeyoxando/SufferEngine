@@ -345,9 +345,9 @@ namespace Suffer {
         float closestDepth = texture(GetPointLightTexture(light_index), fragToLight).r;
         closestDepth *= 100.0f; // 25.0f == FAR PLANE -> LOOK system_light
         float currentDepth = length(fragToLight);
-        float bias = 0.05;
-        //float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
-        float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
+        //float bias = 0.5f;
+        float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
+        float shadow = currentDepth - bias > closestDepth ? 1.0f : 0.0f;
 
         return shadow;
     } 

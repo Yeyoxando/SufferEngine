@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_cube;
     transform_component_cube.alloc();
-    transform_component_cube->Translate(mathmorra::Vector3(0.0f, 5.0f, 0.0f));
+    transform_component_cube->Translate(mathmorra::Vector3(0.0f, 2.0f, 0.0f));
     transform_component_cube->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
     go_cube->AddComponent(transform_component_cube.get());
 
@@ -86,15 +86,15 @@ int main(int argc, char* argv[]) {
     material_component2.alloc();
     Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params2;
     material_params2.alloc();
-    material_params2->color_ = mathmorra::Vector4(0.4f, 0.4f, 0.4f, 1.0f);
+    material_params2->color_ = mathmorra::Vector4(0.8f, 0.8f, 0.8f, 1.0f);
     material_component2->SetParams(material_params2.get());
     go_quad->AddComponent(material_component2.get());
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_2;
     transform_component_2.alloc();
-    transform_component_2->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
+    transform_component_2->Scale(mathmorra::Vector3(20.0f, -20.0f, 20.0f));
     transform_component_2->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
-    transform_component_2->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, 0.0f));
+    transform_component_2->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(90.0f), 0.0f, 0.0f));
     go_quad->AddComponent(transform_component_2.get());
 
 
@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
     material_component6.alloc();
     Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params6;
     material_params6.alloc();
-    material_params6->color_ = mathmorra::Vector4(1.0f, 1.0f, 0.0f, 1.0f);
+    material_params6->color_ = mathmorra::Vector4(1.0f, 0.0f, 0.0f, 1.0f);
     material_component6->SetParams(material_params6.get());
     go_quad4->AddComponent(material_component6.get());
 
@@ -141,15 +141,15 @@ int main(int argc, char* argv[]) {
     material_component5.alloc();
     Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params5;
     material_params5.alloc();
-    material_params5->color_ = mathmorra::Vector4(1.0f, 1.0f, 0.0f, 1.0f);
+    material_params5->color_ = mathmorra::Vector4(1.0f, 0.0f, 0.0f, 1.0f);
     material_component5->SetParams(material_params5.get());
     go_quad3->AddComponent(material_component5.get());
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_6;
     transform_component_6.alloc();
-    transform_component_6->Scale(mathmorra::Vector3(20.0f, -20.0f, 20.0f));
+    transform_component_6->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
     transform_component_6->Translate(mathmorra::Vector3(10.0f, 20.0f, 0.0f));
-    transform_component_6->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(90.0f), 0.0f));
+    transform_component_6->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-90.0f), 0.0f));
     go_quad3->AddComponent(transform_component_6.get());
 
 
@@ -163,7 +163,7 @@ int main(int argc, char* argv[]) {
     material_component4.alloc();
     Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params4;
     material_params4.alloc();
-    material_params4->color_ = mathmorra::Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+    material_params4->color_ = mathmorra::Vector4(1.0f, 1.0f, 0.0f, 1.0f);
     material_component4->SetParams(material_params4.get());
     go_quad2->AddComponent(material_component4.get());
 
