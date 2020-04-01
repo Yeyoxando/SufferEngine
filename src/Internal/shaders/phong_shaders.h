@@ -5,8 +5,6 @@
 
 namespace Suffer {
 
-
-
   // ---------------------------- PhongShaders ----------------------------- //
 
   // -- (vertex) --
@@ -21,42 +19,24 @@ namespace Suffer {
     uniform vec4 u_data[222];
 
 // ......... DEFINES ..........
-    #define model0 u_data[0]
-    #define model1 u_data[1]
-    #define model2 u_data[2]
-    #define model3 u_data[3]
+    #define u_m_matrix mat4(u_data[0], u_data[1], u_data[2], u_data[3])
 
-    #define view0 u_data[4]
-    #define view1 u_data[5]
-    #define view2 u_data[6]
-    #define view3 u_data[7]
+    #define u_v_matrix mat4(u_data[4], u_data[5], u_data[6], u_data[7])
 
-    #define projection0 u_data[8]
-    #define projection1 u_data[9]
-    #define projection2 u_data[10]
-    #define projection3 u_data[11]
-
-    #define u_color u_data[12]
+    #define u_p_matrix mat4(u_data[8], u_data[9], u_data[10], u_data[11])
 
     #define u_time u_data[13].x
 
 // ....... IN / OUT ........
-    out vec4 color;
     out vec3 normal;
     out vec3 frag_pos;
     out vec2 uvs;
     out float time;
 
-
 // ......... MAIN ..........
-    void main(){
-      mat4 u_m_matrix = mat4(model0, model1, model2, model3);
-      mat4 u_v_matrix = mat4(view0, view1, view2, view3);
-      mat4 u_p_matrix = mat4(projection0, projection1, projection2, projection3);      
-
+    void main(){  
       mat4 accum_matrix = u_p_matrix * u_v_matrix * u_m_matrix;
 
-      color = u_color;
       normal = normalize((accum_matrix * vec4(a_normal, 0.0))).xyz; 
       frag_pos = (u_m_matrix * vec4(a_position, 1.0f)).xyz;
       uvs = a_uvs;
@@ -73,69 +53,64 @@ namespace Suffer {
     #version 330
  
 // ....... STRUCTS ........
+    // DIRECTIONAL LIGHT
     struct DirectionalLight{
-      vec3 direction;
-    
       vec3 specular;
       vec3 diffuse;
       vec3 ambient;
       vec3 color;
+    
+      vec3 direction;
 
       bool active;
-
-      mat4 view_projection_matrix;
-
       float intensity;
 
+      mat4 view_projection_matrix;
     };
 
+    // POINT LIGHT
     struct PointLight{
-      vec3 position;
-
       vec3 specular;
       vec3 diffuse;
       vec3 ambient;
       vec3 color;
+    
+      vec3 position;
 
       bool active;
+      float intensity;   
 
       float constant;
       float linear;
       float quadratic;
 
       mat4 view_projection_matrix[6];
-
-      float intensity;      
-
     };
 
+    // SPOT LIGHT
     struct SpotLight{
-      vec3 direction;
-      vec3 position;
-      float cutOff;
-      float outerCutOff;
-
       vec3 specular;
       vec3 diffuse;
       vec3 ambient;
       vec3 color;
-
-      bool active;
+    
+      vec3 position;
+      vec3 direction;
 
       float constant;
       float linear;
       float quadratic;
+      float cutOff;
+      float outerCutOff;
 
-      mat4 view_projection_matrix;
-
+      bool active;
       float intensity;      
 
+      mat4 view_projection_matrix;
     };
 
 // ......... UNIFORMS .........
     uniform vec4 u_data[222];
-    
-    #define max_lights 4
 
     uniform sampler2D u_dir_light_texture0;
     uniform sampler2D u_dir_light_texture1;
@@ -153,17 +128,19 @@ namespace Suffer {
     uniform sampler2D u_spot_light_texture3;
 
 // ......... DEFINES ..........
+    #define u_color u_data[12]
+
     #define camera_pos vec3(u_data[13].x, u_data[13].y, u_data[13].z)
+
+    
+    #define max_lights 4
 
     #define num_lights u_data[14].x
     #define num_directionals u_data[14].y
     #define num_points u_data[14].z
     #define num_spots u_data[14].w
-  
-    #define start 15
 
 // ....... IN / OUT ........
-    in vec4 color;
     in vec3 normal;
     in vec3 frag_pos;
     in vec2 uvs;
@@ -171,9 +148,8 @@ namespace Suffer {
 
     out vec4 fragColor;
 
-// ....... VARIABLES ........
-
 // ....... FUNCTIONS ........
+    // DIRECTIONALS
     DirectionalLight GetDirectionalLight(int index){
       DirectionalLight d_light;
       int offset = 9 * index;
@@ -193,12 +169,10 @@ namespace Suffer {
                                             u_data[18 + offset + 7], 
                                             u_data[18 + offset + 8]);
 
-
       return d_light;
     }
 
     sampler2D GetDirectionalLightTexture(int index){
-      
       if(index == 0){
         return u_dir_light_texture0;
       }
@@ -211,9 +185,11 @@ namespace Suffer {
       if(index == 3){
         return u_dir_light_texture3;
       }
-
     }
+    
+// --------------------------------------------------------------------- //
 
+    // POINTS
     PointLight GetPointLight(int index){
       PointLight p_light;
       int offset = 30 * index;
@@ -225,9 +201,9 @@ namespace Suffer {
       p_light.intensity =      u_data[54 + 2 + offset].a;
       p_light.diffuse   = vec3(u_data[54 + 3 + offset].x, u_data[54 + 3 + offset].y, u_data[54 + 3 + offset].z);
       p_light.specular  = vec3(u_data[54 + 4 + offset].x, u_data[54 + 4 + offset].y, u_data[54 + 4 + offset].z);
-      p_light.constant  = u_data[54 + 5 + offset].x;
-      p_light.linear    = u_data[54 + 5 + offset].y;
-      p_light.quadratic = u_data[54 + 5 + offset].z;
+      p_light.constant  =      u_data[54 + 5 + offset].x;
+      p_light.linear    =      u_data[54 + 5 + offset].y;
+      p_light.quadratic =      u_data[54 + 5 + offset].z;
 
       // View-Projection Matrices
       for(int f = 0; f < 6; f++){
@@ -236,7 +212,6 @@ namespace Suffer {
                                                  u_data[54 + 8 + offset + (4 * f)], 
                                                  u_data[54 + 9 + offset + (4 * f)]);
       }
-
       return p_light;
     }
 
@@ -255,7 +230,9 @@ namespace Suffer {
       }
     }
 
-    // --------------------------------------------------------------------- //
+// --------------------------------------------------------------------- //
+
+    // SPOTS
     SpotLight GetSpotLight(int index){
       SpotLight s_light;
       int offset = 12 * index;
@@ -268,11 +245,11 @@ namespace Suffer {
       s_light.ambient   = vec3(u_data[174 + 3 + offset].x, u_data[174 + 3 + offset].y, u_data[174 + 3 + offset].z);
       s_light.diffuse   = vec3(u_data[174 + 4 + offset].x, u_data[174 + 4 + offset].y, u_data[174 + 4 + offset].z);
       s_light.specular  = vec3(u_data[174 + 5 + offset].x, u_data[174 + 5 + offset].y, u_data[174 + 5 + offset].z);
-      s_light.constant  = u_data[174 + 6 + offset].x;
-      s_light.linear    = u_data[174 + 6 + offset].y;
-      s_light.quadratic = u_data[174 + 6 + offset].z;
-      s_light.cutOff    = u_data[174 + 7 + offset].x;
-      s_light.outerCutOff = u_data[174 + 7 + offset].y; 
+      s_light.constant  =      u_data[174 + 6 + offset].x;
+      s_light.linear    =      u_data[174 + 6 + offset].y;
+      s_light.quadratic =      u_data[174 + 6 + offset].z;
+      s_light.cutOff    =      u_data[174 + 7 + offset].x;
+      s_light.outerCutOff =    u_data[174 + 7 + offset].y; 
 
       // View-Projection Matrix
       s_light.view_projection_matrix = mat4(u_data[174 + offset + 8], 
@@ -297,7 +274,7 @@ namespace Suffer {
       }
     }
 
-    // --------------------------------------------------------------------- //
+// --------------------------------------------------------------------- //
 
     float CalculateShadow(vec4 frag_pos_light_space, vec3 light_dir, int light_index){
       // Clip projection coords
@@ -311,16 +288,14 @@ namespace Suffer {
       // Compare current and closest to check if its in shadow or not
       //float bias = 0.002f;
       float bias = max(0.003f * (1.0f - dot(normal, light_dir)), 0.001f);
-      //float shadow = current_depth > closest_depth ? 1.0f : 0.0f;
       float shadow = (current_depth - bias) > closest_depth ? 1.0f : 0.0f;
 
       return shadow;
     }
 
-    // --------------------------------------------------------------------- //
+// --------------------------------------------------------------------- //
 
     vec3 CalculateDirectionalLight(DirectionalLight light, int light_index, vec3 normal, vec3 view_dir){
-
       vec3 light_dir = normalize(-light.direction);
       
       float diff = max(dot(normal, light_dir), 0.0f);
@@ -333,17 +308,15 @@ namespace Suffer {
       
       float shadow = CalculateShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light_index);
       
-      return (ambient + (1.0f - shadow) * (diffuse + specular)) * color.xyz;
-
+      return (ambient + (1.0f - shadow) * (diffuse + specular)) * u_color.xyz;
     }
 
-    // --------------------------------------------------------------------- //
+// --------------------------------------------------------------------- //
 
     float CalculatePointShadows(vec3 frag_pos, vec3 light_pos, vec3 light_dir, int light_index){
-
         vec3 fragToLight = frag_pos - light_pos;
         float closestDepth = texture(GetPointLightTexture(light_index), fragToLight).r;
-        closestDepth *= 100.0f; // 25.0f == FAR PLANE -> LOOK system_light
+        closestDepth *= 100.0f; //  == FAR PLANE -> LOOK system_light
         float currentDepth = length(fragToLight);
         //float bias = 0.5f;
         float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
@@ -352,10 +325,9 @@ namespace Suffer {
         return shadow;
     } 
 
-    // --------------------------------------------------------------------- //
+// --------------------------------------------------------------------- //
 
     vec3 CalculatePointLight(PointLight light, int light_index, vec3 normal, vec3 view_dir) {
-
       vec3 light_dir = normalize(light.position - frag_pos);
 
       float diff = max(dot(light_dir, normal), 0.0f);
@@ -363,26 +335,22 @@ namespace Suffer {
       vec3 reflect_dir = reflect(-light_dir, normal);
       vec3 viewDir = normalize(camera_pos - frag_pos);
       vec3 halfwayDir = normalize(light_dir + viewDir);  
-      float spec = pow(max(dot(normal, halfwayDir), 0.0f), 64.0);
+      float spec = pow(max(dot(normal, halfwayDir), 0.0f), 64.0f);
 
       float distance    = length(light.position - frag_pos);
-      float attenuation = 1.0 / (light.constant + light.linear * distance + 
+      float attenuation = 1.0f / (light.constant + light.linear * distance + 
   			       light.quadratic * (distance * distance));    
 
-      vec3 ambient  = light.ambient;
-      vec3 diffuse  = light.diffuse;
-      vec3 specular = light.specular;
-      ambient  *= attenuation * light.intensity;
-      diffuse  *= attenuation * light.intensity * diff;
-      specular *= attenuation * light.intensity * spec;
+      vec3 ambient  = light.ambient * attenuation * light.intensity;
+      vec3 diffuse  = light.diffuse * attenuation * light.intensity * diff;
+      vec3 specular = light.specular* attenuation * light.intensity * spec;
 
       float shadow = CalculatePointShadows(frag_pos, light.position, light_dir, light_index);
 
-      return (ambient + (1.0f - shadow) * (diffuse + specular)) * color.xyz;
-
+      return (ambient + (1.0f - shadow) * (diffuse + specular)) * u_color.xyz;
     }
 
-    // --------------------------------------------------------------------- //
+// --------------------------------------------------------------------- //
 
     float CalculateSpotShadow(vec4 frag_pos_light_space, vec3 light_dir, int light_index){
       // Clip projection coords
@@ -402,21 +370,16 @@ namespace Suffer {
       return shadow;
     }
 
-    // --------------------------------------------------------------------- //
+// --------------------------------------------------------------------- //
 
     vec3 CalculateSpotLight(SpotLight light, int light_index, vec3 normal) {
-
-      vec3 ambient = light.ambient;
-    
       vec3 norm = normalize(normal);
       vec3 light_dir = normalize(light.position - frag_pos);
       float diff = max(dot(norm, light_dir), 0.0f);
-      vec3 diffuse = light.diffuse * diff;
 
       vec3 view_dir = normalize(camera_pos - frag_pos);
       vec3 reflect_dir = reflect(-light.direction, norm);
       float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), 32);
-      vec3 specular = light.specular * spec;
 
       float distance = length(light.position - frag_pos);
       float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic
@@ -426,20 +389,17 @@ namespace Suffer {
       float epsilon = light.cutOff - light.outerCutOff;
       float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0f, 1.0f);
 
-      ambient  *= intensity * light.intensity;
-      diffuse  *= intensity * light.intensity;
-      specular *= intensity * light.intensity;
+      vec3 ambient  = light.ambient * attenuation * intensity * light.intensity;
+      vec3 diffuse  = light.diffuse * attenuation * intensity * light.intensity * diff;
+      vec3 specular = light.specular* attenuation * intensity * light.intensity * spec;
 
       float shadow = CalculateSpotShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light_index);
 
-      return (ambient + (1.0f - shadow) * (diffuse + specular)) * color.xyz;
-      
+      return (ambient + (1.0f - shadow) * (diffuse + specular)) * u_color.xyz;
     }
-
 
 // ......... MAIN ..........
     void main() {
-      
       vec3 view_dir = normalize(camera_pos - frag_pos);
 
       vec3 directionals = vec3(0.0f, 0.0f, 0.0f);
