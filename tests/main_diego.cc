@@ -56,11 +56,9 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::MaterialComponent> material_component_cube;
   material_component_cube.alloc();
-  Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_params_cube;
+  Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params_cube;
   material_params_cube.alloc();
-  material_params_cube->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  material_params_cube->albedo_texture_id_ = albedo_texture->id_;
-  material_params_cube->specular_texture_id_ = specular_texture_box->id_;
+  material_params_cube->color_ = mathmorra::Vector4(0.5f, 1.0f, 1.0f, 1.0f);
   material_component_cube->SetParams(material_params_cube.get());
   go_cube->AddComponent(material_component_cube.get());
 
@@ -160,7 +158,7 @@ int main(int argc, char* argv[]) {
   light_component->SetAmbient(0.5f, 0.5f, 0.5f);
   light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
   light_component->SetSpecular(1.0f, 1.0f, 1.0f);
-  go_light->AddComponent(light_component.get());
+  //go_light->AddComponent(light_component.get());
 
   // -------------------------------------------------------------------------------------//
 

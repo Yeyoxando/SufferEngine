@@ -310,7 +310,7 @@ namespace Suffer {
       float current_depth = proj_coords.z;
       // Compare current and closest to check if its in shadow or not
       //float bias = 0.002f;
-      float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
+      float bias = max(0.003f * (1.0f - dot(normal, light_dir)), 0.001f);
       //float shadow = current_depth > closest_depth ? 1.0f : 0.0f;
       float shadow = (current_depth - bias) > closest_depth ? 1.0f : 0.0f;
 

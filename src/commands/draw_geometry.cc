@@ -712,12 +712,10 @@ void Suffer::DrawGeometry::Execute() const {
 
       glUniform1i(u_pos, used_textures);
       u_pos = -1;
-
-      if(i < data_->current_dir_lights)
-        used_textures++;
+      
+      used_textures++;
 
     }
-
 
 
     for (int i = 0; i < MAX_LIGHTS; ++i) {
@@ -736,8 +734,7 @@ void Suffer::DrawGeometry::Execute() const {
       glUniform1i(u_pos, used_textures);
       u_pos = -1;
 
-      if (i < data_->current_point_lights)
-        used_textures++;
+      used_textures++;
 
     }
 
@@ -758,8 +755,7 @@ void Suffer::DrawGeometry::Execute() const {
       glUniform1i(u_pos, used_textures);
       u_pos = -1;
 
-      if (i < data_->current_spot_lights)
-        used_textures++;
+      used_textures++;
     }
 
   }

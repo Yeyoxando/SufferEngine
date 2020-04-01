@@ -57,7 +57,7 @@ void Suffer::ShadowCubemap::Execute() const{
 
   if (suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].gpu_version_ < suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].version_) {
 
-    //glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
+    glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_light_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
 
     // --------------------------- IsTextureCreated -------------------------- //
     
@@ -73,7 +73,7 @@ void Suffer::ShadowCubemap::Execute() const{
 
       if (suffer.resource_manager_.data_->internal_cubemaps_[id_texture].gpu_version_ < suffer.resource_manager_.data_->internal_cubemaps_[id_texture].version_) {
         glBindTexture(GL_TEXTURE_CUBE_MAP, suffer.resource_manager_.data_->internal_cubemaps_[id_texture].current_texture_id_);
-
+       
         for (u8 i = 0; i < 6; ++i) {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SHADOW_SIZE, SHADOW_SIZE,
               0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
