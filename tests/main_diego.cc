@@ -97,6 +97,34 @@ int main(int argc, char* argv[]) {
   transform_component_2->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, 0.0f));
   go_quad->AddComponent(transform_component_2.get());
 
+
+
+
+  Suffer::ref_ptr<Suffer::GameObject> go_quad2;
+  go_quad2.alloc();
+
+
+  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component4;
+  geometry_component4.alloc();
+  geometry_component4->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+  geometry_component4->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Quad);
+  go_quad2->AddComponent(geometry_component4.get());
+
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_component4;
+  material_component4.alloc();
+  Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params4;
+  material_params4.alloc();
+  material_params4->color_ = mathmorra::Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+  material_component4->SetParams(material_params4.get());
+  go_quad2->AddComponent(material_component4.get());
+
+  Suffer::ref_ptr<Suffer::Transform> transform_component_5;
+  transform_component_5.alloc();
+  transform_component_5->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
+  transform_component_5->Translate(mathmorra::Vector3(0.0f, 20.0f, 20.0f));
+  transform_component_5->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+  go_quad2->AddComponent(transform_component_5.get());
+
   // -------------------------------------------------------------------------------------//
    
   Suffer::ref_ptr<Suffer::GameObject> go_light;
@@ -184,15 +212,18 @@ int main(int argc, char* argv[]) {
   //audio_component_->Play3D();
   //go_cube->AddComponent(audio_component_.get());
 
-  go_quad->SetName("Quad");
-  go_cube->SetName("Cube");
-  go_light->SetName("DirectionalLight");
+  go_quad->SetName("Floor");
+  go_quad2->SetName("Wall");
+  go_cube->SetName("Box");
+  go_light->SetName("PointLight");
+  go_light2->SetName("DirectionalLight");
 
   go_cube->AddChild(go_light.get());
   go_cube->AddChild(go_light2.get());
 
   scene->AddGameObject(go_cube);
   scene->AddGameObject(go_quad);
+  scene->AddGameObject(go_quad2);
   scene->AddGameObject(go_light);
   scene->AddGameObject(go_light2);
 
