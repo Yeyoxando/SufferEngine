@@ -47,7 +47,9 @@ Suffer::ShadowCubemap::~ShadowCubemap(){
 
 // ------------------------------------------------------------------------- //
 
-void Suffer::ShadowCubemap::Execute() const{
+void Suffer::ShadowCubemap::Execute() const {
+
+  glEnable(GL_DEPTH_TEST);
 
   s32 id_frame_buffer = data_->light_framebuffer_id_;
 

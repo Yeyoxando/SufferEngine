@@ -35,6 +35,7 @@ void Suffer::ResourceManager::StartUp() {
   data_->InitInternalBuffers();
   data_->InitInternalTextures();
   data_->InitInternalMaterials();
+  data_->InitInternalPostproccesMaterials();
   data_->InitInternalFrameBuffers();
   data_->InitInternalCubemaps();
 
@@ -562,7 +563,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
 void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   
   // Increase the number if you create a new one
-  internal_materials_.alloc(6);
+  internal_materials_.alloc(4);
   number_of_materials_ = 0;
 
   // To create a new material define the shaders in internal_shaders.h
@@ -597,35 +598,6 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
 
   // --------------------------- PhongMaterial ----------------------------- //
 
-  // ---------------------- RenderToTextureMaterial ------------------------ //
-
-  {
-
-    internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
-
-    internal_materials_[number_of_materials_].vertex_shader_ = Suffer::render_to_texture_vertex_;
-    internal_materials_[number_of_materials_].fragment_shader_ = Suffer::render_to_texture_fragment_;
-
-    number_of_materials_++;
-
-  }
-
-  // ---------------------- RenderToTextureMaterial ------------------------ //
-
-  // ----------------------- BlackAndWhiteMaterial ------------------------- //
-
-  {
-
-    internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
-
-    internal_materials_[number_of_materials_].vertex_shader_ = Suffer::black_and_white_vertex_;
-    internal_materials_[number_of_materials_].fragment_shader_ = Suffer::black_and_white_fragment_;
-
-    number_of_materials_++;
-
-  }
-
-  // ----------------------- BlackAndWhiteMaterial ------------------------- //
 
   // --------------------------- DepthMaterial ----------------------------- //
 
@@ -642,7 +614,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
 
   // --------------------------- DepthMaterial ----------------------------- //
 
-  // --------------------------- PointShadowDepthMaterial ----------------------------- //
+  // --------------------- PointShadowDepthMaterial ------------------------ //
 
   {
 
@@ -656,7 +628,48 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
 
   }
 
-  // --------------------------- PointShadowDepthMaterial ----------------------------- //
+  // --------------------- PointShadowDepthMaterial ------------------------ //
+
+}
+
+// ------------------------------------------------------------------------- //
+
+void Suffer::ResourceManager::ResourceData::InitInternalPostproccesMaterials(){
+
+  // Increase the number if you create a new one
+  internal_postproccess_materials_.alloc(2);
+  number_of_postproccess_materials_ = 0;
+
+  // ---------------------- RenderToTextureMaterial ------------------------ //
+
+  {
+
+    internal_postproccess_materials_[number_of_postproccess_materials_].id_handle_ = number_of_postproccess_materials_;
+
+    internal_postproccess_materials_[number_of_postproccess_materials_].vertex_shader_ = Suffer::render_to_texture_vertex_;
+    internal_postproccess_materials_[number_of_postproccess_materials_].fragment_shader_ = Suffer::render_to_texture_fragment_;
+
+    number_of_postproccess_materials_++;
+
+  }
+
+  // ---------------------- RenderToTextureMaterial ------------------------ //
+
+
+  // ----------------------- BlackAndWhiteMaterial ------------------------- //
+
+  {
+
+    internal_postproccess_materials_[number_of_postproccess_materials_].id_handle_ = number_of_materials_;
+
+    internal_postproccess_materials_[number_of_postproccess_materials_].vertex_shader_ = Suffer::black_and_white_vertex_;
+    internal_postproccess_materials_[number_of_postproccess_materials_].fragment_shader_ = Suffer::black_and_white_fragment_;
+
+    number_of_postproccess_materials_++;
+
+  }
+
+  // ----------------------- BlackAndWhiteMaterial ------------------------- //
 
 }
 

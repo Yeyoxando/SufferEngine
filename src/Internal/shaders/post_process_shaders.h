@@ -8,7 +8,7 @@ namespace Suffer {
   // ----------------------- RenderToTextureShaders ------------------------ //
   // -- (vertex) --
   static const char* render_to_texture_vertex_ = R"VTOTEXTURE(
-    #version 440
+    #version 330
     layout(location = 0) in vec3 a_position;
     layout(location = 1) in vec3 a_normal;
     layout(location = 2) in vec2 a_uvs;
@@ -28,7 +28,7 @@ namespace Suffer {
 
   // -- (fragment) --
   static const char* render_to_texture_fragment_ = R"FTOTEXTURE(
-    #version 440
+    #version 330
 
 // ....... IN / OUT ........
     in vec2 tex_coords;
@@ -41,7 +41,9 @@ namespace Suffer {
 // ......... MAIN ..........
     void main()
     { 
-        FragColor = texture(u_tex0, tex_coords);
+      float gamma = 2.2f;
+      FragColor.xyz = pow(texture(u_tex0, tex_coords).xyz, vec3(1.0f/gamma));
+      //FragColor = texture(u_tex0, tex_coords);
     }    
 
   )FTOTEXTURE";
@@ -53,7 +55,7 @@ namespace Suffer {
   // ------------------------ BlackAndWhiteShaders ------------------------- //
   // -- (vertex) --
   static const char* black_and_white_vertex_ = R"VBLACKWHITE(
-    #version 440
+    #version 330
     layout(location = 0) in vec3 a_position;
     layout(location = 1) in vec3 a_normal;
     layout(location = 2) in vec2 a_uvs;
@@ -73,7 +75,7 @@ namespace Suffer {
 
   // -- (fragment) --
   static const char* black_and_white_fragment_ = R"FBLACKWHITE(
-    #version 440
+    #version 330
 
 // ....... IN / OUT ........
     in vec2 tex_coords;

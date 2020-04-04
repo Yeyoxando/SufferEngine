@@ -123,6 +123,7 @@ struct Suffer::ResourceManager::ResourceData {
   Array<InternalIndexBuffer> internal_index_buffers_;
   Array<InternalTexture> internal_textures_;
   Array<InternalMaterial> internal_materials_;
+  Array<InternalMaterial> internal_postproccess_materials_;
   Array<InternalFrameBuffer> internal_frame_buffers_;
   Array<InternalFrameBuffer> internal_light_frame_buffers_;
   Array<InternalCubemap> internal_cubemaps_;
@@ -131,12 +132,14 @@ struct Suffer::ResourceManager::ResourceData {
   u32 number_of_index_buffers_;
   u32 number_of_textures_;
   u32 number_of_materials_;
+  u32 number_of_postproccess_materials_;
   u32 number_of_frame_buffers_;
   u32 number_of_light_frame_buffers_;
   u32 number_of_cubemaps_;
 
   void InitInternalBuffers();
   void InitInternalMaterials();
+  void InitInternalPostproccesMaterials();
   void InitInternalTextures();
   void InitInternalFrameBuffers();
   void InitInternalCubemaps();

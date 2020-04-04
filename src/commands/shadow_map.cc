@@ -45,7 +45,9 @@ Suffer::ShadowMap::~ShadowMap(){
 
 // ------------------------------------------------------------------------- //
 
-void Suffer::ShadowMap::Execute() const{
+void Suffer::ShadowMap::Execute() const {
+
+  glEnable(GL_DEPTH_TEST);
 
   s32 id_frame_buffer = data_->light_framebuffer_id_;
 
@@ -123,25 +125,6 @@ void Suffer::ShadowMap::Execute() const{
   //Clear only depth buffer
   glClear(GL_DEPTH_BUFFER_BIT);
 
-  //specific fragment and vertex shader for that
-
-  //Calculate view and projection matrixes and set uniforms
-
-
-
-  // --------------------------------- Draw -------------------------------- //
-
-  {
-
-    //u32 number_elements = suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_id_].data_.size();
-    //
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_id_].current_gl_buffer_);
-    //
-    //glDrawElements(GL_TRIANGLES, number_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
-
-  }
-
-  // --------------------------------- Draw -------------------------------- //
 }
 
 // ------------------------------------------------------------------------- //
