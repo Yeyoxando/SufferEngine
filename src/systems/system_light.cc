@@ -189,14 +189,14 @@ void Suffer::SystemLight::Execute(GameObject* go) {
             printf("ERROR: NULL Light.\n");
             break;
           }
-          mathmorra::Vector3 position = spot_light->Position();
+          mathmorra::Vector3 position = transform_component->GetGlobalPosition();
           mathmorra::Vector3 inv_direction = spot_light->Direction();
           inv_direction *= -1.0f;
           mathmorra::Matrix4 view_matrix = mathmorra::Matrix4::LookAt(position,
-            mathmorra::Vector3(0.0f, -1.0f, 0.0f),
-            mathmorra::Vector3(0.0f, 1.0f, 0.0f));
+            position - inv_direction,
+            transform_component->Up());
 
-          mathmorra::Matrix4 projection_matrix = projection_matrix.PerspectiveMatrix(ThiefUtils::Math::Radians(90.0f), (float)SHADOW_SIZE / (float)SHADOW_SIZE, 1.0f, 100.0f);
+          mathmorra::Matrix4 projection_matrix = projection_matrix.PerspectiveMatrix(ThiefUtils::Math::Radians(50.0f), (float)SHADOW_SIZE / (float)SHADOW_SIZE, 5.0f, 200.0f);
 
           light_component->reference_->view_projection_mat_ = view_matrix * projection_matrix;
 
