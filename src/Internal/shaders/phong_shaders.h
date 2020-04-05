@@ -356,7 +356,7 @@ namespace Suffer {
       // Clip projection coords
       vec3 proj_coords = frag_pos_light_space.xyz / frag_pos_light_space.w;
       // Convert from [-1, 1] to [0, 1]
-      proj_coords = proj_coords * 0.5f + 0.5;
+      proj_coords = proj_coords * 0.5f + 0.5f;
       // Get shadow map fragment
       float closest_depth = texture(GetSpotLightTexture(light_index), proj_coords.xy).r;
       // Current depth fragment from light perspective

@@ -200,16 +200,16 @@ int main(int argc, char* argv[]) {
     transform_component_3->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, ThiefUtils::Math::Radians(180.0f)));
     go_light->AddComponent(transform_component_3.get());
 
-    Suffer::ref_ptr<Suffer::LightComponent> light_component;
-    light_component.alloc();
-
-    light_component->Init(Suffer::LightComponent::kLightKind_Point);
-    light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-    light_component->SetIntensity(4.0f);
-    light_component->SetAmbient(0.5f, 0.5f, 0.5f);
-    light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
-    light_component->SetSpecular(1.0f, 1.0f, 1.0f);
-    go_light->AddComponent(light_component.get());
+    //Suffer::ref_ptr<Suffer::LightComponent> light_component;
+    //light_component.alloc();
+    //
+    //light_component->Init(Suffer::LightComponent::kLightKind_Point);
+    //light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+    //light_component->SetIntensity(4.0f);
+    //light_component->SetAmbient(0.5f, 0.5f, 0.5f);
+    //light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
+    //light_component->SetSpecular(1.0f, 1.0f, 1.0f);
+    //go_light->AddComponent(light_component.get());
 
     // -------------------------------------------------------------------------------------//
 
@@ -221,17 +221,45 @@ int main(int argc, char* argv[]) {
     Suffer::Transform* transform = static_cast<Suffer::Transform*>(go_light2->GetComponent(Suffer::Component::kComponentKind_Transform));
     transform->Translate(mathmorra::Vector3(-5.0f, 5.0f, -5.0f));
 
-    Suffer::ref_ptr<Suffer::LightComponent> light_component2;
-    light_component2.alloc();
+    //Suffer::ref_ptr<Suffer::LightComponent> light_component2;
+    //light_component2.alloc();
+    //
+    //light_component2->Init(Suffer::LightComponent::kLightKind_Directional);
+    //light_component2->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+    //light_component2->SetIntensity(0.2f);
+    //light_component2->SetAmbient(0.5f, 0.5f, 0.5f);
+    //light_component2->SetDiffuse(1.0f, 1.0f, 1.0f);
+    //light_component2->SetSpecular(1.0f, 1.0f, 1.0f);
+    //go_light2->AddComponent(light_component2.get());
+    //light_component2->SetActive(true);
 
-    light_component2->Init(Suffer::LightComponent::kLightKind_Directional);
-    light_component2->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-    light_component2->SetIntensity(0.2f);
-    light_component2->SetAmbient(0.5f, 0.5f, 0.5f);
-    light_component2->SetDiffuse(1.0f, 1.0f, 1.0f);
-    light_component2->SetSpecular(1.0f, 1.0f, 1.0f);
-    go_light2->AddComponent(light_component2.get());
-    light_component2->SetActive(true);
+
+    Suffer::ref_ptr<Suffer::GameObject> go_sphere;
+    go_sphere.alloc();
+    go_sphere->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+
+    Suffer::GeometryComponent* geometry_component_sphere = static_cast<Suffer::GeometryComponent*>(go_sphere->GetComponent(Suffer::Component::kComponentKind_Geometry));
+    geometry_component_sphere->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Sphere);
+
+    Suffer::Transform* transform_sphere = static_cast<Suffer::Transform*>(go_sphere->GetComponent(Suffer::Component::kComponentKind_Transform));
+    transform_sphere->Translate(mathmorra::Vector3(0.0f, 10.0f, 0.0f));
+
+    Suffer::ref_ptr<Suffer::LightComponent> light_sphere;
+    light_sphere.alloc();
+
+    light_sphere->Init(Suffer::LightComponent::kLightKind_Spot);
+    light_sphere->SetDirection(mathmorra::Vector3(0.0f, -1.0f, 0.0f));
+    light_sphere->SetIntensity(2.5f);
+    light_sphere->SetAmbient(0.5f, 0.5f, 0.5f);
+    light_sphere->SetDiffuse(1.0f, 1.0f, 1.0f);
+    light_sphere->SetSpecular(1.0f, 1.0f, 1.0f);
+    go_sphere->AddComponent(light_sphere.get());
+    light_sphere->SetActive(true);
+    light_sphere->SetCutOff(0.910f);
+    light_sphere->SetOuterCutOff(0.820f);
+    light_sphere->SetConstant(0.0f);
+    light_sphere->SetLinear(0.474f);
+    light_sphere->SetQuadratic(0.0f);
 
     // -------------------------------------------------------------------------------------//
 
@@ -267,6 +295,7 @@ int main(int argc, char* argv[]) {
     go_cube->SetName("Box");
     go_light->SetName("PointLight");
     go_light2->SetName("DirectionalLight");
+    go_sphere->SetName("PutaLuz");
 
     go_cube->AddChild(go_light.get());
     go_cube->AddChild(go_light2.get());
@@ -278,6 +307,7 @@ int main(int argc, char* argv[]) {
     scene->AddGameObject(go_quad4);
     scene->AddGameObject(go_light);
     scene->AddGameObject(go_light2);
+    scene->AddGameObject(go_sphere);
 
     suffer.SetScene(scene);
 

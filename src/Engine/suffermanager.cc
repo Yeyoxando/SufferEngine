@@ -218,11 +218,6 @@ void Suffer::SufferManager::PrepareAudio() {
 void Suffer::SufferManager::PreparePostproccess(){
   DisplayList postpro_dl;
 
-  ref_ptr<Postprocessing> def;
-  def.alloc();
-  def->SetData(Postprocessing::kPostproccessKind_Default);
-  postpro_dl.AddCommand(def.get());
-
   if (data_->black_and_white_) {
     ref_ptr<Postprocessing> black_white;
     black_white.alloc();
@@ -230,7 +225,13 @@ void Suffer::SufferManager::PreparePostproccess(){
     postpro_dl.AddCommand(black_white.get());
   }
 
+  ref_ptr<Postprocessing> def;
+  def.alloc();
+  def->SetData(Postprocessing::kPostproccessKind_Default);
+  postpro_dl.AddCommand(def.get());
+
   render_manager_.AddToRenderQueue(std::move(postpro_dl), postprocessing_frame_buffer_.get());
+
 }
 
 // --------------------------------------------------------------//
