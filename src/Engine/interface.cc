@@ -909,11 +909,16 @@ void  Suffer::Interface::Inspector(){
 											float quadratic = light->Quadratic();
 											float linear = light->Linear();
 											float constant = light->Constant();
+											float angle = light->Angle();
 
-											if (ImGui::DragFloat("CutOff", &cutOff, 0.001f, 0.0f, 1.0f)) {
+                      if (ImGui::DragFloat("Angle", &angle, 0.1f, 0.1f, 180.0f)) {
+                          light->SetAngle(angle);
+                      }
+
+											if (ImGui::DragFloat("CutOff", &cutOff, 0.001f, light->OuterCutOff(), 1.0f)) {
 													light->SetCutOff(cutOff);
 											}
-											if (ImGui::DragFloat("OuterCutOff", &outerCutOff, 0.001f, 0.0f, 1.0f)) {
+											if (ImGui::DragFloat("OuterCutOff", &outerCutOff, 0.001f, 0.0f, light->CutOff())) {
 													light->SetOuterCutOff(outerCutOff);
 											}
 											if (ImGui::DragFloat("Constant", &constant, 0.001f, 0.0f, 1.0f)) {

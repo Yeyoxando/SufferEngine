@@ -182,7 +182,7 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component3;
     geometry_component3.alloc();
     geometry_component3->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
-    geometry_component3->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
+    geometry_component3->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Sphere);
     go_light->AddComponent(geometry_component3.get());
 
     Suffer::ref_ptr<Suffer::MaterialComponent> material_component3;
@@ -200,16 +200,17 @@ int main(int argc, char* argv[]) {
     transform_component_3->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, ThiefUtils::Math::Radians(180.0f)));
     go_light->AddComponent(transform_component_3.get());
 
-    //Suffer::ref_ptr<Suffer::LightComponent> light_component;
-    //light_component.alloc();
-    //
-    //light_component->Init(Suffer::LightComponent::kLightKind_Point);
-    //light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-    //light_component->SetIntensity(4.0f);
-    //light_component->SetAmbient(0.5f, 0.5f, 0.5f);
-    //light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
-    //light_component->SetSpecular(1.0f, 1.0f, 1.0f);
-    //go_light->AddComponent(light_component.get());
+    Suffer::ref_ptr<Suffer::LightComponent> light_component;
+    light_component.alloc();
+
+    light_component->Init(Suffer::LightComponent::kLightKind_Point);
+    light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+    light_component->SetIntensity(1.5f);
+    light_component->SetAmbient(0.5f, 0.5f, 0.5f);
+    light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
+    light_component->SetSpecular(1.0f, 1.0f, 1.0f);
+    go_light->AddComponent(light_component.get());
+    light_component->SetActive(true);
 
     // -------------------------------------------------------------------------------------//
 
@@ -221,17 +222,17 @@ int main(int argc, char* argv[]) {
     Suffer::Transform* transform = static_cast<Suffer::Transform*>(go_light2->GetComponent(Suffer::Component::kComponentKind_Transform));
     transform->Translate(mathmorra::Vector3(-5.0f, 5.0f, -5.0f));
 
-    //Suffer::ref_ptr<Suffer::LightComponent> light_component2;
-    //light_component2.alloc();
-    //
-    //light_component2->Init(Suffer::LightComponent::kLightKind_Directional);
-    //light_component2->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-    //light_component2->SetIntensity(0.2f);
-    //light_component2->SetAmbient(0.5f, 0.5f, 0.5f);
-    //light_component2->SetDiffuse(1.0f, 1.0f, 1.0f);
-    //light_component2->SetSpecular(1.0f, 1.0f, 1.0f);
-    //go_light2->AddComponent(light_component2.get());
-    //light_component2->SetActive(true);
+    Suffer::ref_ptr<Suffer::LightComponent> light_component2;
+    light_component2.alloc();
+
+    light_component2->Init(Suffer::LightComponent::kLightKind_Directional);
+    light_component2->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+    light_component2->SetIntensity(0.2f);
+    light_component2->SetAmbient(0.5f, 0.5f, 0.5f);
+    light_component2->SetDiffuse(1.0f, 1.0f, 1.0f);
+    light_component2->SetSpecular(1.0f, 1.0f, 1.0f);
+    go_light2->AddComponent(light_component2.get());
+    light_component2->SetActive(false);
 
 
     Suffer::ref_ptr<Suffer::GameObject> go_sphere;
@@ -248,7 +249,7 @@ int main(int argc, char* argv[]) {
     light_sphere.alloc();
 
     light_sphere->Init(Suffer::LightComponent::kLightKind_Spot);
-    light_sphere->SetDirection(mathmorra::Vector3(0.0f, -1.0f, 0.0f));
+    light_sphere->SetDirection(mathmorra::Vector3(0.8f, -1.0f, 0.0f));
     light_sphere->SetIntensity(2.5f);
     light_sphere->SetAmbient(0.5f, 0.5f, 0.5f);
     light_sphere->SetDiffuse(1.0f, 1.0f, 1.0f);
@@ -295,7 +296,7 @@ int main(int argc, char* argv[]) {
     go_cube->SetName("Box");
     go_light->SetName("PointLight");
     go_light2->SetName("DirectionalLight");
-    go_sphere->SetName("PutaLuz");
+    go_sphere->SetName("SpotLight");
 
     go_cube->AddChild(go_light.get());
     go_cube->AddChild(go_light2.get());

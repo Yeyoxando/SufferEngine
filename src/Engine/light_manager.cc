@@ -299,6 +299,12 @@ float Suffer::LightManager::DirectionalLight::Intensity(){
 
 // ----------------------------------------------------------------------- //
 
+float Suffer::LightManager::DirectionalLight::Angle(){
+    return angle_;
+}
+
+// ----------------------------------------------------------------------- //
+
 u16 Suffer::LightManager::DirectionalLight::GetLightKind(){
 
   return (u16)light_kind_;
@@ -321,6 +327,7 @@ Suffer::LightManager::DirectionalLight::DirectionalLight(){
   // Attributes
   active_ = true;
   intensity_ = 1.0f;
+  angle_ = 150.0f;
   direction_ = mathmorra::Vector3(0.0f, 0.0f, -1.0f);
 
   light_kind_ = kLightKind_Directional;

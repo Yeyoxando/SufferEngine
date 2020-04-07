@@ -184,6 +184,9 @@ void Suffer::SystemLight::Execute(GameObject* go) {
         }
         case Suffer::LightManager::LightKind::kLightKind_Spot: {
 
+          // Angle calculation
+          //light_component->reference_->angle_ = 1.0f;
+
           auto spot_light = static_cast<Suffer::LightManager::SpotLight*>(light_component->reference_);
           if (spot_light == nullptr) {
             printf("ERROR: NULL Light.\n");
@@ -196,7 +199,7 @@ void Suffer::SystemLight::Execute(GameObject* go) {
             position - inv_direction,
             transform_component->Up());
 
-          mathmorra::Matrix4 projection_matrix = projection_matrix.PerspectiveMatrix(ThiefUtils::Math::Radians(50.0f), (float)SHADOW_SIZE / (float)SHADOW_SIZE, 5.0f, 200.0f);
+          mathmorra::Matrix4 projection_matrix = projection_matrix.PerspectiveMatrix(ThiefUtils::Math::Radians(spot_light->Angle()), (float)SHADOW_SIZE / (float)SHADOW_SIZE, 5.0f, 200.0f);
 
           light_component->reference_->view_projection_mat_ = view_matrix * projection_matrix;
 

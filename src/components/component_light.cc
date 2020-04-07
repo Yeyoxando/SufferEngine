@@ -237,6 +237,14 @@ void Suffer::LightComponent::SetCutOff(float new_cut_off /*= 0.9978f*/){
 
 // ----------------------------------------------------------------------- //
 
+void Suffer::LightComponent::SetAngle(float new_angle /*= 45.0f*/){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return;
+    reference_->angle_ = new_angle;
+}
+
+// ----------------------------------------------------------------------- //
+
 void Suffer::LightComponent::SetOuterCutOff(float new_outer_cut_off /*= 0.99f*/){
     assert(reference_ != nullptr && "ERROR: NULL light");
     if (reference_ == nullptr) return;
@@ -370,6 +378,16 @@ float Suffer::LightComponent::Constant(){
     Suffer::LightManager::PointLight* light = static_cast<Suffer::LightManager::PointLight*>(reference_);
     if (light == nullptr) return -1.0f;
     return light->Constant();
+}
+
+// ----------------------------------------------------------------------- //
+
+float Suffer::LightComponent::Angle(){
+
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return -1.0f;
+
+    return reference_->Angle();
 }
 
 // ----------------------------------------------------------------------- //

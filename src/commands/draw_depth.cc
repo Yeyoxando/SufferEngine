@@ -61,8 +61,8 @@ void Suffer::DrawDepth::SetData(GameObject* go) {
 
   {
 
-    if (!go->HasComponent(Component::ComponentKind::kComponentKind_Geometry) ||
-      go->HasComponent(Component::ComponentKind::kComponentKind_Light)) {
+    if (!go->HasComponent(Component::ComponentKind::kComponentKind_Geometry)/* ||
+      go->HasComponent(Component::ComponentKind::kComponentKind_Light)*/) {
       data_->vertex_buffer_id_ = -1;
       data_->index_buffer_id_ = -1;
     }
