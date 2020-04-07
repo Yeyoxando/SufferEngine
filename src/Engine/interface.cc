@@ -895,7 +895,7 @@ void  Suffer::Interface::Inspector(){
 
 											// Intensity
 											intensity = light->Intensity();
-											ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0f, 1.0f);
+											ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0f, 100.0f);
 											light->SetIntensity(intensity);
 
 											// Direction

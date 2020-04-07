@@ -30,18 +30,69 @@ int main(int argc, char* argv[]) {
     scene.alloc();
 
     // Textures
-    Suffer::ref_ptr<Suffer::ResourceManager::Texture> albedo_texture;
-    albedo_texture.alloc();
-    albedo_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
-    albedo_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-    albedo_texture->LoadTextureData("../../../resources/images/box_2.png");
+    Suffer::ref_ptr<Suffer::ResourceManager::Texture> wall_texture;
+    wall_texture.alloc();
+    wall_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
+    wall_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+    wall_texture->LoadTextureData("../../../resources/images/wall.jpg");
 
-    Suffer::ref_ptr<Suffer::ResourceManager::Texture> specular_texture_box;
-    specular_texture_box.alloc();
-    specular_texture_box->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-    specular_texture_box->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-    specular_texture_box->LoadTextureData("../../../resources/images/box_2_spec.png");
+    Suffer::ref_ptr<Suffer::ResourceManager::Texture> wall_specular_texture;
+    wall_specular_texture.alloc();
+    wall_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
+    wall_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+    wall_specular_texture->LoadTextureData("../../../resources/images/box_2_spec.png");
 
+
+
+    Suffer::ref_ptr<Suffer::ResourceManager::Texture> box_texture;
+    box_texture.alloc();
+    box_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
+    box_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+    box_texture->LoadTextureData("../../../resources/images/box_2.png");
+
+    Suffer::ref_ptr<Suffer::ResourceManager::Texture> box_specular_texture;
+    box_specular_texture.alloc();
+    box_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
+    box_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+    box_specular_texture->LoadTextureData("../../../resources/images/box_2_spec.png");
+
+
+
+
+    Suffer::ref_ptr<Suffer::ResourceManager::Texture> ground_texture;
+    ground_texture.alloc();
+    ground_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
+    ground_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+    ground_texture->LoadTextureData("../../../resources/images/floor_.png");
+
+    Suffer::ref_ptr<Suffer::ResourceManager::Texture> ground_specular_texture;
+    ground_specular_texture.alloc();
+    ground_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
+    ground_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+    ground_specular_texture->LoadTextureData("../../../resources/images/box_2_spec.png");
+
+
+
+
+    Suffer::ref_ptr<Suffer::MaterialComponent> ground_material;
+    ground_material.alloc();
+    Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> ground_material_params;
+    ground_material_params.alloc();
+    ground_material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+    ground_material_params->albedo_texture_id_ = ground_texture->id_;
+    ground_material_params->specular_texture_id_ = ground_specular_texture->id_;
+    ground_material->SetParams(ground_material_params.get());
+
+
+
+    Suffer::ref_ptr<Suffer::MaterialComponent> material_wall;
+    material_wall.alloc();
+    Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_wall_params;
+    material_wall_params.alloc();
+    material_wall_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+    material_wall_params->albedo_texture_id_ = wall_texture->id_;
+    material_wall_params->specular_texture_id_ = wall_specular_texture->id_;
+    material_wall->SetParams(material_wall_params.get());
 
     // -------------------------------- COMPONENTS STUFF TESTS ------------------------------//
 
@@ -59,8 +110,8 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_params_cube;
     material_params_cube.alloc();
     material_params_cube->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-    material_params_cube->albedo_texture_id_ = albedo_texture->id_;
-    material_params_cube->specular_texture_id_ = specular_texture_box->id_;
+    material_params_cube->albedo_texture_id_ = box_texture->id_;
+    material_params_cube->specular_texture_id_ = box_specular_texture->id_;
     material_component_cube->SetParams(material_params_cube.get());
     go_cube->AddComponent(material_component_cube.get());
 
@@ -88,7 +139,7 @@ int main(int argc, char* argv[]) {
     material_params2.alloc();
     material_params2->color_ = mathmorra::Vector4(0.8f, 0.8f, 0.8f, 1.0f);
     material_component2->SetParams(material_params2.get());
-    go_quad->AddComponent(material_component2.get());
+    go_quad->AddComponent(ground_material.get());
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_2;
     transform_component_2.alloc();
@@ -114,12 +165,12 @@ int main(int argc, char* argv[]) {
     material_params6.alloc();
     material_params6->color_ = mathmorra::Vector4(1.0f, 0.0f, 0.0f, 1.0f);
     material_component6->SetParams(material_params6.get());
-    go_quad4->AddComponent(material_component6.get());
+    go_quad4->AddComponent(material_wall.get());
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_7;
     transform_component_7.alloc();
     transform_component_7->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
-    transform_component_7->Translate(mathmorra::Vector3(-10.0f, 20.0f, 0.0f));
+    transform_component_7->Translate(mathmorra::Vector3(-20.0f, 20.0f, 0.0f));
     transform_component_7->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(90.0f), 0.0f));
     go_quad4->AddComponent(transform_component_7.get());
 
@@ -143,12 +194,12 @@ int main(int argc, char* argv[]) {
     material_params5.alloc();
     material_params5->color_ = mathmorra::Vector4(1.0f, 0.0f, 0.0f, 1.0f);
     material_component5->SetParams(material_params5.get());
-    go_quad3->AddComponent(material_component5.get());
+    go_quad3->AddComponent(material_wall.get());
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_6;
     transform_component_6.alloc();
     transform_component_6->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
-    transform_component_6->Translate(mathmorra::Vector3(10.0f, 20.0f, 0.0f));
+    transform_component_6->Translate(mathmorra::Vector3(20.0f, 20.0f, 0.0f));
     transform_component_6->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-90.0f), 0.0f));
     go_quad3->AddComponent(transform_component_6.get());
 
@@ -165,12 +216,12 @@ int main(int argc, char* argv[]) {
     material_params4.alloc();
     material_params4->color_ = mathmorra::Vector4(1.0f, 1.0f, 0.0f, 1.0f);
     material_component4->SetParams(material_params4.get());
-    go_quad2->AddComponent(material_component4.get());
+    go_quad2->AddComponent(material_wall.get());
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_5;
     transform_component_5.alloc();
     transform_component_5->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
-    transform_component_5->Translate(mathmorra::Vector3(0.0f, 20.0f, 10.0f));
+    transform_component_5->Translate(mathmorra::Vector3(0.0f, 20.0f, 20.0f));
     transform_component_5->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
     go_quad2->AddComponent(transform_component_5.get());
 
@@ -205,7 +256,7 @@ int main(int argc, char* argv[]) {
 
     light_component->Init(Suffer::LightComponent::kLightKind_Point);
     light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-    light_component->SetIntensity(1.5f);
+    light_component->SetIntensity(8.0f);
     light_component->SetAmbient(0.5f, 0.5f, 0.5f);
     light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
     light_component->SetSpecular(1.0f, 1.0f, 1.0f);
@@ -226,13 +277,13 @@ int main(int argc, char* argv[]) {
     light_component2.alloc();
 
     light_component2->Init(Suffer::LightComponent::kLightKind_Directional);
-    light_component2->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-    light_component2->SetIntensity(0.2f);
-    light_component2->SetAmbient(0.5f, 0.5f, 0.5f);
-    light_component2->SetDiffuse(1.0f, 1.0f, 1.0f);
+    light_component2->SetDirection(mathmorra::Vector3(0.0f, -1.0f, 0.0f));
+    light_component2->SetIntensity(0.1f);
+    light_component2->SetAmbient(0.2f, 0.2f, 0.2f);
+    light_component2->SetDiffuse(0.6f, 0.6f, 0.6f);
     light_component2->SetSpecular(1.0f, 1.0f, 1.0f);
     go_light2->AddComponent(light_component2.get());
-    light_component2->SetActive(false);
+    light_component2->SetActive(true);
 
 
     Suffer::ref_ptr<Suffer::GameObject> go_sphere;
@@ -249,8 +300,8 @@ int main(int argc, char* argv[]) {
     light_sphere.alloc();
 
     light_sphere->Init(Suffer::LightComponent::kLightKind_Spot);
-    light_sphere->SetDirection(mathmorra::Vector3(0.8f, -1.0f, 0.0f));
-    light_sphere->SetIntensity(2.5f);
+    light_sphere->SetDirection(mathmorra::Vector3(1.0f, -0.5f, 0.0f));
+    light_sphere->SetIntensity(10.0f);
     light_sphere->SetAmbient(0.5f, 0.5f, 0.5f);
     light_sphere->SetDiffuse(1.0f, 1.0f, 1.0f);
     light_sphere->SetSpecular(1.0f, 1.0f, 1.0f);
