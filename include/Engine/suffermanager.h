@@ -36,6 +36,7 @@ namespace Suffer {
 	public:
 		friend class Audio3D;
 		friend class Audio2D;
+    friend class GameObject;
 		friend class Interface;
 
     /**
@@ -130,6 +131,7 @@ namespace Suffer {
 
     mathmorra::Vector2 mouse_position_;
     std::vector<ref_ptr<System>> systems_;
+    std::vector<ref_ptr<GameObject>> entities_;
     
     ref_ptr<SystemLight>     light_system_;
     ref_ptr<SystemAudio>     audio_system_;

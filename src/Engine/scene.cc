@@ -65,3 +65,16 @@ void Suffer::Scene::AddGameObject(ref_ptr<GameObject> gameobject){
 
 // --------------------------------------------------- //
 
+void Suffer::Scene::RemoveGameObject(GameObject* game_object){
+
+    if (game_object == nullptr) return;
+
+    std::vector <ref_ptr<GameObject>>::iterator game_objects_iterator;
+
+    game_objects_iterator = std::find(current_gameobjects_.begin(), current_gameobjects_.end(), game_object);
+    current_gameobjects_.erase(game_objects_iterator);
+
+}
+
+// --------------------------------------------------- //
+

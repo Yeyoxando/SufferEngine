@@ -11,7 +11,6 @@
 #include "interface.h"
 #include <suffermanager.h>
 #include "internal_interface.h"
-#include "internal_game_object.h"
 #include "component_geometry.h"
 #include "component_light.h"
 #include "component_child.h"
@@ -23,6 +22,7 @@ Suffer::GameObject::GameObject() {
 
   name_ = "GameObject";
   childs_.clear();
+  //suffer.entities_.push_back(this);
   id_ = suffer.number_of_game_objects_;
   suffer.number_of_game_objects_++;
 
@@ -233,5 +233,29 @@ void Suffer::GameObject::Step(float delta_time){
 // --------------------------------------------------- //
 
 void Suffer::GameObject::Destroy(){
+
     // Destroy Himself
+    std::map <s32, ref_ptr<Component>>::iterator components_iterator_;
+    Array<Component::ComponentKind> components_to_delete_;
+    components_to_delete_.alloc(components_.size());
+
+    u16 index = 0;
+    for (components_iterator_ = components_.begin();
+         components_iterator_ != components_.end(); 
+         ++components_iterator_) {
+
+       auto type = components_iterator_->second->kind_;
+       components_to_delete_[index] = components_iterator_->second->kind_;
+
+       index++;
+
+    }
+
+    for (u16 i = 0; i < index; ++i) {
+        RemoveComponent(components_to_delete_[i]);
+    }
+
+    //suffer.GetCurrentScene()->RemoveGameObject(this);
+    //suffer.entities_.erase(suffer.entities_.begin() + id_);
+
 }

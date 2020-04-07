@@ -29,6 +29,7 @@ namespace Suffer {
 
 	class GameObject : public virtual Referenced {
       friend class Scene;
+      friend class SufferManager;
 
 	public:
       enum Archetype {
@@ -51,7 +52,6 @@ namespace Suffer {
     bool HasComponent(Component::ComponentKind component);
     void AddComponent(ref_ptr<Component> new_component);
     void RemoveComponent(Component::ComponentKind component);
-
 
     // Hierarchy Stuff
     void AddChild(ref_ptr<GameObject> child);

@@ -147,6 +147,10 @@ void Suffer::SufferManager::Input() {
     data_->is_interface_active_ = !data_->is_interface_active_;
   }
 
+  if (input_manager_.IsKeyDown(InputManager::k_F7)) {
+      suffer.entities_[3]->Destroy();
+  }
+
   if (input_manager_.IsKeyDown(InputManager::k_B)) {
     data_->black_and_white_ = !data_->black_and_white_;
   }
