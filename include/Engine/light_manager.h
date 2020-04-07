@@ -8,6 +8,7 @@
 #include "ref_ptr.h"
 #include "vector3.h"
 #include <vector>
+#include "matrix4.h"
 
 namespace Suffer {
 
@@ -15,6 +16,7 @@ namespace Suffer {
     friend class SufferManager;
     friend class DrawGeometry;
     friend class Interface;
+    friend class GameObject;
 
   public:
 
@@ -29,6 +31,10 @@ namespace Suffer {
 
     class DirectionalLight : public Referenced {
     friend class LightComponent;
+    friend class DrawGeometry;
+    friend class SystemLight;
+    friend class ShadowMap;
+    friend class ShadowCubemap;
 
     public:
       
@@ -68,11 +74,14 @@ namespace Suffer {
       float* Diffuse();
       float* Specular();
       float  Intensity();
+      float  Angle();
       u16 GetLightKind();
       void SetLightKind(LightKind new_kind);
 
       DirectionalLight();
       ~DirectionalLight();
+
+      mathmorra::Matrix4 view_projection_mat_;
 
     protected:
       mathmorra::Vector3 color_;
@@ -81,10 +90,12 @@ namespace Suffer {
       mathmorra::Vector3 ambient_;
       mathmorra::Vector3 diffuse_;
       mathmorra::Vector3 specular_;
+      float angle_;
       float intensity_;
       bool active_;
       u16 light_kind_;
 
+      s32 framebuffer_id_;
 
     };
 
@@ -102,6 +113,8 @@ namespace Suffer {
       float Constant();
       float Linear();
       float Quadratic();
+
+      mathmorra::Matrix4 view_matrices_[6];
 
     protected:
       float constant_;
@@ -140,7 +153,7 @@ namespace Suffer {
     
 
     u32 current_lights_;
-    std::vector<ref_ptr<DirectionalLight>> lights_;
+    Array<ref_ptr<DirectionalLight>> lights_;
 
   };
 

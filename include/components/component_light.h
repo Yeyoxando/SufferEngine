@@ -9,19 +9,23 @@
 
 #include "component.h"
 #include "light_manager.h"
+#include "matrix4.h"
 
 namespace Suffer {
 
     class LightComponent : public Component {
         friend class SystemLight;
         friend class GameObject;
+        friend class ShadowMap;
+        friend class ShadowCubemap;
+        friend class DrawGeometry;
 
     public:
         enum LightKind {
             kLightKind_Invalid = -1,
-            kLightKind_Directional,
-            kLightKind_Point,
-            kLightKind_Spot
+            kLightKind_Directional = 0,
+            kLightKind_Point = 1,
+            kLightKind_Spot = 2
         };
 
         LightComponent() : Component(kComponentKind_Light) { initialized_ = false;  };
@@ -62,6 +66,7 @@ namespace Suffer {
         void SetConstant(float new_constant = 0.09f);
         void SetQuadratic(float new_quadratic = 0.032f);
         void SetCutOff(float new_cut_off = 0.9978f);
+        void SetAngle(float new_angle = 45.0f);
         void SetOuterCutOff(float new_outer_cut_off = 0.99f);
 
 
@@ -78,11 +83,11 @@ namespace Suffer {
         float  Quadratic();
         float  Linear();
         float  Constant();
+        float  Angle();
         u16 GetLightKind();
         void SetLightKind(LightKind new_kind);
 
     private:
-        s32 framebuffer_id_;
         bool initialized_;
         LightManager::DirectionalLight* reference_;
 

@@ -15,6 +15,8 @@ namespace Suffer {
 
     class Transform : public Component {
         friend class SystemTransform;
+        friend class SystemHierarchy;
+
     public:
       Transform() : Component(kComponentKind_Transform) { Init(); };
 
@@ -34,6 +36,8 @@ namespace Suffer {
         float* GetRotation();
         float* GetPosition();
 
+        float* GetGlobalPosition();
+
         mathmorra::Matrix4 GetModelMatrix();
 
     protected:
@@ -49,6 +53,8 @@ namespace Suffer {
         mathmorra::Vector3 forward_;
 
         mathmorra::Matrix4 model_;
+
+        mathmorra::Vector3 global_position_;
 
         ~Transform();
     };

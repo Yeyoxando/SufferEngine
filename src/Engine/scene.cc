@@ -16,8 +16,8 @@
 
 Suffer::Scene::Scene(){
 
-  current_gameobjects_ = std::vector<ref_ptr<GameObject>>(0);
   main_camera_.alloc();
+  current_gameobjects_ = std::vector<ref_ptr<GameObject>>(0);
 
 }
 

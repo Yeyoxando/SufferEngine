@@ -26,8 +26,8 @@ Suffer::Camera::Camera() {
   camera_up_ = { 0.0f, 1.0f, 0.0f };
   camera_back_ = { 0.0f, 0.0f, -1.0f };
   camera_right_ = { 1.0f, 0.0f, 0.0f };
-  camera_target_ = { 0.0f, 0.0f, 1.0f };
-  camera_position_ = { -1.5f, 0.0f, -80.0f };
+  camera_target_ = { 0.0f, -0.1f, 1.0f };
+  camera_position_ = { -1.5f, 10.0f, -40.0f };
 
   last_cursor_position_.x_ = 800.0f * 0.5f;
   last_cursor_position_.y_ = 600.0f * 0.5f;

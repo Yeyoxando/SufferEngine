@@ -15,6 +15,7 @@
 #include "component_geometry.h"
 #include "component_light.h"
 #include "component_child.h"
+#include "component_material.h"
 
 // --------------------------------------------------- //
 
@@ -107,6 +108,9 @@ void Suffer::GameObject::RemoveComponent(Component::ComponentKind component){
   if (component == Component::ComponentKind::kComponentKind_Invalid)
     assert(false && "Invalid ComponentKind.");
 
+  //if (component == Component::ComponentKind::kComponentKind_Light)
+  //    suffer.light_manager_.lights_.clear(0);
+
   components_.erase(component);
 
 }
@@ -175,6 +179,45 @@ u32 Suffer::GameObject::NumberChildsRecursively(GameObject* go){
 
 u32 Suffer::GameObject::ID(){
     return id_;
+}
+
+// --------------------------------------------------- //
+
+void Suffer::GameObject::SetArchetype(Archetype new_archetype){
+
+    switch (new_archetype){
+        case Suffer::GameObject::kArchetype_Invalid:
+            break;
+        case Suffer::GameObject::kArchetype_Drawable: {
+            if (!HasComponent(Suffer::Component::kComponentKind_Transform)) {
+                Suffer::ref_ptr<Transform> transform_component_;
+                transform_component_.alloc();
+                AddComponent(transform_component_.get());
+            }
+            if (!HasComponent(Suffer::Component::kComponentKind_Material)) {
+                Suffer::ref_ptr<MaterialComponent> material_component_;
+                material_component_.alloc();
+
+                Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params;
+                material_params.alloc();
+                material_params->color_ = mathmorra::Vector4(1.0f, 0.5f, 1.0f, 1.0f);
+                material_component_->SetParams(material_params.get());
+
+                AddComponent(material_component_.get());
+            }
+            if (!HasComponent(Suffer::Component::kComponentKind_Geometry)) {
+                Suffer::ref_ptr<GeometryComponent> geometry_component_;
+                geometry_component_.alloc();
+                geometry_component_->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+                geometry_component_->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
+                AddComponent(geometry_component_.get());
+            }
+            break;
+        }
+        default:
+            break;
+    }
+
 }
 
 // --------------------------------------------------- //

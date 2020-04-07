@@ -1,6 +1,6 @@
 /*
 * Author: Pablo Bano Benito <banyobe@esat-alumni.com>
-* Date: 02-27-2019
+* Date: 02-27-2020
 * ComponentLight Source
 */
 
@@ -13,6 +13,10 @@
 
 void Suffer::LightComponent::Init(LightKind kind){
 
+    s32 id = suffer.resource_manager_.data_->number_of_light_frame_buffers_;
+    suffer.resource_manager_.data_->internal_light_frame_buffers_[id].height_ = SHADOW_SIZE;
+    suffer.resource_manager_.data_->internal_light_frame_buffers_[id].width_ = SHADOW_SIZE;
+
     switch (kind){
       case Suffer::LightComponent::kLightKind_Invalid:
           break;
@@ -21,6 +25,19 @@ void Suffer::LightComponent::Init(LightKind kind){
           dir_light.alloc();
           dir_light->SetActive(false);
           reference_ = dir_light.get();
+
+          // Depth
+          Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_depth_texture;
+          frame_buffer_depth_texture.alloc();
+
+          suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_ = frame_buffer_depth_texture->id_;
+          suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].width_ = SHADOW_SIZE;
+          suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].height_ = SHADOW_SIZE;
+          suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].number_channels_ = 1;
+          suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].version_++;
+
+          suffer.resource_manager_.data_->internal_light_frame_buffers_[id].version_++;
+
           break;
       }
       case Suffer::LightComponent::kLightKind_Point: {
@@ -28,6 +45,23 @@ void Suffer::LightComponent::Init(LightKind kind){
           point.alloc();
           point->SetActive(false);
           reference_ = point.get();
+
+          //point->SetConstant(0.0f);
+          //point->SetQuadratic(0.0f);
+          //point->SetLinear(0.0f);
+
+          // Depth
+          Suffer::ref_ptr<Suffer::ResourceManager::Cubemap> cubemap_depth_;
+          cubemap_depth_.alloc();
+
+          suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_ = cubemap_depth_->id_;
+          suffer.resource_manager_.data_->internal_cubemaps_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].width_ = SHADOW_SIZE;
+          suffer.resource_manager_.data_->internal_cubemaps_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].height_ = SHADOW_SIZE;
+          suffer.resource_manager_.data_->internal_cubemaps_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].number_channels_ = 1;
+          suffer.resource_manager_.data_->internal_cubemaps_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].version_++;
+
+          suffer.resource_manager_.data_->internal_light_frame_buffers_[id].version_++;
+
           break;
       }
       case Suffer::LightComponent::kLightKind_Spot: {
@@ -35,6 +69,28 @@ void Suffer::LightComponent::Init(LightKind kind){
           spot.alloc();
           spot->SetActive(false);
           reference_ = spot.get();
+
+          spot->SetConstant(0.0f);
+          spot->SetQuadratic(0.0f);
+          spot->SetLinear(0.0f);
+          
+          spot->SetOuterCutOff(0.0f);
+          spot->SetCutOff(0.0f);
+
+
+          // Depth
+          Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_depth_texture;
+          frame_buffer_depth_texture.alloc();
+
+          suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_ = frame_buffer_depth_texture->id_;
+          suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].width_ = SHADOW_SIZE;
+          suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].height_ = SHADOW_SIZE;
+          suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].number_channels_ = 1;
+          suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].version_++;
+
+          suffer.resource_manager_.data_->internal_light_frame_buffers_[id].version_++;
+
+
           break;
       }
       default: {
@@ -42,24 +98,9 @@ void Suffer::LightComponent::Init(LightKind kind){
           break;
       }
     }
+    reference_->framebuffer_id_ = id;
 
-    //s32 id = suffer.resource_manager_.data_->number_of_light_frame_buffers_;
-    //suffer.resource_manager_.data_->internal_light_frame_buffers_[id].height_ = SHADOW_SIZE;
-    //suffer.resource_manager_.data_->internal_light_frame_buffers_[id].width_ = SHADOW_SIZE;
-    //
-    //// Depth
-    //Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_depth_texture;
-    //frame_buffer_depth_texture.alloc();
-    //
-    //suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_ = frame_buffer_depth_texture->id_;
-    //suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].width_ = SHADOW_SIZE;
-    //suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].height_ = SHADOW_SIZE;
-    //suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].number_channels_ = 1;
-    //suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[id].depth_texture_id_].version_++;
-    //
-    //suffer.resource_manager_.data_->internal_light_frame_buffers_[id].version_++;
-    //
-    //framebuffer_id_ = id;
+    suffer.resource_manager_.data_->number_of_light_frame_buffers_++;
     initialized_ = true;
 
 }
@@ -192,6 +233,14 @@ void Suffer::LightComponent::SetCutOff(float new_cut_off /*= 0.9978f*/){
     if (light == nullptr) return;
     light->SetCutOff(new_cut_off);
 
+}
+
+// ----------------------------------------------------------------------- //
+
+void Suffer::LightComponent::SetAngle(float new_angle /*= 45.0f*/){
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return;
+    reference_->angle_ = new_angle;
 }
 
 // ----------------------------------------------------------------------- //
@@ -329,6 +378,16 @@ float Suffer::LightComponent::Constant(){
     Suffer::LightManager::PointLight* light = static_cast<Suffer::LightManager::PointLight*>(reference_);
     if (light == nullptr) return -1.0f;
     return light->Constant();
+}
+
+// ----------------------------------------------------------------------- //
+
+float Suffer::LightComponent::Angle(){
+
+    assert(reference_ != nullptr && "ERROR: NULL light");
+    if (reference_ == nullptr) return -1.0f;
+
+    return reference_->Angle();
 }
 
 // ----------------------------------------------------------------------- //

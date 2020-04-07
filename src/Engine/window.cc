@@ -8,6 +8,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include "internal_window.h"
+#include "IconsFontAwesome5Pro.h"
 
 // --------------------------------------------------------------//
 
@@ -57,7 +58,13 @@ bool Suffer::Window::Open(int width, int height){
 	// ImGui init
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
-	io.Fonts->AddFontFromFileTTF("../../../resources/fonts/comf_light.ttf", 13.0f);
+	io.Fonts->AddFontDefault();
+
+  static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+  ImFontConfig icons_config; icons_config.MergeMode = true; icons_config.PixelSnapH = true;
+
+	io.Fonts->AddFontFromFileTTF(FONT_ICON_FILE_NAME_FAS, 16.0f, &icons_config, icons_ranges);
+	
 	io.Fonts->Build();
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 

@@ -203,8 +203,8 @@ void Suffer::RenderManager::DoRender(){
           suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ = suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].version_;
         }
      
-        glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
         glViewport(0, 0, suffer.GetWindowSize().x_, suffer.GetWindowSize().y_);
+        glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
         
         
       }
@@ -218,40 +218,34 @@ void Suffer::RenderManager::DoRender(){
     u32 size = render_dl_.Size();
 
     for (int i = 0; i < size; ++i) {
-      const Command* cmd = render_dl_.dl_commands_[i].get();
+      Command* cmd = render_dl_.dl_commands_[i].get();
       cmd->Execute();
     }
 
 
+    //Set last framebuffer texture to draw it in imgui and use it in post processes
+#if 1
+    if (render_dl_.frame_buffer_id_ >= 0)
+      current_drawn_texture_id_ = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[render_dl_.frame_buffer_id_].color_texture_id_].current_texture_id_;
+#else
+    if (render_dl_.frame_buffer_id_ < 0) {
+      current_drawn_texture_id_ = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_light_frame_buffers_[0].depth_texture_id_].current_texture_id_;
+      printf("\n%d", current_drawn_texture_id_);
+    }
+#endif
+
     render_dl_.Clear();
     
-    //Set last framebuffer texture to draw it in imgui and use it in post processes
-    current_drawn_texture_id_ = suffer.resource_manager_.data_->internal_textures_[suffer.resource_manager_.data_->internal_frame_buffers_[render_dl_.frame_buffer_id_].color_texture_id_].current_texture_id_;
-
   }
 
-  // Render to final framebuffer (screen quad)
+  //// Render to final framebuffer (screen quad)
+  glViewport(0, 0, suffer.GetWindowSize().x_, suffer.GetWindowSize().y_);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-  //glDisable is on post proccess command
-  data_->post_command_->SetData(Postprocessing::PostproccessKind::kPostproccessKind_Default);
-  data_->post_command_->Execute();
+  
+  //data_->post_command_->SetData(Postprocessing::PostproccessKind::kPostproccessKind_Default);
+  //data_->post_command_->Execute();
 
 }
-
-// ------------------------------------------------------------------------- //
-
-//void Suffer::RenderManager::SetFrameBuffer(ResourceManager::FrameBuffer* frame_buffer) {
-//
-//  assert(frame_buffer != nullptr);
-//  if (frame_buffer == nullptr) {
-//    printf("NULL FrameBuffer.\n");
-//    return;
-//  }
-//
-//  frame_buffer_id_ = frame_buffer->id_;
-//
-//}
 
 // ------------------------------------------------------------------------- //
 

@@ -58,6 +58,14 @@ float* Suffer::Transform::GetPosition(){
     return &position_.x_;
 }
 
+// --------------------------------------------------- //
+
+float* Suffer::Transform::GetGlobalPosition(){
+    return &global_position_.x_;
+}
+
+// --------------------------------------------------- //
+
 mathmorra::Matrix4 Suffer::Transform::GetModelMatrix(){
     return model_;
 }

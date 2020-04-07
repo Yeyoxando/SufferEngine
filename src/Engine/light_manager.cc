@@ -25,6 +25,7 @@ Suffer::LightManager::~LightManager() {
 void Suffer::LightManager::StartUp(){
 
   current_lights_ = 0;
+  lights_.alloc(MAX_LIGHTS);
 
 }
 
@@ -298,6 +299,12 @@ float Suffer::LightManager::DirectionalLight::Intensity(){
 
 // ----------------------------------------------------------------------- //
 
+float Suffer::LightManager::DirectionalLight::Angle(){
+    return angle_;
+}
+
+// ----------------------------------------------------------------------- //
+
 u16 Suffer::LightManager::DirectionalLight::GetLightKind(){
 
   return (u16)light_kind_;
@@ -320,12 +327,13 @@ Suffer::LightManager::DirectionalLight::DirectionalLight(){
   // Attributes
   active_ = true;
   intensity_ = 1.0f;
+  angle_ = 150.0f;
   direction_ = mathmorra::Vector3(0.0f, 0.0f, -1.0f);
 
   light_kind_ = kLightKind_Directional;
 
+  suffer.light_manager_.lights_[suffer.light_manager_.current_lights_] =  this;
   suffer.light_manager_.current_lights_++;
-  suffer.light_manager_.lights_.push_back(this);
 
 }
 
@@ -421,6 +429,9 @@ Suffer::LightManager::SpotLight::SpotLight(){
   // Attributes
   active_ = true;
   intensity_ = 1.0f;
+
+  cut_off_ = 0.0f;
+  outer_cut_off_ = 0.0f;
 
   light_kind_ = kLightKind_Spot;
 

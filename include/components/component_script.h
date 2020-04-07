@@ -14,11 +14,13 @@ namespace Suffer {
 
   class ScriptComponent : public Component {
     friend class SystemScript;
+    friend class Interface;
 
   public:
     ScriptComponent();
 
     void AttachScript(char* script_path);
+    void Reload(char* new_path);
 
   protected:
     ~ScriptComponent();

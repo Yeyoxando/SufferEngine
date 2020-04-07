@@ -52,17 +52,8 @@ void Suffer::SystemTransform::Execute(GameObject* go){
 
     transform_component->model_ = scale_mat * (rotation_mat_x * rotation_mat_y * rotation_mat_z) * translation_mat;
 
-    // Hierarchy Stuff
-    if (go->HasComponent(Component::ComponentKind::kComponentKind_Child)) {
-        auto component_ = go->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Child);
-        Suffer::ChildComponent* child_component = static_cast<Suffer::ChildComponent*>(component_);
-        GameObject* parent = child_component->parent_reference_;
-        if (parent->HasComponent(Component::ComponentKind::kComponentKind_Transform)) {
-            auto component_ = parent->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
-            Suffer::Transform* parent_transform_component = static_cast<Suffer::Transform*>(component_);
-            mathmorra::Matrix4 parent_model = parent_transform_component->GetModelMatrix();
-            transform_component->model_ = transform_component->model_ * parent_model;
-        }
+    if (!go->HasComponent(Component::kComponentKind_Child)) {
+        transform_component->global_position_ = transform_component->position_;
     }
 
     // Update the Forward vector
@@ -77,7 +68,7 @@ void Suffer::SystemTransform::Execute(GameObject* go){
     quaternion = quaternion.Multiply(quaternion, qx);
 
     quaternion.Normalize();
-    transform_component->forward_  = { 0.0f, 0.0f, 1.0f };
+    transform_component->forward_ = { 0.0f, 0.0f, 1.0f };
     transform_component->forward_ = quaternion.RotateVectorByQuaternion(transform_component->forward_, quaternion);
     transform_component->forward_.Normalize();
 

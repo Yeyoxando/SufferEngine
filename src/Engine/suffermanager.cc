@@ -92,6 +92,9 @@ bool Suffer::SufferManager::Init(){
   script_system_.alloc();
   suffer.AddSystem(script_system_.get());
 
+  hierarchy_system_.alloc();
+  suffer.AddSystem(hierarchy_system_.get());
+
   light_system_.alloc();
   suffer.AddSystem(light_system_.get());
 
@@ -213,15 +216,21 @@ void Suffer::SufferManager::PrepareAudio() {
 // --------------------------------------------------------------//
 
 void Suffer::SufferManager::PreparePostproccess(){
+  DisplayList postpro_dl;
 
   if (data_->black_and_white_) {
-    DisplayList postpro_dl;
     ref_ptr<Postprocessing> black_white;
     black_white.alloc();
     black_white->SetData(Postprocessing::kPostproccessKind_BlackAndWhite);
     postpro_dl.AddCommand(black_white.get());
-    render_manager_.AddToRenderQueue(std::move(postpro_dl), postprocessing_frame_buffer_.get());
   }
+
+  ref_ptr<Postprocessing> def;
+  def.alloc();
+  def->SetData(Postprocessing::kPostproccessKind_Default);
+  postpro_dl.AddCommand(def.get());
+
+  render_manager_.AddToRenderQueue(std::move(postpro_dl), postprocessing_frame_buffer_.get());
 
 }
 

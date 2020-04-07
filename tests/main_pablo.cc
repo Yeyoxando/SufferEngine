@@ -21,7 +21,7 @@
 #include "component.h"
 #include "audio.h"
 
-const u16 number_cubes = 2;
+const u16 number_cubes = 50;
 
 // --------------------------------------------------------------//
 

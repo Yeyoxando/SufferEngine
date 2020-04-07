@@ -62,6 +62,7 @@ project "SufferCore"
 	includedirs{
     "./src/deps/lua/",
 		"./src/internal/",
+		"./src/internal/shaders",
 		"./src/deps/GLFW/include/GLFW/",
 		"./src/deps/GLFW/include/",
 		"./src/deps/GLFW/deps/glad/",
@@ -107,6 +108,7 @@ project "SufferCore"
 		"./src/systems/*.cc",
 		"./src/engine/*.cc",
 		"./src/internal/*.h",
+		"./src/internal/shaders/*.h",
 		"./tests/*.cc", 
 
 		--GLFW

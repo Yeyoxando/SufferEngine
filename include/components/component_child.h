@@ -17,6 +17,7 @@ namespace Suffer {
     class ChildComponent : public Component {
         friend class SystemTransform;
         friend class GameObject;
+        friend class SystemHierarchy;
 
     public:
         ChildComponent() : Component(kComponentKind_Child) { Init(); };

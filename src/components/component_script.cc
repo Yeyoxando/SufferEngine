@@ -14,6 +14,7 @@ Suffer::ScriptComponent::ScriptComponent() : Component(Component::kComponentKind
   initialized_ = false;
   script_attached_ = false;
   data_ = new ScriptData();
+  game_object_reference_ = nullptr;
 
 }
 
@@ -69,11 +70,11 @@ void Suffer::ScriptComponent::AttachScript(char* script_path){
   u8 status = luaL_dofile(data_->state_, script_path);
 
   if (status) {
-    const char* error = lua_tostring(data_->state_, -1);
-    printf("ERROR: %s\n", error);
-    assert(!status);
-    lua_pop(data_->state_, 1);
-    return;
+      const char* error = lua_tostring(data_->state_, -1);
+      printf("ERROR: %s\n", error);
+      assert(!status);
+      lua_pop(data_->state_, 1);
+      return;
   }
 
   script_attached_ = true;
@@ -98,13 +99,21 @@ void Suffer::ScriptComponent::Start(){
 
 }
 
+void Suffer::ScriptComponent::Reload(char* new_path){
+
+    data_->lua_Reload(data_->state_, new_path);
+
+}
+
 // --------------------------------------------------- //
 
 Suffer::ScriptComponent::~ScriptComponent(){
 
   if (data_->state_ != nullptr) {
-    lua_close(data_->state_);
-    data_->state_ = nullptr;
+    if (game_object_reference_ != nullptr) {
+        lua_close(data_->state_);
+        data_->state_ = nullptr;
+    }
   }
 
   if (data_ == nullptr) return;

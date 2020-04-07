@@ -17,6 +17,7 @@
 #include "system_script.h"
 #include "system_light.h"
 #include "system_audio.h"
+#include "system_hierarchy.h"
 
 
 namespace Suffer {
@@ -135,6 +136,7 @@ namespace Suffer {
     ref_ptr<SystemRender>    render_system_;
     ref_ptr<SystemScript>    script_system_;
     ref_ptr<SystemTransform> transform_system_;
+    ref_ptr<SystemHierarchy> hierarchy_system_;
 
 
     //Framebuffers
