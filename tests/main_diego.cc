@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
     wall_specular_texture.alloc();
     wall_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
     wall_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-    wall_specular_texture->LoadTextureData("../../../resources/images/box_2_spec.png");
+    wall_specular_texture->LoadTextureData("../../../resources/images/wall_spec.jpg");
 
 
 
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
     ground_specular_texture.alloc();
     ground_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
     ground_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-    ground_specular_texture->LoadTextureData("../../../resources/images/box_2_spec.png");
+    ground_specular_texture->LoadTextureData("../../../resources/images/floor_spec.jpg");
 
 
 
