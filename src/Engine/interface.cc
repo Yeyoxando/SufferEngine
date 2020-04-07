@@ -772,6 +772,7 @@ void  Suffer::Interface::Inspector(){
 							LightComponent* light = static_cast<LightComponent*>(component_reference);
 							ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.7f, 1.0f), ICON_FA_LIGHTBULB " Light");
 							ImGui::SameLine();
+							ImGui::PushID(Suffer::Component::kComponentKind_Light);
 							if (ImGui::SmallButton("Remove")) {
 									remove = true;
 									component_to_remove = Suffer::Component::kComponentKind_Light;
@@ -908,11 +909,16 @@ void  Suffer::Interface::Inspector(){
 											float quadratic = light->Quadratic();
 											float linear = light->Linear();
 											float constant = light->Constant();
+											float angle = light->Angle();
 
-											if (ImGui::DragFloat("CutOff", &cutOff, 0.001f, 0.0f, 1.0f)) {
+                      if (ImGui::DragFloat("Angle", &angle, 0.1f, 0.1f, 180.0f)) {
+                          light->SetAngle(angle);
+                      }
+
+											if (ImGui::DragFloat("CutOff", &cutOff, 0.001f, light->OuterCutOff(), 1.0f)) {
 													light->SetCutOff(cutOff);
 											}
-											if (ImGui::DragFloat("OuterCutOff", &outerCutOff, 0.001f, 0.0f, 1.0f)) {
+											if (ImGui::DragFloat("OuterCutOff", &outerCutOff, 0.001f, 0.0f, light->CutOff())) {
 													light->SetOuterCutOff(outerCutOff);
 											}
 											if (ImGui::DragFloat("Constant", &constant, 0.001f, 0.0f, 1.0f)) {
@@ -950,7 +956,8 @@ void  Suffer::Interface::Inspector(){
 											break;
 									}
 							}
-						ImGui::Separator();
+							ImGui::PopID();
+							ImGui::Separator();
 						break;
 					}
 					default: {

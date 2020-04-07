@@ -45,7 +45,9 @@ Suffer::ShadowMap::~ShadowMap(){
 
 // ------------------------------------------------------------------------- //
 
-void Suffer::ShadowMap::Execute() const{
+void Suffer::ShadowMap::Execute() const {
+
+  glEnable(GL_DEPTH_TEST);
 
   s32 id_frame_buffer = data_->light_framebuffer_id_;
 
@@ -74,16 +76,19 @@ void Suffer::ShadowMap::Execute() const{
           0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
 
         // WRAP S
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 
         // WRAP T
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
         // MIN FILTER
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
         // MAG FILTER
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
         glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -120,25 +125,6 @@ void Suffer::ShadowMap::Execute() const{
   //Clear only depth buffer
   glClear(GL_DEPTH_BUFFER_BIT);
 
-  //specific fragment and vertex shader for that
-
-  //Calculate view and projection matrixes and set uniforms
-
-
-
-  // --------------------------------- Draw -------------------------------- //
-
-  {
-
-    //u32 number_elements = suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_id_].data_.size();
-    //
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_id_].current_gl_buffer_);
-    //
-    //glDrawElements(GL_TRIANGLES, number_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
-
-  }
-
-  // --------------------------------- Draw -------------------------------- //
 }
 
 // ------------------------------------------------------------------------- //

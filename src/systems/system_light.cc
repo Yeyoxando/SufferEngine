@@ -121,7 +121,7 @@ void Suffer::SystemLight::Execute(GameObject* go) {
         case Suffer::LightManager::LightKind::kLightKind_Point: {
 
             // Take a look in the shaders;
-            float far_plane = 25.0f;
+            float far_plane = 100.0f;
 
             auto point_light = static_cast<Suffer::LightManager::PointLight*>(light_component->reference_);
             if (point_light == nullptr) {
@@ -181,6 +181,60 @@ void Suffer::SystemLight::Execute(GameObject* go) {
 
 
             break;
+        }
+        case Suffer::LightManager::LightKind::kLightKind_Spot: {
+
+          // Angle calculation
+          //light_component->reference_->angle_ = 1.0f;
+
+          auto spot_light = static_cast<Suffer::LightManager::SpotLight*>(light_component->reference_);
+          if (spot_light == nullptr) {
+            printf("ERROR: NULL Light.\n");
+            break;
+          }
+          mathmorra::Vector3 position = transform_component->GetGlobalPosition();
+          mathmorra::Vector3 inv_direction = spot_light->Direction();
+          inv_direction *= -1.0f;
+          mathmorra::Matrix4 view_matrix = mathmorra::Matrix4::LookAt(position,
+            position - inv_direction,
+            transform_component->Up());
+
+          mathmorra::Matrix4 projection_matrix = projection_matrix.PerspectiveMatrix(ThiefUtils::Math::Radians(spot_light->Angle()), (float)SHADOW_SIZE / (float)SHADOW_SIZE, 5.0f, 200.0f);
+
+          light_component->reference_->view_projection_mat_ = view_matrix * projection_matrix;
+
+          Scene* scene = suffer.GetCurrentScene();
+          u32 current_gameobjects = scene->current_gameobjects_.size();
+
+          DisplayList light_dl;
+
+          ref_ptr<ShadowMap> shadow_cmd;
+          shadow_cmd.alloc();
+          shadow_cmd->SetData(light_component);
+
+          light_dl.AddCommand(shadow_cmd.get());
+
+          // Create a depth render command for each object in the scene
+          GameObject* aux_gameobject;
+          for (u32 i = 0; i < current_gameobjects; ++i) {
+
+            ref_ptr<DrawDepth> depth_cmd;
+            depth_cmd.alloc();
+            aux_gameobject = scene->current_gameobjects_[i].get();
+            depth_cmd->SetData(aux_gameobject);
+
+            auto component = aux_gameobject->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Transform);
+            Suffer::Transform* transform_component = static_cast<Suffer::Transform*>(component);
+            if (transform_component == nullptr) return;
+            depth_cmd->SetMatrix(transform_component->GetModelMatrix(),
+              view_matrix, projection_matrix);
+
+            light_dl.AddCommand(depth_cmd.get());
+
+          }
+
+          suffer.render_manager_.AddToRenderQueue(std::move(light_dl), nullptr);
+          break;
         }
         default:
             break;

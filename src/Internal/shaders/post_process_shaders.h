@@ -41,7 +41,9 @@ namespace Suffer {
 // ......... MAIN ..........
     void main()
     { 
-        FragColor = texture(u_tex0, tex_coords);
+      float gamma = 2.2f;
+      FragColor.xyz = pow(texture(u_tex0, tex_coords).xyz, vec3(1.0f/gamma));
+      //FragColor = texture(u_tex0, tex_coords);
     }    
 
   )FTOTEXTURE";

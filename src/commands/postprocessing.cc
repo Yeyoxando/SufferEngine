@@ -30,7 +30,6 @@ struct Suffer::Postprocessing::Data {
   s32 texture_ids_[MAX_USED_TEXTURES];
   u32 current_used_textures_;
 
-  u32 material_type_;
   u32 postpro_type_;
 
 };
@@ -46,8 +45,6 @@ Suffer::Postprocessing::Postprocessing() {
   for (u32 i = 0; i < MAX_USED_TEXTURES; ++i) {
     data_->texture_ids_[i] = -1;
   }
-
-  data_->material_type_ = MaterialComponent::kParamsType_Invalid;
 
 }
 
@@ -82,7 +79,6 @@ void Suffer::Postprocessing::SetData(PostproccessKind postpro) {
 
   {
 
-      data_->material_type_ = MaterialComponent::kParamsType_RenderToTexture;
       data_->current_used_textures_ = 1;
       data_->postpro_type_ = postpro;
   }
@@ -96,6 +92,8 @@ void Suffer::Postprocessing::SetData(PostproccessKind postpro) {
 void Suffer::Postprocessing::Execute() const {
 
   glDisable(GL_DEPTH_TEST);
+
+  glCullFace(GL_FRONT);
 
   GLenum error;
 
@@ -163,15 +161,14 @@ void Suffer::Postprocessing::Execute() const {
 
   {
 
-    // I'm not sure if this is the best way, or should I have to modify material to change its shaders?
     u32 mat_type;
     switch (data_->postpro_type_) {
     case PostproccessKind::kPostproccessKind_Default: {
-      mat_type = 2;
+      mat_type = 0;
     }
       break;
     case PostproccessKind::kPostproccessKind_BlackAndWhite: {
-      mat_type = 3;
+      mat_type = 1;
     }
       break;
     default:
@@ -179,54 +176,54 @@ void Suffer::Postprocessing::Execute() const {
     }
     
     // If internal material is not created, creates it
-    if (!suffer.resource_manager_.data_->internal_materials_[mat_type].is_created_) {
+    if (!suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].is_created_) {
       // Create vertex shader
-      suffer.resource_manager_.data_->internal_materials_[mat_type].vertex_shader_id_ =
+      suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].vertex_shader_id_ =
         glCreateShader(GL_VERTEX_SHADER);
 
       // Create fragment shader
-      suffer.resource_manager_.data_->internal_materials_[mat_type].fragment_shader_id_ =
+      suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].fragment_shader_id_ =
         glCreateShader(GL_FRAGMENT_SHADER);
 
       // Get shaders length
-      const GLint vertex_size = strlen(suffer.resource_manager_.data_->internal_materials_[mat_type].vertex_shader_);
-      const GLint fragment_size = strlen(suffer.resource_manager_.data_->internal_materials_[mat_type].fragment_shader_);
+      const GLint vertex_size = strlen(suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].vertex_shader_);
+      const GLint fragment_size = strlen(suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].fragment_shader_);
 
       // Upload vertex shader data
-      glShaderSource(suffer.resource_manager_.data_->internal_materials_[mat_type].vertex_shader_id_,
-        1, &suffer.resource_manager_.data_->internal_materials_[mat_type].vertex_shader_,
+      glShaderSource(suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].vertex_shader_id_,
+        1, &suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].vertex_shader_,
         &vertex_size);
 
       // Upload fragment shader data
-      glShaderSource(suffer.resource_manager_.data_->internal_materials_[mat_type].fragment_shader_id_,
-        1, &suffer.resource_manager_.data_->internal_materials_[mat_type].fragment_shader_, &fragment_size);
+      glShaderSource(suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].fragment_shader_id_,
+        1, &suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].fragment_shader_, &fragment_size);
 
       // Compile vertex shader
-      glCompileShader(suffer.resource_manager_.data_->internal_materials_[mat_type].vertex_shader_id_);
+      glCompileShader(suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].vertex_shader_id_);
 
       GLint status = 0;
-      glGetShaderiv(suffer.resource_manager_.data_->internal_materials_[mat_type].vertex_shader_id_, GL_COMPILE_STATUS, &status);
+      glGetShaderiv(suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].vertex_shader_id_, GL_COMPILE_STATUS, &status);
       GLint log_length = 0;
-      glGetShaderiv(suffer.resource_manager_.data_->internal_materials_[mat_type].vertex_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
+      glGetShaderiv(suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].vertex_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
       Array<char> info_log;
       info_log.alloc(log_length + 1);
       info_log[log_length] = '\0';
-      glGetShaderInfoLog(suffer.resource_manager_.data_->internal_materials_[mat_type].vertex_shader_id_, log_length, &log_length, &info_log[0]);
+      glGetShaderInfoLog(suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].vertex_shader_id_, log_length, &log_length, &info_log[0]);
 
       printf("\n\n%s", info_log.get());
       if (status == GL_FALSE)
         printf("\nERROR: vertex shader not compiled");
 
       // Compile fragment shader
-      glCompileShader(suffer.resource_manager_.data_->internal_materials_[mat_type].fragment_shader_id_);
+      glCompileShader(suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].fragment_shader_id_);
       status = 0;
-      glGetShaderiv(suffer.resource_manager_.data_->internal_materials_[mat_type].fragment_shader_id_, GL_COMPILE_STATUS, &status);
+      glGetShaderiv(suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].fragment_shader_id_, GL_COMPILE_STATUS, &status);
       log_length = 0;
       info_log.release();
-      glGetShaderiv(suffer.resource_manager_.data_->internal_materials_[mat_type].fragment_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
+      glGetShaderiv(suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].fragment_shader_id_, GL_INFO_LOG_LENGTH, &log_length);
       info_log.alloc(log_length + 1);
       info_log[log_length] = '\0';
-      glGetShaderInfoLog(suffer.resource_manager_.data_->internal_materials_[mat_type].fragment_shader_id_, log_length, &log_length, &info_log[0]);
+      glGetShaderInfoLog(suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].fragment_shader_id_, log_length, &log_length, &info_log[0]);
       printf("\n\n%s", info_log.get());
       if (status == GL_FALSE)
         printf("\nERROR: fragment shader not compiled");
@@ -234,20 +231,20 @@ void Suffer::Postprocessing::Execute() const {
 
 
       // Create program
-      suffer.resource_manager_.data_->internal_materials_[mat_type].current_program_ = glCreateProgram();
+      suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].current_program_ = glCreateProgram();
 
       // Attach shaders
-      glAttachShader(suffer.resource_manager_.data_->internal_materials_[mat_type].current_program_,
-        suffer.resource_manager_.data_->internal_materials_[mat_type].vertex_shader_id_);
+      glAttachShader(suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].current_program_,
+        suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].vertex_shader_id_);
 
-      glAttachShader(suffer.resource_manager_.data_->internal_materials_[mat_type].current_program_,
-        suffer.resource_manager_.data_->internal_materials_[mat_type].fragment_shader_id_);
+      glAttachShader(suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].current_program_,
+        suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].fragment_shader_id_);
 
       // Link program
-      glLinkProgram(suffer.resource_manager_.data_->internal_materials_[mat_type].current_program_);
+      glLinkProgram(suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].current_program_);
 
       // Mark internal material as created
-      suffer.resource_manager_.data_->internal_materials_[mat_type].is_created_ = true;
+      suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].is_created_ = true;
     }
 
 
@@ -257,7 +254,7 @@ void Suffer::Postprocessing::Execute() const {
 
   // ------------------------------- Uniforms ------------------------------ //
   
-    u32 program_id = suffer.resource_manager_.data_->internal_materials_[mat_type].current_program_;
+    u32 program_id = suffer.resource_manager_.data_->internal_postproccess_materials_[mat_type].current_program_;
 
     glUseProgram(program_id);
 
@@ -276,6 +273,7 @@ void Suffer::Postprocessing::Execute() const {
       }
 
       glActiveTexture(GL_TEXTURE0 + i);
+      auto d = suffer.render_manager_.current_drawn_texture_id_;
       glBindTexture(GL_TEXTURE_2D, suffer.render_manager_.current_drawn_texture_id_);
 
       glUniform1i(u_pos, i);

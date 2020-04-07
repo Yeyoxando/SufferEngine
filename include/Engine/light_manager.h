@@ -32,6 +32,7 @@ namespace Suffer {
     class DirectionalLight : public Referenced {
     friend class LightComponent;
     friend class DrawGeometry;
+    friend class SystemLight;
     friend class ShadowMap;
     friend class ShadowCubemap;
 
@@ -73,6 +74,7 @@ namespace Suffer {
       float* Diffuse();
       float* Specular();
       float  Intensity();
+      float  Angle();
       u16 GetLightKind();
       void SetLightKind(LightKind new_kind);
 
@@ -88,6 +90,7 @@ namespace Suffer {
       mathmorra::Vector3 ambient_;
       mathmorra::Vector3 diffuse_;
       mathmorra::Vector3 specular_;
+      float angle_;
       float intensity_;
       bool active_;
       u16 light_kind_;
@@ -150,7 +153,7 @@ namespace Suffer {
     
 
     u32 current_lights_;
-    std::vector<ref_ptr<DirectionalLight>> lights_;
+    Array<ref_ptr<DirectionalLight>> lights_;
 
   };
 

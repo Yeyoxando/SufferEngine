@@ -61,8 +61,8 @@ void Suffer::DrawDepth::SetData(GameObject* go) {
 
   {
 
-    if (!go->HasComponent(Component::ComponentKind::kComponentKind_Geometry) ||
-      go->HasComponent(Component::ComponentKind::kComponentKind_Light)) {
+    if (!go->HasComponent(Component::ComponentKind::kComponentKind_Geometry)/* ||
+      go->HasComponent(Component::ComponentKind::kComponentKind_Light)*/) {
       data_->vertex_buffer_id_ = -1;
       data_->index_buffer_id_ = -1;
     }
@@ -165,8 +165,8 @@ void Suffer::DrawDepth::Execute() const {
 
   {
 
-    // 4 equals to resource manager internal depth material
-    u32 mat_type = 4;
+    // 2 equals to resource manager internal depth material
+    u32 mat_type = 2;
 
     // If internal material is not created, creates it
     if (!suffer.resource_manager_.data_->internal_materials_[mat_type].is_created_) {
@@ -312,7 +312,7 @@ void Suffer::DrawDepth::Execute() const {
 
   {
 
-    glCullFace(GL_FRONT);
+    //glCullFace(GL_FRONT);
 
     u32 number_elements = suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_id_].data_.size();
 

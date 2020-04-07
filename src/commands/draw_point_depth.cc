@@ -16,7 +16,6 @@
 #include "component_material.h"
 #include "common_definitions.h"
 
-#define MAX_USED_TEXTURES 5
 #define MAX_USED_VEC4DATA 29 
 
 // ------------------------------------------------------------------------- //
@@ -65,8 +64,8 @@ void Suffer::DrawPointDepth::SetData(GameObject* go, mathmorra::Vector3 light_po
 
   {
 
-    if (!go->HasComponent(Component::ComponentKind::kComponentKind_Geometry) ||
-      go->HasComponent(Component::ComponentKind::kComponentKind_Light)) {
+    if (!go->HasComponent(Component::ComponentKind::kComponentKind_Geometry)/* ||
+      go->HasComponent(Component::ComponentKind::kComponentKind_Light)*/) {
       data_->vertex_buffer_id_ = -1;
       data_->index_buffer_id_ = -1;
     }
@@ -179,9 +178,9 @@ void Suffer::DrawPointDepth::Execute() const {
 
   {
 
-    // 4 equals to resource manager internal depth material
-    u32 mat_type = 5;
-
+    // 3 equals to resource manager internal point depth material
+    u32 mat_type = 3;
+    auto ptr = suffer.resource_manager_.data_->internal_materials_[mat_type];
     // If internal material is not created, creates it
     if (!suffer.resource_manager_.data_->internal_materials_[mat_type].is_created_) {
 
@@ -331,17 +330,10 @@ void Suffer::DrawPointDepth::Execute() const {
     case Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N:
       glEnableVertexAttribArray(0);
       glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (6 * sizeof(float)), (GLvoid*)0);
-      //glEnableVertexAttribArray(1);
-      //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (6 * sizeof(float)), (GLvoid*)(3 * sizeof(float)));
       break;
     case Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV:
       glEnableVertexAttribArray(0);
       glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (GLvoid*)0);
-      //glEnableVertexAttribArray(1);
-      //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (GLvoid*)(3 * sizeof(float)));
-      //glEnableVertexAttribArray(2);
-      //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (GLvoid*)(6 * sizeof(float)));
-
       break;
     default:
 

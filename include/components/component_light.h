@@ -66,6 +66,7 @@ namespace Suffer {
         void SetConstant(float new_constant = 0.09f);
         void SetQuadratic(float new_quadratic = 0.032f);
         void SetCutOff(float new_cut_off = 0.9978f);
+        void SetAngle(float new_angle = 45.0f);
         void SetOuterCutOff(float new_outer_cut_off = 0.99f);
 
 
@@ -82,6 +83,7 @@ namespace Suffer {
         float  Quadratic();
         float  Linear();
         float  Constant();
+        float  Angle();
         u16 GetLightKind();
         void SetLightKind(LightKind new_kind);
 
