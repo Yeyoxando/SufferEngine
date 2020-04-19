@@ -108,8 +108,11 @@ bool Suffer::SufferManager::Init(){
   draw_frame_buffer_.alloc();
   draw_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
 
-  postprocessing_frame_buffer_.alloc();
-  postprocessing_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
+  black_white_frame_buffer_.alloc();
+  black_white_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
+  
+  render_to_texture_frame_buffer_.alloc();
+  render_to_texture_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
 
   number_of_game_objects_ = 0;
 
@@ -220,21 +223,28 @@ void Suffer::SufferManager::PrepareAudio() {
 // --------------------------------------------------------------//
 
 void Suffer::SufferManager::PreparePostproccess(){
-  DisplayList postpro_dl;
+
+  // To add a new post-process:
+  //   Create a new framebuffer on suffer_manager
+  //   Create here a DL and the postpro command with its kind
+  //   Send to render manager
 
   if (data_->black_and_white_) {
+    DisplayList postpro_dl;
     ref_ptr<Postprocessing> black_white;
     black_white.alloc();
     black_white->SetData(Postprocessing::kPostproccessKind_BlackAndWhite);
     postpro_dl.AddCommand(black_white.get());
+    render_manager_.AddToRenderQueue(std::move(postpro_dl), black_white_frame_buffer_.get());
   }
 
+
+  DisplayList postpro_dl2;
   ref_ptr<Postprocessing> def;
   def.alloc();
-  def->SetData(Postprocessing::kPostproccessKind_Default);
-  postpro_dl.AddCommand(def.get());
-
-  render_manager_.AddToRenderQueue(std::move(postpro_dl), postprocessing_frame_buffer_.get());
+  def->SetData(Postprocessing::kPostproccessKind_RenderToTexture);
+  postpro_dl2.AddCommand(def.get());
+  render_manager_.AddToRenderQueue(std::move(postpro_dl2), render_to_texture_frame_buffer_.get());
 
 }
 

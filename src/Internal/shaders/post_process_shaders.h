@@ -26,6 +26,7 @@ namespace Suffer {
   )VTOTEXTURE";
 
 
+  // WARNING!! This has to be the last rendered shader because of gamma correction
   // -- (fragment) --
   static const char* render_to_texture_fragment_ = R"FTOTEXTURE(
     #version 330
@@ -39,11 +40,10 @@ namespace Suffer {
     uniform sampler2D u_tex0;
     
 // ......... MAIN ..........
-    void main()
-    { 
+    void main(){
+      // Final gamma correction only applied in this final shader 
       float gamma = 2.2f;
       FragColor.xyz = pow(texture(u_tex0, tex_coords).xyz, vec3(1.0f/gamma));
-      //FragColor = texture(u_tex0, tex_coords);
     }    
 
   )FTOTEXTURE";

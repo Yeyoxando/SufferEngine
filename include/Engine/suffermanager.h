@@ -143,7 +143,8 @@ namespace Suffer {
 
     //Framebuffers
     ref_ptr<ResourceManager::FrameBuffer> draw_frame_buffer_;
-    ref_ptr<ResourceManager::FrameBuffer> postprocessing_frame_buffer_;
+    ref_ptr<ResourceManager::FrameBuffer> black_white_frame_buffer_;
+    ref_ptr<ResourceManager::FrameBuffer> render_to_texture_frame_buffer_;
     
 		struct Data;
 		Data* data_;

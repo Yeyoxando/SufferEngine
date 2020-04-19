@@ -163,7 +163,7 @@ void Suffer::Postprocessing::Execute() const {
 
     u32 mat_type;
     switch (data_->postpro_type_) {
-    case PostproccessKind::kPostproccessKind_Default: {
+    case PostproccessKind::kPostproccessKind_RenderToTexture: {
       mat_type = 0;
     }
       break;

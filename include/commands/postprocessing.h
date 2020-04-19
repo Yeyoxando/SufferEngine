@@ -29,7 +29,7 @@ namespace Suffer {
      */
     enum PostproccessKind {
       kPostproccessKind_Invalid = -1,
-      kPostproccessKind_Default = 0,
+      kPostproccessKind_RenderToTexture = 0,
       kPostproccessKind_BlackAndWhite = 1,
     };
 
