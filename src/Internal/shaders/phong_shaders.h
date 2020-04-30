@@ -62,7 +62,7 @@ namespace Suffer {
     
       vec3 direction;
 
-      bool active;
+      bool is_active;
       float intensity;
 
       mat4 view_projection_matrix;
@@ -77,7 +77,7 @@ namespace Suffer {
     
       vec3 position;
 
-      bool active;
+      bool is_active;
       float intensity;   
 
       float constant;
@@ -103,7 +103,7 @@ namespace Suffer {
       float cutOff;
       float outerCutOff;
 
-      bool active;
+      bool is_active;
       float intensity;      
 
       mat4 view_projection_matrix;
@@ -155,7 +155,7 @@ namespace Suffer {
       int offset = 9 * index;
 
       // 18 is start of directional lights array (72/4)
-      d_light.active    = bool(u_data[18 + 0 + offset].a);
+      d_light.is_active    = bool(u_data[18 + 0 + offset].a);
       d_light.direction = vec3(u_data[18 + 0 + offset].x, u_data[18 + 0 + offset].y, u_data[18 + 0 + offset].z);
       d_light.color     = vec3(u_data[18 + 1 + offset].x, u_data[18 + 1 + offset].y, u_data[18 + 1 + offset].z);
       d_light.intensity =      u_data[18 + 2 + offset].a;
@@ -172,18 +172,18 @@ namespace Suffer {
       return d_light;
     }
 
-    sampler2D GetDirectionalLightTexture(int index){
+    vec4 GetDirectionalLightTexture(int index, vec2 proj_coord){
       if(index == 0){
-        return u_dir_light_texture0;
+        return texture(u_dir_light_texture0, proj_coord.xy);
       }
       if(index == 1){
-        return u_dir_light_texture1;
+        return texture(u_dir_light_texture1, proj_coord.xy);
       }
       if(index == 2){
-        return u_dir_light_texture2;
+        return texture(u_dir_light_texture2, proj_coord.xy);
       }
       if(index == 3){
-        return u_dir_light_texture3;
+        return texture(u_dir_light_texture3, proj_coord.xy);
       }
     }
     
@@ -194,7 +194,7 @@ namespace Suffer {
       PointLight p_light;
       int offset = 30 * index;
 
-      p_light.active    = bool(u_data[54 + 0 + offset].a);
+      p_light.is_active    = bool(u_data[54 + 0 + offset].a);
       p_light.position  = vec3(u_data[54 + 0 + offset].x, u_data[54 + 0 + offset].y, u_data[54 + 0 + offset].z);
       p_light.color     = vec3(u_data[54 + 1 + offset].x, u_data[54 + 1 + offset].y, u_data[54 + 1 + offset].z);
       p_light.ambient   = vec3(u_data[54 + 2 + offset].x, u_data[54 + 2 + offset].y, u_data[54 + 2 + offset].z);
@@ -215,18 +215,18 @@ namespace Suffer {
       return p_light;
     }
 
-    samplerCube GetPointLightTexture(int index){
+    vec4 GetPointLightTexture(int index, vec3 frag_to_light){
       if(index == 0){
-        return u_point_light_texture0;
+        return texture(u_point_light_texture0, frag_to_light);
       }
       if(index == 1){
-        return u_point_light_texture1;
+        return texture(u_point_light_texture1, frag_to_light);
       }
       if(index == 2){
-        return u_point_light_texture2;
+        return texture(u_point_light_texture2, frag_to_light);
       }
       if(index == 3){
-        return u_point_light_texture3;
+        return texture(u_point_light_texture3, frag_to_light);
       }
     }
 
@@ -237,7 +237,7 @@ namespace Suffer {
       SpotLight s_light;
       int offset = 12 * index;
 
-      s_light.active    = bool(u_data[174 + 0 + offset].a);
+      s_light.is_active    = bool(u_data[174 + 0 + offset].a);
       s_light.direction = vec3(u_data[174 + 0 + offset].x, u_data[174 + 0 + offset].y, u_data[174 + 0 + offset].z);
       s_light.position  = vec3(u_data[174 + 1 + offset].x, u_data[174 + 1 + offset].y, u_data[174 + 1 + offset].z);
       s_light.color     = vec3(u_data[174 + 2 + offset].x, u_data[174 + 2 + offset].y, u_data[174 + 2 + offset].z);
@@ -259,18 +259,18 @@ namespace Suffer {
       return s_light;
     }
 
-    sampler2D GetSpotLightTexture(int index){
+    vec4 GetSpotLightTexture(int index, vec2 proj_coord){
       if(index == 0){
-        return u_spot_light_texture0;
+        return texture(u_spot_light_texture0, proj_coord.xy);
       }
       if(index == 1){
-        return u_spot_light_texture1;
+        return texture(u_spot_light_texture1, proj_coord.xy);
       }
       if(index == 2){
-        return u_spot_light_texture2;
+        return texture(u_spot_light_texture2, proj_coord.xy);
       }
       if(index == 3){
-        return u_spot_light_texture3;
+        return texture(u_spot_light_texture3, proj_coord.xy);
       }
     }
 
@@ -282,7 +282,7 @@ namespace Suffer {
       // Convert from [-1, 1] to [0, 1]
       proj_coords = proj_coords * 0.5f + 0.5;
       // Get shadow map fragment
-      float closest_depth = texture(GetDirectionalLightTexture(light_index), proj_coords.xy).r;
+      float closest_depth = GetDirectionalLightTexture(light_index, proj_coords.xy).r;
       // Current depth fragment from light perspective
       float current_depth = proj_coords.z;
       // Compare current and closest to check if its in shadow or not
@@ -315,7 +315,7 @@ namespace Suffer {
 
     float CalculatePointShadows(vec3 frag_pos, vec3 light_pos, vec3 light_dir, int light_index){
         vec3 fragToLight = frag_pos - light_pos;
-        float closestDepth = texture(GetPointLightTexture(light_index), fragToLight).r;
+        float closestDepth = GetPointLightTexture(light_index, fragToLight).r;
         closestDepth *= 100.0f; //  == FAR PLANE -> LOOK system_light
         float currentDepth = length(fragToLight);
         //float bias = 0.5f;
@@ -358,7 +358,7 @@ namespace Suffer {
       // Convert from [-1, 1] to [0, 1]
       proj_coords = proj_coords * 0.5f + 0.5f;
       // Get shadow map fragment
-      float closest_depth = texture(GetSpotLightTexture(light_index), proj_coords.xy).r;
+      float closest_depth = GetSpotLightTexture(light_index, proj_coords.xy).r;
       // Current depth fragment from light perspective
       float current_depth = proj_coords.z;
       // Compare current and closest to check if its in shadow or not
@@ -404,17 +404,17 @@ namespace Suffer {
 
       vec3 directionals = vec3(0.0f, 0.0f, 0.0f);
       for(int i = 0; i < num_directionals; ++i){
-        directionals += CalculateDirectionalLight(GetDirectionalLight(i), i, normal, view_dir) * float(GetDirectionalLight(i).active);
+        directionals += CalculateDirectionalLight(GetDirectionalLight(i), i, normal, view_dir) * float(GetDirectionalLight(i).is_active);
       }
  
       vec3 point = vec3(0.0f, 0.0f, 0.0f);
       for(int i = 0; i < num_points; ++i){
-        point += CalculatePointLight(GetPointLight(i), i, normal, view_dir) * float(GetPointLight(i).active);
+        point += CalculatePointLight(GetPointLight(i), i, normal, view_dir) * float(GetPointLight(i).is_active);
       }
 
       vec3 spot = vec3(0.0f, 0.0f, 0.0f);
       for(int i = 0; i < num_spots; ++i){
-        spot += CalculateSpotLight(GetSpotLight(i), i, normal) * float(GetSpotLight(i).active);
+        spot += CalculateSpotLight(GetSpotLight(i), i, normal) * float(GetSpotLight(i).is_active);
       }
       
       vec3 result = directionals + point + spot;
