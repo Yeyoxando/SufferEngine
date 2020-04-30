@@ -286,7 +286,7 @@ namespace Suffer {
       // Clip projection coords
       vec3 proj_coords = frag_pos_light_space.xyz / frag_pos_light_space.w;
       // Convert from [-1, 1] to [0, 1]
-      proj_coords = proj_coords * 0.5f + 0.5;
+      proj_coords = proj_coords * 0.5f + 0.5f;
       // Get shadow map fragment
       float closest_depth = GetDirectionalLightTexture(light_index, proj_coords.xy).r;
       // Current depth fragment from light perspective
@@ -306,7 +306,7 @@ namespace Suffer {
       
       float diff = max(dot(normal, light_dir), 0.0f);
       vec3 reflect_dir = reflect(-light_dir, normal);
-      float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), 32);
+      float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), 32.0f);
 
       vec3 ambient  = light.ambient  * light.intensity * pow(texture(u_albedo, uvs).xyz, vec3(2.2f));
       vec3 diffuse  = light.diffuse  * light.intensity * diff * pow(texture(u_albedo, uvs).xyz, vec3(2.2f));
@@ -314,7 +314,7 @@ namespace Suffer {
       
       float shadow = CalculateShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light_index);
 
-      return (ambient + (1.0 - shadow) * (diffuse + specular)) * u_color.xyz;
+      return (ambient + (1.0f - shadow) * (diffuse + specular)) * u_color.xyz;
     }
 
 // --------------------------------------------------------------------- //
@@ -324,7 +324,7 @@ namespace Suffer {
         float closestDepth = GetPointLightTexture(light_index, fragToLight).r;
         closestDepth *= 100.0f; //  == FAR PLANE -> LOOK system_light
         float currentDepth = length(fragToLight);
-        //float bias = 0.05;
+        //float bias = 0.05f;
         float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
         float shadow = currentDepth - bias > closestDepth ? 1.0f : 0.0f;
 
@@ -338,14 +338,12 @@ namespace Suffer {
 
       float diff = max(dot(light_dir, normal), 0.0f);
 
-      vec3 reflect_dir = reflect(-light_dir, normal);
-      vec3 viewDir = normalize(camera_pos - frag_pos);
-      vec3 halfwayDir = normalize(light_dir + viewDir);  
-      float spec = pow(max(dot(normal, halfwayDir), 0.0f), 64.0f);
+      vec3 halfway_dir = normalize(light_dir + view_dir);  
+      float spec = pow(max(dot(normal, halfway_dir), 0.0f), 32.0f);
 
       float distance    = length(light.position - frag_pos);
       float attenuation = 1.0f / (light.constant + light.linear * distance + 
-  			       light.quadratic * (distance * distance));    
+  			       light.quadratic * distance);    
 
       vec3 ambient  = light.ambient * attenuation * light.intensity * pow(texture(u_albedo, uvs).xyz, vec3(2.2f));
       vec3 diffuse  = light.diffuse * attenuation * light.intensity * diff * pow(texture(u_albedo, uvs).xyz, vec3(2.2f));
@@ -362,7 +360,7 @@ namespace Suffer {
       // Clip projection coords
       vec3 proj_coords = frag_pos_light_space.xyz / frag_pos_light_space.w;
       // Convert from [-1, 1] to [0, 1]
-      proj_coords = proj_coords * 0.5f + 0.5;
+      proj_coords = proj_coords * 0.5f + 0.5f;
       // Get shadow map fragment
       float closest_depth = GetSpotLightTexture(light_index, proj_coords.xy).r;
       // Current depth fragment from light perspective
@@ -384,12 +382,12 @@ namespace Suffer {
       float diff = max(dot(norm, light_dir), 0.0f);
 
       vec3 view_dir = normalize(camera_pos - frag_pos);
-      vec3 reflect_dir = reflect(-light.direction, norm);
-      float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), 32);
+      vec3 halfway_dir = normalize(light_dir + view_dir);  
+      float spec = pow(max(dot(normal, halfway_dir), 0.0f), 32.0f);
 
       float distance = length(light.position - frag_pos);
       float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic
-        * (distance * distance));
+        * distance);
     
       float theta = dot(light_dir, normalize(-light.direction));
       float epsilon = light.cutOff - light.outerCutOff;

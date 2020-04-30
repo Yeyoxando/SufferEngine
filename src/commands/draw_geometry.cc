@@ -169,9 +169,9 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
       SetLights();
     }
       break;
-    case MaterialComponent::ParamsType::kParamsType_Phong: {
-      MaterialComponent::PhongParams* phong_params_;
-      phong_params_ = reinterpret_cast<MaterialComponent::PhongParams*>(params);
+    case MaterialComponent::ParamsType::kParamsType_BlinnPhong: {
+      MaterialComponent::BlinnPhongParams* phong_params_;
+      phong_params_ = reinterpret_cast<MaterialComponent::BlinnPhongParams*>(params);
       data_->u_data_[52] = suffer.GetCurrentScene()->GetMainCamera()->Position()[0];
       data_->u_data_[53] = suffer.GetCurrentScene()->GetMainCamera()->Position()[1];
       data_->u_data_[54] = suffer.GetCurrentScene()->GetMainCamera()->Position()[2];

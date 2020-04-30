@@ -25,7 +25,7 @@ namespace Suffer {
     enum ParamsType {
       kParamsType_Invalid = -1,
       kParamsType_Default = 0,
-      kParamsType_Phong = 1,
+      kParamsType_BlinnPhong = 1,
       kParamsType_RenderToTexture = 2,
     };
 
@@ -46,7 +46,7 @@ namespace Suffer {
     };
 
     /**
-     * @brief: Saves default material specific parameters.
+     * @brief: Saves default material with blinn phong and textures specific parameters.
      */
     struct DefaultParams : public BaseParams {
     public:
@@ -59,12 +59,12 @@ namespace Suffer {
     };
 
     /**
-     * @brief: Saves unlit material specific parameters.
+     * @brief: Saves blinn phong with no texture material specific parameters.
      */
-    struct PhongParams : public BaseParams {
+    struct BlinnPhongParams : public BaseParams {
     public:
-      PhongParams();
-      ~PhongParams() {}
+      BlinnPhongParams();
+      ~BlinnPhongParams() {}
 
       float u_time_;
 

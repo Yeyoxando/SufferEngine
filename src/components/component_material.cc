@@ -45,9 +45,9 @@ Suffer::MaterialComponent::DefaultParams::DefaultParams() {
 
 // ------------------------------------------------------------------------- //
 
-Suffer::MaterialComponent::PhongParams::PhongParams() {
+Suffer::MaterialComponent::BlinnPhongParams::BlinnPhongParams() {
 
-  params_type_ = kParamsType_Phong;
+  params_type_ = kParamsType_BlinnPhong;
   color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   u_time_ = 0.0f;
 
