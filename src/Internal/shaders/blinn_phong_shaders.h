@@ -8,7 +8,7 @@ namespace Suffer {
   // ---------------------------- PhongShaders ----------------------------- //
 
   // -- (vertex) --
-  static const char* phong_vertex_shader = R"VPHONGSHADER(
+  static const char* blinn_phong_vertex_shader = R"VBPHONGSHADER(
     #version 330
 
     layout(location = 0) in vec3 a_position;
@@ -37,7 +37,7 @@ namespace Suffer {
     void main(){  
       mat4 accum_matrix = u_p_matrix * u_v_matrix * u_m_matrix;
 
-      normal = normalize((accum_matrix * vec4(a_normal, 0.0))).xyz; 
+      normal = normalize((accum_matrix * vec4(a_normal, 0.0f))).xyz; 
       frag_pos = (u_m_matrix * vec4(a_position, 1.0f)).xyz;
       uvs = a_uvs;
       time = u_time;
@@ -45,11 +45,11 @@ namespace Suffer {
       gl_Position = accum_matrix * vec4(a_position, 1.0f);
     }
   
-  )VPHONGSHADER";
+  )VBPHONGSHADER";
 
   
   // -- (fragment) --
-  static const char* phong_fragment_shader = R"FPHONGSHADER(
+  static const char* blinn_phong_fragment_shader = R"FBPHONGSHADER(
     #version 330
  
 // ....... STRUCTS ........
@@ -280,7 +280,7 @@ namespace Suffer {
       // Clip projection coords
       vec3 proj_coords = frag_pos_light_space.xyz / frag_pos_light_space.w;
       // Convert from [-1, 1] to [0, 1]
-      proj_coords = proj_coords * 0.5f + 0.5;
+      proj_coords = proj_coords * 0.5f + 0.5f;
       // Get shadow map fragment
       float closest_depth = GetDirectionalLightTexture(light_index, proj_coords.xy).r;
       // Current depth fragment from light perspective
@@ -300,7 +300,7 @@ namespace Suffer {
       
       float diff = max(dot(normal, light_dir), 0.0f);
       vec3 reflect_dir = reflect(-light_dir, normal);
-      float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), 32);
+      float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), 32.0f);
 
       vec3 ambient  = light.ambient  * light.intensity;
       vec3 diffuse  = light.diffuse  * light.intensity * diff;
@@ -332,14 +332,12 @@ namespace Suffer {
 
       float diff = max(dot(light_dir, normal), 0.0f);
 
-      vec3 reflect_dir = reflect(-light_dir, normal);
-      vec3 viewDir = normalize(camera_pos - frag_pos);
-      vec3 halfwayDir = normalize(light_dir + viewDir);  
-      float spec = pow(max(dot(normal, halfwayDir), 0.0f), 64.0f);
+      vec3 halfway_dir = normalize(light_dir + view_dir);  
+      float spec = pow(max(dot(normal, halfway_dir), 0.0f), 32.0f);
 
       float distance    = length(light.position - frag_pos);
       float attenuation = 1.0f / (light.constant + light.linear * distance + 
-  			       light.quadratic * (distance * distance));    
+  			       light.quadratic * distance);    
 
       vec3 ambient  = light.ambient * attenuation * light.intensity;
       vec3 diffuse  = light.diffuse * attenuation * light.intensity * diff;
@@ -378,12 +376,12 @@ namespace Suffer {
       float diff = max(dot(norm, light_dir), 0.0f);
 
       vec3 view_dir = normalize(camera_pos - frag_pos);
-      vec3 reflect_dir = reflect(-light.direction, norm);
-      float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), 32);
+      vec3 halfway_dir = normalize(light_dir + view_dir);  
+      float spec = pow(max(dot(normal, halfway_dir), 0.0f), 32.0f);
 
       float distance = length(light.position - frag_pos);
       float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic
-        * (distance * distance));
+        * distance);
     
       float theta = dot(light_dir, normalize(-light.direction));
       float epsilon = light.cutOff - light.outerCutOff;
@@ -422,7 +420,7 @@ namespace Suffer {
       fragColor = vec4(result, 1.0f);
     }
 
-  )FPHONGSHADER";
+  )FBPHONGSHADER";
 
   // ---------------------------- PhongShaders ----------------------------- //
 

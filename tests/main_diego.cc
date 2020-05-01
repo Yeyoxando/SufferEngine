@@ -135,7 +135,7 @@ int main(int argc, char* argv[]) {
 
     Suffer::ref_ptr<Suffer::MaterialComponent> material_component2;
     material_component2.alloc();
-    Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params2;
+    Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params2;
     material_params2.alloc();
     material_params2->color_ = mathmorra::Vector4(0.8f, 0.8f, 0.8f, 1.0f);
     material_component2->SetParams(material_params2.get());
@@ -161,7 +161,7 @@ int main(int argc, char* argv[]) {
 
     Suffer::ref_ptr<Suffer::MaterialComponent> material_component6;
     material_component6.alloc();
-    Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params6;
+    Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params6;
     material_params6.alloc();
     material_params6->color_ = mathmorra::Vector4(1.0f, 0.0f, 0.0f, 1.0f);
     material_component6->SetParams(material_params6.get());
@@ -190,7 +190,7 @@ int main(int argc, char* argv[]) {
 
     Suffer::ref_ptr<Suffer::MaterialComponent> material_component5;
     material_component5.alloc();
-    Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params5;
+    Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params5;
     material_params5.alloc();
     material_params5->color_ = mathmorra::Vector4(1.0f, 0.0f, 0.0f, 1.0f);
     material_component5->SetParams(material_params5.get());
@@ -212,7 +212,7 @@ int main(int argc, char* argv[]) {
 
     Suffer::ref_ptr<Suffer::MaterialComponent> material_component4;
     material_component4.alloc();
-    Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params4;
+    Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params4;
     material_params4.alloc();
     material_params4->color_ = mathmorra::Vector4(1.0f, 1.0f, 0.0f, 1.0f);
     material_component4->SetParams(material_params4.get());
@@ -238,7 +238,7 @@ int main(int argc, char* argv[]) {
 
     Suffer::ref_ptr<Suffer::MaterialComponent> material_component3;
     material_component3.alloc();
-    Suffer::ref_ptr<Suffer::MaterialComponent::PhongParams> material_params3;
+    Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params3;
     material_params3.alloc();
     material_params3->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     material_component3->SetParams(material_params3.get());
