@@ -286,7 +286,9 @@ void Suffer::SufferManager::Step(){
 
   //////////////////////////
 
-  render_manager_.AddToRenderQueue(std::move(render_system_.get()->dl_), draw_frame_buffer_.get());
+  DisplayList&& dl_ = std::move(render_system_.get()->dl_);
+
+  render_manager_.AddToRenderQueue(std::move(dl_), draw_frame_buffer_.get());
 
   PreparePostproccess();
 
