@@ -90,6 +90,7 @@ project "SufferCore"
 		"./deps/stb/",
 		"./deps/mathmorra/",
 		"./deps/mathmorra/include",
+		"./deps/minitrace/include",
 	}
 
 	--Common files
@@ -104,12 +105,16 @@ project "SufferCore"
 		"./include/memory_management/*.h",
 		"./src/*.cc",
 		"./src/commands/*.cc",
-    "./src/components/*.cc",
+		"./src/components/*.cc",
 		"./src/systems/*.cc",
 		"./src/engine/*.cc",
 		"./src/internal/*.h",
 		"./src/internal/shaders/*.h",
 		"./tests/*.cc", 
+
+		-- Minitrace
+		"./deps/minitrace/source/*.cc",
+		"./deps/minitrace/include/*.h",
 
 		--GLFW
 		"./src/deps/GLFW/src/context.c",

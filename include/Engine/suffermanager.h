@@ -145,6 +145,9 @@ namespace Suffer {
     ref_ptr<ResourceManager::FrameBuffer> draw_frame_buffer_;
     ref_ptr<ResourceManager::FrameBuffer> black_white_frame_buffer_;
     ref_ptr<ResourceManager::FrameBuffer> render_to_texture_frame_buffer_;
+
+
+    int long_running_thing_2;
     
 		struct Data;
 		Data* data_;

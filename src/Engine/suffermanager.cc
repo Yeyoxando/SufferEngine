@@ -17,6 +17,7 @@
 #include "system_transform.h"
 #include "internal_window.h"
 #include "postprocessing.h"
+#include "minitrace.h"
 
 // --------------------------------------------------------------//
 
@@ -116,6 +117,13 @@ bool Suffer::SufferManager::Init(){
 
   number_of_game_objects_ = 0;
 
+  mtr_init("suffer_trace.json");
+  mtr_register_sigint_handler();
+
+  MTR_META_PROCESS_NAME("Minitrace_Multithreading");
+  MTR_META_THREAD_NAME("Render Thread");
+  MTR_SCOPE("Engine", "init");
+
 	return true;
 
 }
@@ -123,6 +131,8 @@ bool Suffer::SufferManager::Init(){
 // --------------------------------------------------------------//
 
 void Suffer::SufferManager::Draw() {
+
+  MTR_SCOPE("Engine", "Draw");
 
 	render_manager_.DoRender();
 
@@ -139,6 +149,9 @@ void Suffer::SufferManager::Draw() {
 // --------------------------------------------------------------//
 
 void Suffer::SufferManager::Input() {
+
+    MTR_META_THREAD_NAME("Input Thread");
+    MTR_BEGIN("Engine", "Input");
 
 	// Window Should Close
   if (input_manager_.IsKeyDown(InputManager::k_Escape)) {
@@ -160,11 +173,14 @@ void Suffer::SufferManager::Input() {
 
   input_manager_.Update();
 
+  MTR_END("Engine", "Audio");
+
 }
 
 // --------------------------------------------------------------//
 
 void Suffer::SufferManager::Run() {
+
 
   // Threads Function Assignment
   auto update_thread = [] { SufferManager::instance().Step(); };
@@ -173,7 +189,9 @@ void Suffer::SufferManager::Run() {
   logic_->NewTask(update_thread);
   logic_->WaitFor(logic_.get());
 
+
 	while (Running()) {
+
 
     // TODO: remove from here
     mouse_position_.x_ = input_manager_.MousePositionX();
@@ -252,6 +270,9 @@ void Suffer::SufferManager::PreparePostproccess(){
 
 void Suffer::SufferManager::Step(){
 
+  MTR_META_THREAD_NAME("Logic Thread");
+  MTR_BEGIN("Engine", "Update");
+
 	data_->scene_context_->Step(data_->delta_time_);
 
   // Systems
@@ -270,6 +291,11 @@ void Suffer::SufferManager::Step(){
   PreparePostproccess();
 
 	// This will be the last function in UPDATE
+
+  //MTR_END("main", "outer");
+  //MTR_COUNTER("main", "greebles", 0);
+  MTR_END("Engine", "Update");
+
 	PrepareAudio();
 
 }
@@ -289,6 +315,9 @@ bool Suffer::SufferManager::Finish(){
   }
 
   data_->wind_.Close();
+
+  MTR_END_FUNC();
+  mtr_shutdown();
 
 	return true;
 }

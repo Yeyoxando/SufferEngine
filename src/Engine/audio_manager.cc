@@ -2,6 +2,7 @@
 #include "audio_commands.h"
 #include "suffermanager.h"
 #include "common_definitions.h"
+#include "minitrace.h"
 
 Suffer::AudioManager::AudioManager() {
     // Empty
@@ -53,6 +54,9 @@ void Suffer::AudioManager::AddToAudioQueue(DisplayList&& audio_dl_by_logic_){
 
 void Suffer::AudioManager::DoAudio(){
 
+  MTR_META_THREAD_NAME("Audio Thread");
+  MTR_BEGIN("Engine", "Audio");
+
 	dl_mutex_.lock();
 
 	u32 size = audio_dl_.Size();
@@ -66,6 +70,8 @@ void Suffer::AudioManager::DoAudio(){
   audio_dl_.Clear();
 
 	dl_mutex_.unlock();
+
+  MTR_END("Engine", "Audio");
 
 }
 
