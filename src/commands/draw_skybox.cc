@@ -17,6 +17,7 @@ struct Suffer::DrawSkybox::Data {
   // Contains the model, view and projections matrixes
   float u_data_[kMaxUsedVec4Data_DrawSkybox * 4];
 
+  u32 cubemap_id_;
 
 };
 
@@ -24,7 +25,19 @@ struct Suffer::DrawSkybox::Data {
 
 Suffer::DrawSkybox::DrawSkybox(){
 
+  cmd_type_ = Command::kCommandType_Render;
+  data_ = new Data();
 
+}
+
+// ------------------------------------------------------------------------- //
+
+Suffer::DrawSkybox::~DrawSkybox() {
+
+  if (!data_) return;
+
+  delete data_;
+  data_ = nullptr;
 
 }
 
@@ -32,15 +45,7 @@ Suffer::DrawSkybox::DrawSkybox(){
 
 void Suffer::DrawSkybox::SetData(Skybox* skybox){
 
-
-
-}
-
-// ------------------------------------------------------------------------- //
-
-Suffer::DrawSkybox::~DrawSkybox(){
-
-
+  data_->cubemap_id_ = skybox->cubemap_id_;
 
 }
 

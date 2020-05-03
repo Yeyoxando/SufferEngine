@@ -17,6 +17,7 @@
 #include "system_transform.h"
 #include "internal_window.h"
 #include "postprocessing.h"
+#include "draw_skybox.h"
 #include "minitrace.h"
 
 // --------------------------------------------------------------//
@@ -287,7 +288,13 @@ void Suffer::SufferManager::Step(){
   //////////////////////////
 
   DisplayList&& dl_ = std::move(render_system_.get()->dl_);
-
+  //Add skybox command if there is one set
+  if (data_->scene_context_->skybox_ != nullptr) {
+    ref_ptr<DrawSkybox> draw_skybox_cmd;
+    draw_skybox_cmd.alloc();
+    draw_skybox_cmd->SetData(data_->scene_context_->skybox_.get());
+    dl_.AddCommand(draw_skybox_cmd.get());
+  }
   render_manager_.AddToRenderQueue(std::move(dl_), draw_frame_buffer_.get());
 
   PreparePostproccess();

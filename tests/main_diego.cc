@@ -81,7 +81,11 @@ int main(int argc, char* argv[]) {
       "../../../resources/images/skybox/sky2_front.jpg", 
       "../../../resources/images/skybox/sky2_back.jpg");
 
+    Suffer::ref_ptr<Suffer::Skybox> skybox;
+    skybox.alloc();
+    skybox->SetCubemap(skybox_cubemap);
 
+    scene->SetSkybox(skybox);
 
     Suffer::ref_ptr<Suffer::MaterialComponent> ground_material;
     ground_material.alloc();

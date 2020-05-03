@@ -18,6 +18,7 @@ Suffer::Scene::Scene(){
 
   main_camera_.alloc();
   current_gameobjects_ = std::vector<ref_ptr<GameObject>>(0);
+  skybox_ = nullptr;
 
 }
 
@@ -53,6 +54,14 @@ void Suffer::Scene::Step(float time_step){
 
 Suffer::Camera* Suffer::Scene::GetMainCamera(){
     return main_camera_.get();
+}
+
+// --------------------------------------------------- //
+
+void Suffer::Scene::SetSkybox(ref_ptr<Skybox> skybox){
+
+  skybox_ = skybox;
+
 }
 
 // --------------------------------------------------- //

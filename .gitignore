@@ -184,6 +184,7 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
+suffer_trace.json
 
 # Chutzpah Test files
 _Chutzpah*
