@@ -115,6 +115,9 @@ void Suffer::DrawPointDepth::Execute() const {
 
   GLenum error;
   glEnable(GL_CULL_FACE);
+  glDepthFunc(GL_LESS);
+  glCullFace(GL_FRONT);
+  glFrontFace(GL_CCW);
 
 
   // ---------------------- IsBufferCreated (Vertex) ----------------------- //
@@ -349,8 +352,6 @@ void Suffer::DrawPointDepth::Execute() const {
   // --------------------------------- Draw -------------------------------- //
 
   {
-
-    glCullFace(GL_FRONT);
 
     u32 number_elements = suffer.resource_manager_.data_->internal_index_buffers_[data_->index_buffer_id_].data_.size();
 

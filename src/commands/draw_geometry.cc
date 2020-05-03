@@ -397,6 +397,10 @@ void Suffer::DrawGeometry::SetLights(){
 void Suffer::DrawGeometry::Execute() const {
 
   GLenum error;
+
+  glDepthFunc(GL_LESS);
+  glCullFace(GL_FRONT);
+  glFrontFace(GL_CCW);
   
   // ---------------------- IsBufferCreated (Vertex) ----------------------- //
 
@@ -466,8 +470,6 @@ void Suffer::DrawGeometry::Execute() const {
 
       if (data_->texture_ids_[i] < 0) return;
       s32 id_texture = data_->texture_ids_[i];
-
-      auto suffe = suffer.resource_manager_.data_;
 
       if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ == 0) {
         glGenTextures(1, &suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);

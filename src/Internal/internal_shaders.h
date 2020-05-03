@@ -8,5 +8,6 @@
 #include "depth_shaders.h"
 #include "post_process_shaders.h"
 #include "point_depth_shaders.h"
+#include "skybox_shaders.h"
 
 #endif // __INTERNAL_SHADERS_H__

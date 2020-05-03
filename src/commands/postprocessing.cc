@@ -92,6 +92,7 @@ void Suffer::Postprocessing::Execute() const {
   glDisable(GL_DEPTH_TEST);
 
   glCullFace(GL_FRONT);
+  glFrontFace(GL_CCW);
 
   // ---------------------- IsBufferCreated (Vertex) ----------------------- //
 

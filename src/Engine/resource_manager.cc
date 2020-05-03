@@ -563,7 +563,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
 void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   
   // Increase the number if you create a new one
-  internal_materials_.alloc(4);
+  internal_materials_.alloc(5);
   number_of_materials_ = 0;
 
   // To create a new material define the shaders in internal_shaders.h
@@ -629,6 +629,22 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   }
 
   // --------------------- PointShadowDepthMaterial ------------------------ //
+
+
+  // -------------------------- SkyboxMaterial ----------------------------- //
+
+  {
+
+    internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
+
+    internal_materials_[number_of_materials_].vertex_shader_ = Suffer::skybox_vertex_shader_;
+    internal_materials_[number_of_materials_].fragment_shader_ = Suffer::skybox_fragment_shader_;
+
+    number_of_materials_++;
+
+  }
+
+  // -------------------------- SkyboxMaterial ----------------------------- //
 
 }
 

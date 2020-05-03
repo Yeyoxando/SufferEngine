@@ -50,6 +50,8 @@ Suffer::ShadowCubemap::~ShadowCubemap(){
 void Suffer::ShadowCubemap::Execute() const {
 
   glEnable(GL_DEPTH_TEST);
+  glCullFace(GL_FRONT);
+  glFrontFace(GL_CCW);
 
   s32 id_frame_buffer = data_->light_framebuffer_id_;
 
