@@ -74,12 +74,12 @@ int main(int argc, char* argv[]) {
     //Skybox
     Suffer::ref_ptr<Suffer::ResourceManager::Cubemap> skybox_cubemap;
     skybox_cubemap.alloc();
-    skybox_cubemap->LoadCubemapTextureData("../../../resources/images/skybox/sky2_right.jpg",
-      "../../../resources/images/skybox/sky2_left.jpg", 
-      "../../../resources/images/skybox/sky2_top.jpg", 
-      "../../../resources/images/skybox/sky2_bottom.jpg", 
-      "../../../resources/images/skybox/sky2_front.jpg", 
-      "../../../resources/images/skybox/sky2_back.jpg");
+    skybox_cubemap->LoadCubemapTextureData("../../../resources/images/skybox/sky_right.jpg",
+                                           "../../../resources/images/skybox/sky_left.jpg", 
+                                           "../../../resources/images/skybox/sky_top.jpg", 
+                                           "../../../resources/images/skybox/sky_bottom.jpg", 
+                                           "../../../resources/images/skybox/sky_front.jpg", 
+                                           "../../../resources/images/skybox/sky_back.jpg");
 
     Suffer::ref_ptr<Suffer::Skybox> skybox;
     skybox.alloc();

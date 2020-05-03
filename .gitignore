@@ -184,7 +184,8 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
-suffer_trace.json
+build/SufferCore/vs2017/suffer_trace.json
+build/SufferCore/vs2019/suffer_trace.json
 
 # Chutzpah Test files
 _Chutzpah*
