@@ -17,9 +17,7 @@
 #include "common_definitions.h"
 #include <string>
 
-#define MAX_USED_TEXTURES 5
-
-#define MAX_USED_VEC4DATA 222
+static const u32 kMaxUsedVec4Data_DrawGeometry = 222;
 
 // ------------------------------------------------------------------------- //
 
@@ -30,7 +28,7 @@ struct Suffer::DrawGeometry::Data {
   s32 index_buffer_id_;
   GLenum draw_mode_;
 
-  float u_data_[MAX_USED_VEC4DATA * 4];
+  float u_data_[kMaxUsedVec4Data_DrawGeometry * 4];
 
   // Textures has to be separated
   s32 texture_ids_[MAX_USED_TEXTURES];
@@ -667,7 +665,7 @@ void Suffer::DrawGeometry::Execute() const {
       //return;
     }
 
-    glUniform4fv(u_pos, MAX_USED_VEC4DATA, data_->u_data_);
+    glUniform4fv(u_pos, kMaxUsedVec4Data_DrawGeometry, data_->u_data_);
     u_pos = -1;
   
 

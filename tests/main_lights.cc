@@ -1,6 +1,6 @@
 
 #include <common_definitions.h>
-#if !defined _MAIN_PABLO_ && !defined _MAIN_LIGHTS_ && defined _MAIN_DIEGO_
+#if defined _MAIN_LIGHTS_ && !defined _MAIN_PABLO_  && !defined _MAIN_DIEGO_
 
 #include <suffermanager.h>
 #include "ref_ptr.h"
@@ -70,16 +70,6 @@ int main(int argc, char* argv[]) {
     ground_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
     ground_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
     ground_specular_texture->LoadTextureData("../../../resources/images/floor_spec.png");
-
-    //Skybox
-    Suffer::ref_ptr<Suffer::ResourceManager::Cubemap> skybox_cubemap;
-    skybox_cubemap.alloc();
-    skybox_cubemap->LoadCubemapTextureData("../../../resources/images/skybox/sky2_right.jpg",
-      "../../../resources/images/skybox/sky2_left.jpg", 
-      "../../../resources/images/skybox/sky2_top.jpg", 
-      "../../../resources/images/skybox/sky2_bottom.jpg", 
-      "../../../resources/images/skybox/sky2_front.jpg", 
-      "../../../resources/images/skybox/sky2_back.jpg");
 
 
 

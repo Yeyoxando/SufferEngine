@@ -16,8 +16,6 @@
 #include "common_definitions.h"
 #include <string>
 
-#define MAX_USED_TEXTURES 5
-
 // ------------------------------------------------------------------------- //
 
 struct Suffer::Postprocessing::Data {

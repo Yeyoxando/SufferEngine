@@ -16,9 +16,8 @@
 #include "component_material.h"
 #include "common_definitions.h"
 
-#define MAX_USED_TEXTURES 5
  //12 for matrixes
-#define MAX_USED_VEC4DATA 12 
+static const u32 kMaxUsedVec4Data_DrawDepth = 12;
 
 // ------------------------------------------------------------------------- //
 
@@ -29,7 +28,7 @@ struct Suffer::DrawDepth::Data {
   s32 index_buffer_id_;
 
   // Contains the model, view and projections matrixes
-  float u_data_[MAX_USED_VEC4DATA * 4];
+  float u_data_[kMaxUsedVec4Data_DrawDepth * 4];
 
 };
 
@@ -260,7 +259,7 @@ void Suffer::DrawDepth::Execute() const {
       //return;
     }
 
-    glUniform4fv(u_pos, MAX_USED_VEC4DATA, data_->u_data_);
+    glUniform4fv(u_pos, kMaxUsedVec4Data_DrawDepth, data_->u_data_);
     u_pos = -1;
 
   }
