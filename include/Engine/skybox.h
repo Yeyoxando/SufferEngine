@@ -4,6 +4,7 @@
 #define __SKYBOX_H__
 
 #include "referenced.h"
+#include "resource_manager.h"
 #include "ref_ptr.h"
 
 namespace Suffer {
@@ -15,12 +16,7 @@ namespace Suffer {
     Skybox();
     ~Skybox();
 
-    void SetTextures(const char* src_right,
-                     const char* src_left,
-                     const char* src_top,
-                     const char* src_bottom,
-                     const char* src_front,
-                     const char* src_back);
+    void SetCubemap(ref_ptr<ResourceManager::Cubemap> cubemap);
 
   private:
     u32 cubemap_id_;

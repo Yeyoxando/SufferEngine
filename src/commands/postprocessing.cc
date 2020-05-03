@@ -95,8 +95,6 @@ void Suffer::Postprocessing::Execute() const {
 
   glCullFace(GL_FRONT);
 
-  GLenum error;
-
   // ---------------------- IsBufferCreated (Vertex) ----------------------- //
 
   {
@@ -263,7 +261,7 @@ void Suffer::Postprocessing::Execute() const {
     // -- Textures --
     std::string base_tex_name = "u_tex";
 
-    for (int i = 0; i < data_->current_used_textures_; ++i) {
+    for (u32 i = 0; i < data_->current_used_textures_; ++i) {
 
       std::string tex_name = base_tex_name + std::to_string(i);
       const char* str = tex_name.c_str();
@@ -273,7 +271,7 @@ void Suffer::Postprocessing::Execute() const {
       }
 
       glActiveTexture(GL_TEXTURE0 + i);
-      auto d = suffer.render_manager_.current_drawn_texture_id_;
+      suffer.render_manager_.current_drawn_texture_id_;
       glBindTexture(GL_TEXTURE_2D, suffer.render_manager_.current_drawn_texture_id_);
 
       glUniform1i(u_pos, i);

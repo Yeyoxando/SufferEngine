@@ -18,12 +18,7 @@ Suffer::Skybox::~Skybox(){
 
 // ----------------------------------------------------------------------- //
 
-void Suffer::Skybox::SetTextures(const char* src_right, 
-                                 const char* src_left, 
-                                 const char* src_top, 
-                                 const char* src_bottom, 
-                                 const char* src_front, 
-                                 const char* src_back){
+void Suffer::Skybox::SetCubemap(ref_ptr<ResourceManager::Cubemap> cubemap) {
 
   //Will create a internal cubemap and store their reference id
   // Later will use to create a draw skybox command
