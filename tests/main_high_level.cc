@@ -51,7 +51,8 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params2;
   material_params2.alloc();
   material_params2->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  material_params2->albedo_texture_id_ = albedo_texture2->id_;
+  material_params2->SetAlbedoTexture(albedo_texture2.get());
+  material_params2->specular_strength_ = 0.2f;
   material_component_sphere->SetParams(material_params2.get());
 
   for (u32 i = 0; i < 9; ++i) {

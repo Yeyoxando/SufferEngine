@@ -70,8 +70,8 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_cube;
     material_params_cube.alloc();
     material_params_cube->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-    material_params_cube->albedo_texture_id_ = box_texture->id_;
-    material_params_cube->specular_texture_id_ = box_specular_texture->id_;
+    material_params_cube->SetAlbedoTexture(box_texture.get());
+    material_params_cube->SetSpecularTexture(box_specular_texture.get());
     material_component_cube->SetParams(material_params_cube.get());
 
     for (int i = 0; i < number_cubes; ++i) {

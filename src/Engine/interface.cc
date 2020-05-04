@@ -689,7 +689,8 @@ void  Suffer::Interface::Inspector(){
               ImGui::Spacing(); 
               ImGui::InputFloat2("Tiling", &blinn_phong_params->tiling_.x_);
 
-              material_component->SetParams(blinn_phong_params);
+              ImGui::Checkbox("Albedo texture", &blinn_phong_params->use_albedo_texture_);
+              ImGui::Checkbox("Specular texture", &blinn_phong_params->use_specular_texture_);
               break;
             }
             case MaterialComponent::ParamsType::kParamsType_RenderToTexture: {

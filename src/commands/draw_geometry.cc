@@ -169,8 +169,19 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
       //u_data[15].xyzw
       data_->u_data_[60] = phong_params_->reflection_strength_;
 
-      data_->texture_ids_[0] = phong_params_->albedo_texture_id_;
-      data_->texture_ids_[1] = phong_params_->specular_texture_id_;
+      if (phong_params_->use_albedo_texture_) {
+        data_->texture_ids_[0] = phong_params_->albedo_texture_id_;
+      }
+      else {
+        data_->texture_ids_[0] = 0;
+      }
+      if (phong_params_->use_specular_texture_) {
+        data_->texture_ids_[1] = phong_params_->specular_texture_id_;
+      }
+      else {
+        data_->texture_ids_[1] = 0;
+      }
+
       data_->current_used_textures_ = 2;
       SetLights();
       break;

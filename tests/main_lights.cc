@@ -78,8 +78,8 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> ground_material_params;
     ground_material_params.alloc();
     ground_material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-    ground_material_params->albedo_texture_id_ = ground_texture->id_;
-    ground_material_params->specular_texture_id_ = ground_specular_texture->id_;
+    ground_material_params->SetAlbedoTexture(ground_texture.get());
+    ground_material_params->SetSpecularTexture(ground_specular_texture.get());
     ground_material->SetParams(ground_material_params.get());
 
 
@@ -89,8 +89,8 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_wall_params;
     material_wall_params.alloc();
     material_wall_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-    material_wall_params->albedo_texture_id_ = wall_texture->id_;
-    material_wall_params->specular_texture_id_ = wall_specular_texture->id_;
+    material_wall_params->SetAlbedoTexture(wall_texture.get());
+    material_wall_params->SetSpecularTexture(wall_specular_texture.get());
     material_wall->SetParams(material_wall_params.get());
 
     // -------------------------------- COMPONENTS STUFF TESTS ------------------------------//
@@ -109,8 +109,8 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_cube;
     material_params_cube.alloc();
     material_params_cube->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-    material_params_cube->albedo_texture_id_ = box_texture->id_;
-    material_params_cube->specular_texture_id_ = box_specular_texture->id_;
+    material_params_cube->SetAlbedoTexture(box_texture.get());
+    material_params_cube->SetSpecularTexture(box_specular_texture.get());
     material_component_cube->SetParams(material_params_cube.get());
     go_cube->AddComponent(material_component_cube.get());
 

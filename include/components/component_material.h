@@ -8,6 +8,7 @@
 #define __COMPONENT_MATERIAL_H__
 
 #include "component.h"
+#include "resource_manager.h"
 #include <referenced.h>
 #include <ref_ptr.h>
 #include "vector2.h"
@@ -49,18 +50,29 @@ namespace Suffer {
      * @brief: Saves basic blinn phong material specific parameters.
      */
     struct BlinnPhongParams : public BaseParams {
+      friend class DrawGeometry;
+      friend class Interface;
     public:
       BlinnPhongParams();
       ~BlinnPhongParams() {}
 
-      s32 albedo_texture_id_;
-      s32 specular_texture_id_;
       float specular_strength_;
       float specular_pow_;
       float reflection_strength_;
 
-      float u_time_;
       mathmorra::Vector2 tiling_;
+
+      void SetAlbedoTexture(ResourceManager::Texture* texture);
+      void SetSpecularTexture(ResourceManager::Texture* texture);
+
+    private:
+      s32 albedo_texture_id_;
+      s32 specular_texture_id_;
+
+      float u_time_;
+
+      bool use_albedo_texture_;
+      bool use_specular_texture_;
 
     };
 

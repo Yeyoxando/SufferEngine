@@ -59,6 +59,27 @@ Suffer::MaterialComponent::BlinnPhongParams::BlinnPhongParams() {
   albedo_texture_id_ = 0;
   specular_texture_id_ = 0;
 
+  use_albedo_texture_ = false;
+  use_specular_texture_ = false;
+
+}
+
+// ------------------------------------------------------------------------- //
+
+void Suffer::MaterialComponent::BlinnPhongParams::SetAlbedoTexture(ResourceManager::Texture * texture){
+
+  albedo_texture_id_ = texture->id_;
+  use_albedo_texture_ = true;
+
+}
+
+// ------------------------------------------------------------------------- //
+
+void Suffer::MaterialComponent::BlinnPhongParams::SetSpecularTexture(ResourceManager::Texture * texture){
+
+  specular_texture_id_ = texture->id_;
+  use_specular_texture_ = true;
+
 }
 
 // ------------------------------------------------------------------------- //
