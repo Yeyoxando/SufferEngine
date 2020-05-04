@@ -10,6 +10,7 @@
 #include "component.h"
 #include <referenced.h>
 #include <ref_ptr.h>
+#include "vector2.h"
 #include "vector4.h"
 
 namespace Suffer {
@@ -56,8 +57,10 @@ namespace Suffer {
       s32 specular_texture_id_;
       float specular_strength_;
       float specular_pow_;
+      float reflection_strength_;
 
       float u_time_;
+      mathmorra::Vector2 tiling_;
 
     };
 
@@ -82,6 +85,11 @@ namespace Suffer {
      * @param: default params for the object.
      */
     void SetParams(ref_ptr<BaseParams> params);
+
+    /**
+     * @return: current material component params
+     */
+    BaseParams* CurrentParams();
 
   protected:
     virtual ~MaterialComponent();

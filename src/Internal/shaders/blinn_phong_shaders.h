@@ -134,14 +134,19 @@ namespace Suffer {
     #define u_color u_data[12]
 
     #define camera_pos vec3(u_data[13].x, u_data[13].y, u_data[13].z)
-
+    #define u_tiling u_data[14].xy
     
+    #define u_specular_strength u_data[14].z
+    #define u_specular_pow u_data[14].w
+
+    #define u_reflection_strength u_data[15].x
+
     #define max_lights 4
 
-    #define num_lights u_data[14].x
-    #define num_directionals u_data[14].y
-    #define num_points u_data[14].z
-    #define num_spots u_data[14].w
+    #define num_lights u_data[17].x
+    #define num_directionals u_data[17].y
+    #define num_points u_data[17].z
+    #define num_spots u_data[17].w
     
 
     #define u_albedo u_tex0
@@ -307,11 +312,11 @@ namespace Suffer {
       
       float diff = max(dot(normal, light_dir), 0.0f);
       vec3 reflect_dir = reflect(-light_dir, normal);
-      float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), 32.0f);
+      float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), u_specular_pow);
 
-      vec3 ambient  = light.ambient  * light.intensity * pow(texture(u_albedo, uvs).xyz, vec3(2.2f));
-      vec3 diffuse  = light.diffuse  * light.intensity * diff * pow(texture(u_albedo, uvs).xyz, vec3(2.2f));
-      vec3 specular = light.specular * light.intensity * spec * texture(u_specular, uvs).xyz;
+      vec3 ambient  = light.ambient  * light.intensity * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
+      vec3 diffuse  = light.diffuse  * light.intensity * diff * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
+      vec3 specular = light.specular * light.intensity * (spec * u_specular_strength) * texture(u_specular, uvs * u_tiling).xyz;
       
       float shadow = CalculateShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light_index);
       
@@ -340,15 +345,15 @@ namespace Suffer {
       float diff = max(dot(light_dir, normal), 0.0f);
 
       vec3 halfway_dir = normalize(light_dir + view_dir);  
-      float spec = pow(max(dot(normal, halfway_dir), 0.0f), 32.0f);
+      float spec = pow(max(dot(normal, halfway_dir), 0.0f), u_specular_pow);
 
       float distance    = length(light.position - frag_pos);
       float attenuation = 1.0f / (light.constant + light.linear * distance + 
   			       light.quadratic * distance); 
 
-      vec3 ambient  = light.ambient * attenuation * light.intensity * pow(texture(u_albedo, uvs).xyz, vec3(2.2f));
-      vec3 diffuse  = light.diffuse * attenuation * light.intensity * diff * pow(texture(u_albedo, uvs).xyz, vec3(2.2f));
-      vec3 specular = light.specular* attenuation * light.intensity * spec * texture(u_specular, uvs).xyz;
+      vec3 ambient  = light.ambient * attenuation * light.intensity * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
+      vec3 diffuse  = light.diffuse * attenuation * light.intensity * diff * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
+      vec3 specular = light.specular* attenuation * light.intensity * (spec * u_specular_strength) * texture(u_specular, uvs * u_tiling).xyz;
 
       float shadow = CalculatePointShadows(frag_pos, light.position, light_dir, light_index);
 
@@ -384,7 +389,7 @@ namespace Suffer {
 
       vec3 view_dir = normalize(camera_pos - frag_pos);
       vec3 halfway_dir = normalize(light_dir + view_dir);  
-      float spec = pow(max(dot(normal, halfway_dir), 0.0f), 32.0f);
+      float spec = pow(max(dot(normal, halfway_dir), 0.0f), u_specular_pow);
 
       float distance = length(light.position - frag_pos);
       float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic
@@ -394,9 +399,9 @@ namespace Suffer {
       float epsilon = light.cutOff - light.outerCutOff;
       float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0f, 1.0f);
 
-      vec3 ambient  = light.ambient * attenuation * intensity * light.intensity * pow(texture(u_albedo, uvs).xyz, vec3(2.2f));
-      vec3 diffuse  = light.diffuse * attenuation * intensity * light.intensity * diff * pow(texture(u_albedo, uvs).xyz, vec3(2.2f));
-      vec3 specular = light.specular* attenuation * intensity * light.intensity * spec * texture(u_specular, uvs).xyz;
+      vec3 ambient  = light.ambient * attenuation * intensity * light.intensity * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
+      vec3 diffuse  = light.diffuse * attenuation * intensity * light.intensity * diff * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
+      vec3 specular = light.specular* attenuation * intensity * light.intensity * (spec * u_specular_strength) * texture(u_specular, uvs * u_tiling).xyz;
 
       float shadow = CalculateSpotShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light_index);
 

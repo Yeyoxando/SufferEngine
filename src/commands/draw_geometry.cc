@@ -145,7 +145,7 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
     mathmorra::Vector4 aux_color = params->color_;
     float values[4] = { aux_color.x_, aux_color.y_, aux_color.z_, aux_color.w_ };
 
-    // Copy color to next free uniform space, after Vector n12 because of 3 matrixes, > u_data[48]
+    //u_data[12].xyzw
     data_->u_data_[48] = values[0];
     data_->u_data_[49] = values[1];
     data_->u_data_[50] = values[2];
@@ -156,10 +156,18 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
     case MaterialComponent::ParamsType::kParamsType_BlinnPhong: {
       MaterialComponent::BlinnPhongParams* phong_params_;
       phong_params_ = reinterpret_cast<MaterialComponent::BlinnPhongParams*>(params);
+      //u_data[13].xyzw
       data_->u_data_[52] = suffer.GetCurrentScene()->GetMainCamera()->Position()[0];
       data_->u_data_[53] = suffer.GetCurrentScene()->GetMainCamera()->Position()[1];
       data_->u_data_[54] = suffer.GetCurrentScene()->GetMainCamera()->Position()[2];
       data_->u_data_[55] = (float)Time();
+      //u_data[14].xyzw
+      data_->u_data_[56] = phong_params_->tiling_.x_;
+      data_->u_data_[57] = phong_params_->tiling_.y_;
+      data_->u_data_[58] = phong_params_->specular_strength_;
+      data_->u_data_[59] = phong_params_->specular_pow_;
+      //u_data[15].xyzw
+      data_->u_data_[60] = phong_params_->reflection_strength_;
 
       data_->texture_ids_[0] = phong_params_->albedo_texture_id_;
       data_->texture_ids_[1] = phong_params_->specular_texture_id_;
@@ -377,10 +385,11 @@ void Suffer::DrawGeometry::SetLights(){
 
   }
 
-  data_->u_data_[56] = number_lights;
-  data_->u_data_[57] = data_->current_dir_lights;
-  data_->u_data_[58] = data_->current_point_lights;
-  data_->u_data_[59] = data_->current_spot_lights;
+  //u_data[17].xyzw
+  data_->u_data_[68] = number_lights;
+  data_->u_data_[69] = data_->current_dir_lights;
+  data_->u_data_[70] = data_->current_point_lights;
+  data_->u_data_[71] = data_->current_spot_lights;
 
 }
 

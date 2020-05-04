@@ -27,6 +27,7 @@
 // Components
 #include "component_light.h"
 #include "component_geometry.h"
+#include "component_material.h"
 #include "component_script.h"
 
 ExampleAppLog Suffer::Interface::log;
@@ -673,10 +674,36 @@ void  Suffer::Interface::Inspector(){
 							ImGui::Separator();
 							break;
 					}
-					case Component::ComponentKind::kComponentKind_Material: {
+          case Component::ComponentKind::kComponentKind_Material: {
+            MaterialComponent* material_component = static_cast<MaterialComponent*>(component_reference);
+            ImGui::TextColored(ImVec4(0.9f, 0.5f, 0.0f, 1.0f), ICON_FA_PAINT_BRUSH " Material");
+            switch (material_component->CurrentParams()->params_type_) {
+            case MaterialComponent::ParamsType::kParamsType_BlinnPhong: {
+              MaterialComponent::BlinnPhongParams* blinn_phong_params = static_cast<MaterialComponent::BlinnPhongParams*>(material_component->CurrentParams());
+              ImGui::DragFloat("Specular Strength", &blinn_phong_params->specular_strength_, 0.01f, 0.0f, 1.0f);
+              ImGui::DragFloat("Specular Power", &blinn_phong_params->specular_pow_, blinn_phong_params->specular_pow_, 8.0f, 128.0f);
+              
+              ImGui::Spacing();
+              ImGui::DragFloat("Reflection Strength", &blinn_phong_params->reflection_strength_, 0.01f, 0.0f, 1.0f);
 
-							//ImGui::Separator();
-							break;
+              ImGui::Spacing(); 
+              ImGui::InputFloat2("Tiling", &blinn_phong_params->tiling_.x_);
+
+              material_component->SetParams(blinn_phong_params);
+              break;
+            }
+            case MaterialComponent::ParamsType::kParamsType_RenderToTexture: {
+              break;
+            }
+            case MaterialComponent::ParamsType::kParamsType_Invalid: {
+              break;
+            }
+            default: {
+              break;
+            }
+            }
+            ImGui::Separator();
+            break;
 					}
           case Component::ComponentKind::kComponentKind_Script: {
               ScriptComponent* script = static_cast<ScriptComponent*>(component_reference);

@@ -33,13 +33,13 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::ResourceManager::Texture> wall_texture;
     wall_texture.alloc();
     wall_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
-    wall_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+    wall_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
     wall_texture->LoadTextureData("../../../resources/images/wall.jpg");
 
     Suffer::ref_ptr<Suffer::ResourceManager::Texture> wall_specular_texture;
     wall_specular_texture.alloc();
     wall_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-    wall_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+    wall_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
     wall_specular_texture->LoadTextureData("../../../resources/images/wall_spec.jpg");
 
 
@@ -62,13 +62,13 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::ResourceManager::Texture> ground_texture;
     ground_texture.alloc();
     ground_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
-    ground_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+    ground_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
     ground_texture->LoadTextureData("../../../resources/images/floor_.png");
 
     Suffer::ref_ptr<Suffer::ResourceManager::Texture> ground_specular_texture;
     ground_specular_texture.alloc();
     ground_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-    ground_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+    ground_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
     ground_specular_texture->LoadTextureData("../../../resources/images/floor_spec.png");
 
     //Skybox
@@ -92,6 +92,7 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> ground_material_params;
     ground_material_params.alloc();
     ground_material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+    ground_material_params->tiling_ = mathmorra::Vector2(10.0f, 10.0f);
     ground_material_params->albedo_texture_id_ = ground_texture->id_;
     ground_material_params->specular_texture_id_ = ground_specular_texture->id_;
     ground_material->SetParams(ground_material_params.get());
