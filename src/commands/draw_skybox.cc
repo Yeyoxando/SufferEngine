@@ -245,8 +245,8 @@ void Suffer::DrawSkybox::Execute() const{
 
   {
 
-    // 4 equals to resource manager internal skybox material
-    u32 mat_type = 4;
+    // 1 equals to resource manager internal skybox material
+    u32 mat_type = 1;
 
     // If internal material is not created, creates it
     if (!suffer.resource_manager_.data_->internal_materials_[mat_type].is_created_) {

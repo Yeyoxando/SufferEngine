@@ -153,20 +153,6 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
 
     // -- Set specific material parameters --
     switch (data_->material_type_) {
-    case MaterialComponent::ParamsType::kParamsType_Default: {
-      MaterialComponent::DefaultParams* default_params_;
-      default_params_ = reinterpret_cast<MaterialComponent::DefaultParams*>(params);
-      data_->u_data_[52] = suffer.GetCurrentScene()->GetMainCamera()->Position()[0];
-      data_->u_data_[53] = suffer.GetCurrentScene()->GetMainCamera()->Position()[1];
-      data_->u_data_[54] = suffer.GetCurrentScene()->GetMainCamera()->Position()[2];
-      data_->u_data_[55] = (float)Time();
-
-      data_->texture_ids_[0] = default_params_->albedo_texture_id_;
-      data_->texture_ids_[1] = default_params_->specular_texture_id_;
-      data_->current_used_textures_ = 2;
-      SetLights();
-    }
-      break;
     case MaterialComponent::ParamsType::kParamsType_BlinnPhong: {
       MaterialComponent::BlinnPhongParams* phong_params_;
       phong_params_ = reinterpret_cast<MaterialComponent::BlinnPhongParams*>(params);
@@ -175,25 +161,29 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
       data_->u_data_[54] = suffer.GetCurrentScene()->GetMainCamera()->Position()[2];
       data_->u_data_[55] = (float)Time();
 
-      data_->current_used_textures_ = 0;
+      data_->texture_ids_[0] = phong_params_->albedo_texture_id_;
+      data_->texture_ids_[1] = phong_params_->specular_texture_id_;
+      data_->current_used_textures_ = 2;
       SetLights();
-    }
       break;
+    }
     case MaterialComponent::ParamsType::kParamsType_RenderToTexture: {
       MaterialComponent::RenderToTextureParams* render_params_;
       render_params_ = reinterpret_cast<MaterialComponent::RenderToTextureParams*>(params);
 
       data_->texture_ids_[0] = render_params_->albedo_texture_id_;
       data_->current_used_textures_ = 1;
-    }
       break;
-    case MaterialComponent::ParamsType::kParamsType_Invalid:
+    }
+    case MaterialComponent::ParamsType::kParamsType_Invalid: {
       assert(data_->material_type_ != MaterialComponent::kParamsType_Invalid && "Material type not set");
       break;
-    default:
+    }
+    default: {
+      assert(false);
       break;
     }
-
+    }
   }
 
   // --------------------------- StoreUniforms ----------------------------- //

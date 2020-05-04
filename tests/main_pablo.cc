@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
     // Default Materials / Params
     Suffer::ref_ptr<Suffer::MaterialComponent> material_component_cube;
     material_component_cube.alloc();
-    Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_params_cube;
+    Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_cube;
     material_params_cube.alloc();
     material_params_cube->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     material_params_cube->albedo_texture_id_ = box_texture->id_;

@@ -556,6 +556,15 @@ void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
 
   number_of_textures_ = 0;
 
+
+  //Default texture for shaders
+
+  ref_ptr<Texture> default_texture;
+  default_texture.alloc();
+  default_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
+  default_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+  default_texture->LoadTextureData("../../../src/internal/textures/DefaultTexture.jpg");
+
 }
 
 // ------------------------------------------------------------------------- //
@@ -563,27 +572,12 @@ void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
 void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   
   // Increase the number if you create a new one
-  internal_materials_.alloc(5);
+  internal_materials_.alloc(4);
   number_of_materials_ = 0;
 
   // To create a new material define the shaders in internal_shaders.h
 
-  // -------------------------- DefaultMaterial ---------------------------- //
-
-  {
-
-    internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
-
-    internal_materials_[number_of_materials_].vertex_shader_ = Suffer::default_vertex_shader_;
-    internal_materials_[number_of_materials_].fragment_shader_ = Suffer::default_fragment_shader_;
-  
-    number_of_materials_++;
-  
-  }
-
-  // -------------------------- DefaultMaterial ---------------------------- //
-
-  // --------------------------- PhongMaterial ----------------------------- //
+  // ------------------------ BlinnPhongMaterial --------------------------- //
   
   {
   
@@ -596,7 +590,23 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   
   }
 
-  // --------------------------- PhongMaterial ----------------------------- //
+  // ------------------------ BlinnPhongMaterial --------------------------- //
+
+
+  // -------------------------- SkyboxMaterial ----------------------------- //
+
+  {
+
+    internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
+
+    internal_materials_[number_of_materials_].vertex_shader_ = Suffer::skybox_vertex_shader_;
+    internal_materials_[number_of_materials_].fragment_shader_ = Suffer::skybox_fragment_shader_;
+
+    number_of_materials_++;
+
+  }
+
+  // -------------------------- SkyboxMaterial ----------------------------- //
 
 
   // --------------------------- DepthMaterial ----------------------------- //
@@ -629,22 +639,6 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   }
 
   // --------------------- PointShadowDepthMaterial ------------------------ //
-
-
-  // -------------------------- SkyboxMaterial ----------------------------- //
-
-  {
-
-    internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
-
-    internal_materials_[number_of_materials_].vertex_shader_ = Suffer::skybox_vertex_shader_;
-    internal_materials_[number_of_materials_].fragment_shader_ = Suffer::skybox_fragment_shader_;
-
-    number_of_materials_++;
-
-  }
-
-  // -------------------------- SkyboxMaterial ----------------------------- //
 
 }
 

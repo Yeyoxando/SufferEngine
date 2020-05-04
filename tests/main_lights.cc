@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
 
     Suffer::ref_ptr<Suffer::MaterialComponent> ground_material;
     ground_material.alloc();
-    Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> ground_material_params;
+    Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> ground_material_params;
     ground_material_params.alloc();
     ground_material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     ground_material_params->albedo_texture_id_ = ground_texture->id_;
@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
 
     Suffer::ref_ptr<Suffer::MaterialComponent> material_wall;
     material_wall.alloc();
-    Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_wall_params;
+    Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_wall_params;
     material_wall_params.alloc();
     material_wall_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     material_wall_params->albedo_texture_id_ = wall_texture->id_;
@@ -106,7 +106,7 @@ int main(int argc, char* argv[]) {
 
     Suffer::ref_ptr<Suffer::MaterialComponent> material_component_cube;
     material_component_cube.alloc();
-    Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_params_cube;
+    Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_cube;
     material_params_cube.alloc();
     material_params_cube->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     material_params_cube->albedo_texture_id_ = box_texture->id_;

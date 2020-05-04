@@ -1,6 +1,6 @@
 
 #include <common_definitions.h>
-#if !defined _MAIN_PABLO_ && !defined _MAIN_DIEGO_
+#if !defined _MAIN_PABLO_ && !defined _MAIN_DIEGO_ && !defined _MAIN_LIGHTS_
 
 #include <suffermanager.h>
 #include <glfw3.h>
@@ -46,9 +46,9 @@ int main(int argc, char* argv[]) {
   geometry_component_sphere->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Points);
   geometry_component_sphere->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Sphere);
 
-  Suffer::ref_ptr<Suffer::Material> material_component_sphere;
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_component_sphere;
   material_component_sphere.alloc();
-  Suffer::ref_ptr<Suffer::Material::DefaultParams> material_params2;
+  Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params2;
   material_params2.alloc();
   material_params2->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   material_params2->albedo_texture_id_ = albedo_texture2->id_;
@@ -70,30 +70,30 @@ int main(int argc, char* argv[]) {
   }
 
 
-  go_sphere[0]->AddComponent(suffer.one.get());
-  go_sphere[1]->AddComponent(suffer.two.get());
-
-  go_sphere[2]->AddComponent(suffer.samples_[0].get());
-  go_sphere[3]->AddComponent(suffer.samples_[1].get());
-  go_sphere[4]->AddComponent(suffer.samples_[2].get());
-  go_sphere[5]->AddComponent(suffer.samples_[3].get());
-
-  go_sphere[6]->AddComponent(suffer.branching_a_.get());
-  go_sphere[7]->AddComponent(suffer.branching_b_.get());
-  go_sphere[8]->AddComponent(suffer.branching_transition_.get());
-
-
-  go_sphere[0]->StartUpLUA("../../../src/lua/lua_code_sphere_crossfade_1.txt");
-  go_sphere[1]->StartUpLUA("../../../src/lua/lua_code_sphere_crossfade_2.txt");
-
-  go_sphere[2]->StartUpLUA("../../../src/lua/lua_code_sphere_layering_1.txt");
-  go_sphere[3]->StartUpLUA("../../../src/lua/lua_code_sphere_layering_2.txt");
-  go_sphere[4]->StartUpLUA("../../../src/lua/lua_code_sphere_layering_3.txt");
-  go_sphere[5]->StartUpLUA("../../../src/lua/lua_code_sphere_layering_4.txt");
-
-  go_sphere[6]->StartUpLUA("../../../src/lua/lua_code_sphere_branching_1.txt");
-  go_sphere[7]->StartUpLUA("../../../src/lua/lua_code_sphere_branching_2.txt");
-  go_sphere[8]->StartUpLUA("../../../src/lua/lua_code_sphere_branching_3.txt");
+  //go_sphere[0]->AddComponent(suffer.one.get());
+  //go_sphere[1]->AddComponent(suffer.two.get());
+  //
+  //go_sphere[2]->AddComponent(suffer.samples_[0].get());
+  //go_sphere[3]->AddComponent(suffer.samples_[1].get());
+  //go_sphere[4]->AddComponent(suffer.samples_[2].get());
+  //go_sphere[5]->AddComponent(suffer.samples_[3].get());
+  //
+  //go_sphere[6]->AddComponent(suffer.branching_a_.get());
+  //go_sphere[7]->AddComponent(suffer.branching_b_.get());
+  //go_sphere[8]->AddComponent(suffer.branching_transition_.get());
+  //
+  //
+  //go_sphere[0]->StartUpLUA("../../../src/lua/lua_code_sphere_crossfade_1.txt");
+  //go_sphere[1]->StartUpLUA("../../../src/lua/lua_code_sphere_crossfade_2.txt");
+  //
+  //go_sphere[2]->StartUpLUA("../../../src/lua/lua_code_sphere_layering_1.txt");
+  //go_sphere[3]->StartUpLUA("../../../src/lua/lua_code_sphere_layering_2.txt");
+  //go_sphere[4]->StartUpLUA("../../../src/lua/lua_code_sphere_layering_3.txt");
+  //go_sphere[5]->StartUpLUA("../../../src/lua/lua_code_sphere_layering_4.txt");
+  //
+  //go_sphere[6]->StartUpLUA("../../../src/lua/lua_code_sphere_branching_1.txt");
+  //go_sphere[7]->StartUpLUA("../../../src/lua/lua_code_sphere_branching_2.txt");
+  //go_sphere[8]->StartUpLUA("../../../src/lua/lua_code_sphere_branching_3.txt");
 
 
 

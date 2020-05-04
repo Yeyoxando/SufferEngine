@@ -35,21 +35,14 @@ Suffer::MaterialComponent::BaseParams::BaseParams() {
 
 // ------------------------------------------------------------------------- //
 
-Suffer::MaterialComponent::DefaultParams::DefaultParams() {
-
-  params_type_ = kParamsType_Default;
-  color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  albedo_texture_id_ = -1;
-
-}
-
-// ------------------------------------------------------------------------- //
-
 Suffer::MaterialComponent::BlinnPhongParams::BlinnPhongParams() {
 
   params_type_ = kParamsType_BlinnPhong;
   color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   u_time_ = 0.0f;
+  // Set default engine textures
+  albedo_texture_id_ = 0;
+  specular_texture_id_ = 0;
 
 }
 
