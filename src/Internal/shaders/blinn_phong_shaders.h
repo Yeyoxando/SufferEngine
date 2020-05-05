@@ -54,7 +54,7 @@ namespace Suffer {
   // -- (fragment) --
   static const char* blinn_phong_fragment_shader = R"FBPHONGSHADER(
     #version 330
- 
+
 // ....... STRUCTS ........
     // DIRECTIONAL LIGHT
     struct DirectionalLight{
@@ -117,6 +117,7 @@ namespace Suffer {
 
     uniform sampler2D u_tex0;
     uniform sampler2D u_tex1; 
+    uniform sampler2D u_tex2; 
 
     uniform samplerCube u_skybox;
 
@@ -137,25 +138,22 @@ namespace Suffer {
 
 // ......... DEFINES ..........
     #define u_color u_data[12]
-
     #define camera_pos vec3(u_data[13].x, u_data[13].y, u_data[13].z)
     #define u_tiling u_data[14].xy
     
     #define u_specular_strength u_data[14].z
     #define u_specular_pow u_data[14].w
-
     #define u_reflection_strength u_data[15].x
 
     #define max_lights 4
-
     #define num_lights u_data[17].x
     #define num_directionals u_data[17].y
     #define num_points u_data[17].z
     #define num_spots u_data[17].w
     
-
     #define u_albedo u_tex0
     #define u_specular u_tex1
+    #define u_reflection u_tex2
 
 // ....... IN / OUT ........
     in vec3 position;
@@ -204,7 +202,7 @@ namespace Suffer {
         return texture(u_dir_light_texture3, proj_coord.xy);
       }
     }
-    
+
 // --------------------------------------------------------------------- //
 
     // POINTS
@@ -326,26 +324,27 @@ namespace Suffer {
       vec3 ambient  = light.ambient  * light.intensity * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 diffuse  = light.diffuse  * light.intensity * diff * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 specular = light.specular * light.intensity * (spec * u_specular_strength) * texture(u_specular, uvs * u_tiling).xyz;     
-      vec3 reflection = texture(u_skybox, refle).rgb * u_reflection_strength; 
+      float ref_value = texture(u_reflection, uvs * u_tiling).x;
+      vec3 reflection = (texture(u_skybox, refle).rgb * ref_value) * u_reflection_strength; 
 
       float shadow = CalculateShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light_index);
-      
-      float inv_reflection = 1.0f - u_reflection_strength;
-      return (((ambient * inv_reflection) + reflection) + (1.0f - shadow) * ((diffuse * inv_reflection) + specular)) * u_color.xyz;
+
+      float inv_reflection = (1.0f - ref_value);
+      return (((ambient * inv_reflection) + reflection) + ((1.0f - shadow) * ((diffuse * inv_reflection) + specular))) * u_color.xyz;
     }
 
 // --------------------------------------------------------------------- //
 
     float CalculatePointShadows(vec3 frag_pos, vec3 light_pos, vec3 light_dir, int light_index){
-        vec3 fragToLight = frag_pos - light_pos;
-        float closestDepth = GetPointLightTexture(light_index, fragToLight).r;
-        closestDepth *= 100.0f; //  == FAR PLANE -> LOOK system_light
-        float currentDepth = length(fragToLight);
-        //float bias = 0.5f;
-        float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
-        float shadow = currentDepth - bias > closestDepth ? 1.0f : 0.0f;
+      vec3 fragToLight = frag_pos - light_pos;
+      float closestDepth = GetPointLightTexture(light_index, fragToLight).r;
+      closestDepth *= 100.0f; //  == FAR PLANE -> LOOK system_light
+      float currentDepth = length(fragToLight);
+      //float bias = 0.05f;
+      float bias = max(0.05f * (1.0f - dot(normal, light_dir)), 0.001f);
+      float shadow = currentDepth - bias > closestDepth ? 1.0f : 0.0f;
 
-        return shadow;
+      return shadow;
     } 
 
 // --------------------------------------------------------------------- //
@@ -368,12 +367,13 @@ namespace Suffer {
       vec3 ambient  = light.ambient * attenuation * light.intensity * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 diffuse  = light.diffuse * attenuation * light.intensity * diff * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 specular = light.specular* attenuation * light.intensity * (spec * u_specular_strength) * texture(u_specular, uvs * u_tiling).xyz;
-      vec3 reflection = texture(u_skybox, refle).rgb * u_reflection_strength; 
+      float ref_value = texture(u_reflection, uvs * u_tiling).x;
+      vec3 reflection = (texture(u_skybox, refle).rgb * ref_value) * u_reflection_strength; 
 
       float shadow = CalculatePointShadows(frag_pos, light.position, light_dir, light_index);
 
-      float inv_reflection = 1.0f - u_reflection_strength;
-      return (((ambient * inv_reflection) + reflection) + (1.0f - shadow) * ((diffuse * inv_reflection) + specular)) * u_color.xyz;
+      float inv_reflection = (1.0f - ref_value);
+      return (((ambient * inv_reflection) + reflection) + ((1.0f - shadow) * ((diffuse * inv_reflection) + specular))) * u_color.xyz;
     }
 
 // --------------------------------------------------------------------- //
@@ -421,12 +421,13 @@ namespace Suffer {
       vec3 ambient  = light.ambient * attenuation * intensity * light.intensity * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 diffuse  = light.diffuse * attenuation * intensity * light.intensity * diff * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 specular = light.specular* attenuation * intensity * light.intensity * (spec * u_specular_strength) * texture(u_specular, uvs * u_tiling).xyz;
-      vec3 reflection = texture(u_skybox, refle).rgb * u_reflection_strength;
+      float ref_value = texture(u_reflection, uvs * u_tiling).x;
+      vec3 reflection = (texture(u_skybox, refle).rgb * ref_value) * u_reflection_strength; 
 
       float shadow = CalculateSpotShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light_index);
-      
-      float inv_reflection = 1.0f - u_reflection_strength;
-      return (((ambient * inv_reflection) + reflection) + (1.0f - shadow) * ((diffuse * inv_reflection) + specular)) * u_color.xyz;
+
+      float inv_reflection = (1.0f - ref_value);
+      return (((ambient * inv_reflection) + reflection) + ((1.0f - shadow) * ((diffuse * inv_reflection) + specular))) * u_color.xyz;
     }
 
 // ......... MAIN ..........
@@ -447,10 +448,8 @@ namespace Suffer {
       for(int i = 0; i < num_spots; ++i){
         spot += CalculateSpotLight(GetSpotLight(i), i, normal) * float(GetSpotLight(i).is_active);
       }
-      
-      vec3 result = directionals + point + spot;
-      
-      fragColor = vec4(result, 1.0f);
+
+      fragColor = vec4((directionals + point + spot), 1.0f);
     }
 
   )FBPHONGSHADER";

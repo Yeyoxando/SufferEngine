@@ -600,13 +600,19 @@ void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
   number_of_textures_ = 0;
 
 
-  //Default texture for shaders
-
+  //Default texture for shaders (White)
   ref_ptr<Texture> default_texture;
   default_texture.alloc();
   default_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
   default_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
   default_texture->LoadTextureData("../../../src/internal/textures/DefaultTexture.jpg");
+
+  //Default texture for shaders (Black)
+  ref_ptr<Texture> default_texture2;
+  default_texture2.alloc();
+  default_texture2->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
+  default_texture2->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+  default_texture2->LoadTextureData("../../../src/internal/textures/DefaultTexture2.jpg");
 
 }
 

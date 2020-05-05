@@ -5,6 +5,7 @@
 */
 
 #include "component_material.h"
+#include "math_utils.h"
 
 // ------------------------------------------------------------------------- //
 
@@ -61,6 +62,7 @@ Suffer::MaterialComponent::BlinnPhongParams::BlinnPhongParams() {
 
   use_albedo_texture_ = false;
   use_specular_texture_ = false;
+  use_reflection_texture_ = false;
 
 }
 
@@ -79,6 +81,16 @@ void Suffer::MaterialComponent::BlinnPhongParams::SetSpecularTexture(ResourceMan
 
   specular_texture_id_ = texture->id_;
   use_specular_texture_ = true;
+
+}
+
+// ------------------------------------------------------------------------- //
+
+void Suffer::MaterialComponent::BlinnPhongParams::SetReflectionTexture(ResourceManager::Texture* texture, float reflection_strength){
+
+  reflection_texture_id_ = texture->id_;
+  use_reflection_texture_ = true;
+  reflection_strength_ = ThiefUtils::Math::Clamp(reflection_strength, 0.0f, 1.0f);
 
 }
 

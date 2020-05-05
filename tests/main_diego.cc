@@ -92,7 +92,7 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> ground_material_params;
     ground_material_params.alloc();
     ground_material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-    ground_material_params->tiling_ = mathmorra::Vector2(10.0f, 10.0f);
+    ground_material_params->tiling_ = mathmorra::Vector2(5.0f, 5.0f);
     ground_material_params->SetAlbedoTexture(ground_texture.get());
     ground_material_params->SetSpecularTexture(ground_specular_texture.get());
     ground_material->SetParams(ground_material_params.get());
@@ -126,6 +126,7 @@ int main(int argc, char* argv[]) {
     material_params_cube->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     material_params_cube->SetAlbedoTexture(box_texture.get());
     material_params_cube->SetSpecularTexture(box_specular_texture.get());
+    material_params_cube->SetReflectionTexture(box_specular_texture.get(), 1.0f);
     material_component_cube->SetParams(material_params_cube.get());
     go_cube->AddComponent(material_component_cube.get());
 
@@ -183,9 +184,9 @@ int main(int argc, char* argv[]) {
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_7;
     transform_component_7.alloc();
-    transform_component_7->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
+    transform_component_7->Scale(mathmorra::Vector3(20.0f, -20.0f, 20.0f));
     transform_component_7->Translate(mathmorra::Vector3(-20.0f, 20.0f, 0.0f));
-    transform_component_7->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-90.0f), 0.0f));
+    transform_component_7->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(90.0f), 0.0f));
     go_quad4->AddComponent(transform_component_7.get());
 
 
@@ -212,9 +213,9 @@ int main(int argc, char* argv[]) {
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_6;
     transform_component_6.alloc();
-    transform_component_6->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
+    transform_component_6->Scale(mathmorra::Vector3(20.0f, -20.0f, 20.0f));
     transform_component_6->Translate(mathmorra::Vector3(20.0f, 20.0f, 0.0f));
-    transform_component_6->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(90.0f), 0.0f));
+    transform_component_6->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-90.0f), 0.0f));
     go_quad3->AddComponent(transform_component_6.get());
 
 
@@ -234,9 +235,9 @@ int main(int argc, char* argv[]) {
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_5;
     transform_component_5.alloc();
-    transform_component_5->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
+    transform_component_5->Scale(mathmorra::Vector3(20.0f, -20.0f, 20.0f));
     transform_component_5->Translate(mathmorra::Vector3(0.0f, 20.0f, 20.0f));
-    transform_component_5->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(180.0f), 0.0f));
+    transform_component_5->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
     go_quad2->AddComponent(transform_component_5.get());
 
     // -------------------------------------------------------------------------------------//

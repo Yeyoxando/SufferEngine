@@ -183,8 +183,15 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
       else {
         data_->texture_ids_[1] = 0;
       }
+      if (phong_params_->use_reflection_texture_) {
+        data_->texture_ids_[2] = phong_params_->reflection_texture_id_;
+      }
+      else {
+        //Black texture
+        data_->texture_ids_[2] = 1;
+      }
 
-      data_->current_used_textures_ = 2;
+      data_->current_used_textures_ = 3;
 
       Skybox* skybox = suffer.GetCurrentScene()->GetSkybox();
       if (skybox != nullptr) {
