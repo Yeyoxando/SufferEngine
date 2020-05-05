@@ -558,15 +558,57 @@ void  Suffer::Interface::Hierarchy(Scene* current_scene_){
 			ImGui::Begin("FFF ", nullptr, window_flags_);
 			ImGui::MenuItem("Create empty");
 
-			if (ImGui::BeginMenu("3D Object")) {
-          ImGui::MenuItem("Cube");
-          ImGui::MenuItem("Sphere");
-					ImGui::EndMenu();
-			}
+      ImGui::MenuItem("Create empty");
+
+      if (ImGui::BeginMenu("3D Object")) {
+          if (ImGui::MenuItem("Cube")) {
+              Suffer::ref_ptr<GameObject> game_object_;
+              game_object_.alloc();
+              game_object_->SetArchetype(GameObject::kArchetype_Drawable);
+              suffer.GetCurrentScene()->AddGameObject(game_object_);
+              game_object_->SetName("Empty Cube");
+              auxiliar_window = false;
+          }
+          if (ImGui::MenuItem("Sphere")) {
+              Suffer::ref_ptr<GameObject> game_object_;
+              game_object_.alloc();
+              game_object_->SetArchetype(GameObject::kArchetype_Drawable);
+              GeometryComponent* geometry_ = static_cast<GeometryComponent*>(game_object_->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Geometry));
+              if (geometry_ != nullptr) {
+                  geometry_->CreateGeometryWithShape(GeometryComponent::kBasicShapes_Sphere);
+              }
+              game_object_->SetName("Empty Sphere");
+              suffer.GetCurrentScene()->AddGameObject(game_object_);
+              auxiliar_window = false;
+          }
+          ImGui::EndMenu();
+      }
 
       if (ImGui::BeginMenu("2D Object")) {
-          ImGui::MenuItem("Triangle");
-          ImGui::MenuItem("Quad");
+          if (ImGui::MenuItem("Triangle")) {
+              Suffer::ref_ptr<GameObject> game_object_;
+              game_object_.alloc();
+              game_object_->SetArchetype(GameObject::kArchetype_Drawable);
+              GeometryComponent* geometry_ = static_cast<GeometryComponent*>(game_object_->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Geometry));
+              if (geometry_ != nullptr) {
+                  geometry_->CreateGeometryWithShape(GeometryComponent::kBasicShapes_Triangle);
+              }
+              game_object_->SetName("Empty Triangle");
+              suffer.GetCurrentScene()->AddGameObject(game_object_);
+              auxiliar_window = false;
+          }
+          if (ImGui::MenuItem("Quad")) {
+              Suffer::ref_ptr<GameObject> game_object_;
+              game_object_.alloc();
+              game_object_->SetArchetype(GameObject::kArchetype_Drawable);
+              GeometryComponent* geometry_ = static_cast<GeometryComponent*>(game_object_->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Geometry));
+              if (geometry_ != nullptr) {
+                  geometry_->CreateGeometryWithShape(GeometryComponent::kBasicShapes_Quad);
+              }
+              game_object_->SetName("Empty Quad");
+              suffer.GetCurrentScene()->AddGameObject(game_object_);
+              auxiliar_window = false;
+          }
           ImGui::EndMenu();
       }
 			ImGui::End();
