@@ -177,12 +177,14 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
       else {
         data_->texture_ids_[0] = 0;
       }
+
       if (phong_params_->use_specular_texture_) {
         data_->texture_ids_[1] = phong_params_->specular_texture_id_;
       }
       else {
         data_->texture_ids_[1] = 0;
       }
+
       if (phong_params_->use_reflection_texture_) {
         data_->texture_ids_[2] = phong_params_->reflection_texture_id_;
       }

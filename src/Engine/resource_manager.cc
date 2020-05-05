@@ -490,6 +490,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
         sphere_points[i * number_revolutions + j].z_ = radius * sin(latitude);
 
         normals[i * number_revolutions + j] = sphere_points[i * number_revolutions + j];
+        normals[i * number_revolutions + j].y_ *= -1.0f;
         normals[i * number_revolutions + j].Normalize();
 
         mathmorra::Vector2 uv;

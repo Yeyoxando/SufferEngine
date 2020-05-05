@@ -680,11 +680,15 @@ void  Suffer::Interface::Inspector(){
             switch (material_component->CurrentParams()->params_type_) {
             case MaterialComponent::ParamsType::kParamsType_BlinnPhong: {
               MaterialComponent::BlinnPhongParams* blinn_phong_params = static_cast<MaterialComponent::BlinnPhongParams*>(material_component->CurrentParams());
+              ImGui::ColorPicker4("Object color", &blinn_phong_params->color_.x_);
+              
               ImGui::DragFloat("Specular Strength", &blinn_phong_params->specular_strength_, 0.01f, 0.0f, 1.0f);
               ImGui::DragFloat("Specular Power", &blinn_phong_params->specular_pow_, blinn_phong_params->specular_pow_, 8.0f, 128.0f);
               
-              ImGui::Spacing();
-              ImGui::DragFloat("Reflection Strength", &blinn_phong_params->reflection_strength_, 0.01f, 0.0f, 1.0f);
+              if (suffer.GetCurrentScene()->GetSkybox() != nullptr) {
+                ImGui::Spacing();
+                ImGui::DragFloat("Reflection Strength", &blinn_phong_params->reflection_strength_, 0.01f, 0.0f, 1.0f);
+              }
 
               ImGui::Spacing(); 
               ImGui::InputFloat2("Tiling", &blinn_phong_params->tiling_.x_);
