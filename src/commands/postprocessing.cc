@@ -64,9 +64,9 @@ void Suffer::Postprocessing::SetData(PostproccessKind postpro) {
   // ---------------------------- SetGeometry ------------------------------ //
 
   {
-    // Set quad ids
-    data_->vertex_buffer_id_ = 1;
-    data_->index_buffer_id_ = 1;
+    // Set render to texture quad ids
+    data_->vertex_buffer_id_ = 4;
+    data_->index_buffer_id_ = 4;
 
   }
 

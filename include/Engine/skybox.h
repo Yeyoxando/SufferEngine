@@ -13,6 +13,7 @@ namespace Suffer {
 
   class Skybox : public Referenced {
     friend class DrawSkybox;
+    friend class DrawGeometry;
   public:
     Skybox();
     ~Skybox();

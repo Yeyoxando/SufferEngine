@@ -34,6 +34,8 @@ struct Suffer::DrawGeometry::Data {
   s32 texture_ids_[MAX_USED_TEXTURES];
   u32 current_used_textures_;
 
+  u32 skybox_cubemap_id_;
+
   s32 light_dir_texture_ids_[MAX_LIGHTS];
   s32 light_point_texture_ids_[MAX_LIGHTS];
   s32 light_spot_texture_ids_[MAX_LIGHTS];
@@ -183,6 +185,12 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
       }
 
       data_->current_used_textures_ = 2;
+
+      Skybox* skybox = suffer.GetCurrentScene()->GetSkybox();
+      if (skybox != nullptr) {
+        data_->skybox_cubemap_id_ = skybox->cubemap_id_;
+      }
+
       SetLights();
       break;
     }
@@ -704,6 +712,24 @@ void Suffer::DrawGeometry::Execute() const {
       
       used_textures++;
 
+    }
+
+    // Skybox texture for reflections
+    if (suffer.GetCurrentScene()->GetSkybox() != nullptr) {
+      const char* str = "u_skybox";
+      u_pos = glGetUniformLocation(program_id, str);
+      if (u_pos < 0) {
+        printf("\nERROR: texture skybox uniform not exists.");
+        //return;
+      }
+
+      glActiveTexture(GL_TEXTURE0 + used_textures);
+      glBindTexture(GL_TEXTURE_CUBE_MAP, suffer.resource_manager_.data_->internal_cubemaps_[data_->skybox_cubemap_id_].current_texture_id_);
+
+      glUniform1i(u_pos, used_textures);
+      u_pos = -1;
+
+      used_textures++;
     }
 
     // -- LightTextures --

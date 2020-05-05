@@ -159,7 +159,7 @@ int main(int argc, char* argv[]) {
     transform_component_2.alloc();
     transform_component_2->Scale(mathmorra::Vector3(20.0f, -20.0f, 20.0f));
     transform_component_2->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
-    transform_component_2->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(90.0f), 0.0f, 0.0f));
+    transform_component_2->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, 0.0f));
     go_quad->AddComponent(transform_component_2.get());
 
 
@@ -185,7 +185,7 @@ int main(int argc, char* argv[]) {
     transform_component_7.alloc();
     transform_component_7->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
     transform_component_7->Translate(mathmorra::Vector3(-20.0f, 20.0f, 0.0f));
-    transform_component_7->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(90.0f), 0.0f));
+    transform_component_7->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-90.0f), 0.0f));
     go_quad4->AddComponent(transform_component_7.get());
 
 
@@ -214,7 +214,7 @@ int main(int argc, char* argv[]) {
     transform_component_6.alloc();
     transform_component_6->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
     transform_component_6->Translate(mathmorra::Vector3(20.0f, 20.0f, 0.0f));
-    transform_component_6->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-90.0f), 0.0f));
+    transform_component_6->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(90.0f), 0.0f));
     go_quad3->AddComponent(transform_component_6.get());
 
 
@@ -236,7 +236,7 @@ int main(int argc, char* argv[]) {
     transform_component_5.alloc();
     transform_component_5->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
     transform_component_5->Translate(mathmorra::Vector3(0.0f, 20.0f, 20.0f));
-    transform_component_5->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+    transform_component_5->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(180.0f), 0.0f));
     go_quad2->AddComponent(transform_component_5.get());
 
     // -------------------------------------------------------------------------------------//

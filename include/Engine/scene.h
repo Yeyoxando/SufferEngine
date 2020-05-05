@@ -43,6 +43,7 @@ namespace Suffer {
     Camera* GetMainCamera();
 
     void SetSkybox(ref_ptr<Skybox> skybox);
+    Skybox* GetSkybox();
 
   private:
 

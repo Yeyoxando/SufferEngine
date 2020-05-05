@@ -28,6 +28,7 @@ namespace Suffer {
     #define u_time u_data[13].x
 
 // ....... IN / OUT ........
+    out vec3 position;
     out vec3 normal;
     out vec3 frag_pos;
     out vec2 uvs;
@@ -37,12 +38,14 @@ namespace Suffer {
     void main(){  
       mat4 accum_matrix = u_p_matrix * u_v_matrix * u_m_matrix;
 
-      normal = normalize((accum_matrix * vec4(a_normal, 0.0f))).xyz; 
+      //Normal is a CoVector and because of that we have to multiply by transponded inverse
+      normal = normalize(mat3(transpose(inverse(u_m_matrix))) * vec4(a_normal, 0.0f).xyz); 
       frag_pos = (u_m_matrix * vec4(a_position, 1.0f)).xyz;
       uvs = a_uvs;
       time = u_time;
 	    
-      gl_Position = accum_matrix * vec4(a_position, 1.0f);
+      position = vec3(u_m_matrix * vec4(a_position, 1.0f));
+      gl_Position = u_p_matrix * u_v_matrix * vec4(position, 1.0f);
     }
   
   )VBPHONGSHADER";
@@ -115,6 +118,8 @@ namespace Suffer {
     uniform sampler2D u_tex0;
     uniform sampler2D u_tex1; 
 
+    uniform samplerCube u_skybox;
+
     uniform sampler2D u_dir_light_texture0;
     uniform sampler2D u_dir_light_texture1;
     uniform sampler2D u_dir_light_texture2;
@@ -153,6 +158,7 @@ namespace Suffer {
     #define u_specular u_tex1
 
 // ....... IN / OUT ........
+    in vec3 position;
     in vec3 normal;
     in vec3 frag_pos;
     in vec2 uvs;
@@ -314,13 +320,18 @@ namespace Suffer {
       vec3 reflect_dir = reflect(-light_dir, normal);
       float spec = pow(max(dot(view_dir, reflect_dir), 0.0f), u_specular_pow);
 
+      vec3 ref_view_dir = normalize(position - camera_pos);      
+      vec3 refle = reflect(ref_view_dir, normalize(normal)); 
+
       vec3 ambient  = light.ambient  * light.intensity * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 diffuse  = light.diffuse  * light.intensity * diff * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
-      vec3 specular = light.specular * light.intensity * (spec * u_specular_strength) * texture(u_specular, uvs * u_tiling).xyz;
-      
+      vec3 specular = light.specular * light.intensity * (spec * u_specular_strength) * texture(u_specular, uvs * u_tiling).xyz;     
+      vec3 reflection = texture(u_skybox, refle).rgb * u_reflection_strength; 
+
       float shadow = CalculateShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light_index);
       
-      return (ambient + (1.0f - shadow) * (diffuse + specular)) * u_color.xyz;
+      float inv_reflection = 1.0f - u_reflection_strength;
+      return (((ambient * inv_reflection) + reflection) + (1.0f - shadow) * ((diffuse * inv_reflection) + specular)) * u_color.xyz;
     }
 
 // --------------------------------------------------------------------- //
@@ -347,6 +358,9 @@ namespace Suffer {
       vec3 halfway_dir = normalize(light_dir + view_dir);  
       float spec = pow(max(dot(normal, halfway_dir), 0.0f), u_specular_pow);
 
+      vec3 ref_view_dir = normalize(position - camera_pos);      
+      vec3 refle = reflect(ref_view_dir, normalize(normal));
+
       float distance    = length(light.position - frag_pos);
       float attenuation = 1.0f / (light.constant + light.linear * distance + 
   			       light.quadratic * distance); 
@@ -354,10 +368,12 @@ namespace Suffer {
       vec3 ambient  = light.ambient * attenuation * light.intensity * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 diffuse  = light.diffuse * attenuation * light.intensity * diff * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 specular = light.specular* attenuation * light.intensity * (spec * u_specular_strength) * texture(u_specular, uvs * u_tiling).xyz;
+      vec3 reflection = texture(u_skybox, refle).rgb * u_reflection_strength; 
 
       float shadow = CalculatePointShadows(frag_pos, light.position, light_dir, light_index);
 
-      return (ambient + (1.0f - shadow) * (diffuse + specular)) * u_color.xyz;
+      float inv_reflection = 1.0f - u_reflection_strength;
+      return (((ambient * inv_reflection) + reflection) + (1.0f - shadow) * ((diffuse * inv_reflection) + specular)) * u_color.xyz;
     }
 
 // --------------------------------------------------------------------- //
@@ -391,6 +407,9 @@ namespace Suffer {
       vec3 halfway_dir = normalize(light_dir + view_dir);  
       float spec = pow(max(dot(normal, halfway_dir), 0.0f), u_specular_pow);
 
+      vec3 ref_view_dir = normalize(position - camera_pos);      
+      vec3 refle = reflect(ref_view_dir, normalize(normal));
+
       float distance = length(light.position - frag_pos);
       float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic
         * distance);
@@ -402,10 +421,12 @@ namespace Suffer {
       vec3 ambient  = light.ambient * attenuation * intensity * light.intensity * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 diffuse  = light.diffuse * attenuation * intensity * light.intensity * diff * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 specular = light.specular* attenuation * intensity * light.intensity * (spec * u_specular_strength) * texture(u_specular, uvs * u_tiling).xyz;
+      vec3 reflection = texture(u_skybox, refle).rgb * u_reflection_strength;
 
       float shadow = CalculateSpotShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light_index);
-
-      return (ambient + (1.0f - shadow) * (diffuse + specular)) * u_color.xyz;
+      
+      float inv_reflection = 1.0f - u_reflection_strength;
+      return (((ambient * inv_reflection) + reflection) + (1.0f - shadow) * ((diffuse * inv_reflection) + specular)) * u_color.xyz;
     }
 
 // ......... MAIN ..........

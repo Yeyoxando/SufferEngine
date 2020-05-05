@@ -346,21 +346,21 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
   // QUAD
   {
     float quad[] = {
-        // Positions             Normals            UV's
-        -1.0f,  -1.0f, 0.0f,  0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
-        -1.0f,   1.0f, 0.0f,  0.0f, 0.0f, -1.0f,  0.0f, 1.0f,
-        1.0f,  1.0f,   0.0f,  0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
-        1.0f, -1.0f,   0.0f,  0.0f, 0.0f, -1.0f,  1.0f, 0.0f,
+      // Positions             Normals            UV's
+      -1.0f, -1.0f, 0.0f,    0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
+      -1.0f,  1.0f, 0.0f,    0.0f, 0.0f, -1.0f,  0.0f, 1.0f,
+       1.0f,  1.0f,   0.0f,  0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
+       1.0f, -1.0f,   0.0f,  0.0f, 0.0f, -1.0f,  1.0f, 0.0f,
     };
 
     Array<u16> quad_indices;
     quad_indices.alloc(6);
     quad_indices[0] = { 0 };
-    quad_indices[1] = { 1 };
-    quad_indices[2] = { 2 };
+    quad_indices[1] = { 2 };
+    quad_indices[2] = { 1 };
     quad_indices[3] = { 0 };
-    quad_indices[4] = { 2 };
-    quad_indices[5] = { 3 };
+    quad_indices[4] = { 3 };
+    quad_indices[5] = { 2 };
 
     Array<float> vertices_;
     vertices_.alloc(sizeof(quad) / sizeof(float));
@@ -540,6 +540,49 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
     internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 3;
 
     internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = VertexBuffer::kVertexFormat_3P_3N_2UV;
+
+    ++number_of_index_buffers_;
+    ++number_of_vertex_buffers_;
+
+  }
+
+
+
+  // TO TEXTURE QUAD
+  {
+    float quad[] = {
+      // Positions             Normals            UV's
+      -1.0f, -1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+      -1.0f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
+       1.0f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
+       1.0f, -1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+    };
+
+    Array<u16> quad_indices;
+    quad_indices.alloc(6);
+    quad_indices[0] = { 0 };
+    quad_indices[1] = { 1 };
+    quad_indices[2] = { 2 };
+    quad_indices[3] = { 0 };
+    quad_indices[4] = { 2 };
+    quad_indices[5] = { 3 };
+
+    Array<float> vertices_;
+    vertices_.alloc(sizeof(quad) / sizeof(float));
+    for (u32 i = 0; i < 32; ++i) {
+      vertices_[i] = quad[i];
+    }
+
+    internal_index_buffers_[number_of_index_buffers_].data_.copy(quad_indices);
+    internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(vertices_);
+
+    internal_index_buffers_[number_of_index_buffers_].version_++;
+    internal_vertex_buffers_[number_of_vertex_buffers_].version_++;
+
+    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = VertexBuffer::kVertexFormat_3P_3N_2UV;
+
+    internal_index_buffers_[number_of_index_buffers_].id_handle_ = 4;
+    internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 4;
 
     ++number_of_index_buffers_;
     ++number_of_vertex_buffers_;

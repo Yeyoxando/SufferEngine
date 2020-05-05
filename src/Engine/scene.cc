@@ -66,6 +66,14 @@ void Suffer::Scene::SetSkybox(ref_ptr<Skybox> skybox){
 
 // --------------------------------------------------- //
 
+Suffer::Skybox* Suffer::Scene::GetSkybox(){
+
+  return skybox_.get();
+
+}
+
+// --------------------------------------------------- //
+
 void Suffer::Scene::AddGameObject(ref_ptr<GameObject> gameobject){
 
   current_gameobjects_.push_back(gameobject);
