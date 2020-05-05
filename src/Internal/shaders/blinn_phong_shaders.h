@@ -324,8 +324,8 @@ namespace Suffer {
       vec3 ambient  = light.ambient  * light.intensity * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 diffuse  = light.diffuse  * light.intensity * diff * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 specular = light.specular * light.intensity * (spec * u_specular_strength) * texture(u_specular, uvs * u_tiling).xyz;     
-      float ref_value = texture(u_reflection, uvs * u_tiling).x;
-      vec3 reflection = (texture(u_skybox, refle).rgb * ref_value) * u_reflection_strength; 
+      float ref_value = texture(u_reflection, uvs * u_tiling).x * u_reflection_strength;
+      vec3 reflection = (texture(u_skybox, refle).rgb * ref_value); 
 
       float shadow = CalculateShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light_index);
 
@@ -367,8 +367,8 @@ namespace Suffer {
       vec3 ambient  = light.ambient * attenuation * light.intensity * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 diffuse  = light.diffuse * attenuation * light.intensity * diff * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 specular = light.specular* attenuation * light.intensity * (spec * u_specular_strength) * texture(u_specular, uvs * u_tiling).xyz;
-      float ref_value = texture(u_reflection, uvs * u_tiling).x;
-      vec3 reflection = (texture(u_skybox, refle).rgb * ref_value) * u_reflection_strength; 
+      float ref_value = texture(u_reflection, uvs * u_tiling).x * u_reflection_strength;
+      vec3 reflection = (texture(u_skybox, refle).rgb * ref_value); 
 
       float shadow = CalculatePointShadows(frag_pos, light.position, light_dir, light_index);
 
@@ -421,8 +421,8 @@ namespace Suffer {
       vec3 ambient  = light.ambient * attenuation * intensity * light.intensity * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 diffuse  = light.diffuse * attenuation * intensity * light.intensity * diff * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 specular = light.specular* attenuation * intensity * light.intensity * (spec * u_specular_strength) * texture(u_specular, uvs * u_tiling).xyz;
-      float ref_value = texture(u_reflection, uvs * u_tiling).x;
-      vec3 reflection = (texture(u_skybox, refle).rgb * ref_value) * u_reflection_strength; 
+      float ref_value = texture(u_reflection, uvs * u_tiling).x * u_reflection_strength;
+      vec3 reflection = (texture(u_skybox, refle).rgb * ref_value); 
 
       float shadow = CalculateSpotShadow(light.view_projection_matrix * vec4(frag_pos, 1.0f), light_dir, light_index);
 

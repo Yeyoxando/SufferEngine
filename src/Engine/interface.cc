@@ -683,10 +683,8 @@ void  Suffer::Interface::Inspector(){
               ImGui::DragFloat("Specular Strength", &blinn_phong_params->specular_strength_, 0.01f, 0.0f, 1.0f);
               ImGui::DragFloat("Specular Power", &blinn_phong_params->specular_pow_, blinn_phong_params->specular_pow_, 8.0f, 128.0f);
               
-              if (blinn_phong_params->use_reflection_texture_) {
-                ImGui::Spacing();
-                ImGui::DragFloat("Reflection Strength", &blinn_phong_params->reflection_strength_, 0.01f, 0.0f, 1.0f);
-              }
+              ImGui::Spacing();
+              ImGui::DragFloat("Reflection Strength", &blinn_phong_params->reflection_strength_, 0.01f, 0.0f, 1.0f);
 
               ImGui::Spacing(); 
               ImGui::InputFloat2("Tiling", &blinn_phong_params->tiling_.x_);

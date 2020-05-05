@@ -59,6 +59,7 @@ Suffer::MaterialComponent::BlinnPhongParams::BlinnPhongParams() {
   // Set default engine textures
   albedo_texture_id_ = 0;
   specular_texture_id_ = 0;
+  reflection_texture_id_ = 1;
 
   use_albedo_texture_ = false;
   use_specular_texture_ = false;

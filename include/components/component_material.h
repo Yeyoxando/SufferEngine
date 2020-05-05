@@ -58,6 +58,7 @@ namespace Suffer {
 
       float specular_strength_;
       float specular_pow_;
+      float reflection_strength_;
 
       mathmorra::Vector2 tiling_;
 
@@ -71,7 +72,6 @@ namespace Suffer {
       s32 reflection_texture_id_;
 
       float u_time_;
-      float reflection_strength_;
 
       bool use_albedo_texture_;
       bool use_specular_texture_;

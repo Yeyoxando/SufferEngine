@@ -188,7 +188,12 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
       }
       else {
         //Black texture
-        data_->texture_ids_[2] = 1;
+        if (phong_params_->reflection_strength_ > 0.0f) {
+          data_->texture_ids_[2] = 0;
+        }
+        else {
+          data_->texture_ids_[2] = 1;
+        }
       }
 
       data_->current_used_textures_ = 3;
