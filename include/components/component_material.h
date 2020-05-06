@@ -8,8 +8,10 @@
 #define __COMPONENT_MATERIAL_H__
 
 #include "component.h"
+#include "resource_manager.h"
 #include <referenced.h>
 #include <ref_ptr.h>
+#include "vector2.h"
 #include "vector4.h"
 
 namespace Suffer {
@@ -24,9 +26,8 @@ namespace Suffer {
     */
     enum ParamsType {
       kParamsType_Invalid = -1,
-      kParamsType_Default = 0,
-      kParamsType_BlinnPhong = 1,
-      kParamsType_RenderToTexture = 2,
+      kParamsType_BlinnPhong = 0,
+      kParamsType_RenderToTexture = 1,
     };
 
 
@@ -46,27 +47,35 @@ namespace Suffer {
     };
 
     /**
-     * @brief: Saves default material with blinn phong and textures specific parameters.
-     */
-    struct DefaultParams : public BaseParams {
-    public:
-      DefaultParams();
-      ~DefaultParams() {}
-
-      s32 albedo_texture_id_;
-      s32 specular_texture_id_;
-
-    };
-
-    /**
-     * @brief: Saves blinn phong with no texture material specific parameters.
+     * @brief: Saves basic blinn phong material specific parameters.
      */
     struct BlinnPhongParams : public BaseParams {
+      friend class DrawGeometry;
+      friend class Interface;
     public:
       BlinnPhongParams();
       ~BlinnPhongParams() {}
 
+      float specular_strength_;
+      float specular_pow_;
+      float reflection_strength_;
+
+      mathmorra::Vector2 tiling_;
+
+      void SetAlbedoTexture(ResourceManager::Texture* texture);
+      void SetSpecularTexture(ResourceManager::Texture* texture);
+      void SetReflectionTexture(ResourceManager::Texture* texture, float reflection_strength);
+
+    private:
+      s32 albedo_texture_id_;
+      s32 specular_texture_id_;
+      s32 reflection_texture_id_;
+
       float u_time_;
+
+      bool use_albedo_texture_;
+      bool use_specular_texture_;
+      bool use_reflection_texture_;
 
     };
 
@@ -91,6 +100,11 @@ namespace Suffer {
      * @param: default params for the object.
      */
     void SetParams(ref_ptr<BaseParams> params);
+
+    /**
+     * @return: current material component params
+     */
+    BaseParams* CurrentParams();
 
   protected:
     virtual ~MaterialComponent();

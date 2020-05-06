@@ -1,6 +1,6 @@
 
 #include <common_definitions.h>
-#if !defined _MAIN_PABLO_ && !defined _MAIN_LIGHTS_ && defined _MAIN_DIEGO_
+#if defined _MAIN_LIGHTS_ && !defined _MAIN_PABLO_  && !defined _MAIN_DIEGO_
 
 #include <suffermanager.h>
 #include "ref_ptr.h"
@@ -33,13 +33,13 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::ResourceManager::Texture> wall_texture;
     wall_texture.alloc();
     wall_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
-    wall_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
+    wall_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
     wall_texture->LoadTextureData("../../../resources/images/wall.jpg");
 
     Suffer::ref_ptr<Suffer::ResourceManager::Texture> wall_specular_texture;
     wall_specular_texture.alloc();
     wall_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-    wall_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
+    wall_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
     wall_specular_texture->LoadTextureData("../../../resources/images/wall_spec.jpg");
 
 
@@ -62,37 +62,22 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::ResourceManager::Texture> ground_texture;
     ground_texture.alloc();
     ground_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
-    ground_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
+    ground_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
     ground_texture->LoadTextureData("../../../resources/images/floor_.png");
 
     Suffer::ref_ptr<Suffer::ResourceManager::Texture> ground_specular_texture;
     ground_specular_texture.alloc();
     ground_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-    ground_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
+    ground_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
     ground_specular_texture->LoadTextureData("../../../resources/images/floor_spec.png");
 
-    //Skybox
-    Suffer::ref_ptr<Suffer::ResourceManager::Cubemap> skybox_cubemap;
-    skybox_cubemap.alloc();
-    skybox_cubemap->LoadCubemapTextureData("../../../resources/images/skybox/sky_right.jpg",
-                                           "../../../resources/images/skybox/sky_left.jpg", 
-                                           "../../../resources/images/skybox/sky_top.jpg", 
-                                           "../../../resources/images/skybox/sky_bottom.jpg", 
-                                           "../../../resources/images/skybox/sky_front.jpg", 
-                                           "../../../resources/images/skybox/sky_back.jpg");
 
-    Suffer::ref_ptr<Suffer::Skybox> skybox;
-    skybox.alloc();
-    skybox->SetCubemap(skybox_cubemap);
-
-    scene->SetSkybox(skybox);
 
     Suffer::ref_ptr<Suffer::MaterialComponent> ground_material;
     ground_material.alloc();
     Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> ground_material_params;
     ground_material_params.alloc();
     ground_material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-    ground_material_params->tiling_ = mathmorra::Vector2(5.0f, 5.0f);
     ground_material_params->SetAlbedoTexture(ground_texture.get());
     ground_material_params->SetSpecularTexture(ground_specular_texture.get());
     ground_material->SetParams(ground_material_params.get());
@@ -126,7 +111,6 @@ int main(int argc, char* argv[]) {
     material_params_cube->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     material_params_cube->SetAlbedoTexture(box_texture.get());
     material_params_cube->SetSpecularTexture(box_specular_texture.get());
-    material_params_cube->SetReflectionTexture(box_specular_texture.get(), 1.0f);
     material_component_cube->SetParams(material_params_cube.get());
     go_cube->AddComponent(material_component_cube.get());
 

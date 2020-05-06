@@ -16,8 +16,6 @@
 #include "common_definitions.h"
 #include <string>
 
-#define MAX_USED_TEXTURES 5
-
 // ------------------------------------------------------------------------- //
 
 struct Suffer::Postprocessing::Data {
@@ -66,9 +64,9 @@ void Suffer::Postprocessing::SetData(PostproccessKind postpro) {
   // ---------------------------- SetGeometry ------------------------------ //
 
   {
-    // Set quad ids
-    data_->vertex_buffer_id_ = 1;
-    data_->index_buffer_id_ = 1;
+    // Set render to texture quad ids
+    data_->vertex_buffer_id_ = 4;
+    data_->index_buffer_id_ = 4;
 
   }
 
@@ -94,8 +92,7 @@ void Suffer::Postprocessing::Execute() const {
   glDisable(GL_DEPTH_TEST);
 
   glCullFace(GL_FRONT);
-
-  GLenum error;
+  glFrontFace(GL_CCW);
 
   // ---------------------- IsBufferCreated (Vertex) ----------------------- //
 
@@ -263,7 +260,7 @@ void Suffer::Postprocessing::Execute() const {
     // -- Textures --
     std::string base_tex_name = "u_tex";
 
-    for (int i = 0; i < data_->current_used_textures_; ++i) {
+    for (u32 i = 0; i < data_->current_used_textures_; ++i) {
 
       std::string tex_name = base_tex_name + std::to_string(i);
       const char* str = tex_name.c_str();
@@ -273,7 +270,7 @@ void Suffer::Postprocessing::Execute() const {
       }
 
       glActiveTexture(GL_TEXTURE0 + i);
-      auto d = suffer.render_manager_.current_drawn_texture_id_;
+      suffer.render_manager_.current_drawn_texture_id_;
       glBindTexture(GL_TEXTURE_2D, suffer.render_manager_.current_drawn_texture_id_);
 
       glUniform1i(u_pos, i);

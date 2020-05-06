@@ -346,21 +346,21 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
   // QUAD
   {
     float quad[] = {
-        // Positions             Normals            UV's
-        -1.0f,  -1.0f, 0.0f,  0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
-        -1.0f,   1.0f, 0.0f,  0.0f, 0.0f, -1.0f,  0.0f, 1.0f,
-        1.0f,  1.0f,   0.0f,  0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
-        1.0f, -1.0f,   0.0f,  0.0f, 0.0f, -1.0f,  1.0f, 0.0f,
+      // Positions             Normals            UV's
+      -1.0f, -1.0f, 0.0f,    0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
+      -1.0f,  1.0f, 0.0f,    0.0f, 0.0f, -1.0f,  0.0f, 1.0f,
+       1.0f,  1.0f,   0.0f,  0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
+       1.0f, -1.0f,   0.0f,  0.0f, 0.0f, -1.0f,  1.0f, 0.0f,
     };
 
     Array<u16> quad_indices;
     quad_indices.alloc(6);
     quad_indices[0] = { 0 };
-    quad_indices[1] = { 1 };
-    quad_indices[2] = { 2 };
+    quad_indices[1] = { 2 };
+    quad_indices[2] = { 1 };
     quad_indices[3] = { 0 };
-    quad_indices[4] = { 2 };
-    quad_indices[5] = { 3 };
+    quad_indices[4] = { 3 };
+    quad_indices[5] = { 2 };
 
     Array<float> vertices_;
     vertices_.alloc(sizeof(quad) / sizeof(float));
@@ -473,7 +473,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
     sphere_indices.alloc((number_points - 1) * (number_revolutions - 1) * 6);
 
     int index = 0;
-    int radius = 1.0f;
+    float radius = 1.0f;
 
     VertexBuffer::Vertex sphere_vertices[(number_revolutions * number_points)];
 
@@ -490,6 +490,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
         sphere_points[i * number_revolutions + j].z_ = radius * sin(latitude);
 
         normals[i * number_revolutions + j] = sphere_points[i * number_revolutions + j];
+        normals[i * number_revolutions + j].y_ *= -1.0f;
         normals[i * number_revolutions + j].Normalize();
 
         mathmorra::Vector2 uv;
@@ -516,13 +517,13 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
       for (int j = 0; j < number_revolutions - 1; ++j) {
 
-        sphere_indices[index++] = i * number_revolutions + j;
-        sphere_indices[index++] = (i + 1) * number_revolutions + j;
-        sphere_indices[index++] = i * number_revolutions + j + 1;
+        sphere_indices[index++] = (u16)(i * number_revolutions + j);
+        sphere_indices[index++] = (u16)((i + 1) * number_revolutions + j);
+        sphere_indices[index++] = (u16)(i * number_revolutions + j + 1);
 
-        sphere_indices[index++] = i * number_revolutions + j + 1;
-        sphere_indices[index++] = (i + 1) * number_revolutions + j;
-        sphere_indices[index++] = (i + 1) * number_revolutions + j + 1;
+        sphere_indices[index++] = (u16)(i * number_revolutions + j + 1);
+        sphere_indices[index++] = (u16)((i + 1) * number_revolutions + j);
+        sphere_indices[index++] = (u16)((i + 1) * number_revolutions + j + 1);
 
       }
 
@@ -546,6 +547,49 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
   }
 
+
+
+  // TO TEXTURE QUAD
+  {
+    float quad[] = {
+      // Positions             Normals            UV's
+      -1.0f, -1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+      -1.0f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
+       1.0f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
+       1.0f, -1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+    };
+
+    Array<u16> quad_indices;
+    quad_indices.alloc(6);
+    quad_indices[0] = { 0 };
+    quad_indices[1] = { 1 };
+    quad_indices[2] = { 2 };
+    quad_indices[3] = { 0 };
+    quad_indices[4] = { 2 };
+    quad_indices[5] = { 3 };
+
+    Array<float> vertices_;
+    vertices_.alloc(sizeof(quad) / sizeof(float));
+    for (u32 i = 0; i < 32; ++i) {
+      vertices_[i] = quad[i];
+    }
+
+    internal_index_buffers_[number_of_index_buffers_].data_.copy(quad_indices);
+    internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(vertices_);
+
+    internal_index_buffers_[number_of_index_buffers_].version_++;
+    internal_vertex_buffers_[number_of_vertex_buffers_].version_++;
+
+    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = VertexBuffer::kVertexFormat_3P_3N_2UV;
+
+    internal_index_buffers_[number_of_index_buffers_].id_handle_ = 4;
+    internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 4;
+
+    ++number_of_index_buffers_;
+    ++number_of_vertex_buffers_;
+
+  }
+
 }
 
 // ------------------------------------------------------------------------- //
@@ -555,6 +599,21 @@ void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
   internal_textures_.alloc(MAX_TEXTURES);
 
   number_of_textures_ = 0;
+
+
+  //Default texture for shaders (White)
+  ref_ptr<Texture> default_texture;
+  default_texture.alloc();
+  default_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
+  default_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+  default_texture->LoadTextureData("../../../src/internal/textures/DefaultTexture.jpg");
+
+  //Default texture for shaders (Black)
+  ref_ptr<Texture> default_texture2;
+  default_texture2.alloc();
+  default_texture2->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
+  default_texture2->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+  default_texture2->LoadTextureData("../../../src/internal/textures/DefaultTexture2.jpg");
 
 }
 
@@ -568,22 +627,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
 
   // To create a new material define the shaders in internal_shaders.h
 
-  // -------------------------- DefaultMaterial ---------------------------- //
-
-  {
-
-    internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
-
-    internal_materials_[number_of_materials_].vertex_shader_ = Suffer::default_vertex_shader_;
-    internal_materials_[number_of_materials_].fragment_shader_ = Suffer::default_fragment_shader_;
-  
-    number_of_materials_++;
-  
-  }
-
-  // -------------------------- DefaultMaterial ---------------------------- //
-
-  // --------------------------- PhongMaterial ----------------------------- //
+  // ------------------------ BlinnPhongMaterial --------------------------- //
   
   {
   
@@ -596,7 +640,23 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   
   }
 
-  // --------------------------- PhongMaterial ----------------------------- //
+  // ------------------------ BlinnPhongMaterial --------------------------- //
+
+
+  // -------------------------- SkyboxMaterial ----------------------------- //
+
+  {
+
+    internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
+
+    internal_materials_[number_of_materials_].vertex_shader_ = Suffer::skybox_vertex_shader_;
+    internal_materials_[number_of_materials_].fragment_shader_ = Suffer::skybox_fragment_shader_;
+
+    number_of_materials_++;
+
+  }
+
+  // -------------------------- SkyboxMaterial ----------------------------- //
 
 
   // --------------------------- DepthMaterial ----------------------------- //
@@ -700,15 +760,15 @@ void Suffer::ResourceManager::ResourceData::InitInternalCubemaps() {
 void Suffer::ResourceManager::ResourceData::RefreshFrameBuffers() {
   
   for (u32 i = 0; i < number_of_frame_buffers_; ++i) {
-    internal_frame_buffers_[i].width_ = suffer.GetWindowSize().x_;
-    internal_frame_buffers_[i].height_ = suffer.GetWindowSize().y_;
+    internal_frame_buffers_[i].width_ = (u16)suffer.GetWindowSize().x_;
+    internal_frame_buffers_[i].height_ = (u16)suffer.GetWindowSize().y_;
 
     // Color
     //Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_color_texture;
     //frame_buffer_color_texture.alloc();
 
-    internal_textures_[internal_frame_buffers_[i].color_texture_id_].width_ = suffer.GetWindowSize().x_;
-    internal_textures_[internal_frame_buffers_[i].color_texture_id_].height_ = suffer.GetWindowSize().y_;
+    internal_textures_[internal_frame_buffers_[i].color_texture_id_].width_ = (u32)suffer.GetWindowSize().x_;
+    internal_textures_[internal_frame_buffers_[i].color_texture_id_].height_ = (u32)suffer.GetWindowSize().y_;
     internal_textures_[internal_frame_buffers_[i].color_texture_id_].number_channels_ = 3;
     internal_textures_[internal_frame_buffers_[i].color_texture_id_].version_++;
 
@@ -716,8 +776,8 @@ void Suffer::ResourceManager::ResourceData::RefreshFrameBuffers() {
    //Suffer::ref_ptr<Suffer::ResourceManager::Texture> frame_buffer_depth_texture;
    //frame_buffer_depth_texture.alloc();
 
-    internal_textures_[internal_frame_buffers_[i].depth_texture_id_].width_ = suffer.GetWindowSize().x_;
-    internal_textures_[internal_frame_buffers_[i].depth_texture_id_].height_ = suffer.GetWindowSize().y_;
+    internal_textures_[internal_frame_buffers_[i].depth_texture_id_].width_ = (u32)suffer.GetWindowSize().x_;
+    internal_textures_[internal_frame_buffers_[i].depth_texture_id_].height_ = (u32)suffer.GetWindowSize().y_;
     internal_textures_[internal_frame_buffers_[i].depth_texture_id_].number_channels_ = 1;
     internal_textures_[internal_frame_buffers_[i].depth_texture_id_].version_++;
 
@@ -817,8 +877,8 @@ Suffer::ResourceManager::Cubemap::Cubemap(){
     
     type_ = GPUResource::kResourceType_Cubemap;
     id_ = suffer.resource_manager_.data_->number_of_cubemaps_;
-    suffer.resource_manager_.data_->internal_cubemaps_[id_].wrap_s_ = kTextureWrap_Repeat;
-    suffer.resource_manager_.data_->internal_cubemaps_[id_].wrap_t_ = kTextureWrap_Repeat;
+    suffer.resource_manager_.data_->internal_cubemaps_[id_].wrap_s_ = kTextureWrap_ClampToEdge;
+    suffer.resource_manager_.data_->internal_cubemaps_[id_].wrap_t_ = kTextureWrap_ClampToEdge;
     suffer.resource_manager_.data_->internal_cubemaps_[id_].min_filter_ = kTextureFilter_Linear;
     suffer.resource_manager_.data_->internal_cubemaps_[id_].mag_filter_ = kTextureFilter_Linear;
     suffer.resource_manager_.data_->number_of_cubemaps_++;
@@ -827,8 +887,138 @@ Suffer::ResourceManager::Cubemap::Cubemap(){
 
 // ------------------------------------------------------------------------- //
 
-Suffer::ResourceManager::Cubemap::~Cubemap(){
-    // Fill this
+void Suffer::ResourceManager::Cubemap::LoadCubemapTextureData(const char* src_right, 
+                                                              const char* src_left, 
+                                                              const char* src_top, 
+                                                              const char* src_bottom, 
+                                                              const char* src_front, 
+                                                              const char* src_back){
+
+  assert(src_right != nullptr && "File is NULL!");
+  assert(src_left != nullptr && "File is NULL!");
+  assert(src_top != nullptr && "File is NULL!");
+  assert(src_bottom != nullptr && "File is NULL!");
+  assert(src_front != nullptr && "File is NULL!");
+  assert(src_back != nullptr && "File is NULL!");
+
+  // Texture Right
+  unsigned char *data = stbi_load(src_right,
+      (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].width_,
+      (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].height_,
+      (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].number_channels_, 0);
+  
+  if (!data) {
+    printf("\n Can't load texture: %s", src_right);
+    return;
+  }
+  u32 data_size = suffer.resource_manager_.data_->internal_cubemaps_[id_].width_ *
+    suffer.resource_manager_.data_->internal_cubemaps_[id_].height_ *
+    suffer.resource_manager_.data_->internal_cubemaps_[id_].number_channels_;
+  
+  suffer.resource_manager_.data_->internal_cubemaps_[id_].data_[0].copy(data, data + data_size);
+      
+  stbi_image_free(data);
+
+
+  // Texture Left
+  data = stbi_load(src_left,
+    (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].width_,
+    (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].height_,
+    (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].number_channels_, 0);
+
+  if (!data) {
+    printf("\n Can't load texture: %s", src_left);
+    return;
+  }
+  data_size = suffer.resource_manager_.data_->internal_cubemaps_[id_].width_ *
+    suffer.resource_manager_.data_->internal_cubemaps_[id_].height_ *
+    suffer.resource_manager_.data_->internal_cubemaps_[id_].number_channels_;
+
+  suffer.resource_manager_.data_->internal_cubemaps_[id_].data_[1].copy(data, data + data_size);
+
+  stbi_image_free(data);
+
+
+  // Texture Top
+  data = stbi_load(src_top,
+    (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].width_,
+    (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].height_,
+    (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].number_channels_, 0);
+
+  if (!data) {
+    printf("\n Can't load texture: %s", src_top);
+    return;
+  }
+  data_size = suffer.resource_manager_.data_->internal_cubemaps_[id_].width_ *
+    suffer.resource_manager_.data_->internal_cubemaps_[id_].height_ *
+    suffer.resource_manager_.data_->internal_cubemaps_[id_].number_channels_;
+
+  suffer.resource_manager_.data_->internal_cubemaps_[id_].data_[2].copy(data, data + data_size);
+
+  stbi_image_free(data);
+
+
+  // Texture Bottom
+  data = stbi_load(src_bottom,
+    (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].width_,
+    (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].height_,
+    (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].number_channels_, 0);
+
+  if (!data) {
+    printf("\n Can't load texture: %s", src_bottom);
+    return;
+  }
+  data_size = suffer.resource_manager_.data_->internal_cubemaps_[id_].width_ *
+    suffer.resource_manager_.data_->internal_cubemaps_[id_].height_ *
+    suffer.resource_manager_.data_->internal_cubemaps_[id_].number_channels_;
+
+  suffer.resource_manager_.data_->internal_cubemaps_[id_].data_[3].copy(data, data + data_size);
+
+  stbi_image_free(data);
+
+
+  // Texture Front
+  data = stbi_load(src_front,
+    (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].width_,
+    (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].height_,
+    (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].number_channels_, 0);
+
+  if (!data) {
+    printf("\n Can't load texture: %s", src_front);
+    return;
+  }
+  data_size = suffer.resource_manager_.data_->internal_cubemaps_[id_].width_ *
+    suffer.resource_manager_.data_->internal_cubemaps_[id_].height_ *
+    suffer.resource_manager_.data_->internal_cubemaps_[id_].number_channels_;
+
+  suffer.resource_manager_.data_->internal_cubemaps_[id_].data_[4].copy(data, data + data_size);
+
+  stbi_image_free(data);
+
+
+  // Texture Back
+  data = stbi_load(src_back,
+    (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].width_,
+    (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].height_,
+    (int*)&suffer.resource_manager_.data_->internal_cubemaps_[id_].number_channels_, 0);
+
+  if (!data) {
+    printf("\n Can't load texture: %s", src_back);
+    return;
+  }
+  data_size = suffer.resource_manager_.data_->internal_cubemaps_[id_].width_ *
+    suffer.resource_manager_.data_->internal_cubemaps_[id_].height_ *
+    suffer.resource_manager_.data_->internal_cubemaps_[id_].number_channels_;
+
+  suffer.resource_manager_.data_->internal_cubemaps_[id_].data_[5].copy(data, data + data_size);
+
+  stbi_image_free(data);
+
+
+
+  suffer.resource_manager_.data_->internal_cubemaps_[id_].version_++;
+  suffer.resource_manager_.data_->internal_cubemaps_[id_].id_handle_ = id_;
+
 }
 
 // ------------------------------------------------------------------------- //

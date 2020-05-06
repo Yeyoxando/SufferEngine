@@ -5,6 +5,7 @@
 */
 
 #include "component_material.h"
+#include "math_utils.h"
 
 // ------------------------------------------------------------------------- //
 
@@ -15,6 +16,14 @@ void Suffer::MaterialComponent::SetParams(ref_ptr<BaseParams> params){
 
   // Store current params
   current_params_ = params.get();
+
+}
+
+// ------------------------------------------------------------------------- //
+
+Suffer::MaterialComponent::BaseParams* Suffer::MaterialComponent::CurrentParams(){
+
+  return current_params_.get();
 
 }
 
@@ -35,21 +44,54 @@ Suffer::MaterialComponent::BaseParams::BaseParams() {
 
 // ------------------------------------------------------------------------- //
 
-Suffer::MaterialComponent::DefaultParams::DefaultParams() {
+Suffer::MaterialComponent::BlinnPhongParams::BlinnPhongParams() {
 
-  params_type_ = kParamsType_Default;
+  params_type_ = kParamsType_BlinnPhong;
   color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  albedo_texture_id_ = -1;
+
+  specular_strength_ = 1.0f;
+  specular_pow_ = 32.0f;
+  reflection_strength_ = 0.0f;
+
+  u_time_ = 0.0f;
+  tiling_ = mathmorra::Vector2(1.0f, 1.0f);
+
+  // Set default engine textures
+  albedo_texture_id_ = 0;
+  specular_texture_id_ = 0;
+  reflection_texture_id_ = 1;
+
+  use_albedo_texture_ = false;
+  use_specular_texture_ = false;
+  use_reflection_texture_ = false;
 
 }
 
 // ------------------------------------------------------------------------- //
 
-Suffer::MaterialComponent::BlinnPhongParams::BlinnPhongParams() {
+void Suffer::MaterialComponent::BlinnPhongParams::SetAlbedoTexture(ResourceManager::Texture * texture){
 
-  params_type_ = kParamsType_BlinnPhong;
-  color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  u_time_ = 0.0f;
+  albedo_texture_id_ = texture->id_;
+  use_albedo_texture_ = true;
+
+}
+
+// ------------------------------------------------------------------------- //
+
+void Suffer::MaterialComponent::BlinnPhongParams::SetSpecularTexture(ResourceManager::Texture * texture){
+
+  specular_texture_id_ = texture->id_;
+  use_specular_texture_ = true;
+
+}
+
+// ------------------------------------------------------------------------- //
+
+void Suffer::MaterialComponent::BlinnPhongParams::SetReflectionTexture(ResourceManager::Texture* texture, float reflection_strength){
+
+  reflection_texture_id_ = texture->id_;
+  use_reflection_texture_ = true;
+  reflection_strength_ = ThiefUtils::Math::Clamp(reflection_strength, 0.0f, 1.0f);
 
 }
 

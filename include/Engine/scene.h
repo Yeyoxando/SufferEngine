@@ -5,6 +5,7 @@
 
 #include <vector>
 #include "game_object.h"
+#include "skybox.h"
 #include "referenced.h"
 #include "ref_ptr.h"
 #include "camera.h"
@@ -41,6 +42,8 @@ namespace Suffer {
      */
     Camera* GetMainCamera();
 
+    void SetSkybox(ref_ptr<Skybox> skybox);
+    Skybox* GetSkybox();
 
   private:
 
@@ -54,6 +57,7 @@ namespace Suffer {
 		std::vector<ref_ptr<GameObject>> current_gameobjects_;
 
     ref_ptr<Camera> main_camera_;
+    ref_ptr<Skybox> skybox_;
 
   };
 

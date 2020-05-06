@@ -27,6 +27,7 @@
 // Components
 #include "component_light.h"
 #include "component_geometry.h"
+#include "component_material.h"
 #include "component_script.h"
 
 ExampleAppLog Suffer::Interface::log;
@@ -557,15 +558,57 @@ void  Suffer::Interface::Hierarchy(Scene* current_scene_){
 			ImGui::Begin("FFF ", nullptr, window_flags_);
 			ImGui::MenuItem("Create empty");
 
-			if (ImGui::BeginMenu("3D Object")) {
-          ImGui::MenuItem("Cube");
-          ImGui::MenuItem("Sphere");
-					ImGui::EndMenu();
-			}
+      ImGui::MenuItem("Create empty");
+
+      if (ImGui::BeginMenu("3D Object")) {
+          if (ImGui::MenuItem("Cube")) {
+              Suffer::ref_ptr<GameObject> game_object_;
+              game_object_.alloc();
+              game_object_->SetArchetype(GameObject::kArchetype_Drawable);
+              suffer.GetCurrentScene()->AddGameObject(game_object_);
+              game_object_->SetName("Empty Cube");
+              auxiliar_window = false;
+          }
+          if (ImGui::MenuItem("Sphere")) {
+              Suffer::ref_ptr<GameObject> game_object_;
+              game_object_.alloc();
+              game_object_->SetArchetype(GameObject::kArchetype_Drawable);
+              GeometryComponent* geometry_ = static_cast<GeometryComponent*>(game_object_->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Geometry));
+              if (geometry_ != nullptr) {
+                  geometry_->CreateGeometryWithShape(GeometryComponent::kBasicShapes_Sphere);
+              }
+              game_object_->SetName("Empty Sphere");
+              suffer.GetCurrentScene()->AddGameObject(game_object_);
+              auxiliar_window = false;
+          }
+          ImGui::EndMenu();
+      }
 
       if (ImGui::BeginMenu("2D Object")) {
-          ImGui::MenuItem("Triangle");
-          ImGui::MenuItem("Quad");
+          if (ImGui::MenuItem("Triangle")) {
+              Suffer::ref_ptr<GameObject> game_object_;
+              game_object_.alloc();
+              game_object_->SetArchetype(GameObject::kArchetype_Drawable);
+              GeometryComponent* geometry_ = static_cast<GeometryComponent*>(game_object_->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Geometry));
+              if (geometry_ != nullptr) {
+                  geometry_->CreateGeometryWithShape(GeometryComponent::kBasicShapes_Triangle);
+              }
+              game_object_->SetName("Empty Triangle");
+              suffer.GetCurrentScene()->AddGameObject(game_object_);
+              auxiliar_window = false;
+          }
+          if (ImGui::MenuItem("Quad")) {
+              Suffer::ref_ptr<GameObject> game_object_;
+              game_object_.alloc();
+              game_object_->SetArchetype(GameObject::kArchetype_Drawable);
+              GeometryComponent* geometry_ = static_cast<GeometryComponent*>(game_object_->GetComponent(Suffer::Component::ComponentKind::kComponentKind_Geometry));
+              if (geometry_ != nullptr) {
+                  geometry_->CreateGeometryWithShape(GeometryComponent::kBasicShapes_Quad);
+              }
+              game_object_->SetName("Empty Quad");
+              suffer.GetCurrentScene()->AddGameObject(game_object_);
+              auxiliar_window = false;
+          }
           ImGui::EndMenu();
       }
 			ImGui::End();
@@ -673,10 +716,41 @@ void  Suffer::Interface::Inspector(){
 							ImGui::Separator();
 							break;
 					}
-					case Component::ComponentKind::kComponentKind_Material: {
+          case Component::ComponentKind::kComponentKind_Material: {
+            MaterialComponent* material_component = static_cast<MaterialComponent*>(component_reference);
+            ImGui::TextColored(ImVec4(0.9f, 0.5f, 0.0f, 1.0f), ICON_FA_PAINT_BRUSH " Material");
+            switch (material_component->CurrentParams()->params_type_) {
+            case MaterialComponent::ParamsType::kParamsType_BlinnPhong: {
+              MaterialComponent::BlinnPhongParams* blinn_phong_params = static_cast<MaterialComponent::BlinnPhongParams*>(material_component->CurrentParams());
+              ImGui::ColorPicker4("Object color", &blinn_phong_params->color_.x_);
+              
+              ImGui::DragFloat("Specular Strength", &blinn_phong_params->specular_strength_, 0.01f, 0.0f, 1.0f);
+              ImGui::DragFloat("Specular Power", &blinn_phong_params->specular_pow_, blinn_phong_params->specular_pow_, 8.0f, 128.0f);
+              
+              if (suffer.GetCurrentScene()->GetSkybox() != nullptr) {
+                ImGui::Spacing();
+                ImGui::DragFloat("Reflection Strength", &blinn_phong_params->reflection_strength_, 0.01f, 0.0f, 1.0f);
+              }
 
-							//ImGui::Separator();
-							break;
+              ImGui::Spacing(); 
+              ImGui::InputFloat2("Tiling", &blinn_phong_params->tiling_.x_);
+
+              ImGui::Checkbox("Albedo texture", &blinn_phong_params->use_albedo_texture_);
+              ImGui::Checkbox("Specular texture", &blinn_phong_params->use_specular_texture_);
+              break;
+            }
+            case MaterialComponent::ParamsType::kParamsType_RenderToTexture: {
+              break;
+            }
+            case MaterialComponent::ParamsType::kParamsType_Invalid: {
+              break;
+            }
+            default: {
+              break;
+            }
+            }
+            ImGui::Separator();
+            break;
 					}
           case Component::ComponentKind::kComponentKind_Script: {
               ScriptComponent* script = static_cast<ScriptComponent*>(component_reference);

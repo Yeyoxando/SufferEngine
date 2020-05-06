@@ -1,40 +1,35 @@
 /*
  * Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
- * Date: 03-03-2020
- * Draw Depth command source
+ * Date: 03-05-2020
+ * Draw Skybox command source
  */
 
-#include <draw_depth.h>
+#include "draw_skybox.h"
 #include <gl/glew.h>
-#include "time.h"
-#include <data_types.h>
-#include "scene.h"
-#include "vector4.h"
 #include "suffermanager.h"
 #include "internal_resource_manager.h"
-#include "component_geometry.h"
-#include "component_material.h"
 #include "common_definitions.h"
+#include "scene.h"
+#include "matrix4.h"
 
- //12 for matrixes
-static const u32 kMaxUsedVec4Data_DrawDepth = 12;
+static const u32 kMaxUsedVec4Data_DrawSkybox = 8;
 
-// ------------------------------------------------------------------------- //
-
-struct Suffer::DrawDepth::Data {
+struct Suffer::DrawSkybox::Data {
 
   // Geometry
   s32 vertex_buffer_id_;
   s32 index_buffer_id_;
 
   // Contains the model, view and projections matrixes
-  float u_data_[kMaxUsedVec4Data_DrawDepth * 4];
+  float u_data_[kMaxUsedVec4Data_DrawSkybox * 4];
+
+  u32 cubemap_id_;
 
 };
 
-// ------------------------------------------------------------------------- //
+ // ------------------------------------------------------------------------- //
 
-Suffer::DrawDepth::DrawDepth() {
+Suffer::DrawSkybox::DrawSkybox(){
 
   cmd_type_ = Command::kCommandType_Render;
   data_ = new Data();
@@ -43,7 +38,7 @@ Suffer::DrawDepth::DrawDepth() {
 
 // ------------------------------------------------------------------------- //
 
-Suffer::DrawDepth::~DrawDepth() {
+Suffer::DrawSkybox::~DrawSkybox() {
 
   if (!data_) return;
 
@@ -54,57 +49,32 @@ Suffer::DrawDepth::~DrawDepth() {
 
 // ------------------------------------------------------------------------- //
 
-void Suffer::DrawDepth::SetData(GameObject* go) {
+void Suffer::DrawSkybox::SetData(Skybox* skybox){
 
-  // ---------------------------- SetGeometry ------------------------------ //
+  data_->cubemap_id_ = skybox->cubemap_id_;
+  data_->vertex_buffer_id_ = 2;
+  data_->index_buffer_id_ = 2;
 
-  {
-
-    if (!go->HasComponent(Component::ComponentKind::kComponentKind_Geometry)/* ||
-      go->HasComponent(Component::ComponentKind::kComponentKind_Light)*/) {
-      data_->vertex_buffer_id_ = -1;
-      data_->index_buffer_id_ = -1;
-    }
-    else {
-
-      auto geometry_component = go->GetComponent(Suffer::Component::kComponentKind_Geometry);
-      GeometryComponent* geometry_ = reinterpret_cast<GeometryComponent*>(geometry_component);
-
-      data_->vertex_buffer_id_ = geometry_->vertex_buffer_id_;
-      data_->index_buffer_id_ = geometry_->index_buffer_id_;
-
-    }
-  }
-
-  // ---------------------------- SetGeometry ------------------------------ //
-
-}
-
-// ------------------------------------------------------------------------- //
-
-void Suffer::DrawDepth::SetMatrix(mathmorra::Matrix4 model, mathmorra::Matrix4 view, mathmorra::Matrix4 projection) {
-
+  //Matrices
+  mathmorra::Matrix4 view = suffer.GetCurrentScene()->GetMainCamera()->ViewMatrix();
+  mathmorra::Matrix4 projection = suffer.GetCurrentScene()->GetMainCamera()->ProjectionMatrix();
   for (u32 i = 0; i < 16; ++i) {
-    // Model will be in u_data[0] to u_data[3]
-    data_->u_data_[i] = model.m[i];
-    // View will be in u_data[4] to u_data[7]
-    data_->u_data_[i + 16] = view.m[i];
-    // Projection will be in u_data[8] to u_data[11]
-    data_->u_data_[i + 32] = projection.m[i];
+    // View will be in u_data[0] to u_data[3]
+    data_->u_data_[i] = view.m[i];
+    // Projection will be in u_data[4] to u_data[7]
+    data_->u_data_[i + 16] = projection.m[i];
   }
 
 }
 
 // ------------------------------------------------------------------------- //
 
-void Suffer::DrawDepth::Execute() const {
-
-  GLenum error;
+void Suffer::DrawSkybox::Execute() const{
+  
   glEnable(GL_CULL_FACE);
-  glDepthFunc(GL_LESS);
-  glCullFace(GL_FRONT);
-  glFrontFace(GL_CCW);
-
+  glDepthFunc(GL_LEQUAL);
+  glCullFace(GL_BACK);
+  glFrontFace(GL_CW);
 
   // ---------------------- IsBufferCreated (Vertex) ----------------------- //
 
@@ -163,12 +133,120 @@ void Suffer::DrawDepth::Execute() const {
 
   // ----------------------------------------------------------------------- //
 
+  // --------------------------- IsTextureCreated -------------------------- //
+
+  {
+
+    s32 id_texture = data_->cubemap_id_;
+    if (id_texture < 0) return;
+
+
+    if (suffer.resource_manager_.data_->internal_cubemaps_[id_texture].gpu_version_ == 0) {
+      glGenTextures(1, &suffer.resource_manager_.data_->internal_cubemaps_[id_texture].current_texture_id_);
+    }
+
+    if (suffer.resource_manager_.data_->internal_cubemaps_[id_texture].gpu_version_ < suffer.resource_manager_.data_->internal_cubemaps_[id_texture].version_) {
+      glBindTexture(GL_TEXTURE_CUBE_MAP, suffer.resource_manager_.data_->internal_cubemaps_[id_texture].current_texture_id_);
+
+      // WRAP S
+      switch (suffer.resource_manager_.data_->internal_cubemaps_[id_texture].wrap_s_) {
+      case ResourceManager::Texture::kTextureWrap_Repeat:
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        break;
+      case ResourceManager::Texture::kTextureWrap_MirroredRepeat:
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+        break;
+      case ResourceManager::Texture::kTextureWrap_ClampToEdge:
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        break;
+      default:
+        break;
+      }
+
+      // WRAP T
+      switch (suffer.resource_manager_.data_->internal_cubemaps_[id_texture].wrap_t_) {
+      case ResourceManager::Texture::kTextureWrap_Repeat:
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        break;
+      case ResourceManager::Texture::kTextureWrap_MirroredRepeat:
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+        break;
+      case ResourceManager::Texture::kTextureWrap_ClampToEdge:
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        break;
+      default:
+        break;
+      }
+
+      // MIN FILTER
+      switch (suffer.resource_manager_.data_->internal_cubemaps_[id_texture].min_filter_) {
+      case ResourceManager::Texture::kTextureFilter_Linear:
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        break;
+      case ResourceManager::Texture::kTextureFilter_Nearest:
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        break;
+      default:
+        break;
+      }
+
+      // MAG FILTER
+      switch (suffer.resource_manager_.data_->internal_cubemaps_[id_texture].mag_filter_) {
+      case ResourceManager::Texture::kTextureFilter_Linear:
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        break;
+      case ResourceManager::Texture::kTextureFilter_Nearest:
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        break;
+      default:
+        break;
+      }
+
+      // UPLOAD DATA DEPENDING ON NUMBER CHANNELS
+      switch (suffer.resource_manager_.data_->internal_cubemaps_[id_texture].number_channels_) {
+      case 3: {
+        for (u32 i = 0; i < 6; i++) {
+          glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+            0, GL_RGB,
+            suffer.resource_manager_.data_->internal_cubemaps_[id_texture].width_,
+            suffer.resource_manager_.data_->internal_cubemaps_[id_texture].height_,
+            0, GL_RGB, GL_UNSIGNED_BYTE,
+            suffer.resource_manager_.data_->internal_cubemaps_[id_texture].data_[i].get());
+        }
+        break;
+      }
+      case 4: {
+        for (u32 i = 0; i < 6; i++) {
+          glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+            0, GL_RGBA,
+            suffer.resource_manager_.data_->internal_cubemaps_[id_texture].width_,
+            suffer.resource_manager_.data_->internal_cubemaps_[id_texture].height_,
+            0, GL_RGBA, GL_UNSIGNED_BYTE,
+            suffer.resource_manager_.data_->internal_cubemaps_[id_texture].data_[i].get());
+        }
+        break;
+      }
+      default: {
+        assert(1 && "\n Not contemplated number of channels.");
+        break;
+      }
+      }
+
+      suffer.resource_manager_.data_->internal_cubemaps_[id_texture].gpu_version_ = suffer.resource_manager_.data_->internal_cubemaps_[id_texture].version_;
+    }
+
+  }
+
+  // --------------------------- IsTextureCreated -------------------------- //
+
+  // ----------------------------------------------------------------------- //
+
   // -------------------------- IsMaterialCreated -------------------------- //
 
   {
 
-    // 2 equals to resource manager internal depth material
-    u32 mat_type = 2;
+    // 1 equals to resource manager internal skybox material
+    u32 mat_type = 1;
 
     // If internal material is not created, creates it
     if (!suffer.resource_manager_.data_->internal_materials_[mat_type].is_created_) {
@@ -243,11 +321,11 @@ void Suffer::DrawDepth::Execute() const {
     }
 
 
-  // -------------------------- IsMaterialCreated -------------------------- //
+    // -------------------------- IsMaterialCreated -------------------------- //
 
-  // ----------------------------------------------------------------------- //
+    // ----------------------------------------------------------------------- //
 
-  // ------------------------------- Uniforms ------------------------------ //
+    // ------------------------------- Uniforms ------------------------------ //
 
     u32 program_id = suffer.resource_manager_.data_->internal_materials_[mat_type].current_program_;
 
@@ -262,7 +340,22 @@ void Suffer::DrawDepth::Execute() const {
       //return;
     }
 
-    glUniform4fv(u_pos, kMaxUsedVec4Data_DrawDepth, data_->u_data_);
+    glUniform4fv(u_pos, kMaxUsedVec4Data_DrawSkybox, data_->u_data_);
+    u_pos = -1;
+
+
+    // -- Textures --
+    const char* str = "u_skybox";
+    u_pos = glGetUniformLocation(program_id, str);
+    if (u_pos < 0) {
+      printf("\nERROR: texture skybox uniform not exists.");
+      //return;
+    }
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, suffer.resource_manager_.data_->internal_cubemaps_[data_->cubemap_id_].current_texture_id_);
+
+    glUniform1i(u_pos, 0);
     u_pos = -1;
 
   }
@@ -274,8 +367,6 @@ void Suffer::DrawDepth::Execute() const {
   // --------------------------- Vertex Attributes ------------------------- //
 
   {
-
-    // We only need position
 
     glBindBuffer(GL_ARRAY_BUFFER, suffer.resource_manager_.data_->internal_vertex_buffers_[data_->vertex_buffer_id_].current_gl_buffer_);
     auto type = suffer.resource_manager_.data_->internal_vertex_buffers_[data_->vertex_buffer_id_].vertex_format_;
@@ -324,6 +415,8 @@ void Suffer::DrawDepth::Execute() const {
 
   // --------------------------------- Draw -------------------------------- //
 
+
 }
 
-// --------------------------------------------------- //
+// ------------------------------------------------------------------------- //
+

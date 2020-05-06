@@ -1,6 +1,6 @@
 
 #include <common_definitions.h>
-#if defined _MAIN_PABLO_ && !defined _MAIN_DIEGO_
+#if defined _MAIN_PABLO_  && !defined _MAIN_LIGHTS_ && !defined _MAIN_DIEGO_
 
 
 #include <suffermanager.h>
@@ -67,11 +67,11 @@ int main(int argc, char* argv[]) {
     // Default Materials / Params
     Suffer::ref_ptr<Suffer::MaterialComponent> material_component_cube;
     material_component_cube.alloc();
-    Suffer::ref_ptr<Suffer::MaterialComponent::DefaultParams> material_params_cube;
+    Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_cube;
     material_params_cube.alloc();
     material_params_cube->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-    material_params_cube->albedo_texture_id_ = box_texture->id_;
-    material_params_cube->specular_texture_id_ = box_specular_texture->id_;
+    material_params_cube->SetAlbedoTexture(box_texture.get());
+    material_params_cube->SetSpecularTexture(box_specular_texture.get());
     material_component_cube->SetParams(material_params_cube.get());
 
     for (int i = 0; i < number_cubes; ++i) {

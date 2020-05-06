@@ -17,9 +17,7 @@
 #include "common_definitions.h"
 #include <string>
 
-#define MAX_USED_TEXTURES 5
-
-#define MAX_USED_VEC4DATA 222
+static const u32 kMaxUsedVec4Data_DrawGeometry = 222;
 
 // ------------------------------------------------------------------------- //
 
@@ -30,11 +28,13 @@ struct Suffer::DrawGeometry::Data {
   s32 index_buffer_id_;
   GLenum draw_mode_;
 
-  float u_data_[MAX_USED_VEC4DATA * 4];
+  float u_data_[kMaxUsedVec4Data_DrawGeometry * 4];
 
   // Textures has to be separated
   s32 texture_ids_[MAX_USED_TEXTURES];
   u32 current_used_textures_;
+
+  u32 skybox_cubemap_id_;
 
   s32 light_dir_texture_ids_[MAX_LIGHTS];
   s32 light_point_texture_ids_[MAX_LIGHTS];
@@ -147,7 +147,7 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
     mathmorra::Vector4 aux_color = params->color_;
     float values[4] = { aux_color.x_, aux_color.y_, aux_color.z_, aux_color.w_ };
 
-    // Copy color to next free uniform space, after Vector n12 because of 3 matrixes, > u_data[48]
+    //u_data[12].xyzw
     data_->u_data_[48] = values[0];
     data_->u_data_[49] = values[1];
     data_->u_data_[50] = values[2];
@@ -155,47 +155,76 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
 
     // -- Set specific material parameters --
     switch (data_->material_type_) {
-    case MaterialComponent::ParamsType::kParamsType_Default: {
-      MaterialComponent::DefaultParams* default_params_;
-      default_params_ = reinterpret_cast<MaterialComponent::DefaultParams*>(params);
-      data_->u_data_[52] = suffer.GetCurrentScene()->GetMainCamera()->Position()[0];
-      data_->u_data_[53] = suffer.GetCurrentScene()->GetMainCamera()->Position()[1];
-      data_->u_data_[54] = suffer.GetCurrentScene()->GetMainCamera()->Position()[2];
-      data_->u_data_[55] = (float)Time();
-
-      data_->texture_ids_[0] = default_params_->albedo_texture_id_;
-      data_->texture_ids_[1] = default_params_->specular_texture_id_;
-      data_->current_used_textures_ = 2;
-      SetLights();
-    }
-      break;
     case MaterialComponent::ParamsType::kParamsType_BlinnPhong: {
       MaterialComponent::BlinnPhongParams* phong_params_;
       phong_params_ = reinterpret_cast<MaterialComponent::BlinnPhongParams*>(params);
+      //u_data[13].xyzw
       data_->u_data_[52] = suffer.GetCurrentScene()->GetMainCamera()->Position()[0];
       data_->u_data_[53] = suffer.GetCurrentScene()->GetMainCamera()->Position()[1];
       data_->u_data_[54] = suffer.GetCurrentScene()->GetMainCamera()->Position()[2];
       data_->u_data_[55] = (float)Time();
+      //u_data[14].xyzw
+      data_->u_data_[56] = phong_params_->tiling_.x_;
+      data_->u_data_[57] = phong_params_->tiling_.y_;
+      data_->u_data_[58] = phong_params_->specular_strength_;
+      data_->u_data_[59] = phong_params_->specular_pow_;
+      //u_data[15].xyzw
+      data_->u_data_[60] = phong_params_->reflection_strength_;
 
-      data_->current_used_textures_ = 0;
+      if (phong_params_->use_albedo_texture_) {
+        data_->texture_ids_[0] = phong_params_->albedo_texture_id_;
+      }
+      else {
+        data_->texture_ids_[0] = 0;
+      }
+
+      if (phong_params_->use_specular_texture_) {
+        data_->texture_ids_[1] = phong_params_->specular_texture_id_;
+      }
+      else {
+        data_->texture_ids_[1] = 0;
+      }
+
+      if (phong_params_->use_reflection_texture_) {
+        data_->texture_ids_[2] = phong_params_->reflection_texture_id_;
+      }
+      else {
+        //Black texture
+        if (phong_params_->reflection_strength_ > 0.0f) {
+          data_->texture_ids_[2] = 0;
+        }
+        else {
+          data_->texture_ids_[2] = 1;
+        }
+      }
+
+      data_->current_used_textures_ = 3;
+
+      Skybox* skybox = suffer.GetCurrentScene()->GetSkybox();
+      if (skybox != nullptr) {
+        data_->skybox_cubemap_id_ = skybox->cubemap_id_;
+      }
+
       SetLights();
-    }
       break;
+    }
     case MaterialComponent::ParamsType::kParamsType_RenderToTexture: {
       MaterialComponent::RenderToTextureParams* render_params_;
       render_params_ = reinterpret_cast<MaterialComponent::RenderToTextureParams*>(params);
 
       data_->texture_ids_[0] = render_params_->albedo_texture_id_;
       data_->current_used_textures_ = 1;
-    }
       break;
-    case MaterialComponent::ParamsType::kParamsType_Invalid:
+    }
+    case MaterialComponent::ParamsType::kParamsType_Invalid: {
       assert(data_->material_type_ != MaterialComponent::kParamsType_Invalid && "Material type not set");
       break;
-    default:
+    }
+    default: {
+      assert(false);
       break;
     }
-
+    }
   }
 
   // --------------------------- StoreUniforms ----------------------------- //
@@ -389,16 +418,21 @@ void Suffer::DrawGeometry::SetLights(){
 
   }
 
-  data_->u_data_[56] = number_lights;
-  data_->u_data_[57] = data_->current_dir_lights;
-  data_->u_data_[58] = data_->current_point_lights;
-  data_->u_data_[59] = data_->current_spot_lights;
+  //u_data[17].xyzw
+  data_->u_data_[68] = number_lights;
+  data_->u_data_[69] = data_->current_dir_lights;
+  data_->u_data_[70] = data_->current_point_lights;
+  data_->u_data_[71] = data_->current_spot_lights;
 
 }
 
 void Suffer::DrawGeometry::Execute() const {
 
   GLenum error;
+
+  glDepthFunc(GL_LESS);
+  glCullFace(GL_FRONT);
+  glFrontFace(GL_CCW);
   
   // ---------------------- IsBufferCreated (Vertex) ----------------------- //
 
@@ -468,8 +502,6 @@ void Suffer::DrawGeometry::Execute() const {
 
       if (data_->texture_ids_[i] < 0) return;
       s32 id_texture = data_->texture_ids_[i];
-
-      auto suffe = suffer.resource_manager_.data_;
 
       if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ == 0) {
         glGenTextures(1, &suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
@@ -667,7 +699,7 @@ void Suffer::DrawGeometry::Execute() const {
       //return;
     }
 
-    glUniform4fv(u_pos, MAX_USED_VEC4DATA, data_->u_data_);
+    glUniform4fv(u_pos, kMaxUsedVec4Data_DrawGeometry, data_->u_data_);
     u_pos = -1;
   
 
@@ -694,6 +726,24 @@ void Suffer::DrawGeometry::Execute() const {
       
       used_textures++;
 
+    }
+
+    // Skybox texture for reflections
+    if (suffer.GetCurrentScene()->GetSkybox() != nullptr) {
+      const char* str = "u_skybox";
+      u_pos = glGetUniformLocation(program_id, str);
+      if (u_pos < 0) {
+        printf("\nERROR: texture skybox uniform not exists.");
+        //return;
+      }
+
+      glActiveTexture(GL_TEXTURE0 + used_textures);
+      glBindTexture(GL_TEXTURE_CUBE_MAP, suffer.resource_manager_.data_->internal_cubemaps_[data_->skybox_cubemap_id_].current_texture_id_);
+
+      glUniform1i(u_pos, used_textures);
+      u_pos = -1;
+
+      used_textures++;
     }
 
     // -- LightTextures --

@@ -203,7 +203,7 @@ void Suffer::RenderManager::DoRender(){
           suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].gpu_version_ = suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].version_;
         }
      
-        glViewport(0, 0, suffer.GetWindowSize().x_, suffer.GetWindowSize().y_);
+        glViewport(0, 0, (u32)suffer.GetWindowSize().x_, (u32)suffer.GetWindowSize().y_);
         glBindFramebuffer(GL_FRAMEBUFFER, suffer.resource_manager_.data_->internal_frame_buffers_[id_frame_buffer].current_gl_framebuffer_);
         
         
@@ -217,8 +217,8 @@ void Suffer::RenderManager::DoRender(){
     // Execute the extracted DL
     u32 size = render_dl_.Size();
 
-    for (int i = 0; i < size; ++i) {
-      Command* cmd = render_dl_.dl_commands_[i].get();
+    for (u32 j = 0; j < size; ++j) {
+      Command* cmd = render_dl_.dl_commands_[j].get();
       cmd->Execute();
     }
 
@@ -239,7 +239,7 @@ void Suffer::RenderManager::DoRender(){
   }
 
   //// Render to final framebuffer (screen quad)
-  glViewport(0, 0, suffer.GetWindowSize().x_, suffer.GetWindowSize().y_);
+  glViewport(0, 0, (u32)suffer.GetWindowSize().x_, (u32)suffer.GetWindowSize().y_);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   
   //data_->post_command_->SetData(Postprocessing::PostproccessKind::kPostproccessKind_Default);

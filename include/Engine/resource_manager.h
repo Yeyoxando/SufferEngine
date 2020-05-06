@@ -19,6 +19,7 @@ namespace Suffer {
   class ResourceManager {
     friend class DrawGeometry;
     friend class DrawDepth;
+    friend class DrawSkybox;
     friend class DrawPointDepth;
     friend class Postprocessing;
     friend class ShadowMap;
@@ -271,8 +272,20 @@ namespace Suffer {
 
     class Cubemap : public Texture {
       public:
-          Cubemap();
-          ~Cubemap();
+        Cubemap();
+        ~Cubemap() {}
+
+        /**
+          * @brief: Loads 6 images from disk to create a cubemap, set on specified order or will be wrong.
+          * @param: files to read.
+          */
+        void LoadCubemapTextureData(const char* src_right,
+                                    const char* src_left,
+                                    const char* src_top,
+                                    const char* src_bottom,
+                                    const char* src_front,
+                                    const char* src_back);
+
     };
 
 

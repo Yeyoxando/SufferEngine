@@ -113,6 +113,7 @@ dkms.conf
 mono_crash.*
 
 # Build results
+[Bb]uild/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -183,6 +184,9 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
+build/SufferCore/vs2017/suffer_trace.json
+build/SufferCore/vs2019/suffer_trace.json
+*.json
 
 # Chutzpah Test files
 _Chutzpah*
