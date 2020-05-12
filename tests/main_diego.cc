@@ -266,11 +266,11 @@ int main(int argc, char* argv[]) {
 
 
   // Set gameobjects and scene things
-  scene->AddGameObject(go_box);
   scene->AddGameObject(go_ground);
   scene->AddGameObject(go_point_light);
   scene->AddGameObject(go_directional_light);
   scene->AddGameObject(go_spot_light);
+  scene->AddGameObject(go_box);
   scene->SetSkybox(skybox);
 
 
