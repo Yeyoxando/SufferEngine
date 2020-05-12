@@ -84,13 +84,49 @@ namespace Suffer {
     
 // ......... UNIFORMS .........
     uniform sampler2D u_tex0;
+    uniform int u_postprocess;
     
 // ......... MAIN ..........
     void main()
     { 
+    
         vec4 color = texture2D(u_tex0, tex_coords);
-			  float gray = dot(color.rgb, vec3(0.299f, 0.587f, 0.114f));
-			  FragColor = vec4(vec3(gray), 1.0f);
+
+        switch(u_postprocess){
+
+            // Gray scale
+            case 0:{
+                float gray = dot(color.rgb, vec3(0.299f, 0.587f, 0.114f));
+                FragColor = vec4(vec3(gray), 1.0f);
+                break;
+            }
+
+            // BRGA
+            case 1:{
+                FragColor = color.brga;
+                break;
+            }
+
+            // RBGA
+            case 2:{
+                FragColor = color.rbga;
+                break;
+            }
+
+		        //GBRA
+		        case 3:{
+			        FragColor = color.gbra;
+			        break;
+		        }
+
+		        //ARBG
+		        case 4:{
+			        FragColor = color.arbg;
+			        break;
+		        }
+        }
+
+
     }    
 
   )FBLACKWHITE";
