@@ -179,19 +179,19 @@ int main(int argc, char* argv[]) {
   // -------------------------- GAMEOBJECTS -------------------------------//
 
   // -- Ground --
-  Suffer::ref_ptr<Suffer::GameObject> go_ground;
-  go_ground.alloc();
-  go_ground->SetName("Ground");
-
-  Suffer::ref_ptr<Suffer::Transform> transform_component_ground;
-  transform_component_ground.alloc();
-  transform_component_ground->Scale(mathmorra::Vector3(50.0f, -50.0f, 50.0f));
-  transform_component_ground->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
-  transform_component_ground->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, 0.0f));
-
-  go_ground->AddComponent(transform_component_ground.get());
-  go_ground->AddComponent(geometry_component_quad.get());
-  go_ground->AddComponent(material_ground.get());
+  //Suffer::ref_ptr<Suffer::GameObject> go_ground;
+  //go_ground.alloc();
+  //go_ground->SetName("Ground");
+  //
+  //Suffer::ref_ptr<Suffer::Transform> transform_component_ground;
+  //transform_component_ground.alloc();
+  //transform_component_ground->Scale(mathmorra::Vector3(50.0f, -50.0f, 50.0f));
+  //transform_component_ground->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+  //transform_component_ground->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, 0.0f));
+  //
+  //go_ground->AddComponent(transform_component_ground.get());
+  //go_ground->AddComponent(geometry_component_quad.get());
+  //go_ground->AddComponent(material_ground.get());
 
   // -- Point Light --
   Suffer::ref_ptr<Suffer::GameObject> go_point_light;
@@ -278,7 +278,7 @@ int main(int argc, char* argv[]) {
 
   go_terrain->AddComponent(transform_component_terrain.get());
   go_terrain->AddComponent(geometry_component_terrain.get());
-  go_terrain->AddComponent(material_box.get());
+  go_terrain->AddComponent(material_ground.get());
 
 
   // Create skybox
@@ -288,7 +288,7 @@ int main(int argc, char* argv[]) {
 
 
   // Set gameobjects and scene things
-  scene->AddGameObject(go_ground);
+  //scene->AddGameObject(go_ground);
   scene->AddGameObject(go_point_light);
   scene->AddGameObject(go_directional_light);
   scene->AddGameObject(go_spot_light);

@@ -247,8 +247,10 @@ void Suffer::GeometryComponent::CreateTerrainGeometry(float frequency, float ele
     }
     new_vertex_buffer->UploadVertexData(vertexes.get(), vertexes.size());
 
+    ref_ptr<ResourceManager::IndexBuffer> new_index_buffer;
+    new_index_buffer.alloc();
+
     // INDICES
-      //Faces == indices
     Array<u16> indices;
     indices.alloc((rows - 1) * (columns - 1) * 6);
     int index = 0;
@@ -256,26 +258,17 @@ void Suffer::GeometryComponent::CreateTerrainGeometry(float frequency, float ele
         for (int z = 0; z < columns - 1; ++z) {
 
             indices[index++] = (x * columns + z);
-            indices[index++] = ((x + 1) * columns + z);
             indices[index++] = (x * columns + (z + 1));
+            indices[index++] = ((x + 1) * columns + z);
 
             indices[index++] = x * columns + (z + 1);
-            indices[index++] = (x + 1) * columns + z;
             indices[index++] = (x + 1) * columns + (z + 1);
+            indices[index++] = (x + 1) * columns + z;
 
         }
     }
 
-    ref_ptr<ResourceManager::IndexBuffer> new_index_buffer;
-    new_index_buffer.alloc();
-    Array<ResourceManager::IndexBuffer::Triangle> triangles;
-    triangles.alloc(vertexes.size() / 3);
-
-    for (u32 i = 0; i < triangles.size(); ++i) {
-        triangles[i] = ResourceManager::IndexBuffer::Triangle(indices[i * 3], indices[(i * 3) + 2], indices[(i * 3) + 1]);
-    }
-
-    new_index_buffer->UploadIndexData(triangles.get(), triangles.size());
+    new_index_buffer->UploadIndexData(indices.get(), indices.size());
 
     SetBuffers(new_vertex_buffer, new_index_buffer);
 
