@@ -125,6 +125,12 @@ int main(int argc, char* argv[]) {
   geometry_component_sphere->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
   geometry_component_sphere->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Sphere);
 
+  // Terrain
+  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_terrain;
+  geometry_component_terrain.alloc();
+  geometry_component_terrain->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+  geometry_component_terrain->CreateTerrainGeometry(0.096f, 63.0f, 1.0f);
+
   // OBJ
   Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_obj;
   geometry_component_obj.alloc();
@@ -259,6 +265,22 @@ int main(int argc, char* argv[]) {
   // -------------------------------------------------------------------------------------//
 
 
+   // -- Terrain --
+  Suffer::ref_ptr<Suffer::GameObject> go_terrain;
+  go_terrain.alloc();
+  go_terrain->SetName("Terrain");
+
+  Suffer::ref_ptr<Suffer::Transform> transform_component_terrain;
+  transform_component_terrain.alloc();
+  transform_component_terrain->Translate(mathmorra::Vector3(0.0f, 2.0f, 0.0f));
+  transform_component_terrain->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-125.0f), 0.0f));
+  transform_component_terrain->Scale(mathmorra::Vector3(0.3f, 0.3f, 0.3f));
+
+  go_terrain->AddComponent(transform_component_terrain.get());
+  go_terrain->AddComponent(geometry_component_terrain.get());
+  go_terrain->AddComponent(material_box.get());
+
+
   // Create skybox
   Suffer::ref_ptr<Suffer::Skybox> skybox;
   skybox.alloc();
@@ -271,6 +293,7 @@ int main(int argc, char* argv[]) {
   scene->AddGameObject(go_directional_light);
   scene->AddGameObject(go_spot_light);
   scene->AddGameObject(go_box);
+  scene->AddGameObject(go_terrain);
   scene->SetSkybox(skybox);
 
 

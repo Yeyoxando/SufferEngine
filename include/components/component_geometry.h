@@ -47,6 +47,7 @@ namespace Suffer {
     };
 
     void CreateGeometryWithOBJ(const char* obj_file);
+    void CreateTerrainGeometry(float frequency, float elevation, float terrace_value, int rows = 200, int columns = 200);
 
     void CreateGeometryWithShape(BasicShapes shape);
     BasicShapes GetGeometry();
