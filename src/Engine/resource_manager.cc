@@ -796,6 +796,16 @@ Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(float vertex_x, float vert
 
 // ------------------------------------------------------------------------- //
 
+Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(mathmorra::Vector3 position, mathmorra::Vector3 normal, mathmorra::Vector2 uv){
+
+  vertices_ = position;
+  normals_ = normal;
+  uvs_ = uv;
+
+}
+
+// ------------------------------------------------------------------------- //
+
 Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(float vertex_x, float vertex_y, float vertex_z, float normal_x, float normal_y, float normal_z){
 
   vertices_ = mathmorra::Vector3(vertex_x, vertex_y, vertex_z);

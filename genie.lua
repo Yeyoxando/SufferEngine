@@ -88,6 +88,7 @@ project "SufferCore"
 		"./src/deps/soloud/filter/",
 		"./deps/soloud/",
 		"./deps/stb/",
+		"./deps/tiny/",
 		"./deps/mathmorra/",
 		"./deps/mathmorra/include",
 		"./deps/minitrace/include",
@@ -128,9 +129,9 @@ project "SufferCore"
 		"./src/deps/GLFW/include/GLFW/glfw3.h",
 		"./src/deps/GLFW/include/GLFW/glfw3native.h",
 		
-    --Mathmorra 
-    "./deps/mathmorra/src/*.cc",
-    "./deps/mathmorra/include/*.h",
+		--Mathmorra 
+		"./deps/mathmorra/src/*.cc",
+		"./deps/mathmorra/include/*.h",
 
 		--GLM
 		"./deps/glm/*.h",
@@ -162,6 +163,9 @@ project "SufferCore"
 
 		--STB
 		"./deps/stb/stb_image.h",
+		
+		--Tiny OBJ
+		"./deps/tiny/tiny_obj_loader.h",
 
 		--SoLoud
 		"./src/deps/soloud/audiosource/monotone/*.cpp",

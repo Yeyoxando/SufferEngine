@@ -28,11 +28,11 @@ namespace Suffer {
     enum DrawMode {
       kDrawMode_Invalid = -1,
       kDrawMode_Triangles = 0,
-      kDrawMode_Lines,
-      kDrawMode_LineLoop,
-      kDrawMode_LineStrip,
-      kDrawMode_Patches,
-      kDrawMode_Points,
+      kDrawMode_Lines = 1,
+      kDrawMode_LineLoop = 2,
+      kDrawMode_LineStrip = 3,
+      kDrawMode_Patches = 4,
+      kDrawMode_Points = 5,
     };
 
     /**
@@ -40,11 +40,13 @@ namespace Suffer {
     */
     enum BasicShapes {
       kBasicShapes_Invalid = -1,
-      kBasicShapes_Triangle,
-      kBasicShapes_Quad,
-      kBasicShapes_Cube,
-      kBasicShapes_Sphere,
+      kBasicShapes_Triangle = 0,
+      kBasicShapes_Quad = 1,
+      kBasicShapes_Cube = 2,
+      kBasicShapes_Sphere = 3,
     };
+
+    void CreateGeometryWithOBJ(const char* obj_file);
 
     void CreateGeometryWithShape(BasicShapes shape);
     BasicShapes GetGeometry();

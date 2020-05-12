@@ -134,6 +134,9 @@ namespace Suffer {
           float normal_x, float normal_y, float normal_z, 
           float uv_x, float uv_y);
 
+        Vertex(mathmorra::Vector3 position, mathmorra::Vector3 normal, 
+          mathmorra::Vector2 uv);
+
         ~Vertex() {}
 
         mathmorra::Vector3 vertices_;
