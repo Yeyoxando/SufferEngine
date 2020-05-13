@@ -490,7 +490,6 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
         sphere_points[i * number_revolutions + j].z_ = radius * sin(latitude);
 
         normals[i * number_revolutions + j] = sphere_points[i * number_revolutions + j];
-        normals[i * number_revolutions + j].y_ *= -1.0f;
         normals[i * number_revolutions + j].Normalize();
 
         mathmorra::Vector2 uv;
@@ -518,12 +517,12 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
       for (int j = 0; j < number_revolutions - 1; ++j) {
 
         sphere_indices[index++] = (u16)(i * number_revolutions + j);
-        sphere_indices[index++] = (u16)((i + 1) * number_revolutions + j);
         sphere_indices[index++] = (u16)(i * number_revolutions + j + 1);
+        sphere_indices[index++] = (u16)((i + 1) * number_revolutions + j);
 
         sphere_indices[index++] = (u16)(i * number_revolutions + j + 1);
-        sphere_indices[index++] = (u16)((i + 1) * number_revolutions + j);
         sphere_indices[index++] = (u16)((i + 1) * number_revolutions + j + 1);
+        sphere_indices[index++] = (u16)((i + 1) * number_revolutions + j);
 
       }
 
