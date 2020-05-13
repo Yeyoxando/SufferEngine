@@ -1,6 +1,6 @@
 
 #include <common_definitions.h>
-#if !defined _MAIN_PABLO_ && !defined _MAIN_DIEGO_ && !defined _MAIN_LIGHTS_
+#if defined _MAIN_HIGHLEVEL_
 
 #include <suffermanager.h>
 #include <glfw3.h>

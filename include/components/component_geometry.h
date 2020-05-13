@@ -47,6 +47,8 @@ namespace Suffer {
     };
 
     void CreateGeometryWithOBJ(const char* obj_file);
+    void CreateGeometryWithOBJAndMTL(const char* obj_file, const char* mtl_base_route, const char* textures_base_route);
+
     void CreateTerrainGeometry(float frequency, float elevation, float terrace_value, int rows = 200, int columns = 200);
 
     void CreateGeometryWithShape(BasicShapes shape);

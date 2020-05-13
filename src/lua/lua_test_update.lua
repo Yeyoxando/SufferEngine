@@ -1,7 +1,6 @@
 function Start()
   print "Starting SPHERE from LUA!"
   SetDrawMode("Triangles")
-  Scale(1.0, 1.0, 1.0)
 
 end
 

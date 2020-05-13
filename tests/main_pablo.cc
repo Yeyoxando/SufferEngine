@@ -1,6 +1,6 @@
 
 #include <common_definitions.h>
-#if defined _MAIN_PABLO_  && !defined _MAIN_LIGHTS_ && !defined _MAIN_DIEGO_
+#if defined _MAIN_PABLO_
 
 
 #include <suffermanager.h>

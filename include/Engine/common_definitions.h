@@ -20,6 +20,11 @@
 //#define WINDOW_WIDTH  800
 //#define WINDOW_HEIGHT 600
 
-#define _MAIN_DIEGO_
-//#define _MAIN_PABLO_
-//#define _MAIN_LIGHTS_
+
+// Demo execution
+//#define _MAIN_DIEGO_ 
+//#define _MAIN_PABLO_ 
+//#define _MAIN_LIGHTS_ 
+#define _MAIN_OBJS_ 
+//#define _MAIN_HIGHLEVEL_ 
+

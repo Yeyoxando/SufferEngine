@@ -1,6 +1,6 @@
 
 #include <common_definitions.h>
-#if defined _MAIN_DIEGO_
+#if defined _MAIN_OBJS_
 
 #include <suffermanager.h>
 #include "ref_ptr.h"
@@ -37,18 +37,11 @@ int main(int argc, char* argv[]) {
   rock_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
   rock_texture->LoadTextureData("../../../resources/images/albedo_rock03.jpg");
 
-  // Box textures
-  Suffer::ref_ptr<Suffer::ResourceManager::Texture> box_texture;
-  box_texture.alloc();
-  box_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-  box_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-  box_texture->LoadTextureData("../../../resources/images/box_2.png");
-
-  Suffer::ref_ptr<Suffer::ResourceManager::Texture> box_specular_texture;
-  box_specular_texture.alloc();
-  box_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-  box_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-  box_specular_texture->LoadTextureData("../../../resources/images/box_2_spec.png");
+  Suffer::ref_ptr<Suffer::ResourceManager::Texture> rock_specular_texture;
+  rock_specular_texture.alloc();
+  rock_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
+  rock_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+  rock_specular_texture->LoadTextureData("../../../resources/images/spec_rock03.jpg");
 
   // Ground textures
   Suffer::ref_ptr<Suffer::ResourceManager::Texture> ground_texture;
@@ -75,16 +68,23 @@ int main(int argc, char* argv[]) {
 
   // --------------------------- MATERIALS ------------------------------- //
 
-  // Box material
-  Suffer::ref_ptr<Suffer::MaterialComponent> material_box;
-  material_box.alloc();
-  Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_box;
-  material_params_box.alloc();
-  material_params_box->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  //material_params_box->SetAlbedoTexture(rock_texture.get());
-  //material_params_box->SetSpecularTexture(box_specular_texture.get());
-  //material_params_box->SetReflectionTexture(box_specular_texture.get(), 1.0f);
-  material_box->SetParams(material_params_box.get());
+  // Mario material
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_mario;
+  material_mario.alloc();
+  Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_mario;
+  material_params_mario.alloc();
+  material_params_mario->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+  material_mario->SetParams(material_params_mario.get());
+
+  // Rock material
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_rock;
+  material_rock.alloc();
+  Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_rock;
+  material_params_rock.alloc();
+  material_params_rock->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+  material_params_rock->SetAlbedoTexture(rock_texture.get());
+  material_params_rock->SetSpecularTexture(rock_specular_texture.get());
+  material_rock->SetParams(material_params_rock.get());
 
   // Ground material
   Suffer::ref_ptr<Suffer::MaterialComponent> material_ground;
@@ -131,11 +131,17 @@ int main(int argc, char* argv[]) {
   geometry_component_terrain->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
   geometry_component_terrain->CreateTerrainGeometry(0.096f, 63.0f, 1.0f);
 
-  // OBJ
-  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_obj;
-  geometry_component_obj.alloc();
-  geometry_component_obj->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
-  geometry_component_obj->CreateGeometryWithOBJ("../../../resources/models/SuperMairo64.obj");
+  // Mario OBJ
+  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_mario;
+  geometry_component_mario.alloc();
+  geometry_component_mario->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+  geometry_component_mario->CreateGeometryWithOBJ("../../../resources/models/SuperMairo64.obj");
+
+  // Rock OBJ
+  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_rock;
+  geometry_component_rock.alloc();
+  geometry_component_rock->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+  geometry_component_rock->CreateGeometryWithOBJ("../../../resources/models/rock_03.obj");
 
   // ----------------------------- LIGHTS -------------------------------- //
   // Directional
@@ -179,19 +185,19 @@ int main(int argc, char* argv[]) {
   // -------------------------- GAMEOBJECTS -------------------------------//
 
   // -- Ground --
-  //Suffer::ref_ptr<Suffer::GameObject> go_ground;
-  //go_ground.alloc();
-  //go_ground->SetName("Ground");
-  //
-  //Suffer::ref_ptr<Suffer::Transform> transform_component_ground;
-  //transform_component_ground.alloc();
-  //transform_component_ground->Scale(mathmorra::Vector3(50.0f, -50.0f, 50.0f));
-  //transform_component_ground->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
-  //transform_component_ground->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, 0.0f));
-  //
-  //go_ground->AddComponent(transform_component_ground.get());
-  //go_ground->AddComponent(geometry_component_quad.get());
-  //go_ground->AddComponent(material_ground.get());
+  Suffer::ref_ptr<Suffer::GameObject> go_ground;
+  go_ground.alloc();
+  go_ground->SetName("Ground");
+  
+  Suffer::ref_ptr<Suffer::Transform> transform_component_ground;
+  transform_component_ground.alloc();
+  transform_component_ground->Scale(mathmorra::Vector3(50.0f, -50.0f, 50.0f));
+  transform_component_ground->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+  transform_component_ground->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, 0.0f));
+  
+  go_ground->AddComponent(transform_component_ground.get());
+  go_ground->AddComponent(geometry_component_quad.get());
+  go_ground->AddComponent(material_ground.get());
 
   // -- Point Light --
   Suffer::ref_ptr<Suffer::GameObject> go_point_light;
@@ -201,7 +207,7 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::Transform> transform_component_point_light;
   transform_component_point_light.alloc();
   transform_component_point_light->Scale(mathmorra::Vector3(1.0f, 1.0f, 1.0f));
-  transform_component_point_light->Translate(mathmorra::Vector3(5.0f, 0.0f, 5.0f));
+  transform_component_point_light->Translate(mathmorra::Vector3(5.0f, 5.0f, 5.0f));
   transform_component_point_light->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, ThiefUtils::Math::Radians(180.0f)));
 
   go_point_light->AddComponent(transform_component_point_light.get());
@@ -217,7 +223,7 @@ int main(int argc, char* argv[]) {
   go_directional_light->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
 
   Suffer::Transform* transform = static_cast<Suffer::Transform*>(go_directional_light->GetComponent(Suffer::Component::kComponentKind_Transform));
-  transform->Translate(mathmorra::Vector3(-5.0f, 5.0f, -5.0f));
+  transform->Translate(mathmorra::Vector3(-10.0f, 5.0f, -5.0f));
 
   go_directional_light->AddComponent(directional_light_component.get());
 
@@ -235,47 +241,44 @@ int main(int argc, char* argv[]) {
 
   go_spot_light->AddComponent(spot_light_component.get());
 
-  // -- Box --
-  Suffer::ref_ptr<Suffer::GameObject> go_box;
-  go_box.alloc();
-  go_box->SetName("Box");
+  // -- Rock --
+  Suffer::ref_ptr<Suffer::GameObject> go_rock;
+  go_rock.alloc();
+  go_rock->SetName("Rock");
 
-  Suffer::ref_ptr<Suffer::Transform> transform_component_cube;
-  transform_component_cube.alloc();
-  transform_component_cube->Translate(mathmorra::Vector3(0.0f, 2.0f, 0.0f));
-  transform_component_cube->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-125.0f), 0.0f));
-  transform_component_cube->Scale(mathmorra::Vector3(0.3f, 0.3f, 0.3f));
+  Suffer::ref_ptr<Suffer::Transform> transform_component_rock;
+  transform_component_rock.alloc();
+  transform_component_rock->Translate(mathmorra::Vector3(5.0f, 2.0f, -2.0f));
+  transform_component_rock->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-125.0f), 0.0f));
+  transform_component_rock->Scale(mathmorra::Vector3(1.0f, 1.0f, 1.0f));
+
+  go_rock->AddComponent(transform_component_rock.get());
+  go_rock->AddComponent(geometry_component_rock.get());
+  go_rock->AddComponent(material_rock.get());
+
+
+  // -- Mario --
+  Suffer::ref_ptr<Suffer::GameObject> go_mario;
+  go_mario.alloc();
+  go_mario->SetName("Mario");
+
+  Suffer::ref_ptr<Suffer::Transform> transform_component_mario;
+  transform_component_mario.alloc();
+  transform_component_mario->Translate(mathmorra::Vector3(0.0f, 0.0f, 2.0f));
+  transform_component_mario->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+  transform_component_mario->Scale(mathmorra::Vector3(0.3f, 0.3f, 0.3f));
 
   Suffer::ref_ptr<Suffer::ScriptComponent> script;
   script.alloc();
 
-  go_box->AddComponent(transform_component_cube.get());
-  go_box->AddComponent(geometry_component_obj.get());
-  go_box->AddComponent(material_box.get());
-  go_box->AddComponent(script.get());
-
- //go_box->AddChild(go_point_light.get());
- //go_box->AddChild(go_directional_light.get());
+  go_mario->AddComponent(transform_component_mario.get());
+  go_mario->AddComponent(geometry_component_mario.get());
+  go_mario->AddComponent(material_mario.get());
+  go_mario->AddComponent(script.get());
 
   script->AttachScript("../../../src/lua/lua_test_update.lua");
 
   // -------------------------------------------------------------------------------------//
-
-
-   // -- Terrain --
-  Suffer::ref_ptr<Suffer::GameObject> go_terrain;
-  go_terrain.alloc();
-  go_terrain->SetName("Terrain");
-
-  Suffer::ref_ptr<Suffer::Transform> transform_component_terrain;
-  transform_component_terrain.alloc();
-  transform_component_terrain->Translate(mathmorra::Vector3(0.0f, 2.0f, 0.0f));
-  transform_component_terrain->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-125.0f), 0.0f));
-  transform_component_terrain->Scale(mathmorra::Vector3(0.3f, 0.3f, 0.3f));
-
-  go_terrain->AddComponent(transform_component_terrain.get());
-  go_terrain->AddComponent(geometry_component_terrain.get());
-  go_terrain->AddComponent(material_ground.get());
 
 
   // Create skybox
@@ -285,12 +288,12 @@ int main(int argc, char* argv[]) {
 
 
   // Set gameobjects and scene things
-  //scene->AddGameObject(go_ground);
+  scene->AddGameObject(go_ground);
   scene->AddGameObject(go_point_light);
   scene->AddGameObject(go_directional_light);
   scene->AddGameObject(go_spot_light);
-  scene->AddGameObject(go_box);
-  scene->AddGameObject(go_terrain);
+  scene->AddGameObject(go_rock);
+  scene->AddGameObject(go_mario);
   scene->SetSkybox(skybox);
 
 
