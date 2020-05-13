@@ -2,7 +2,7 @@
 #define suffer Suffer::SufferManager::instance()
 
 #define MAX_LIGHTS 4
-#define MAX_BUFFERS 10
+#define MAX_BUFFERS 50
 #define MAX_CUBEMAPS 4
 #define MAX_TEXTURES 20
 #define MAX_USED_TEXTURES 10

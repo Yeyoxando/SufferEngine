@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_box;
   material_params_box.alloc();
   material_params_box->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  material_params_box->SetAlbedoTexture(rock_texture.get());
+  //material_params_box->SetAlbedoTexture(rock_texture.get());
   //material_params_box->SetSpecularTexture(box_specular_texture.get());
   //material_params_box->SetReflectionTexture(box_specular_texture.get(), 1.0f);
   material_box->SetParams(material_params_box.get());
@@ -135,7 +135,7 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_obj;
   geometry_component_obj.alloc();
   geometry_component_obj->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
-  geometry_component_obj->CreateGeometryWithOBJ("../../../resources/models/rock_03.obj");
+  geometry_component_obj->CreateGeometryWithOBJ("../../../resources/models/SuperMairo64.obj");
 
   // ----------------------------- LIGHTS -------------------------------- //
   // Directional
@@ -260,7 +260,7 @@ int main(int argc, char* argv[]) {
  //go_box->AddChild(go_point_light.get());
  //go_box->AddChild(go_directional_light.get());
 
-  //script->AttachScript("../../../src/lua/lua_test_update.lua");
+  script->AttachScript("../../../src/lua/lua_test_update.lua");
 
   // -------------------------------------------------------------------------------------//
 

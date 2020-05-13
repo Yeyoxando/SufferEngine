@@ -148,29 +148,31 @@ void Suffer::GeometryComponent::CreateGeometryWithOBJ(const char* obj_file) {
       // per-face material
       shapes[s].mesh.material_ids[f];
     }
+
+
+
+    ref_ptr<ResourceManager::VertexBuffer> new_vertex_buffer;
+    new_vertex_buffer.alloc();
+    new_vertex_buffer->SetVertexFormat(ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV);
+    Array<ResourceManager::VertexBuffer::Vertex> vertexes;
+    vertexes.alloc(v_positions.size());
+    for (u32 i = 0; i < vertexes.size(); ++i) {
+      vertexes[i] = ResourceManager::VertexBuffer::Vertex(v_positions[i] * 0.1f, v_normals[i], v_tcoordinates[i]);
+    }
+    new_vertex_buffer->UploadVertexData(vertexes.get(), vertexes.size());
+
+    ref_ptr<ResourceManager::IndexBuffer> new_index_buffer;
+    new_index_buffer.alloc();
+    Array<ResourceManager::IndexBuffer::Triangle> triangles;
+    triangles.alloc(vertexes.size() / 3);
+    for (u32 i = 0; i < triangles.size(); ++i) {
+      triangles[i] = ResourceManager::IndexBuffer::Triangle(0 + (i * 3), 1 + (i * 3), 2 + (i * 3));
+    }
+    new_index_buffer->UploadIndexData(triangles.get(), triangles.size());
+
+
+    AddBuffers(new_vertex_buffer, new_index_buffer);
   }
-
-  ref_ptr<ResourceManager::VertexBuffer> new_vertex_buffer;
-  new_vertex_buffer.alloc();
-  new_vertex_buffer->SetVertexFormat(ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV);
-  Array<ResourceManager::VertexBuffer::Vertex> vertexes;
-  vertexes.alloc(v_positions.size());
-  for (u32 i = 0; i < vertexes.size(); ++i) {
-    vertexes[i] = ResourceManager::VertexBuffer::Vertex(v_positions[i], v_normals[i], v_tcoordinates[i]);
-  }
-  new_vertex_buffer->UploadVertexData(vertexes.get(), vertexes.size());
-
-  ref_ptr<ResourceManager::IndexBuffer> new_index_buffer;
-  new_index_buffer.alloc();
-  Array<ResourceManager::IndexBuffer::Triangle> triangles;
-  triangles.alloc(vertexes.size() / 3);
-  for (u32 i = 0; i < triangles.size(); ++i) {
-    triangles[i] = ResourceManager::IndexBuffer::Triangle(0 + (i * 3), 1 + (i * 3), 2 + (i * 3));
-  }
-  new_index_buffer->UploadIndexData(triangles.get(), triangles.size());
-
-
-  AddBuffers(new_vertex_buffer, new_index_buffer);
 
 }
 
