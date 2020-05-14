@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
   material_params2->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   material_params2->SetAlbedoTexture(albedo_texture2.get());
   material_params2->specular_strength_ = 0.2f;
-  material_component_sphere->SetParams(material_params2.get());
+  material_component_sphere->AddParams(material_params2.get());
 
   for (u32 i = 0; i < 9; ++i) {
 

@@ -203,7 +203,6 @@ void Suffer::GeometryComponent::CreateGeometryWithOBJAndMTL(const char* obj_file
     exit(1);
   }
 
-
   // Loop over shapes
   for (size_t s = 0; s < shapes.size(); ++s) {
     // Loop over faces(polygon)
@@ -239,6 +238,7 @@ void Suffer::GeometryComponent::CreateGeometryWithOBJAndMTL(const char* obj_file
 
 
 
+    // Geometries buffers
     ref_ptr<ResourceManager::VertexBuffer> new_vertex_buffer;
     new_vertex_buffer.alloc();
     new_vertex_buffer->SetVertexFormat(ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV);
@@ -260,54 +260,59 @@ void Suffer::GeometryComponent::CreateGeometryWithOBJAndMTL(const char* obj_file
 
 
     AddBuffers(new_vertex_buffer, new_index_buffer);
+
+
+
+    // Materials params
+    ref_ptr<MaterialComponent::BlinnPhongParams> material_params;
+    material_params.alloc();
+    u32 mat_id = shapes[s].mesh.material_ids[0];
+    material_params->color_ = mathmorra::Vector4(materials[mat_id].diffuse[0], materials[mat_id].diffuse[1], materials[mat_id].diffuse[2], 1.0f);
+    material_params->specular_strength_ = materials[mat_id].specular[0];
+    if (!materials[mat_id].diffuse_texname.empty()) {
+
+      Suffer::ref_ptr<Suffer::ResourceManager::Texture> diffuse_texture;
+      diffuse_texture.alloc();
+      diffuse_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
+      diffuse_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+      std::string tex_route = std::string(textures_base_route);
+      tex_route.append(materials[mat_id].diffuse_texname);
+      diffuse_texture->LoadTextureData(tex_route.c_str());
+
+      material_params->SetAlbedoTexture(diffuse_texture.get());
+
+    }
+    if (!materials[mat_id].specular_texname.empty()) {
+
+      Suffer::ref_ptr<Suffer::ResourceManager::Texture> specular_texture;
+      specular_texture.alloc();
+      specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
+      specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+      std::string tex_route = std::string(textures_base_route);
+      tex_route.append(materials[mat_id].specular_texname);
+      specular_texture->LoadTextureData(tex_route.c_str());
+
+      material_params->SetSpecularTexture(specular_texture.get());
+
+    }
+    if (!materials[mat_id].reflection_texname.empty()) {
+
+      Suffer::ref_ptr<Suffer::ResourceManager::Texture> reflection_texture;
+      reflection_texture.alloc();
+      reflection_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
+      reflection_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+      std::string tex_route = std::string(textures_base_route);
+      tex_route.append(materials[mat_id].reflection_texname);
+      reflection_texture->LoadTextureData(tex_route.c_str());
+
+      material_params->SetReflectionTexture(reflection_texture.get(), 1.0f);
+
+    }
+
+
+    mat.AddParams(material_params.get());
+
   }
-
-  ref_ptr<MaterialComponent::BlinnPhongParams> material_params;
-  material_params.alloc();
-  material_params->color_ = mathmorra::Vector4(materials[0].diffuse[0], materials[0].diffuse[1], materials[0].diffuse[2], 1.0f);
-  material_params->specular_strength_ = materials[0].specular[0];
-  if (!materials[0].diffuse_texname.empty()) {
-
-    Suffer::ref_ptr<Suffer::ResourceManager::Texture> diffuse_texture;
-    diffuse_texture.alloc();
-    diffuse_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-    diffuse_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-    std::string tex_route = std::string(textures_base_route);
-    tex_route.append(materials[0].diffuse_texname);
-    diffuse_texture->LoadTextureData(tex_route.c_str());
-
-    material_params->SetAlbedoTexture(diffuse_texture.get());
-  
-  }
-  if (!materials[0].specular_texname.empty()) {
-
-    Suffer::ref_ptr<Suffer::ResourceManager::Texture> specular_texture;
-    specular_texture.alloc();
-    specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-    specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-    std::string tex_route = std::string(textures_base_route);
-    tex_route.append(materials[0].specular_texname);
-    specular_texture->LoadTextureData(tex_route.c_str());
-
-    material_params->SetSpecularTexture(specular_texture.get());
-
-  }
-  if (!materials[0].reflection_texname.empty()) {
-
-    Suffer::ref_ptr<Suffer::ResourceManager::Texture> reflection_texture;
-    reflection_texture.alloc();
-    reflection_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-    reflection_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-    std::string tex_route = std::string(textures_base_route);
-    tex_route.append(materials[0].reflection_texname);
-    reflection_texture->LoadTextureData(tex_route.c_str());
-
-    material_params->SetReflectionTexture(reflection_texture.get(), 1.0f);
-
-  }
-
-
-  mat.SetParams(material_params.get());
 
 }
 

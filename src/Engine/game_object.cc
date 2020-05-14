@@ -201,7 +201,7 @@ void Suffer::GameObject::SetArchetype(Archetype new_archetype){
                 Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params;
                 material_params.alloc();
                 material_params->color_ = mathmorra::Vector4(1.0f, 0.5f, 1.0f, 1.0f);
-                material_component_->SetParams(material_params.get());
+                material_component_->AddParams(material_params.get());
 
                 AddComponent(material_component_.get());
             }

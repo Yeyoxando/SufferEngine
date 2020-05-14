@@ -16,7 +16,8 @@ namespace Suffer {
     layout(location = 2) in vec2 a_uvs;
     
 // ......... UNIFORMS .........
-    uniform vec4 u_data[222];
+    uniform vec4 u_data[218];
+    uniform vec4 u_material_data[4];
 
 // ......... DEFINES ..........
     #define u_m_matrix mat4(u_data[0], u_data[1], u_data[2], u_data[3])
@@ -25,7 +26,7 @@ namespace Suffer {
 
     #define u_p_matrix mat4(u_data[8], u_data[9], u_data[10], u_data[11])
 
-    #define u_time u_data[13].x
+    #define u_time u_material_data[0].x
 
 // ....... IN / OUT ........
     out vec3 position;
@@ -113,7 +114,8 @@ namespace Suffer {
     };
 
 // ......... UNIFORMS .........
-    uniform vec4 u_data[222];
+    uniform vec4 u_data[218];
+    uniform vec4 u_material_data[4];
 
     uniform sampler2D u_tex0;
     uniform sampler2D u_tex1; 
@@ -137,19 +139,19 @@ namespace Suffer {
     uniform sampler2D u_spot_light_texture3;
 
 // ......... DEFINES ..........
-    #define u_color u_data[12]
-    #define camera_pos vec3(u_data[13].x, u_data[13].y, u_data[13].z)
-    #define u_tiling u_data[14].xy
+    #define u_color u_material_data[0]
+    #define camera_pos vec3(u_material_data[1].x, u_material_data[1].y, u_material_data[1].z)
+    #define u_tiling u_material_data[2].xy
     
-    #define u_specular_strength u_data[14].z
-    #define u_specular_pow u_data[14].w
-    #define u_reflection_strength u_data[15].x
+    #define u_specular_strength u_material_data[2].z
+    #define u_specular_pow u_material_data[2].w
+    #define u_reflection_strength u_material_data[3].x
 
     #define max_lights 4
-    #define num_lights u_data[17].x
-    #define num_directionals u_data[17].y
-    #define num_points u_data[17].z
-    #define num_spots u_data[17].w
+    #define num_lights u_data[12].x
+    #define num_directionals u_data[12].y
+    #define num_points u_data[12].z
+    #define num_spots u_data[12].w
     
     #define u_albedo u_tex0
     #define u_specular u_tex1
@@ -170,20 +172,20 @@ namespace Suffer {
       DirectionalLight d_light;
       int offset = 9 * index;
 
-      // 18 is start of directional lights array (72/4)
-      d_light.is_active    = bool(u_data[18 + 0 + offset].a);
-      d_light.direction = vec3(u_data[18 + 0 + offset].x, u_data[18 + 0 + offset].y, u_data[18 + 0 + offset].z);
-      d_light.color     = vec3(u_data[18 + 1 + offset].x, u_data[18 + 1 + offset].y, u_data[18 + 1 + offset].z);
-      d_light.intensity =      u_data[18 + 2 + offset].a;
-      d_light.ambient   = vec3(u_data[18 + 2 + offset].x, u_data[18 + 2 + offset].y, u_data[18 + 2 + offset].z);
-      d_light.diffuse   = vec3(u_data[18 + 3 + offset].x, u_data[18 + 3 + offset].y, u_data[18 + 3 + offset].z);
-      d_light.specular  = vec3(u_data[18 + 4 + offset].x, u_data[18 + 4 + offset].y, u_data[18 + 4 + offset].z);
+      // 13 is start of directional lights array (52/4)
+      d_light.is_active    = bool(u_data[13 + 0 + offset].a);
+      d_light.direction = vec3(u_data[13 + 0 + offset].x, u_data[13 + 0 + offset].y, u_data[13 + 0 + offset].z);
+      d_light.color     = vec3(u_data[13 + 1 + offset].x, u_data[13 + 1 + offset].y, u_data[13 + 1 + offset].z);
+      d_light.intensity =      u_data[13 + 2 + offset].a;
+      d_light.ambient   = vec3(u_data[13 + 2 + offset].x, u_data[13 + 2 + offset].y, u_data[13 + 2 + offset].z);
+      d_light.diffuse   = vec3(u_data[13 + 3 + offset].x, u_data[13 + 3 + offset].y, u_data[13 + 3 + offset].z);
+      d_light.specular  = vec3(u_data[13 + 4 + offset].x, u_data[13 + 4 + offset].y, u_data[13 + 4 + offset].z);
 
       // View-Projection Matrix
-      d_light.view_projection_matrix = mat4(u_data[18 + offset + 5], 
-                                            u_data[18 + offset + 6], 
-                                            u_data[18 + offset + 7], 
-                                            u_data[18 + offset + 8]);
+      d_light.view_projection_matrix = mat4(u_data[13 + offset + 5], 
+                                            u_data[13 + offset + 6], 
+                                            u_data[13 + offset + 7], 
+                                            u_data[13 + offset + 8]);
 
       return d_light;
     }
@@ -210,23 +212,23 @@ namespace Suffer {
       PointLight p_light;
       int offset = 30 * index;
 
-      p_light.is_active    = bool(u_data[54 + 0 + offset].a);
-      p_light.position  = vec3(u_data[54 + 0 + offset].x, u_data[54 + 0 + offset].y, u_data[54 + 0 + offset].z);
-      p_light.color     = vec3(u_data[54 + 1 + offset].x, u_data[54 + 1 + offset].y, u_data[54 + 1 + offset].z);
-      p_light.ambient   = vec3(u_data[54 + 2 + offset].x, u_data[54 + 2 + offset].y, u_data[54 + 2 + offset].z);
-      p_light.intensity =      u_data[54 + 2 + offset].a;
-      p_light.diffuse   = vec3(u_data[54 + 3 + offset].x, u_data[54 + 3 + offset].y, u_data[54 + 3 + offset].z);
-      p_light.specular  = vec3(u_data[54 + 4 + offset].x, u_data[54 + 4 + offset].y, u_data[54 + 4 + offset].z);
-      p_light.constant  =      u_data[54 + 5 + offset].x;
-      p_light.linear    =      u_data[54 + 5 + offset].y;
-      p_light.quadratic =      u_data[54 + 5 + offset].z;
+      p_light.is_active    = bool(u_data[49 + 0 + offset].a);
+      p_light.position  = vec3(u_data[49 + 0 + offset].x, u_data[49 + 0 + offset].y, u_data[49 + 0 + offset].z);
+      p_light.color     = vec3(u_data[49 + 1 + offset].x, u_data[49 + 1 + offset].y, u_data[49 + 1 + offset].z);
+      p_light.ambient   = vec3(u_data[49 + 2 + offset].x, u_data[49 + 2 + offset].y, u_data[49 + 2 + offset].z);
+      p_light.intensity =      u_data[49 + 2 + offset].a;
+      p_light.diffuse   = vec3(u_data[49 + 3 + offset].x, u_data[49 + 3 + offset].y, u_data[49 + 3 + offset].z);
+      p_light.specular  = vec3(u_data[49 + 4 + offset].x, u_data[49 + 4 + offset].y, u_data[49 + 4 + offset].z);
+      p_light.constant  =      u_data[49 + 5 + offset].x;
+      p_light.linear    =      u_data[49 + 5 + offset].y;
+      p_light.quadratic =      u_data[49 + 5 + offset].z;
 
       // View-Projection Matrices
       for(int f = 0; f < 6; f++){
-        p_light.view_projection_matrix[f] = mat4(u_data[54 + 6 + offset + (4 * f)],   
-                                                 u_data[54 + 7 + offset + (4 * f)], 
-                                                 u_data[54 + 8 + offset + (4 * f)], 
-                                                 u_data[54 + 9 + offset + (4 * f)]);
+        p_light.view_projection_matrix[f] = mat4(u_data[49 + 6 + offset + (4 * f)],   
+                                                 u_data[49 + 7 + offset + (4 * f)], 
+                                                 u_data[49 + 8 + offset + (4 * f)], 
+                                                 u_data[49 + 9 + offset + (4 * f)]);
       }
       return p_light;
     }
@@ -253,25 +255,25 @@ namespace Suffer {
       SpotLight s_light;
       int offset = 12 * index;
 
-      s_light.is_active    = bool(u_data[174 + 0 + offset].a);
-      s_light.direction = vec3(u_data[174 + 0 + offset].x, u_data[174 + 0 + offset].y, u_data[174 + 0 + offset].z);
-      s_light.position  = vec3(u_data[174 + 1 + offset].x, u_data[174 + 1 + offset].y, u_data[174 + 1 + offset].z);
-      s_light.color     = vec3(u_data[174 + 2 + offset].x, u_data[174 + 2 + offset].y, u_data[174 + 2 + offset].z);
-      s_light.intensity =      u_data[174 + 3 + offset].a;         
-      s_light.ambient   = vec3(u_data[174 + 3 + offset].x, u_data[174 + 3 + offset].y, u_data[174 + 3 + offset].z);
-      s_light.diffuse   = vec3(u_data[174 + 4 + offset].x, u_data[174 + 4 + offset].y, u_data[174 + 4 + offset].z);
-      s_light.specular  = vec3(u_data[174 + 5 + offset].x, u_data[174 + 5 + offset].y, u_data[174 + 5 + offset].z);
-      s_light.constant  =      u_data[174 + 6 + offset].x;
-      s_light.linear    =      u_data[174 + 6 + offset].y;
-      s_light.quadratic =      u_data[174 + 6 + offset].z;
-      s_light.cutOff    =      u_data[174 + 7 + offset].x;
-      s_light.outerCutOff =    u_data[174 + 7 + offset].y; 
+      s_light.is_active    = bool(u_data[169 + 0 + offset].a);
+      s_light.direction = vec3(u_data[169 + 0 + offset].x, u_data[169 + 0 + offset].y, u_data[169 + 0 + offset].z);
+      s_light.position  = vec3(u_data[169 + 1 + offset].x, u_data[169 + 1 + offset].y, u_data[169 + 1 + offset].z);
+      s_light.color     = vec3(u_data[169 + 2 + offset].x, u_data[169 + 2 + offset].y, u_data[169 + 2 + offset].z);
+      s_light.intensity =      u_data[169 + 3 + offset].a;         
+      s_light.ambient   = vec3(u_data[169 + 3 + offset].x, u_data[169 + 3 + offset].y, u_data[169 + 3 + offset].z);
+      s_light.diffuse   = vec3(u_data[169 + 4 + offset].x, u_data[169 + 4 + offset].y, u_data[169 + 4 + offset].z);
+      s_light.specular  = vec3(u_data[169 + 5 + offset].x, u_data[169 + 5 + offset].y, u_data[169 + 5 + offset].z);
+      s_light.constant  =      u_data[169 + 6 + offset].x;
+      s_light.linear    =      u_data[169 + 6 + offset].y;
+      s_light.quadratic =      u_data[169 + 6 + offset].z;
+      s_light.cutOff    =      u_data[169 + 7 + offset].x;
+      s_light.outerCutOff =    u_data[169 + 7 + offset].y; 
 
       // View-Projection Matrix
-      s_light.view_projection_matrix = mat4(u_data[174 + offset + 8], 
-                                            u_data[174 + offset + 9], 
-                                            u_data[174 + offset + 10], 
-                                            u_data[174 + offset + 11]);
+      s_light.view_projection_matrix = mat4(u_data[169 + offset + 8], 
+                                            u_data[169 + offset + 9], 
+                                            u_data[169 + offset + 10], 
+                                            u_data[169 + offset + 11]);
       return s_light;
     }
 

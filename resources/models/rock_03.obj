@@ -923,6 +923,7 @@ vt 0.3618 0.9986 0.0000
 vt 0.3646 0.9375 0.0000
 # 406 texture coords
 
+usemtl Rock03
 o rock03_lr
 g rock03_lr
 f 1/1/1 2/2/2 3/3/3 

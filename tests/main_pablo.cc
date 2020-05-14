@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
     material_params_cube->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     material_params_cube->SetAlbedoTexture(box_texture.get());
     material_params_cube->SetSpecularTexture(box_specular_texture.get());
-    material_component_cube->SetParams(material_params_cube.get());
+    material_component_cube->AddParams(material_params_cube.get());
 
     for (int i = 0; i < number_cubes; ++i) {
         // GameObjects

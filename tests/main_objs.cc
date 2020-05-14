@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_mario;
   material_params_mario.alloc();
   material_params_mario->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  material_mario->SetParams(material_params_mario.get());
+  material_mario->AddParams(material_params_mario.get());
 
   // Ground material
   Suffer::ref_ptr<Suffer::MaterialComponent> material_ground;
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
   material_params_ground->tiling_ = mathmorra::Vector2(5.0f, 5.0f);
   material_params_ground->SetAlbedoTexture(ground_texture.get());
   material_params_ground->SetSpecularTexture(ground_specular_texture.get());
-  material_ground->SetParams(material_params_ground.get());
+  material_ground->AddParams(material_params_ground.get());
 
   // White material
   Suffer::ref_ptr<Suffer::MaterialComponent> material_white;
@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_white;
   material_params_white.alloc();
   material_params_white->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  material_white->SetParams(material_params_white.get());
+  material_white->AddParams(material_params_white.get());
 
   // --------------------------- GEOMETRIES ------------------------------ //
 
@@ -110,10 +110,10 @@ int main(int argc, char* argv[]) {
   geometry_component_terrain->CreateTerrainGeometry(0.096f, 63.0f, 1.0f);
 
   // Mario OBJ
-  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_mario;
-  geometry_component_mario.alloc();
-  geometry_component_mario->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
-  geometry_component_mario->CreateGeometryWithOBJ("../../../resources/models/SuperMairo64.obj");
+  //Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_mario;
+  //geometry_component_mario.alloc();
+  //geometry_component_mario->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+  //geometry_component_mario->CreateGeometryWithOBJ("../../../resources/models/SuperMairo64.obj");
 
   // Rock OBJ And MTL
   Suffer::ref_ptr<Suffer::MaterialComponent> material_rock;
@@ -239,25 +239,25 @@ int main(int argc, char* argv[]) {
 
 
   // -- Mario --
-  Suffer::ref_ptr<Suffer::GameObject> go_mario;
-  go_mario.alloc();
-  go_mario->SetName("Mario");
+  //Suffer::ref_ptr<Suffer::GameObject> go_mario;
+  //go_mario.alloc();
+  //go_mario->SetName("Mario");
+  //
+  //Suffer::ref_ptr<Suffer::Transform> transform_component_mario;
+  //transform_component_mario.alloc();
+  //transform_component_mario->Translate(mathmorra::Vector3(0.0f, 0.0f, 2.0f));
+  //transform_component_mario->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+  //transform_component_mario->Scale(mathmorra::Vector3(0.3f, 0.3f, 0.3f));
+  //
+  //Suffer::ref_ptr<Suffer::ScriptComponent> script;
+  //script.alloc();
+  //
+  //go_mario->AddComponent(transform_component_mario.get());
+  //go_mario->AddComponent(geometry_component_mario.get());
+  //go_mario->AddComponent(material_mario.get());
+  //go_mario->AddComponent(script.get());
 
-  Suffer::ref_ptr<Suffer::Transform> transform_component_mario;
-  transform_component_mario.alloc();
-  transform_component_mario->Translate(mathmorra::Vector3(0.0f, 0.0f, 2.0f));
-  transform_component_mario->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
-  transform_component_mario->Scale(mathmorra::Vector3(0.3f, 0.3f, 0.3f));
-
-  Suffer::ref_ptr<Suffer::ScriptComponent> script;
-  script.alloc();
-
-  go_mario->AddComponent(transform_component_mario.get());
-  go_mario->AddComponent(geometry_component_mario.get());
-  go_mario->AddComponent(material_mario.get());
-  go_mario->AddComponent(script.get());
-
-  script->AttachScript("../../../src/lua/lua_test_update.lua");
+  //script->AttachScript("../../../src/lua/lua_test_update.lua");
 
   // -------------------------------------------------------------------------------------//
 
@@ -274,7 +274,7 @@ int main(int argc, char* argv[]) {
   scene->AddGameObject(go_directional_light);
   scene->AddGameObject(go_spot_light);
   scene->AddGameObject(go_rock);
-  scene->AddGameObject(go_mario);
+  //scene->AddGameObject(go_mario);
   scene->SetSkybox(skybox);
 
 

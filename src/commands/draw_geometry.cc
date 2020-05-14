@@ -17,7 +17,8 @@
 #include "common_definitions.h"
 #include <string>
 
-static const u32 kMaxUsedVec4Data_DrawGeometry = 222;
+static const u32 kMaxUsedVec4Data_DrawGeometry = 218;
+static const u32 kMaxUsedVec4Data_MaterialParams = 4;
 
 // ------------------------------------------------------------------------- //
 
@@ -29,7 +30,17 @@ struct Suffer::DrawGeometry::Data {
   GLenum draw_mode_;
   u32 number_shapes_;
 
+  //3 matrices -> 48 floats [0 - 47]
+  //Lights
+  //  number_lights & each light current nummber -> 4 floats [48 - 51]
+  //  4 Directional -> 36  floats/each [52 - 195]
+  //  4 Point       -> 120 floats/each [196 - 675]
+  //  4 Spots       -> 48  floats/each [676 - 867]
   float u_data_[kMaxUsedVec4Data_DrawGeometry * 4];
+
+  // Normally only have one, but needed for multimaterial objs to draw same without duplicating
+  Array<Array<float>> u_material_data_;
+  u32 number_material_params_;
 
   // Textures has to be separated
   s32 texture_ids_[MAX_USED_TEXTURES];
@@ -55,6 +66,8 @@ Suffer::DrawGeometry::DrawGeometry() {
   cmd_type_ = Command::kCommandType_Render;
   data_ = new Data();
   data_->current_used_textures_ = 0;
+
+  data_->number_material_params_ = 0;
 
   for (u32 i = 0; i < MAX_USED_TEXTURES; ++i) {
     data_->texture_ids_[i] = -1;
@@ -145,91 +158,97 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
   {
 
     auto material_component = go->GetComponent(Suffer::Component::kComponentKind_Material);
-    MaterialComponent* material_ = reinterpret_cast<MaterialComponent*>(material_component);
-    data_->material_type_ = (u32)material_->current_params_->params_type_;
+    MaterialComponent* material_ = static_cast<MaterialComponent*>(material_component);
+    data_->material_type_ = (u32)material_->current_params_[0]->params_type_;
+    data_->number_material_params_ = material_->current_params_number_;
+    data_->u_material_data_.alloc(data_->number_material_params_);
 
-    // -- Common Attributes --
-    MaterialComponent::BaseParams* params = material_->current_params_.get();
-    mathmorra::Vector4 aux_color = params->color_;
-    float values[4] = { aux_color.x_, aux_color.y_, aux_color.z_, aux_color.w_ };
+    for (int m = 0; m < data_->number_material_params_; ++m) {
+      data_->u_material_data_[m].alloc(kMaxUsedVec4Data_MaterialParams * 4);
 
-    //u_data[12].xyzw
-    data_->u_data_[48] = values[0];
-    data_->u_data_[49] = values[1];
-    data_->u_data_[50] = values[2];
-    data_->u_data_[51] = values[3];
+      // -- Common Attributes --
+      MaterialComponent::BaseParams* params = material_->current_params_[m].get();
+      mathmorra::Vector4 aux_color = params->color_;
+      float values[4] = { aux_color.x_, aux_color.y_, aux_color.z_, aux_color.w_ };
 
-    // -- Set specific material parameters --
-    switch (data_->material_type_) {
-    case MaterialComponent::ParamsType::kParamsType_BlinnPhong: {
-      MaterialComponent::BlinnPhongParams* phong_params_;
-      phong_params_ = reinterpret_cast<MaterialComponent::BlinnPhongParams*>(params);
-      //u_data[13].xyzw
-      data_->u_data_[52] = suffer.GetCurrentScene()->GetMainCamera()->Position()[0];
-      data_->u_data_[53] = suffer.GetCurrentScene()->GetMainCamera()->Position()[1];
-      data_->u_data_[54] = suffer.GetCurrentScene()->GetMainCamera()->Position()[2];
-      data_->u_data_[55] = (float)Time();
-      //u_data[14].xyzw
-      data_->u_data_[56] = phong_params_->tiling_.x_;
-      data_->u_data_[57] = phong_params_->tiling_.y_;
-      data_->u_data_[58] = phong_params_->specular_strength_;
-      data_->u_data_[59] = phong_params_->specular_pow_;
-      //u_data[15].xyzw
-      data_->u_data_[60] = phong_params_->reflection_strength_;
+      //u_material_data[0].xyzw
+      data_->u_material_data_[m][0] = values[0];
+      data_->u_material_data_[m][1] = values[1];
+      data_->u_material_data_[m][2] = values[2];
+      data_->u_material_data_[m][3] = values[3];
 
-      if (phong_params_->use_albedo_texture_) {
-        data_->texture_ids_[0] = phong_params_->albedo_texture_id_;
-      }
-      else {
-        data_->texture_ids_[0] = 0;
-      }
+      // -- Set specific material parameters --
+      switch (data_->material_type_) {
+      case MaterialComponent::ParamsType::kParamsType_BlinnPhong: {
+        MaterialComponent::BlinnPhongParams* phong_params_;
+        phong_params_ = static_cast<MaterialComponent::BlinnPhongParams*>(params);
+        //u_data[1].xyzw
+        data_->u_material_data_[m][4] = suffer.GetCurrentScene()->GetMainCamera()->Position()[0];
+        data_->u_material_data_[m][5] = suffer.GetCurrentScene()->GetMainCamera()->Position()[1];
+        data_->u_material_data_[m][6] = suffer.GetCurrentScene()->GetMainCamera()->Position()[2];
+        data_->u_material_data_[m][7] = (float)Time();
+        //u_data[2].xyzw
+        data_->u_material_data_[m][8] = phong_params_->tiling_.x_;
+        data_->u_material_data_[m][9] = phong_params_->tiling_.y_;
+        data_->u_material_data_[m][10] = phong_params_->specular_strength_;
+        data_->u_material_data_[m][11] = phong_params_->specular_pow_;
+        //u_data[3].xyzw
+        data_->u_material_data_[m][12] = phong_params_->reflection_strength_;
 
-      if (phong_params_->use_specular_texture_) {
-        data_->texture_ids_[1] = phong_params_->specular_texture_id_;
-      }
-      else {
-        data_->texture_ids_[1] = 0;
-      }
-
-      if (phong_params_->use_reflection_texture_) {
-        data_->texture_ids_[2] = phong_params_->reflection_texture_id_;
-      }
-      else {
-        //Black texture
-        if (phong_params_->reflection_strength_ > 0.0f) {
-          data_->texture_ids_[2] = 0;
+        if (phong_params_->use_albedo_texture_) {
+          data_->texture_ids_[0] = phong_params_->albedo_texture_id_;
         }
         else {
-          data_->texture_ids_[2] = 1;
+          data_->texture_ids_[0] = 0;
         }
+
+        if (phong_params_->use_specular_texture_) {
+          data_->texture_ids_[1] = phong_params_->specular_texture_id_;
+        }
+        else {
+          data_->texture_ids_[1] = 0;
+        }
+
+        if (phong_params_->use_reflection_texture_) {
+          data_->texture_ids_[2] = phong_params_->reflection_texture_id_;
+        }
+        else {
+          //Black texture
+          if (phong_params_->reflection_strength_ > 0.0f) {
+            data_->texture_ids_[2] = 0;
+          }
+          else {
+            data_->texture_ids_[2] = 1;
+          }
+        }
+
+        data_->current_used_textures_ = 3;
+
+        Skybox* skybox = suffer.GetCurrentScene()->GetSkybox();
+        if (skybox != nullptr) {
+          data_->skybox_cubemap_id_ = skybox->cubemap_id_;
+        }
+
+        SetLights();
+        break;
       }
+      case MaterialComponent::ParamsType::kParamsType_RenderToTexture: {
+        MaterialComponent::RenderToTextureParams* render_params_;
+        render_params_ = reinterpret_cast<MaterialComponent::RenderToTextureParams*>(params);
 
-      data_->current_used_textures_ = 3;
-
-      Skybox* skybox = suffer.GetCurrentScene()->GetSkybox();
-      if (skybox != nullptr) {
-        data_->skybox_cubemap_id_ = skybox->cubemap_id_;
+        data_->texture_ids_[0] = render_params_->albedo_texture_id_;
+        data_->current_used_textures_ = 1;
+        break;
       }
-
-      SetLights();
-      break;
-    }
-    case MaterialComponent::ParamsType::kParamsType_RenderToTexture: {
-      MaterialComponent::RenderToTextureParams* render_params_;
-      render_params_ = reinterpret_cast<MaterialComponent::RenderToTextureParams*>(params);
-
-      data_->texture_ids_[0] = render_params_->albedo_texture_id_;
-      data_->current_used_textures_ = 1;
-      break;
-    }
-    case MaterialComponent::ParamsType::kParamsType_Invalid: {
-      assert(data_->material_type_ != MaterialComponent::kParamsType_Invalid && "Material type not set");
-      break;
-    }
-    default: {
-      assert(false);
-      break;
-    }
+      case MaterialComponent::ParamsType::kParamsType_Invalid: {
+        assert(data_->material_type_ != MaterialComponent::kParamsType_Invalid && "Material type not set");
+        break;
+      }
+      default: {
+        assert(false);
+        break;
+      }
+      }
     }
   }
 
@@ -272,9 +291,9 @@ void Suffer::DrawGeometry::SetProjectionMatrix(mathmorra::Matrix4 projection) {
 
 // ------------------------------------------------------------------------- //
 
-void Suffer::DrawGeometry::SetLights(){
+void Suffer::DrawGeometry::SetLights() {
 
-  u32 start = 72;
+  u32 start = 52;
   // Lighting
   u32 number_lights = 0;
   u32 offset = 0;
@@ -325,7 +344,7 @@ void Suffer::DrawGeometry::SetLights(){
   }
   
   light_index = 0;
-  start = 72 + (36 * 4);
+  start = 52 + (36 * 4);
   offset = 0;
 
   // POINTS
@@ -374,7 +393,7 @@ void Suffer::DrawGeometry::SetLights(){
   }
 
   light_index = 0;
-  start = 72 + (36 * 4) + (120 * 4);
+  start = 52 + (36 * 4) + (120 * 4);
   offset = 0;
 
   // SPOTS
@@ -424,11 +443,11 @@ void Suffer::DrawGeometry::SetLights(){
 
   }
 
-  //u_data[17].xyzw
-  data_->u_data_[68] = number_lights;
-  data_->u_data_[69] = data_->current_dir_lights;
-  data_->u_data_[70] = data_->current_point_lights;
-  data_->u_data_[71] = data_->current_spot_lights;
+  //u_data[12].xyzw
+  data_->u_data_[48] = number_lights;
+  data_->u_data_[49] = data_->current_dir_lights;
+  data_->u_data_[50] = data_->current_point_lights;
+  data_->u_data_[51] = data_->current_spot_lights;
 
 }
 
@@ -708,6 +727,17 @@ void Suffer::DrawGeometry::Execute() const {
       }
 
       glUniform4fv(u_pos, kMaxUsedVec4Data_DrawGeometry, data_->u_data_);
+      u_pos = -1;
+
+
+      // -- Uniform Material Block --
+      u_pos = glGetUniformLocation(program_id, "u_material_data");
+      if (u_pos < 0) {
+        printf("\nERROR: u_material_data uniform not exists.\n");
+        //return;
+      }
+
+      glUniform4fv(u_pos, kMaxUsedVec4Data_MaterialParams, &data_->u_material_data_[s][0]);
       u_pos = -1;
 
 

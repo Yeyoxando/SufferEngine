@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
     ground_material_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     ground_material_params->SetAlbedoTexture(ground_texture.get());
     ground_material_params->SetSpecularTexture(ground_specular_texture.get());
-    ground_material->SetParams(ground_material_params.get());
+    ground_material->AddParams(ground_material_params.get());
 
 
 
@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
     material_wall_params->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     material_wall_params->SetAlbedoTexture(wall_texture.get());
     material_wall_params->SetSpecularTexture(wall_specular_texture.get());
-    material_wall->SetParams(material_wall_params.get());
+    material_wall->AddParams(material_wall_params.get());
 
     // -------------------------------- COMPONENTS STUFF TESTS ------------------------------//
 
@@ -111,7 +111,7 @@ int main(int argc, char* argv[]) {
     material_params_cube->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     material_params_cube->SetAlbedoTexture(box_texture.get());
     material_params_cube->SetSpecularTexture(box_specular_texture.get());
-    material_component_cube->SetParams(material_params_cube.get());
+    material_component_cube->AddParams(material_params_cube.get());
     go_cube->AddComponent(material_component_cube.get());
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_cube;
@@ -137,7 +137,7 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params2;
     material_params2.alloc();
     material_params2->color_ = mathmorra::Vector4(0.8f, 0.8f, 0.8f, 1.0f);
-    material_component2->SetParams(material_params2.get());
+    material_component2->AddParams(material_params2.get());
     go_quad->AddComponent(ground_material.get());
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_2;
@@ -163,7 +163,7 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params6;
     material_params6.alloc();
     material_params6->color_ = mathmorra::Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-    material_component6->SetParams(material_params6.get());
+    material_component6->AddParams(material_params6.get());
     go_quad4->AddComponent(material_wall.get());
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_7;
@@ -192,7 +192,7 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params5;
     material_params5.alloc();
     material_params5->color_ = mathmorra::Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-    material_component5->SetParams(material_params5.get());
+    material_component5->AddParams(material_params5.get());
     go_quad3->AddComponent(material_wall.get());
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_6;
@@ -214,7 +214,7 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params4;
     material_params4.alloc();
     material_params4->color_ = mathmorra::Vector4(1.0f, 1.0f, 0.0f, 1.0f);
-    material_component4->SetParams(material_params4.get());
+    material_component4->AddParams(material_params4.get());
     go_quad2->AddComponent(material_wall.get());
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_5;
@@ -240,7 +240,7 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params3;
     material_params3.alloc();
     material_params3->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-    material_component3->SetParams(material_params3.get());
+    material_component3->AddParams(material_params3.get());
     go_light->AddComponent(material_component3.get());
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_3;

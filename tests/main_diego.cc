@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
   //material_params_box->SetAlbedoTexture(rock_texture.get());
   //material_params_box->SetSpecularTexture(box_specular_texture.get());
   //material_params_box->SetReflectionTexture(box_specular_texture.get(), 1.0f);
-  material_box->SetParams(material_params_box.get());
+  material_box->AddParams(material_params_box.get());
 
   // Ground material
   Suffer::ref_ptr<Suffer::MaterialComponent> material_ground;
@@ -95,7 +95,7 @@ int main(int argc, char* argv[]) {
   material_params_ground->tiling_ = mathmorra::Vector2(5.0f, 5.0f);
   material_params_ground->SetAlbedoTexture(ground_texture.get());
   material_params_ground->SetSpecularTexture(ground_specular_texture.get());
-  material_ground->SetParams(material_params_ground.get());
+  material_ground->AddParams(material_params_ground.get());
 
   // White material
   Suffer::ref_ptr<Suffer::MaterialComponent> material_white;
@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_white;
   material_params_white.alloc();
   material_params_white->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  material_white->SetParams(material_params_white.get());
+  material_white->AddParams(material_params_white.get());
 
   // --------------------------- GEOMETRIES ------------------------------ //
 

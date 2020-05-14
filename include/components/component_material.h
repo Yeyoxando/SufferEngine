@@ -13,14 +13,14 @@
 #include <ref_ptr.h>
 #include "vector2.h"
 #include "vector4.h"
+#include <vector>
 
 namespace Suffer {
 
   class MaterialComponent : public Component {
     friend class DrawGeometry;
   public:
-    MaterialComponent() : Component(kComponentKind_Material) { current_params_ = nullptr; }
-    MaterialComponent(MaterialComponent &mat);
+    MaterialComponent();
 
     /**
     * @brief: Indicates which type of material is it
@@ -100,19 +100,19 @@ namespace Suffer {
      * @brief: sets material instance default material parameters. Converts the material to a default type.
      * @param: default params for the object.
      */
-    void SetParams(ref_ptr<BaseParams> params);
+    void AddParams(ref_ptr<BaseParams> params);
 
     /**
      * @return: current material component params
      */
-    BaseParams* CurrentParams();
+    BaseParams* CurrentParams(u32 params_id = 0);
 
   protected:
     virtual ~MaterialComponent();
 
   private:
-
-    ref_ptr<BaseParams> current_params_;
+    std::vector<ref_ptr<BaseParams>> current_params_;
+    u32 current_params_number_;
 
   };
 

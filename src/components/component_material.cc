@@ -7,23 +7,33 @@
 #include "component_material.h"
 #include "math_utils.h"
 
-// ------------------------------------------------------------------------- //
 
-void Suffer::MaterialComponent::SetParams(ref_ptr<BaseParams> params){
+// --------------------------------------------------- //
 
-  assert(params.get() != nullptr && "Error: params is null");
-  assert(params->params_type_ != kParamsType_Invalid && "Error: params has no type");
+Suffer::MaterialComponent::MaterialComponent() : Component(Component::kComponentKind_Material) {
 
-  // Store current params
-  current_params_ = params.get();
+  current_params_number_ = 0;
 
 }
 
 // ------------------------------------------------------------------------- //
 
-Suffer::MaterialComponent::BaseParams* Suffer::MaterialComponent::CurrentParams(){
+void Suffer::MaterialComponent::AddParams(ref_ptr<BaseParams> params){
 
-  return current_params_.get();
+  assert(params.get() != nullptr && "Error: params is null");
+  assert(params->params_type_ != kParamsType_Invalid && "Error: params has no type");
+
+  // Store current params
+  current_params_.push_back(params);
+  current_params_number_++;
+
+}
+
+// ------------------------------------------------------------------------- //
+
+Suffer::MaterialComponent::BaseParams* Suffer::MaterialComponent::CurrentParams(u32 params_id){
+
+  return current_params_[params_id].get();
 
 }
 
