@@ -20,6 +20,7 @@ namespace Suffer {
     friend class DrawGeometry;
   public:
     MaterialComponent() : Component(kComponentKind_Material) { current_params_ = nullptr; }
+    MaterialComponent(MaterialComponent &mat);
 
     /**
     * @brief: Indicates which type of material is it

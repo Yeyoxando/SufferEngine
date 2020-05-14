@@ -16,6 +16,8 @@
 
 namespace Suffer {
 
+  class MaterialComponent;
+
   class GeometryComponent : public Component {
 
   public:
@@ -47,7 +49,7 @@ namespace Suffer {
     };
 
     void CreateGeometryWithOBJ(const char* obj_file);
-    void CreateGeometryWithOBJAndMTL(const char* obj_file, const char* mtl_base_route, const char* textures_base_route);
+    void CreateGeometryWithOBJAndMTL(const char* obj_file, MaterialComponent& mat, const char* mtl_base_route, const char* textures_base_route);
 
     void CreateTerrainGeometry(float frequency, float elevation, float terrace_value, int rows = 200, int columns = 200);
 

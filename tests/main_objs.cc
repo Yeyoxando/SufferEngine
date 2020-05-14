@@ -30,18 +30,6 @@ int main(int argc, char* argv[]) {
   scene.alloc();
 
   // --------------------------- TEXTURES ------------------------------- //
-  // Rock textures
-  Suffer::ref_ptr<Suffer::ResourceManager::Texture> rock_texture;
-  rock_texture.alloc();
-  rock_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-  rock_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-  rock_texture->LoadTextureData("../../../resources/images/albedo_rock03.jpg");
-
-  Suffer::ref_ptr<Suffer::ResourceManager::Texture> rock_specular_texture;
-  rock_specular_texture.alloc();
-  rock_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-  rock_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-  rock_specular_texture->LoadTextureData("../../../resources/images/spec_rock03.jpg");
 
   // Ground textures
   Suffer::ref_ptr<Suffer::ResourceManager::Texture> ground_texture;
@@ -75,16 +63,6 @@ int main(int argc, char* argv[]) {
   material_params_mario.alloc();
   material_params_mario->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
   material_mario->SetParams(material_params_mario.get());
-
-  // Rock material
-  Suffer::ref_ptr<Suffer::MaterialComponent> material_rock;
-  material_rock.alloc();
-  Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_rock;
-  material_params_rock.alloc();
-  material_params_rock->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  material_params_rock->SetAlbedoTexture(rock_texture.get());
-  material_params_rock->SetSpecularTexture(rock_specular_texture.get());
-  material_rock->SetParams(material_params_rock.get());
 
   // Ground material
   Suffer::ref_ptr<Suffer::MaterialComponent> material_ground;
@@ -137,11 +115,14 @@ int main(int argc, char* argv[]) {
   geometry_component_mario->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
   geometry_component_mario->CreateGeometryWithOBJ("../../../resources/models/SuperMairo64.obj");
 
-  // Rock OBJ
+  // Rock OBJ And MTL
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_rock;
+  material_rock.alloc();
   Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_rock;
   geometry_component_rock.alloc();
   geometry_component_rock->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
-  geometry_component_rock->CreateGeometryWithOBJ("../../../resources/models/rock_03.obj");
+  geometry_component_rock->CreateGeometryWithOBJAndMTL("../../../resources/models/rock_03.obj",
+    *material_rock.get(), "../../../resources/models/", "../../../resources/images/");
 
   // ----------------------------- LIGHTS -------------------------------- //
   // Directional
