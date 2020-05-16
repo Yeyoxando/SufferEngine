@@ -42,12 +42,12 @@ struct Suffer::DrawGeometry::Data {
   Array<Array<float>> u_material_data_;
   u32 number_material_params_;
 
-  // Textures has to be separated
-  s32 texture_ids_[MAX_USED_TEXTURES];
+  // Textures has to be separated // 3 -> albedo, specular, reflection
+  Array<Array<s32>> texture_ids_;
   u32 current_used_textures_;
 
+  // This textures are shared for all shapes
   u32 skybox_cubemap_id_;
-
   s32 light_dir_texture_ids_[MAX_LIGHTS];
   s32 light_point_texture_ids_[MAX_LIGHTS];
   s32 light_spot_texture_ids_[MAX_LIGHTS];
@@ -68,10 +68,6 @@ Suffer::DrawGeometry::DrawGeometry() {
   data_->current_used_textures_ = 0;
 
   data_->number_material_params_ = 0;
-
-  for (u32 i = 0; i < MAX_USED_TEXTURES; ++i) {
-    data_->texture_ids_[i] = -1;
-  }
 
   for (u32 i = 0; i < MAX_LIGHTS; ++i) {
     data_->light_dir_texture_ids_[i] = -1;
@@ -162,6 +158,7 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
     data_->material_type_ = (u32)material_->current_params_[0]->params_type_;
     data_->number_material_params_ = material_->current_params_number_;
     data_->u_material_data_.alloc(data_->number_material_params_);
+    data_->texture_ids_.alloc(data_->number_material_params_);
 
     for (int m = 0; m < data_->number_material_params_; ++m) {
       data_->u_material_data_[m].alloc(kMaxUsedVec4Data_MaterialParams * 4);
@@ -195,30 +192,31 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
         //u_data[3].xyzw
         data_->u_material_data_[m][12] = phong_params_->reflection_strength_;
 
+        data_->texture_ids_[m].alloc(3);
         if (phong_params_->use_albedo_texture_) {
-          data_->texture_ids_[0] = phong_params_->albedo_texture_id_;
+          data_->texture_ids_[m][0] = phong_params_->albedo_texture_id_;
         }
         else {
-          data_->texture_ids_[0] = 0;
+          data_->texture_ids_[m][0] = 0;
         }
 
         if (phong_params_->use_specular_texture_) {
-          data_->texture_ids_[1] = phong_params_->specular_texture_id_;
+          data_->texture_ids_[m][1] = phong_params_->specular_texture_id_;
         }
         else {
-          data_->texture_ids_[1] = 0;
+          data_->texture_ids_[m][1] = 0;
         }
 
         if (phong_params_->use_reflection_texture_) {
-          data_->texture_ids_[2] = phong_params_->reflection_texture_id_;
+          data_->texture_ids_[m][2] = phong_params_->reflection_texture_id_;
         }
         else {
           //Black texture
           if (phong_params_->reflection_strength_ > 0.0f) {
-            data_->texture_ids_[2] = 0;
+            data_->texture_ids_[m][2] = 0;
           }
           else {
-            data_->texture_ids_[2] = 1;
+            data_->texture_ids_[m][2] = 1;
           }
         }
 
@@ -236,7 +234,7 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
         MaterialComponent::RenderToTextureParams* render_params_;
         render_params_ = reinterpret_cast<MaterialComponent::RenderToTextureParams*>(params);
 
-        data_->texture_ids_[0] = render_params_->albedo_texture_id_;
+        data_->texture_ids_[m][0] = render_params_->albedo_texture_id_;
         data_->current_used_textures_ = 1;
         break;
       }
@@ -296,6 +294,9 @@ void Suffer::DrawGeometry::SetLights() {
   u32 start = 52;
   // Lighting
   u32 number_lights = 0;
+  data_->current_dir_lights = 0;
+  data_->current_point_lights = 0;
+  data_->current_spot_lights = 0;
   u32 offset = 0;
   u32 current_lights = suffer.light_manager_.current_lights_;
 
@@ -527,8 +528,8 @@ void Suffer::DrawGeometry::Execute() const {
 
       for (u32 i = 0; i < data_->current_used_textures_; ++i) {
 
-        if (data_->texture_ids_[i] < 0) return;
-        s32 id_texture = data_->texture_ids_[i];
+        if (data_->texture_ids_[s][i] < 0) return;
+        s32 id_texture = data_->texture_ids_[s][i];
 
         if (suffer.resource_manager_.data_->internal_textures_[id_texture].gpu_version_ == 0) {
           glGenTextures(1, &suffer.resource_manager_.data_->internal_textures_[id_texture].current_texture_id_);
@@ -757,7 +758,7 @@ void Suffer::DrawGeometry::Execute() const {
         }
 
         glActiveTexture(GL_TEXTURE0 + i);
-        glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[data_->texture_ids_[i]].current_texture_id_);
+        glBindTexture(GL_TEXTURE_2D, suffer.resource_manager_.data_->internal_textures_[data_->texture_ids_[s][i]].current_texture_id_);
 
         glUniform1i(u_pos, i);
         u_pos = -1;

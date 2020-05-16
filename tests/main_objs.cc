@@ -56,13 +56,6 @@ int main(int argc, char* argv[]) {
 
   // --------------------------- MATERIALS ------------------------------- //
 
-  // Mario material
-  Suffer::ref_ptr<Suffer::MaterialComponent> material_mario;
-  material_mario.alloc();
-  Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_mario;
-  material_params_mario.alloc();
-  material_params_mario->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  material_mario->AddParams(material_params_mario.get());
 
   // Ground material
   Suffer::ref_ptr<Suffer::MaterialComponent> material_ground;
@@ -109,11 +102,14 @@ int main(int argc, char* argv[]) {
   geometry_component_terrain->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
   geometry_component_terrain->CreateTerrainGeometry(0.096f, 63.0f, 1.0f);
 
-  // Mario OBJ
-  //Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_mario;
-  //geometry_component_mario.alloc();
-  //geometry_component_mario->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
-  //geometry_component_mario->CreateGeometryWithOBJ("../../../resources/models/SuperMairo64.obj");
+  // Mario OBJ and MTL
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_mario;
+  material_mario.alloc();
+  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_mario;
+  geometry_component_mario.alloc();
+  geometry_component_mario->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+  geometry_component_mario->CreateGeometryWithOBJAndMTL("../../../resources/models/SuperMairo64.obj",
+    *material_mario.get(), "../../../resources/materials/", "../../../resources/images/Mario64/");
 
   // Rock OBJ And MTL
   Suffer::ref_ptr<Suffer::MaterialComponent> material_rock;
@@ -122,7 +118,7 @@ int main(int argc, char* argv[]) {
   geometry_component_rock.alloc();
   geometry_component_rock->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
   geometry_component_rock->CreateGeometryWithOBJAndMTL("../../../resources/models/rock_03.obj",
-    *material_rock.get(), "../../../resources/models/", "../../../resources/images/");
+    *material_rock.get(), "../../../resources/materials/", "../../../resources/images/");
 
   // ----------------------------- LIGHTS -------------------------------- //
   // Directional
@@ -239,25 +235,25 @@ int main(int argc, char* argv[]) {
 
 
   // -- Mario --
-  //Suffer::ref_ptr<Suffer::GameObject> go_mario;
-  //go_mario.alloc();
-  //go_mario->SetName("Mario");
-  //
-  //Suffer::ref_ptr<Suffer::Transform> transform_component_mario;
-  //transform_component_mario.alloc();
-  //transform_component_mario->Translate(mathmorra::Vector3(0.0f, 0.0f, 2.0f));
-  //transform_component_mario->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
-  //transform_component_mario->Scale(mathmorra::Vector3(0.3f, 0.3f, 0.3f));
-  //
-  //Suffer::ref_ptr<Suffer::ScriptComponent> script;
-  //script.alloc();
-  //
-  //go_mario->AddComponent(transform_component_mario.get());
-  //go_mario->AddComponent(geometry_component_mario.get());
-  //go_mario->AddComponent(material_mario.get());
-  //go_mario->AddComponent(script.get());
+  Suffer::ref_ptr<Suffer::GameObject> go_mario;
+  go_mario.alloc();
+  go_mario->SetName("Mario");
+  
+  Suffer::ref_ptr<Suffer::Transform> transform_component_mario;
+  transform_component_mario.alloc();
+  transform_component_mario->Translate(mathmorra::Vector3(0.0f, 0.0f, 2.0f));
+  transform_component_mario->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+  transform_component_mario->Scale(mathmorra::Vector3(0.3f, 0.3f, 0.3f));
+  
+  Suffer::ref_ptr<Suffer::ScriptComponent> script;
+  script.alloc();
+  
+  go_mario->AddComponent(transform_component_mario.get());
+  go_mario->AddComponent(geometry_component_mario.get());
+  go_mario->AddComponent(material_mario.get());
+  go_mario->AddComponent(script.get());
 
-  //script->AttachScript("../../../src/lua/lua_test_update.lua");
+  script->AttachScript("../../../src/lua/lua_test_update.lua");
 
   // -------------------------------------------------------------------------------------//
 
@@ -274,7 +270,7 @@ int main(int argc, char* argv[]) {
   scene->AddGameObject(go_directional_light);
   scene->AddGameObject(go_spot_light);
   scene->AddGameObject(go_rock);
-  //scene->AddGameObject(go_mario);
+  scene->AddGameObject(go_mario);
   scene->SetSkybox(skybox);
 
 
