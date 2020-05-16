@@ -154,7 +154,7 @@ void Suffer::GeometryComponent::CreateGeometryWithOBJ(const char* obj_file) {
 
     ref_ptr<ResourceManager::VertexBuffer> new_vertex_buffer;
     new_vertex_buffer.alloc();
-    new_vertex_buffer->SetVertexFormat(ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV);
+    new_vertex_buffer->SetVertexFormat(ResourceManager::VertexBuffer::kVertexFormat_3P);
     Array<ResourceManager::VertexBuffer::Vertex> vertexes;
     vertexes.alloc(v_positions.size());
     for (u32 i = 0; i < vertexes.size(); ++i) {
