@@ -36,19 +36,19 @@ int main(int argc, char* argv[]) {
   ground_texture.alloc();
   ground_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
   ground_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
-  ground_texture->LoadTextureData("../../../resources/images/brickwall.jpg");
+  ground_texture->LoadTextureData("../../../resources/images/texture_01.png");
 
   Suffer::ref_ptr<Suffer::ResourceManager::Texture> ground_specular_texture;
   ground_specular_texture.alloc();
   ground_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
   ground_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
-  ground_specular_texture->LoadTextureData("../../../resources/images/floor_spec.png");
+  ground_specular_texture->LoadTextureData("../../../resources/images/texture_01_spec.png");
 
   Suffer::ref_ptr<Suffer::ResourceManager::Texture> ground_normal_map_texture;
   ground_normal_map_texture.alloc();
   ground_normal_map_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
   ground_normal_map_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
-  ground_normal_map_texture->LoadTextureData("../../../resources/images/brickwall_normal.jpg");
+  ground_normal_map_texture->LoadTextureData("../../../resources/images/texture_01_nm.png");
 
   //Skybox textures
   Suffer::ref_ptr<Suffer::ResourceManager::Cubemap> skybox_cubemap;
