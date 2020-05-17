@@ -693,8 +693,8 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   
     internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
   
-    internal_materials_[number_of_materials_].vertex_shader_ = Suffer::blinn_phong_vertex_shader;
-    internal_materials_[number_of_materials_].fragment_shader_ = Suffer::blinn_phong_fragment_shader;
+    internal_materials_[number_of_materials_].vertex_shader_ = Suffer::blinn_phong_nm_vertex_shader;
+    internal_materials_[number_of_materials_].fragment_shader_ = Suffer::blinn_phong_nm_fragment_shader;
   
     number_of_materials_++;
   
@@ -749,6 +749,22 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
   }
 
   // --------------------- PointShadowDepthMaterial ------------------------ //
+
+
+  // ------------------------ BlinnPhongMaterial With Normal Mapping --------------------------- //
+
+  {
+
+      //internal_materials_[number_of_materials_].id_handle_ = number_of_materials_;
+
+      //internal_materials_[number_of_materials_].vertex_shader_ = Suffer::blinn_phong_vertex_shader;
+      //internal_materials_[number_of_materials_].fragment_shader_ = Suffer::blinn_phong_fragment_shader;
+
+      //number_of_materials_++;
+
+  }
+
+  // ------------------------ BlinnPhongMaterial With Normal Mapping --------------------------- //
 
 }
 

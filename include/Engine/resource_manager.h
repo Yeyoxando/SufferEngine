@@ -116,8 +116,8 @@ namespace Suffer {
         kVertexFormat_3P = 0,
         kVertexFormat_3P_3N = 1,
         kVertexFormat_3P_3N_2UV = 2,
-        kVertexFormat_3P_3N_2UV_3T = 4,
-        kVertexFormat_3P_3N_2UV_3T_3B = 5,
+        kVertexFormat_3P_3N_2UV_3T = 3,
+        kVertexFormat_3P_3N_2UV_3T_3B = 4,
       };
 
       /**

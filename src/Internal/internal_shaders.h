@@ -4,6 +4,7 @@
 #define __INTERNAL_SHADERS_H__
 
 #include "blinn_phong_shaders.h"
+#include "blinn_phong_shaders_normal_mapping.h"
 #include "depth_shaders.h"
 #include "post_process_shaders.h"
 #include "point_depth_shaders.h"

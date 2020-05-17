@@ -192,6 +192,67 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
         //u_data[3].xyzw
         data_->u_material_data_[m][12] = phong_params_->reflection_strength_;
 
+        data_->texture_ids_[m].alloc(4);
+        if (phong_params_->use_albedo_texture_) {
+          data_->texture_ids_[m][0] = phong_params_->albedo_texture_id_;
+        }
+        else {
+          data_->texture_ids_[m][0] = 0;
+        }
+
+        if (phong_params_->use_specular_texture_) {
+          data_->texture_ids_[m][1] = phong_params_->specular_texture_id_;
+        }
+        else {
+          data_->texture_ids_[m][1] = 0;
+        }
+
+        if (phong_params_->use_normal_map_texture_) {
+            data_->texture_ids_[m][3] = phong_params_->normal_map_texture_id_;
+        }
+        else {
+            data_->texture_ids_[m][3] = 1;
+        }
+
+        if (phong_params_->use_reflection_texture_) {
+          data_->texture_ids_[m][2] = phong_params_->reflection_texture_id_;
+        }
+        else {
+          //Black texture
+          if (phong_params_->reflection_strength_ > 0.0f) {
+            data_->texture_ids_[m][2] = 0;
+          }
+          else {
+            data_->texture_ids_[m][2] = 1;
+          }
+        }
+
+        data_->current_used_textures_ = 4;
+
+        Skybox* skybox = suffer.GetCurrentScene()->GetSkybox();
+        if (skybox != nullptr) {
+          data_->skybox_cubemap_id_ = skybox->cubemap_id_;
+        }
+
+        SetLights();
+        break;
+      }
+      case MaterialComponent::ParamsType::kParamsType_BlinnPhongNM: {
+        MaterialComponent::BlinnPhongParams* phong_params_;
+        phong_params_ = static_cast<MaterialComponent::BlinnPhongParams*>(params);
+        //u_data[1].xyzw
+        data_->u_material_data_[m][4] = suffer.GetCurrentScene()->GetMainCamera()->Position()[0];
+        data_->u_material_data_[m][5] = suffer.GetCurrentScene()->GetMainCamera()->Position()[1];
+        data_->u_material_data_[m][6] = suffer.GetCurrentScene()->GetMainCamera()->Position()[2];
+        data_->u_material_data_[m][7] = (float)Time();
+        //u_data[2].xyzw
+        data_->u_material_data_[m][8] = phong_params_->tiling_.x_;
+        data_->u_material_data_[m][9] = phong_params_->tiling_.y_;
+        data_->u_material_data_[m][10] = phong_params_->specular_strength_;
+        data_->u_material_data_[m][11] = phong_params_->specular_pow_;
+        //u_data[3].xyzw
+        data_->u_material_data_[m][12] = phong_params_->reflection_strength_;
+
         data_->texture_ids_[m].alloc(3);
         if (phong_params_->use_albedo_texture_) {
           data_->texture_ids_[m][0] = phong_params_->albedo_texture_id_;

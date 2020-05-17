@@ -1,19 +1,21 @@
-// Author: Diego Ochando Torres <ochandoto@esat-alumni.com>
+// Author: 
 
-#ifndef __PHONG_SHADERS_H__
-#define __PHONG_SHADERS_H__
+#ifndef __PHONG_NM_SHADERS_H__
+#define __PHONG_NM_SHADERS_H__
 
 namespace Suffer {
 
   // ---------------------------- PhongShaders ----------------------------- //
 
   // -- (vertex) --
-  static const char* blinn_phong_vertex_shader = R"VBPHONGSHADER(
+  static const char* blinn_phong_nm_vertex_shader = R"VBPHONGSHADER(
     #version 330
 
     layout(location = 0) in vec3 a_position;
     layout(location = 1) in vec3 a_normal;
     layout(location = 2) in vec2 a_uvs;
+    layout(location = 3) in vec3 a_tangent;
+    layout(location = 4) in vec3 a_bitangent;
     
 // ......... UNIFORMS .........
     uniform vec4 u_data[218];
@@ -34,17 +36,26 @@ namespace Suffer {
     out vec3 frag_pos;
     out vec2 uvs;
     out float time;
+    out mat3 TBN; // Tangent-Bitangent-Normal Matrix
 
 // ......... MAIN ..........
     void main(){  
       mat4 accum_matrix = u_p_matrix * u_v_matrix * u_m_matrix;
 
-      //Normal is a CoVector and because of that we have to multiply by transponded inverse
+      // THIS NORMAL WILL BE REMOVED IF EXISTS A NORMAL MAP
       normal = normalize(mat3(transpose(inverse(u_m_matrix))) * vec4(a_normal, 0.0f).xyz); 
       frag_pos = (u_m_matrix * vec4(a_position, 1.0f)).xyz;
       uvs = a_uvs;
       time = u_time;
-	    
+
+      mat3 normal_matrix = transpose(inverse(mat3(u_m_matrix)));
+
+      vec3 T = normalize(normal_matrix * a_tangent); // TANGENT
+      vec3 N = normalize(normal_matrix * a_normal);  // NORMAL
+      vec3 B = cross(N, T);                          // BITANGENT
+
+      TBN = transpose(mat3(T, B, N));  
+
       position = vec3(u_m_matrix * vec4(a_position, 1.0f));
       gl_Position = u_p_matrix * u_v_matrix * vec4(position, 1.0f);
     }
@@ -53,7 +64,7 @@ namespace Suffer {
 
   
   // -- (fragment) --
-  static const char* blinn_phong_fragment_shader = R"FBPHONGSHADER(
+  static const char* blinn_phong_nm_fragment_shader = R"FBPHONGSHADER(
     #version 330
 
 // ....... STRUCTS ........
@@ -120,6 +131,7 @@ namespace Suffer {
     uniform sampler2D u_tex0;
     uniform sampler2D u_tex1; 
     uniform sampler2D u_tex2; 
+    uniform sampler2D u_tex3; 
 
     uniform samplerCube u_skybox;
 
@@ -156,6 +168,7 @@ namespace Suffer {
     #define u_albedo u_tex0
     #define u_specular u_tex1
     #define u_reflection u_tex2
+    #define u_normal_map u_tex3
 
 // ....... IN / OUT ........
     in vec3 position;
@@ -163,8 +176,14 @@ namespace Suffer {
     in vec3 frag_pos;
     in vec2 uvs;
     in float time;
+    in mat3 TBN; // Tangent-Bitangent-Normal Matrix
 
     out vec4 fragColor;
+
+
+    vec3 TangentLightPos;
+    vec3 TangentViewPos;
+    vec3 TangentFragPos;
 
 // ....... FUNCTIONS ........
     // DIRECTIONALS
@@ -205,7 +224,6 @@ namespace Suffer {
       }
     }
 
-// --------------------------------------------------------------------- //
 
     // POINTS
     PointLight GetPointLight(int index){
@@ -248,7 +266,6 @@ namespace Suffer {
       }
     }
 
-// --------------------------------------------------------------------- //
 
     // SPOTS
     SpotLight GetSpotLight(int index){
@@ -292,8 +309,6 @@ namespace Suffer {
       }
     }
 
-// --------------------------------------------------------------------- //
-
     float CalculateShadow(vec4 frag_pos_light_space, vec3 light_dir, int light_index){
       // Clip projection coords
       vec3 proj_coords = frag_pos_light_space.xyz / frag_pos_light_space.w;
@@ -310,8 +325,6 @@ namespace Suffer {
 
       return shadow;
     }
-
-// --------------------------------------------------------------------- //
 
     vec3 CalculateDirectionalLight(DirectionalLight light, int light_index, vec3 normal, vec3 view_dir){
       vec3 light_dir = normalize(-light.direction);
@@ -349,14 +362,15 @@ namespace Suffer {
       return shadow;
     } 
 
-// --------------------------------------------------------------------- //
-
     vec3 CalculatePointLight(PointLight light, int light_index, vec3 normal, vec3 view_dir) {
-      vec3 light_dir = normalize(light.position - frag_pos);
+      TangentLightPos = TBN * light.position;
+      TangentViewPos = TBN * camera_pos;
+      TangentFragPos = TBN * frag_pos;
+      vec3 light_dir = normalize(TangentLightPos - TangentFragPos);
 
       float diff = max(dot(light_dir, normal), 0.0f);
-
-      vec3 halfway_dir = normalize(light_dir + view_dir);  
+      vec3 viewD = normalize(TangentViewPos - TangentFragPos);
+      vec3 halfway_dir = normalize(light_dir + viewD);  
       float spec = pow(max(dot(normal, halfway_dir), 0.0f), u_specular_pow);
 
       vec3 ref_view_dir = normalize(position - camera_pos);      
@@ -369,6 +383,7 @@ namespace Suffer {
       vec3 ambient  = light.ambient * attenuation * light.intensity * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 diffuse  = light.diffuse * attenuation * light.intensity * diff * pow(texture(u_albedo, uvs * u_tiling).xyz, vec3(2.2f));
       vec3 specular = light.specular* attenuation * light.intensity * (spec * u_specular_strength) * texture(u_specular, uvs * u_tiling).xyz;
+      specular *= vec3(0.2);
       float ref_value = texture(u_reflection, uvs * u_tiling).x * u_reflection_strength;
       vec3 reflection = (texture(u_skybox, refle).rgb * ref_value); 
 
@@ -378,16 +393,11 @@ namespace Suffer {
       return (((ambient * inv_reflection) + reflection) + ((1.0f - shadow) * ((diffuse * inv_reflection) + specular))) * u_color.xyz;
     }
 
-// --------------------------------------------------------------------- //
-
     float CalculateSpotShadow(vec4 frag_pos_light_space, vec3 light_dir, int light_index){
-      // Clip projection coords
       vec3 proj_coords = frag_pos_light_space.xyz / frag_pos_light_space.w;
       // Convert from [-1, 1] to [0, 1]
       proj_coords = proj_coords * 0.5f + 0.5f;
-      // Get shadow map fragment
       float closest_depth = GetSpotLightTexture(light_index, proj_coords.xy).r;
-      // Current depth fragment from light perspective
       float current_depth = proj_coords.z;
       // Compare current and closest to check if its in shadow or not
       //float bias = 0.002f;
@@ -397,8 +407,6 @@ namespace Suffer {
 
       return shadow;
     }
-
-// --------------------------------------------------------------------- //
 
     vec3 CalculateSpotLight(SpotLight light, int light_index, vec3 normal) {
       vec3 norm = normalize(normal);
@@ -436,19 +444,20 @@ namespace Suffer {
     void main() {
       vec3 view_dir = normalize(camera_pos - frag_pos);
 
+      vec3 normal_m = texture(u_normal_map, uvs).rgb;
+      vec3 tangent_normal = normalize(normal_m * 2.0 - 1.0);
+
       vec3 directionals = vec3(0.0f, 0.0f, 0.0f);
       for(int i = 0; i < num_directionals; ++i){
-        directionals += CalculateDirectionalLight(GetDirectionalLight(i), i, normal, view_dir) * float(GetDirectionalLight(i).is_active);
+        directionals += CalculateDirectionalLight(GetDirectionalLight(i), i, tangent_normal, view_dir) * float(GetDirectionalLight(i).is_active);
       }
- 
       vec3 point = vec3(0.0f, 0.0f, 0.0f);
       for(int i = 0; i < num_points; ++i){
-        point += CalculatePointLight(GetPointLight(i), i, normal, view_dir) * float(GetPointLight(i).is_active);
+        point += CalculatePointLight(GetPointLight(i), i, tangent_normal, view_dir) * float(GetPointLight(i).is_active);
       }
-
       vec3 spot = vec3(0.0f, 0.0f, 0.0f);
       for(int i = 0; i < num_spots; ++i){
-        spot += CalculateSpotLight(GetSpotLight(i), i, normal) * float(GetSpotLight(i).is_active);
+        spot += CalculateSpotLight(GetSpotLight(i), i, tangent_normal) * float(GetSpotLight(i).is_active);
       }
 
       fragColor = vec4((directionals + point + spot), 1.0f);
