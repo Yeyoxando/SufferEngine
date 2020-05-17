@@ -170,7 +170,7 @@ int main(int argc, char* argv[]) {
   transform_component_ground.alloc();
   transform_component_ground->Scale(mathmorra::Vector3(50.0f, -50.0f, 50.0f));
   transform_component_ground->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
-  transform_component_ground->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, 0.0f));
+  transform_component_ground->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, ThiefUtils::Math::Radians(-180.0f)));
   
   go_ground->AddComponent(transform_component_ground.get());
   go_ground->AddComponent(geometry_component_quad.get());

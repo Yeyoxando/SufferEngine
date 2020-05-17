@@ -345,13 +345,74 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
   // QUAD
   {
+
+    // Normal Mapping Stuff
+    
+        mathmorra::Vector3 positions[4] = {
+            mathmorra::Vector3(-1.0f,  1.0f,  0.0f),
+            mathmorra::Vector3(-1.0f, -1.0f,  0.0f),
+            mathmorra::Vector3( 1.0f, -1.0f,  0.0f),
+            mathmorra::Vector3( 1.0f,  1.0f,  0.0f),
+        };
+
+        mathmorra::Vector2 uvs[4] = {
+            mathmorra::Vector2(0.0f, 1.0f),
+            mathmorra::Vector2(0.0f, 0.0f),
+            mathmorra::Vector2(1.0f, 0.0f),
+            mathmorra::Vector2(1.0f, 1.0f),
+        };
+
+        // Calculate tangent/bitangent vectors of both triangles
+        mathmorra::Vector3 tangent1, bitangent1;
+        mathmorra::Vector3 tangent2, bitangent2;
+
+        // TRIANGLE 1
+        mathmorra::Vector3 edge1 = positions[1] - positions[0];
+        mathmorra::Vector3 edge2 = positions[2] - positions[0];
+        mathmorra::Vector2 deltaUV1 = uvs[1] - uvs[0];
+        mathmorra::Vector2 deltaUV2 = uvs[2] - uvs[0];
+
+        float  f = 1.0f / (deltaUV1.x_ * deltaUV2.y_ - deltaUV2.x_ * deltaUV1.y_);
+
+        tangent1.x_ = f * (deltaUV2.y_ * edge1.x_ - deltaUV1.y_ * edge2.x_);
+        tangent1.y_ = f * (deltaUV2.y_ * edge1.y_ - deltaUV1.y_ * edge2.y_);
+        tangent1.z_ = f * (deltaUV2.y_ * edge1.z_ - deltaUV1.y_ * edge2.z_);
+        tangent1.Normalize();
+
+        bitangent1.x_ = f * (-deltaUV2.x_ * edge1.x_ + deltaUV1.x_ * edge2.x_);
+        bitangent1.y_ = f * (-deltaUV2.x_ * edge1.y_ + deltaUV1.x_ * edge2.y_);
+        bitangent1.z_ = f * (-deltaUV2.x_ * edge1.z_ + deltaUV1.x_ * edge2.z_);
+        bitangent1.Normalize();
+
+
+        // TRIANGLE 2
+        edge1 = positions[2] - positions[0];
+        edge2 = positions[3] - positions[0];
+        deltaUV1 = uvs[2] - uvs[0];
+        deltaUV2 = uvs[3] - uvs[0];
+
+        f = 1.0f / (deltaUV1.x_ * deltaUV2.y_ - deltaUV2.x_ * deltaUV1.y_);
+
+        tangent2.x_ = f * (deltaUV2.y_ * edge1.x_ - deltaUV1.y_ * edge2.x_);
+        tangent2.y_ = f * (deltaUV2.y_ * edge1.y_ - deltaUV1.y_ * edge2.y_);
+        tangent2.z_ = f * (deltaUV2.y_ * edge1.z_ - deltaUV1.y_ * edge2.z_);
+        tangent2.Normalize();
+
+
+        bitangent2.x_ = f * (-deltaUV2.x_ * edge1.x_ + deltaUV1.x_ * edge2.x_);
+        bitangent2.y_ = f * (-deltaUV2.x_ * edge1.y_ + deltaUV1.x_ * edge2.y_);
+        bitangent2.z_ = f * (-deltaUV2.x_ * edge1.z_ + deltaUV1.x_ * edge2.z_);
+        bitangent2.Normalize();
+
+
     float quad[] = {
-      // Positions             Normals            UV's
-      -1.0f, -1.0f, 0.0f,    0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
-      -1.0f,  1.0f, 0.0f,    0.0f, 0.0f, -1.0f,  0.0f, 1.0f,
-       1.0f,  1.0f,   0.0f,  0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
-       1.0f, -1.0f,   0.0f,  0.0f, 0.0f, -1.0f,  1.0f, 0.0f,
+        // Positions             Normals            UV's                    TANGENTS                                    BITANGENTS
+        -1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 1.0f,  0.0f, 1.0f,  tangent1.x_, tangent1.y_, tangent1.z_,   bitangent1.x_, bitangent1.y_, bitangent1.z_,
+        -1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 1.0f,  0.0f, 0.0f,  tangent1.x_, tangent1.y_, tangent1.z_,   bitangent1.x_, bitangent1.y_, bitangent1.z_,
+         1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 1.0f,  1.0f, 0.0f,  tangent1.x_, tangent1.y_, tangent1.z_,   bitangent1.x_, bitangent1.y_, bitangent1.z_,
+         1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 1.0f,  1.0f, 1.0f,  tangent2.x_, tangent2.y_, tangent2.z_,   bitangent2.x_, bitangent2.y_, bitangent2.z_
     };
+
 
     Array<u16> quad_indices;
     quad_indices.alloc(6);
@@ -364,17 +425,17 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
     Array<float> vertices_;
     vertices_.alloc(sizeof(quad) / sizeof(float));
-    for (u32 i = 0; i < 32; ++i) {
+    for (u32 i = 0; i < 56; ++i) {
         vertices_[i] = quad[i];
     }
-
+       
     internal_index_buffers_[number_of_index_buffers_].data_.copy(quad_indices);
     internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(vertices_);
 
     internal_index_buffers_[number_of_index_buffers_].version_++;
     internal_vertex_buffers_[number_of_vertex_buffers_].version_++;
 
-    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = VertexBuffer::kVertexFormat_3P_3N_2UV;
+    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = VertexBuffer::kVertexFormat_3P_3N_2UV_3T_3B;
 
     internal_index_buffers_[number_of_index_buffers_].id_handle_ = 1;
     internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 1;
