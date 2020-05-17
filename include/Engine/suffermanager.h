@@ -144,10 +144,16 @@ namespace Suffer {
     //Framebuffers
     ref_ptr<ResourceManager::FrameBuffer> draw_frame_buffer_;
     ref_ptr<ResourceManager::FrameBuffer> black_white_frame_buffer_;
+    ref_ptr<ResourceManager::FrameBuffer> brga_frame_buffer_;
+    ref_ptr<ResourceManager::FrameBuffer> argb_frame_buffer_;
+    ref_ptr<ResourceManager::FrameBuffer> rbga_frame_buffer_;
+    ref_ptr<ResourceManager::FrameBuffer> hblur_frame_buffer_;
+    ref_ptr<ResourceManager::FrameBuffer> inverted_colors_frame_buffer_;
+    ref_ptr<ResourceManager::FrameBuffer> contrast_frame_buffer_;
+    ref_ptr<ResourceManager::FrameBuffer> gbra_frame_buffer_;
     ref_ptr<ResourceManager::FrameBuffer> render_to_texture_frame_buffer_;
 
-
-    int long_running_thing_2;
+    s32 post_process_id_;
     
 		struct Data;
 		Data* data_;

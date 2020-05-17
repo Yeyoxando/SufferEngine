@@ -696,7 +696,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalMaterials() {
 void Suffer::ResourceManager::ResourceData::InitInternalPostproccesMaterials(){
 
   // Increase the number if you create a new one
-  internal_postproccess_materials_.alloc(2);
+  internal_postproccess_materials_.alloc(9);
   number_of_postproccess_materials_ = 0;
 
   // ---------------------- RenderToTextureMaterial ------------------------ //
@@ -729,6 +729,112 @@ void Suffer::ResourceManager::ResourceData::InitInternalPostproccesMaterials(){
   }
 
   // ----------------------- BlackAndWhiteMaterial ------------------------- //
+
+  // ----------------------- BRGA ------------------------- //
+
+  {
+
+      internal_postproccess_materials_[number_of_postproccess_materials_].id_handle_ = number_of_materials_;
+
+      internal_postproccess_materials_[number_of_postproccess_materials_].vertex_shader_ = Suffer::brga_vertex_;
+      internal_postproccess_materials_[number_of_postproccess_materials_].fragment_shader_ = Suffer::brga_fragment_;
+
+      number_of_postproccess_materials_++;
+
+  }
+
+  // ----------------------- BRGA ------------------------- //
+
+  // ----------------------- RBGA ------------------------- //
+
+  {
+
+      internal_postproccess_materials_[number_of_postproccess_materials_].id_handle_ = number_of_materials_;
+
+      internal_postproccess_materials_[number_of_postproccess_materials_].vertex_shader_ = Suffer::rbga_vertex_;
+      internal_postproccess_materials_[number_of_postproccess_materials_].fragment_shader_ = Suffer::rbga_fragment_;
+
+      number_of_postproccess_materials_++;
+
+  }
+
+  // ----------------------- RBGA ------------------------- //
+
+  // ----------------------- ARBG ------------------------- //
+
+  {
+
+      internal_postproccess_materials_[number_of_postproccess_materials_].id_handle_ = number_of_materials_;
+
+      internal_postproccess_materials_[number_of_postproccess_materials_].vertex_shader_ = Suffer::argb_vertex_;
+      internal_postproccess_materials_[number_of_postproccess_materials_].fragment_shader_ = Suffer::argb_fragment_;
+
+      number_of_postproccess_materials_++;
+
+  }
+
+  // ----------------------- ARBG ------------------------- //
+
+
+  // ----------------------- HBLUR ------------------------- //
+
+  {
+
+      internal_postproccess_materials_[number_of_postproccess_materials_].id_handle_ = number_of_materials_;
+
+      internal_postproccess_materials_[number_of_postproccess_materials_].vertex_shader_ = Suffer::blur_vertex_;
+      internal_postproccess_materials_[number_of_postproccess_materials_].fragment_shader_ = Suffer::blur_fragment_;
+
+      number_of_postproccess_materials_++;
+
+  }
+
+  // ----------------------- HBLUR ------------------------- //
+
+  // ----------------------- INVERTED COLORS ------------------------- //
+
+  {
+
+      internal_postproccess_materials_[number_of_postproccess_materials_].id_handle_ = number_of_materials_;
+
+      internal_postproccess_materials_[number_of_postproccess_materials_].vertex_shader_ = Suffer::invcolors_vertex_;
+      internal_postproccess_materials_[number_of_postproccess_materials_].fragment_shader_ = Suffer::invcolors_fragment_;
+
+      number_of_postproccess_materials_++;
+
+  }
+
+  // ----------------------- INVERTED COLORS ------------------------- //
+
+  // ----------------------- CONTRAST ------------------------- //
+
+  {
+
+      internal_postproccess_materials_[number_of_postproccess_materials_].id_handle_ = number_of_materials_;
+
+      internal_postproccess_materials_[number_of_postproccess_materials_].vertex_shader_ = Suffer::contrast_vertex_;
+      internal_postproccess_materials_[number_of_postproccess_materials_].fragment_shader_ = Suffer::contrast_fragment_;
+
+      number_of_postproccess_materials_++;
+
+  }
+
+  // ----------------------- CONTRAST ------------------------- //
+
+  // ----------------------- GBRA ------------------------- //
+
+  {
+
+      internal_postproccess_materials_[number_of_postproccess_materials_].id_handle_ = number_of_materials_;
+
+      internal_postproccess_materials_[number_of_postproccess_materials_].vertex_shader_ = Suffer::gbra_vertex_;
+      internal_postproccess_materials_[number_of_postproccess_materials_].fragment_shader_ = Suffer::gbra_fragment_;
+
+      number_of_postproccess_materials_++;
+
+  }
+
+  // ----------------------- GBRA ------------------------- //
 
 }
 

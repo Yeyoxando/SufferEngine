@@ -23,6 +23,7 @@
 #include "IconsFontAwesome5.h"
 #include "imgui_internal.h"
 #include "math_utils.h"
+#include "internal_suffermanager.h"
 
 // Components
 #include "component_light.h"
@@ -1165,6 +1166,21 @@ void  Suffer::Interface::Options(){
 	if (ImGui::Combo("ImGui Style", &styleSelection, styles, IM_ARRAYSIZE(styles))) {
 		style_ = (InterfaceStyle)styleSelection;
 		ChangeEditorStyle();
+	}
+	
+	ImGui::Checkbox("Enable post-processing", &suffer.data_->is_post_process_active_);
+	if (suffer.data_->is_post_process_active_) {
+    if (ImGui::CollapsingHeader("Post-process Type")) {
+      ImGui::RadioButton("Black and White", &suffer.post_process_id_, 1);
+      ImGui::RadioButton("BRGA", &suffer.post_process_id_, 3);
+      ImGui::RadioButton("RBGA", &suffer.post_process_id_, 4);
+      ImGui::RadioButton("ARGB", &suffer.post_process_id_, 6);
+      ImGui::RadioButton("Horizontal Blur", &suffer.post_process_id_, 2);
+      ImGui::RadioButton("Inverted Colors", &suffer.post_process_id_, 7);
+      ImGui::RadioButton("Contrast", &suffer.post_process_id_, 8);
+      ImGui::RadioButton("GBRA", &suffer.post_process_id_, 5);
+    }
+
 	}
 
 	ImGui::End();

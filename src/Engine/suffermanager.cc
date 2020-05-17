@@ -22,6 +22,24 @@
 
 // --------------------------------------------------------------//
 
+Suffer::SufferManager::Data::Data() {
+
+    previous_time_ = 0.0f;
+    current_time_ = 0.0f;
+    delta_time_ = 0.0f;
+    is_interface_active_ = true;
+    is_post_process_active_ = false;
+
+}
+
+// --------------------------------------------------------------//
+
+Suffer::SufferManager::Data::~Data() {
+
+}
+
+// --------------------------------------------------------------//
+
 Suffer::SufferManager::SufferManager(){
 
 	data_ = new Data();
@@ -112,6 +130,27 @@ bool Suffer::SufferManager::Init(){
 
   black_white_frame_buffer_.alloc();
   black_white_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
+
+  hblur_frame_buffer_.alloc();
+  hblur_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
+
+  rbga_frame_buffer_.alloc();
+  rbga_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
+
+  brga_frame_buffer_.alloc();
+  brga_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
+
+  argb_frame_buffer_.alloc();
+  argb_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
+
+  contrast_frame_buffer_.alloc();
+  contrast_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
+
+  inverted_colors_frame_buffer_.alloc();
+  inverted_colors_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
+
+  gbra_frame_buffer_.alloc();
+  gbra_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
   
   render_to_texture_frame_buffer_.alloc();
   render_to_texture_frame_buffer_->InitFrameBuffer(GetWindowSize().x_, GetWindowSize().y_);
@@ -166,10 +205,6 @@ void Suffer::SufferManager::Input() {
 
   if (input_manager_.IsKeyDown(InputManager::k_F7)) {
       suffer.entities_[3]->Destroy();
-  }
-
-  if (input_manager_.IsKeyDown(InputManager::k_B)) {
-    data_->black_and_white_ = !data_->black_and_white_;
   }
 
   input_manager_.Update();
@@ -248,16 +283,68 @@ void Suffer::SufferManager::PreparePostproccess(){
   //   Create here a DL and the postpro command with its kind
   //   Send to render manager
 
-  if (data_->black_and_white_) {
-    DisplayList postpro_dl;
-    ref_ptr<Postprocessing> black_white;
-    black_white.alloc();
-    black_white->SetData(Postprocessing::kPostproccessKind_BlackAndWhite);
-    postpro_dl.AddCommand(black_white.get());
-    render_manager_.AddToRenderQueue(std::move(postpro_dl), black_white_frame_buffer_.get());
+  //if (data_->black_and_white_) {
+  //  DisplayList postpro_dl;
+  //  ref_ptr<Postprocessing> black_white;
+  //  black_white.alloc();
+  //  black_white->SetData(Postprocessing::kPostproccessKind_BlackAndWhite);
+  //  postpro_dl.AddCommand(black_white.get());
+  //  render_manager_.AddToRenderQueue(std::move(postpro_dl), black_white_frame_buffer_.get());
+  //}
+
+  if (data_->is_post_process_active_) {
+      DisplayList postpro_dl;
+      ref_ptr<Postprocessing> post_process;
+      post_process.alloc();
+      post_process->SetData((Postprocessing::PostproccessKind)post_process_id_);
+
+      switch ((Postprocessing::PostproccessKind)post_process_id_){
+        case Postprocessing::PostproccessKind::kPostproccessKind_BlackAndWhite: {
+            postpro_dl.AddCommand(post_process.get());
+            render_manager_.AddToRenderQueue(std::move(postpro_dl), black_white_frame_buffer_.get());
+            break;
+        }
+        case Postprocessing::PostproccessKind::kPostproccessKind_BRGA: {
+            postpro_dl.AddCommand(post_process.get());
+            render_manager_.AddToRenderQueue(std::move(postpro_dl), brga_frame_buffer_.get());
+            break;
+        }
+        case Postprocessing::PostproccessKind::kPostproccessKind_RBGA: {
+            postpro_dl.AddCommand(post_process.get());
+            render_manager_.AddToRenderQueue(std::move(postpro_dl), rbga_frame_buffer_.get());
+            break;
+        }
+        case Postprocessing::PostproccessKind::kPostproccessKind_ARBG: {
+            postpro_dl.AddCommand(post_process.get());
+            render_manager_.AddToRenderQueue(std::move(postpro_dl), argb_frame_buffer_.get());
+            break;
+        }
+        case Postprocessing::PostproccessKind::kPostproccessKind_HorizontalBlur: {
+            postpro_dl.AddCommand(post_process.get());
+            render_manager_.AddToRenderQueue(std::move(postpro_dl), hblur_frame_buffer_.get());
+            break;
+        }
+
+        case Postprocessing::PostproccessKind::kPostproccessKind_InvertedColors: {
+            postpro_dl.AddCommand(post_process.get());
+            render_manager_.AddToRenderQueue(std::move(postpro_dl), inverted_colors_frame_buffer_.get());
+            break;
+        }
+        case Postprocessing::PostproccessKind::kPostproccessKind_Contrast: {
+            postpro_dl.AddCommand(post_process.get());
+            render_manager_.AddToRenderQueue(std::move(postpro_dl), contrast_frame_buffer_.get());
+            break;
+        }
+        case Postprocessing::PostproccessKind::kPostproccessKind_GBRA: {
+            postpro_dl.AddCommand(post_process.get());
+            render_manager_.AddToRenderQueue(std::move(postpro_dl), gbra_frame_buffer_.get());
+            break;
+        }
+        default:
+            break;
+            }
   }
-
-
+  
   DisplayList postpro_dl2;
   ref_ptr<Postprocessing> def;
   def.alloc();

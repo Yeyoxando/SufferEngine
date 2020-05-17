@@ -31,6 +31,13 @@ namespace Suffer {
       kPostproccessKind_Invalid = -1,
       kPostproccessKind_RenderToTexture = 0,
       kPostproccessKind_BlackAndWhite = 1,
+      kPostproccessKind_HorizontalBlur = 2,
+      kPostproccessKind_BRGA = 3,
+      kPostproccessKind_RBGA = 4,
+      kPostproccessKind_GBRA = 5,
+      kPostproccessKind_ARBG = 6,
+      kPostproccessKind_InvertedColors = 7,
+      kPostproccessKind_Contrast = 8,
     };
 
     /**

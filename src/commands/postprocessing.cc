@@ -25,7 +25,7 @@ struct Suffer::Postprocessing::Data {
   s32 index_buffer_id_;
 
   // Textures has to be separated
-  s32 texture_ids_[MAX_USED_TEXTURES];
+  s32 texture_ids_;
   u32 current_used_textures_;
 
   u32 postpro_type_;
@@ -39,10 +39,8 @@ Suffer::Postprocessing::Postprocessing() {
   cmd_type_ = Command::kCommandType_Render;
   data_ = new Data();
   data_->current_used_textures_ = 0;
+  data_->texture_ids_ = -1;
 
-  for (u32 i = 0; i < MAX_USED_TEXTURES; ++i) {
-    data_->texture_ids_[i] = -1;
-  }
 
 }
 
@@ -162,12 +160,41 @@ void Suffer::Postprocessing::Execute() const {
     switch (data_->postpro_type_) {
     case PostproccessKind::kPostproccessKind_RenderToTexture: {
       mat_type = 0;
-    }
       break;
+    }
     case PostproccessKind::kPostproccessKind_BlackAndWhite: {
       mat_type = 1;
-    }
       break;
+    }
+    case PostproccessKind::kPostproccessKind_BRGA: {
+        mat_type = 2;
+        break;
+    }
+    case PostproccessKind::kPostproccessKind_RBGA: {
+        mat_type = 3;
+        break;
+    }
+    case PostproccessKind::kPostproccessKind_ARBG: {
+        mat_type = 4;
+        break;
+    }
+    case PostproccessKind::kPostproccessKind_HorizontalBlur: {
+        mat_type = 5;
+        break;
+    }
+
+    case PostproccessKind::kPostproccessKind_InvertedColors: {
+        mat_type = 6;
+        break;
+    }
+    case PostproccessKind::kPostproccessKind_Contrast: {
+        mat_type = 7;
+        break;
+    }
+    case PostproccessKind::kPostproccessKind_GBRA: {
+        mat_type = 8;
+        break;
+    }
     default:
       break;
     }

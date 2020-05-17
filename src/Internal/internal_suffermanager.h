@@ -24,7 +24,10 @@ struct Suffer::SufferManager::Data {
     bool window_should_close_;
 
     //Active post processes
-    bool black_and_white_;
+    bool is_post_process_active_;
+
+    Data();
+    ~Data();
 
 };
 
