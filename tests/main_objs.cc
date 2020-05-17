@@ -262,6 +262,25 @@ int main(int argc, char* argv[]) {
 
   script->AttachScript("../../../src/lua/lua_test_update.lua");
 
+
+  Suffer::ref_ptr<Suffer::GameObject> empty_sphere_;
+  empty_sphere_.alloc();
+  empty_sphere_->SetName("Empty sphere");
+
+  Suffer::ref_ptr<Suffer::Transform> transform_empty_sphere_;
+  transform_empty_sphere_.alloc();
+
+  Suffer::ref_ptr<Suffer::GeometryComponent> empty_sphere_geometry_;
+  empty_sphere_geometry_.alloc();
+  empty_sphere_geometry_->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Sphere);
+
+  empty_sphere_->AddComponent(material_ground.get());
+  empty_sphere_->AddComponent(empty_sphere_geometry_.get());
+  empty_sphere_->AddComponent(transform_empty_sphere_.get());
+
+  Suffer::Transform* transform_empty_sphere_comp = static_cast<Suffer::Transform*>(empty_sphere_->GetComponent(Suffer::Component::kComponentKind_Transform));
+  transform_empty_sphere_comp->Translate(mathmorra::Vector3(0.0f, 20.0f, 0.0f));
+
   // -------------------------------------------------------------------------------------//
 
 
@@ -278,6 +297,7 @@ int main(int argc, char* argv[]) {
   scene->AddGameObject(go_spot_light);
   scene->AddGameObject(go_rock);
   scene->AddGameObject(go_mario);
+  scene->AddGameObject(empty_sphere_);
   scene->SetSkybox(skybox);
 
 

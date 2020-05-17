@@ -528,9 +528,11 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
     Array<u16> sphere_indices;
     Array<mathmorra::Vector3> normals;
     Array<mathmorra::Vector3> sphere_points;
+    Array<mathmorra::Vector3> sphere_tangents;
 
     normals.alloc(number_points * number_revolutions);
     sphere_points.alloc(number_points * number_revolutions);
+    sphere_tangents.alloc(number_points * number_revolutions);
     sphere_indices.alloc((number_points - 1) * (number_revolutions - 1) * 6);
 
     int index = 0;
@@ -544,29 +546,37 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
       for (int j = 0; j < number_revolutions; ++j) {
 
-        float longitude = ThiefUtils::Math::Map(j, 0, number_revolutions - 1, -ThiefUtils::Math::fPI, ThiefUtils::Math::fPI);
+          float longitude = ThiefUtils::Math::Map(j, 0, number_revolutions - 1, -ThiefUtils::Math::fPI, ThiefUtils::Math::fPI);
 
-        sphere_points[i * number_revolutions + j].x_ = radius * cos(longitude) * cos(latitude);
-        sphere_points[i * number_revolutions + j].y_ = radius * sin(longitude) * cos(latitude);
-        sphere_points[i * number_revolutions + j].z_ = radius * sin(latitude);
+          sphere_points[i * number_revolutions + j].x_ = radius * cos(longitude) * cos(latitude);
+          sphere_points[i * number_revolutions + j].y_ = radius * sin(longitude) * cos(latitude);
+          sphere_points[i * number_revolutions + j].z_ = radius * sin(latitude);
 
-        normals[i * number_revolutions + j] = sphere_points[i * number_revolutions + j];
-        normals[i * number_revolutions + j].Normalize();
+          sphere_tangents[i * number_revolutions + j].x_ = -radius * cos(longitude) * sin(latitude);
+          sphere_tangents[i * number_revolutions + j].y_ = radius * cos(longitude) * cos(latitude);
+          sphere_tangents[i * number_revolutions + j].z_ = 0.0f;
+          sphere_tangents[i * number_revolutions + j].Normalize();
 
-        mathmorra::Vector2 uv;
+          normals[i * number_revolutions + j] = sphere_points[i * number_revolutions + j];
+          normals[i * number_revolutions + j].Normalize();
 
-        uv.x_ = (float)j / number_revolutions;
-        uv.y_ = (float)i / number_points;
+          mathmorra::Vector2 uv;
 
-        sphere_vertices[(i * number_revolutions + j)] = VertexBuffer::Vertex(
-          sphere_points[i * number_revolutions + j].x_,
-          sphere_points[i * number_revolutions + j].y_,
-          sphere_points[i * number_revolutions + j].z_,
-          normals[i * number_revolutions + j].x_,
-          normals[i * number_revolutions + j].y_,
-          normals[i * number_revolutions + j].z_,
-          uv.x_,
-          uv.y_);
+          uv.x_ = (float)j / number_revolutions;
+          uv.y_ = (float)i / number_points;
+
+          sphere_vertices[(i * number_revolutions + j)] = VertexBuffer::Vertex(
+              sphere_points[i * number_revolutions + j].x_,
+              sphere_points[i * number_revolutions + j].y_,
+              sphere_points[i * number_revolutions + j].z_,
+              normals[i * number_revolutions + j].x_,
+              normals[i * number_revolutions + j].y_,
+              normals[i * number_revolutions + j].z_,
+              uv.x_,
+              uv.y_,
+              sphere_tangents[i * number_revolutions + j].x_,
+              sphere_tangents[i * number_revolutions + j].y_,
+              sphere_tangents[i * number_revolutions + j].z_);
 
       }
 
@@ -600,7 +610,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
     internal_index_buffers_[number_of_index_buffers_].id_handle_ = 3;
     internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 3;
 
-    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = VertexBuffer::kVertexFormat_3P_3N_2UV;
+    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = VertexBuffer::kVertexFormat_3P_3N_2UV_3T;
 
     ++number_of_index_buffers_;
     ++number_of_vertex_buffers_;
@@ -973,6 +983,17 @@ void Suffer::ResourceManager::ResourceData::RefreshFrameBuffers() {
 Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(float vertex_x, float vertex_y, float vertex_z){
 
   vertices_ = mathmorra::Vector3(vertex_x, vertex_y, vertex_z);
+
+}
+
+// ------------------------------------------------------------------------- //
+
+Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(float vertex_x, float vertex_y, float vertex_z, float normal_x, float normal_y, float normal_z, float uv_x, float uv_y, float tangent_x, float tangent_y, float tangent_z){
+
+    vertices_ = mathmorra::Vector3(vertex_x, vertex_y, vertex_z);
+    normals_ = mathmorra::Vector3(normal_x, normal_y, normal_z);
+    uvs_ = mathmorra::Vector2(uv_x, uv_y);
+    tangents_ = mathmorra::Vector3(tangent_x, tangent_y, tangent_z);
 
 }
 

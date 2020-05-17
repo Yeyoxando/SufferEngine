@@ -951,7 +951,7 @@ void Suffer::DrawGeometry::Execute() const {
           glEnableVertexAttribArray(2);
           glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(float)), (GLvoid*)(6 * sizeof(float)));
           glEnableVertexAttribArray(3);
-          glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(float)), (GLvoid*)(8 * sizeof(float)));
+          glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(float)), (GLvoid*)(8 * sizeof(float)));
 
           break;
       case Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV_3T_3B:
