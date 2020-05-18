@@ -211,7 +211,7 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
             data_->texture_ids_[m][3] = phong_params_->normal_map_texture_id_;
         }
         else {
-            data_->texture_ids_[m][3] = 1;
+            data_->texture_ids_[m][3] = 2;
         }
 
         if (phong_params_->use_reflection_texture_) {

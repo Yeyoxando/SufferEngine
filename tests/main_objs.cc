@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
   ground_texture.alloc();
   ground_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
   ground_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
-  ground_texture->LoadTextureData("../../../resources/images/texture_01.png");
+  ground_texture->LoadTextureData("../../../resources/images/brick_normal.jpg");
 
   Suffer::ref_ptr<Suffer::ResourceManager::Texture> ground_specular_texture;
   ground_specular_texture.alloc();
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
   ground_normal_map_texture.alloc();
   ground_normal_map_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
   ground_normal_map_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
-  ground_normal_map_texture->LoadTextureData("../../../resources/images/texture_01_nm.png");
+  ground_normal_map_texture->LoadTextureData("../../../resources/images/brick_normal_map2.png");
 
   //Skybox textures
   Suffer::ref_ptr<Suffer::ResourceManager::Cubemap> skybox_cubemap;
@@ -281,6 +281,36 @@ int main(int argc, char* argv[]) {
   Suffer::Transform* transform_empty_sphere_comp = static_cast<Suffer::Transform*>(empty_sphere_->GetComponent(Suffer::Component::kComponentKind_Transform));
   transform_empty_sphere_comp->Translate(mathmorra::Vector3(0.0f, 20.0f, 0.0f));
 
+
+
+
+
+
+
+  Suffer::ref_ptr<Suffer::GameObject> empty_cube_;
+  empty_cube_.alloc();
+  empty_cube_->SetName("Empty sphere");
+
+  Suffer::ref_ptr<Suffer::Transform> transform_empty_cube_;
+  transform_empty_cube_.alloc();
+
+  Suffer::ref_ptr<Suffer::GeometryComponent> empty_cube_geometry_;
+  empty_cube_geometry_.alloc();
+  empty_cube_geometry_->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
+
+  empty_cube_->AddComponent(material_ground.get());
+  empty_cube_->AddComponent(empty_cube_geometry_.get());
+  empty_cube_->AddComponent(transform_empty_cube_.get());
+
+  Suffer::Transform* transform_empty_cube_comp = static_cast<Suffer::Transform*>(empty_cube_->GetComponent(Suffer::Component::kComponentKind_Transform));
+  transform_empty_cube_comp->Translate(mathmorra::Vector3(50.0f, 20.0f, 0.0f));
+
+  Suffer::ref_ptr<Suffer::ScriptComponent> script_rotator;
+  script_rotator.alloc();
+  //go_point_light->AddComponent(script_rotator.get());
+  //script_rotator->AttachScript("../../../src/lua/lua_rotator.lua");
+
+
   // -------------------------------------------------------------------------------------//
 
 
@@ -298,6 +328,7 @@ int main(int argc, char* argv[]) {
   scene->AddGameObject(go_rock);
   scene->AddGameObject(go_mario);
   scene->AddGameObject(empty_sphere_);
+  scene->AddGameObject(empty_cube_);
   scene->SetSkybox(skybox);
 
 

@@ -449,35 +449,36 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
   {
 
     float cube[] = {
-      1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 1.0f,
-      1.0f, -1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 0.0f,
-      1.0f, -1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 0.0f,
-      1.0f,  1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 1.0f,
-
-      -1.0f,  1.0f, -1.0f,   0.0f,  0.0f, -1.0f,     0.0f, 1.0f,
-      -1.0f, -1.0f, -1.0f,   0.0f,  0.0f, -1.0f,     0.0f, 0.0f,
-      1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 0.0f,
-      1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 1.0f,
-
-      -1.0f,  1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,     0.0f, 1.0f,
-      -1.0f, -1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,     0.0f, 0.0f,
-      -1.0f, -1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,     1.0f, 0.0f,
-      -1.0f,  1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,     1.0f, 1.0f,
-
-      -1.0f,  1.0f,  1.0f,   0.0f,  0.0f,  1.0f,     0.0f, 1.0f,
-      -1.0f, -1.0f,  1.0f,   0.0f,  0.0f,  1.0f,     0.0f, 0.0f,
-      1.0f, -1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 0.0f,
-      1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 1.0f,
-
-      -1.0f,  1.0f, -1.0f,   0.0f,  1.0f,  0.0f,     0.0f, 1.0f,
-      -1.0f,  1.0f,  1.0f,   0.0f,  1.0f,  0.0f,     0.0f, 0.0f,
-      1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 0.0f,
-      1.0f,  1.0f, -1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 1.0f,
-
-      -1.0f, -1.0f, -1.0f,   0.0f, -1.0f,  0.0f,     0.0f, 1.0f,
-      -1.0f, -1.0f,  1.0f,   0.0f, -1.0f,  0.0f,     0.0f, 0.0f,
-      1.0f, -1.0f,  1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 0.0f,
-      1.0f, -1.0f, -1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 1.0f
+        // POSITIONS                NORMALS              UVs            TANGENTS             BITANGENTS
+      1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 1.0f,     0.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f,
+      1.0f, -1.0f,  1.0f,    1.0f,  0.0f,  0.0f,     0.0f, 0.0f,     0.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f,
+      1.0f, -1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 0.0f,     0.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f,
+      1.0f,  1.0f, -1.0f,    1.0f,  0.0f,  0.0f,     1.0f, 1.0f,     0.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f,
+                                                                                       
+      -1.0f,  1.0f, -1.0f,   0.0f,  0.0f, -1.0f,     0.0f, 1.0f,     1.0f, 0.0f, 0.0f,    0.0f, 0.0f, 0.0f,
+      -1.0f, -1.0f, -1.0f,   0.0f,  0.0f, -1.0f,     0.0f, 0.0f,     1.0f, 0.0f, 0.0f,    0.0f, 0.0f, 0.0f,
+      1.0f, -1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 0.0f,     1.0f, 0.0f, 0.0f,    0.0f, 0.0f, 0.0f,
+      1.0f,  1.0f, -1.0f,    0.0f,  0.0f, -1.0f,     1.0f, 1.0f,     1.0f, 0.0f, 0.0f,    0.0f, 0.0f, 0.0f,
+                                                                                     
+      -1.0f,  1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,     0.0f, 1.0f,     0.0f, 0.0f, 1.0f,     0.0f, 0.0f, 0.0f,
+      -1.0f, -1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,     0.0f, 0.0f,     0.0f, 0.0f, 1.0f,     0.0f, 0.0f, 0.0f,
+      -1.0f, -1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,     1.0f, 0.0f,     0.0f, 0.0f, 1.0f,     0.0f, 0.0f, 0.0f,
+      -1.0f,  1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,     1.0f, 1.0f,     0.0f, 0.0f, 1.0f,     0.0f, 0.0f, 0.0f,
+                                                                                        
+      -1.0f,  1.0f,  1.0f,   0.0f,  0.0f,  1.0f,     0.0f, 1.0f,    -1.0f, 0.0f, 0.0f,    0.0f, 0.0f, 0.0f,
+      -1.0f, -1.0f,  1.0f,   0.0f,  0.0f,  1.0f,     0.0f, 0.0f,    -1.0f, 0.0f, 0.0f,    0.0f, 0.0f, 0.0f,
+      1.0f, -1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 0.0f,    -1.0f, 0.0f, 0.0f,    0.0f, 0.0f, 0.0f,
+      1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,     1.0f, 1.0f,    -1.0f, 0.0f, 0.0f,    0.0f, 0.0f, 0.0f,
+                                                                                         
+      -1.0f,  1.0f, -1.0f,   0.0f,  1.0f,  0.0f,     0.0f, 1.0f,    0.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f,
+      -1.0f,  1.0f,  1.0f,   0.0f,  1.0f,  0.0f,     0.0f, 0.0f,    0.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f,
+      1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 0.0f,    0.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f,
+      1.0f,  1.0f, -1.0f,    0.0f,  1.0f,  0.0f,     1.0f, 1.0f,    0.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f,
+                                                                                          
+      -1.0f, -1.0f, -1.0f,   0.0f, -1.0f,  0.0f,     0.0f, 1.0f,    1.0f, 0.0f, 0.0f,     0.0f, 0.0f, 0.0f,
+      -1.0f, -1.0f,  1.0f,   0.0f, -1.0f,  0.0f,     0.0f, 0.0f,    1.0f, 0.0f, 0.0f,     0.0f, 0.0f, 0.0f,
+      1.0f, -1.0f,  1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 0.0f,    1.0f, 0.0f, 0.0f,     0.0f, 0.0f, 0.0f,
+      1.0f, -1.0f, -1.0f,    0.0f, -1.0f,  0.0f,     1.0f, 1.0f,    1.0f, 0.0f, 0.0f,     0.0f, 0.0f, 0.0f
 
     };
 
@@ -493,13 +494,14 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
     Array<u16> cube_indices;
     cube_indices.alloc(36);
 
+
     for (int i = 0; i < 36; ++i) {
       cube_indices[i] = cube_indices2[i];
     }
 
     Array<float> vertices_;
-    vertices_.alloc(192);
-    for (u32 i = 0; i < 192; ++i) {
+    vertices_.alloc(336);
+    for (u32 i = 0; i < 336; ++i) {
       vertices_[i] = cube[i];
     }
 
@@ -512,7 +514,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
     internal_index_buffers_[number_of_index_buffers_].id_handle_ = 2;
     internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 2;
 
-    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV;
+    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV_3T_3B;
 
     ++number_of_index_buffers_;
     ++number_of_vertex_buffers_;
@@ -602,7 +604,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
 
     internal_index_buffers_[number_of_index_buffers_].data_.copy(sphere_indices);
-    internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(&sphere_vertices[0].vertices_.x_, &sphere_vertices[(number_points * number_revolutions) - 1].vertices_.z_);
+    internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(&sphere_vertices[0].vertices_.x_, &sphere_vertices[(number_points * number_revolutions) - 1].tangents_.z_);
 
     internal_index_buffers_[number_of_index_buffers_].version_++;
     internal_vertex_buffers_[number_of_vertex_buffers_].version_++;
@@ -684,6 +686,13 @@ void Suffer::ResourceManager::ResourceData::InitInternalTextures() {
   default_texture2->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
   default_texture2->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
   default_texture2->LoadTextureData("../../../src/internal/textures/DefaultTexture2.jpg");
+
+  //Default texture for shaders (Normals)
+  ref_ptr<Texture> default_texture3;
+  default_texture3.alloc();
+  default_texture3->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Nearest, Suffer::ResourceManager::Texture::kTextureFilter_Nearest);
+  default_texture3->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
+  default_texture3->LoadTextureData("../../../src/internal/textures/DefaultTexture3.jpg");
 
 }
 
