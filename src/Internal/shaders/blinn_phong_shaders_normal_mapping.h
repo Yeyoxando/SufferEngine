@@ -52,6 +52,7 @@ namespace Suffer {
 
       vec3 T = normalize(normal_matrix * a_tangent); // TANGENT
       vec3 N = normalize(normal_matrix * a_normal);  // NORMAL
+      T = normalize(T - dot(T, N) * N);
       vec3 B = cross(N, T);                          // BITANGENT
 
       TBN = transpose(mat3(T, B, N));  
@@ -446,7 +447,8 @@ namespace Suffer {
     vec3 view_dir = normalize(camera_pos - frag_pos);
 
     vec3 normal_m = texture(u_normal_map, uvs).rgb;
-    vec3 tangent_normal = normalize(normal_m * 2.0 - 1.0);
+    vec3 tangent_normal = normal_m * 2.0 - 1.0;
+    tangent_normal = normalize(TBN * tangent_normal);
 
     vec3 directionals = vec3(0.0f, 0.0f, 0.0f);
     for(int i = 0; i < num_directionals; ++i){

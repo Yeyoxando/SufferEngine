@@ -113,6 +113,50 @@ void Suffer::ResourceManager::VertexBuffer::UploadVertexData(VertexBuffer::Verte
       suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 8) + 7] = data[i].uvs_.y_;
     }
     break;
+  case VertexBuffer::kVertexFormat_3P_3N_2UV_3T:
+      suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_.alloc(size * 11);
+      //Set contiguous memory
+      for (u32 i = 0; i < size; ++i) {
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 11) + 0] = data[i].vertices_.x_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 11) + 1] = data[i].vertices_.y_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 11) + 2] = data[i].vertices_.z_;
+
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 11) + 3] = data[i].normals_.x_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 11) + 4] = data[i].normals_.y_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 11) + 5] = data[i].normals_.z_;
+
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 11) + 6] = data[i].uvs_.x_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 11) + 7] = data[i].uvs_.y_;
+
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 11) + 8] = data[i].tangents_.x_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 11) + 9] = data[i].tangents_.y_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 11) + 10] = data[i].tangents_.z_;
+      }
+      break;
+  case VertexBuffer::kVertexFormat_3P_3N_2UV_3T_3B:
+      suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_.alloc(size * 14);
+      //Set contiguous memory
+      for (u32 i = 0; i < size; ++i) {
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 14) + 0] = data[i].vertices_.x_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 14) + 1] = data[i].vertices_.y_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 14) + 2] = data[i].vertices_.z_;
+
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 14) + 3] = data[i].normals_.x_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 14) + 4] = data[i].normals_.y_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 14) + 5] = data[i].normals_.z_;
+
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 14) + 6] = data[i].uvs_.x_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 14) + 7] = data[i].uvs_.y_; 
+
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 14) + 8] = data[i].tangents_.x_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 14) + 9] = data[i].tangents_.y_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 14) + 10] = data[i].tangents_.z_;
+
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 14) + 11] = data[i].bitangents_.x_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 14) + 12] = data[i].bitangents_.y_;
+          suffer.resource_manager_.data_->internal_vertex_buffers_[id_].data_[(i * 14) + 13] = data[i].bitangents_.z_;
+      }
+      break;
   default:
     break;
   }
@@ -404,7 +448,6 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
         bitangent2.z_ = f * (-deltaUV2.x_ * edge1.z_ + deltaUV1.x_ * edge2.z_);
         bitangent2.Normalize();
 
-
     float quad[] = {
         // Positions             Normals            UV's                    TANGENTS                                    BITANGENTS
         -1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 1.0f,  0.0f, 1.0f,  tangent1.x_, tangent1.y_, tangent1.z_,   bitangent1.x_, bitangent1.y_, bitangent1.z_,
@@ -568,17 +611,11 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
           uv.y_ = (float)i / number_points;
 
           sphere_vertices[(i * number_revolutions + j)] = VertexBuffer::Vertex(
-              sphere_points[i * number_revolutions + j].x_,
-              sphere_points[i * number_revolutions + j].y_,
-              sphere_points[i * number_revolutions + j].z_,
-              normals[i * number_revolutions + j].x_,
-              normals[i * number_revolutions + j].y_,
-              normals[i * number_revolutions + j].z_,
-              uv.x_,
-              uv.y_,
-              sphere_tangents[i * number_revolutions + j].x_,
-              sphere_tangents[i * number_revolutions + j].y_,
-              sphere_tangents[i * number_revolutions + j].z_);
+              sphere_points[i * number_revolutions + j],
+              normals[i * number_revolutions + j],
+              uv,
+              sphere_tangents[i * number_revolutions + j],
+              mathmorra::Vector3());
 
       }
 
@@ -601,10 +638,8 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
     }
 
-
-
     internal_index_buffers_[number_of_index_buffers_].data_.copy(sphere_indices);
-    internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(&sphere_vertices[0].vertices_.x_, &sphere_vertices[(number_points * number_revolutions) - 1].tangents_.z_);
+    internal_vertex_buffers_[number_of_vertex_buffers_].data_.copy(&sphere_vertices[0].vertices_.x_, &sphere_vertices[(number_points * number_revolutions) - 1].bitangents_.z_);
 
     internal_index_buffers_[number_of_index_buffers_].version_++;
     internal_vertex_buffers_[number_of_vertex_buffers_].version_++;
@@ -612,7 +647,7 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
     internal_index_buffers_[number_of_index_buffers_].id_handle_ = 3;
     internal_vertex_buffers_[number_of_vertex_buffers_].id_handle_ = 3;
 
-    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = VertexBuffer::kVertexFormat_3P_3N_2UV_3T;
+    internal_vertex_buffers_[number_of_vertex_buffers_].vertex_format_ = VertexBuffer::kVertexFormat_3P_3N_2UV_3T_3B;
 
     ++number_of_index_buffers_;
     ++number_of_vertex_buffers_;
@@ -993,6 +1028,18 @@ Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(float vertex_x, float vert
 
   vertices_ = mathmorra::Vector3(vertex_x, vertex_y, vertex_z);
 
+}
+
+// ------------------------------------------------------------------------- //
+
+Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(mathmorra::Vector3 position, mathmorra::Vector3 normal, mathmorra::Vector2 uv, mathmorra::Vector3 tangents, mathmorra::Vector3 bitangents){
+
+    vertices_ = position;
+    normals_ = normal;
+    uvs_ = uv;
+    tangents_ = tangents;
+    bitangents_ = bitangents;
+    
 }
 
 // ------------------------------------------------------------------------- //

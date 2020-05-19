@@ -143,12 +143,16 @@ namespace Suffer {
         Vertex(mathmorra::Vector3 position, mathmorra::Vector3 normal, 
           mathmorra::Vector2 uv);
 
+        Vertex(mathmorra::Vector3 position, mathmorra::Vector3 normal,
+            mathmorra::Vector2 uv, mathmorra::Vector3 tangents, mathmorra::Vector3 bitangents);
+
         ~Vertex() {}
 
         mathmorra::Vector3 vertices_;
         mathmorra::Vector3 normals_;
-        mathmorra::Vector3 tangents_;
         mathmorra::Vector2 uvs_;
+        mathmorra::Vector3 tangents_;
+        mathmorra::Vector3 bitangents_;
 
       };
 

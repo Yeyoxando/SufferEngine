@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
   ground_texture.alloc();
   ground_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
   ground_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
-  ground_texture->LoadTextureData("../../../resources/images/brick_normal.jpg");
+  ground_texture->LoadTextureData("../../../resources/images/texture_01.png");
 
   Suffer::ref_ptr<Suffer::ResourceManager::Texture> ground_specular_texture;
   ground_specular_texture.alloc();
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
   ground_normal_map_texture.alloc();
   ground_normal_map_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
   ground_normal_map_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
-  ground_normal_map_texture->LoadTextureData("../../../resources/images/brick_normal_map2.png");
+  ground_normal_map_texture->LoadTextureData("../../../resources/images/brick_normal_map.png");
 
   //Skybox textures
   Suffer::ref_ptr<Suffer::ResourceManager::Cubemap> skybox_cubemap;
@@ -307,8 +307,8 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::ScriptComponent> script_rotator;
   script_rotator.alloc();
-  //go_point_light->AddComponent(script_rotator.get());
-  //script_rotator->AttachScript("../../../src/lua/lua_rotator.lua");
+  go_point_light->AddComponent(script_rotator.get());
+  script_rotator->AttachScript("../../../src/lua/lua_rotator.lua");
 
 
   // -------------------------------------------------------------------------------------//
