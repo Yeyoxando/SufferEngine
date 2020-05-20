@@ -137,7 +137,7 @@ void Suffer::DrawSkybox::Execute() const{
 
   {
 
-    s32 id_texture = data_->cubemap_id_;
+    s32 id_texture = 1;// data_->cubemap_id_;
     if (id_texture < 0) return;
 
 
@@ -353,7 +353,7 @@ void Suffer::DrawSkybox::Execute() const{
     }
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, suffer.resource_manager_.data_->internal_cubemaps_[data_->cubemap_id_].current_texture_id_);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 1);// suffer.resource_manager_.data_->internal_cubemaps_[data_->cubemap_id_].current_texture_id_);
 
     glUniform1i(u_pos, 0);
     u_pos = -1;

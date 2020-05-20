@@ -357,8 +357,8 @@ namespace Suffer {
     closest_depth *= 100.0f; //  == FAR PLANE -> LOOK system_light
     float current_depth = length(frag_to_light);
     //Prevent mapping outside texture
-    if(current_depth > 1.0f)
-      return 0.0f;
+    //if(current_depth > 50.0f)
+    //  return 0.0f;
     //float bias = 0.5f;
     float bias = max(0.5f * (1.0f - dot(normal, light_dir)), 0.4f);
     float shadow = current_depth - bias > closest_depth ? 1.0f : 0.0f;
