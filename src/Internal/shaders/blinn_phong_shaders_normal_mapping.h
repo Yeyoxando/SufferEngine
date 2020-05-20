@@ -318,6 +318,9 @@ namespace Suffer {
     float closest_depth = GetDirectionalLightTexture(light_index, proj_coords.xy).r;
     // Current depth fragment from light perspective
     float current_depth = proj_coords.z;
+    //Prevent mapping outside texture
+    if(current_depth > 1.0f)
+      return 0.0f;
     // Compare current and closest to check if its in shadow or not
     //float bias = 0.002f;
     float bias = max(0.003f * (1.0f - dot(normal, light_dir)), 0.001f);
@@ -349,13 +352,16 @@ namespace Suffer {
   }
 
   float CalculatePointShadows(vec3 frag_pos, vec3 light_pos, vec3 light_dir, int light_index){
-    vec3 fragToLight = frag_pos - light_pos;
-    float closestDepth = GetPointLightTexture(light_index, fragToLight).r;
-    closestDepth *= 100.0f; //  == FAR PLANE -> LOOK system_light
-    float currentDepth = length(fragToLight);
+    vec3 frag_to_light = frag_pos - light_pos;
+    float closest_depth = GetPointLightTexture(light_index, frag_to_light).r;
+    closest_depth *= 100.0f; //  == FAR PLANE -> LOOK system_light
+    float current_depth = length(frag_to_light);
+    //Prevent mapping outside texture
+    if(current_depth > 1.0f)
+      return 0.0f;
     //float bias = 0.5f;
     float bias = max(0.5f * (1.0f - dot(normal, light_dir)), 0.4f);
-    float shadow = currentDepth - bias > closestDepth ? 1.0f : 0.0f;
+    float shadow = current_depth - bias > closest_depth ? 1.0f : 0.0f;
 
     return shadow;
   } 
@@ -396,6 +402,9 @@ namespace Suffer {
     proj_coords = proj_coords * 0.5f + 0.5f;
     float closest_depth = GetSpotLightTexture(light_index, proj_coords.xy).r;
     float current_depth = proj_coords.z;
+    //Prevent mapping outside texture
+    if(current_depth > 1.0f)
+      return 0.0f;
     // Compare current and closest to check if its in shadow or not
     //float bias = 0.002f;
     float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
