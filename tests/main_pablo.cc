@@ -300,7 +300,7 @@ int main(int argc, char* argv[]) {
     // Simple_Box
     Suffer::ref_ptr<Suffer::GameObject> box_cube_;
     box_cube_.alloc();
-    box_cube_->SetName("Point_Light_Walls");
+    box_cube_->SetName("Simple box");
     box_cube_->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
     box_cube_->RemoveComponent(Suffer::Component::kComponentKind_Material);
     box_cube_->AddComponent(material_box.get());
@@ -314,7 +314,7 @@ int main(int argc, char* argv[]) {
     // Mutiple_Boxes
     Suffer::ref_ptr<Suffer::GameObject> multiple_boxes_;
     multiple_boxes_.alloc();
-    multiple_boxes_->SetName("Boxes");
+    multiple_boxes_->SetName("Simple boxes");
     multiple_boxes_->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
     multiple_boxes_->RemoveComponent(Suffer::Component::kComponentKind_Material);
     multiple_boxes_->AddComponent(material_box.get());
@@ -445,7 +445,7 @@ int main(int argc, char* argv[]) {
     audio_sphere_2->AddComponent(audio_3d_jazz.get());
 
     Suffer::Transform* transform_audio_sphere_2 = static_cast<Suffer::Transform*>(audio_sphere_2->GetComponent(Suffer::Component::kComponentKind_Transform));
-    transform_audio_sphere_2->Translate(mathmorra::Vector3(-200.0f, 0.0f, -110.0f));
+    transform_audio_sphere_2->Translate(mathmorra::Vector3(-200.0f, 0.0f, -150.0f));
     transform_audio_sphere_2->Scale(mathmorra::Vector3(110.0f, 110.0, 110.0f));
 
     Suffer::MaterialComponent* material_audio_sphere_2 = static_cast<Suffer::MaterialComponent*>(audio_sphere_2->GetComponent(Suffer::Component::kComponentKind_Material));
@@ -495,6 +495,7 @@ int main(int argc, char* argv[]) {
     transform->Translate(mathmorra::Vector3(-10.0f, 5.0f, -5.0f));
 
     go_directional_light->AddComponent(directional_light_component.get());
+    go_directional_light->RemoveComponent(Suffer::Component::kComponentKind_Material);
 
     // -- Spot light --
     Suffer::ref_ptr<Suffer::GameObject> go_spot_light;
@@ -548,48 +549,6 @@ int main(int argc, char* argv[]) {
     script->AttachScript("../../../src/lua/lua_test_update.lua");
 
 
-    Suffer::ref_ptr<Suffer::GameObject> empty_sphere_;
-    empty_sphere_.alloc();
-    empty_sphere_->SetName("Empty sphere");
-
-    Suffer::ref_ptr<Suffer::Transform> transform_empty_sphere_;
-    transform_empty_sphere_.alloc();
-
-    Suffer::ref_ptr<Suffer::GeometryComponent> empty_sphere_geometry_;
-    empty_sphere_geometry_.alloc();
-    empty_sphere_geometry_->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Sphere);
-
-    empty_sphere_->AddComponent(material_ground.get());
-    empty_sphere_->AddComponent(empty_sphere_geometry_.get());
-    empty_sphere_->AddComponent(transform_empty_sphere_.get());
-
-    Suffer::Transform* transform_empty_sphere_comp = static_cast<Suffer::Transform*>(empty_sphere_->GetComponent(Suffer::Component::kComponentKind_Transform));
-    transform_empty_sphere_comp->Translate(mathmorra::Vector3(0.0f, 20.0f, 0.0f));
-
-
-
-
-
-
-
-    Suffer::ref_ptr<Suffer::GameObject> empty_cube_;
-    empty_cube_.alloc();
-    empty_cube_->SetName("Empty sphere");
-
-    Suffer::ref_ptr<Suffer::Transform> transform_empty_cube_;
-    transform_empty_cube_.alloc();
-
-    Suffer::ref_ptr<Suffer::GeometryComponent> empty_cube_geometry_;
-    empty_cube_geometry_.alloc();
-    empty_cube_geometry_->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
-
-    empty_cube_->AddComponent(material_ground.get());
-    empty_cube_->AddComponent(empty_cube_geometry_.get());
-    empty_cube_->AddComponent(transform_empty_cube_.get());
-
-    Suffer::Transform* transform_empty_cube_comp = static_cast<Suffer::Transform*>(empty_cube_->GetComponent(Suffer::Component::kComponentKind_Transform));
-    transform_empty_cube_comp->Translate(mathmorra::Vector3(50.0f, 20.0f, 0.0f));
-
     Suffer::ref_ptr<Suffer::ScriptComponent> script_rotator;
     script_rotator.alloc();
     go_point_light->AddComponent(script_rotator.get());
@@ -621,8 +580,6 @@ int main(int argc, char* argv[]) {
     scene->AddGameObject(go_spot_light);
     scene->AddGameObject(go_rock);
     scene->AddGameObject(go_mario);
-    scene->AddGameObject(empty_sphere_);
-    scene->AddGameObject(empty_cube_);
     scene->SetSkybox(skybox);
 
 
