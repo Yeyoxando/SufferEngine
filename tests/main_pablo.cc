@@ -126,6 +126,7 @@ int main(int argc, char* argv[]) {
     audio_3d_.alloc();
     audio_3d_->Load("../../../resources/audio/tavern.ogg");
     audio_3d_->Play3D();
+    audio_3d_->SetPaused(true);
 
     Suffer::ref_ptr<Suffer::Audio3D> audio_3d_jazz;
     audio_3d_jazz.alloc();
@@ -511,21 +512,6 @@ int main(int argc, char* argv[]) {
 
     go_spot_light->AddComponent(spot_light_component.get());
 
-    // -- Rock --
-    Suffer::ref_ptr<Suffer::GameObject> go_rock;
-    go_rock.alloc();
-    go_rock->SetName("Rock");
-
-    Suffer::ref_ptr<Suffer::Transform> transform_component_rock;
-    transform_component_rock.alloc();
-    transform_component_rock->Translate(mathmorra::Vector3(5.0f, 2.0f, -2.0f));
-    transform_component_rock->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-125.0f), 0.0f));
-    transform_component_rock->Scale(mathmorra::Vector3(1.0f, 1.0f, 1.0f));
-
-    go_rock->AddComponent(transform_component_rock.get());
-    go_rock->AddComponent(geometry_component_rock.get());
-    go_rock->AddComponent(material_rock.get());
-
 
     // -- Mario --
     Suffer::ref_ptr<Suffer::GameObject> go_mario;
@@ -534,8 +520,8 @@ int main(int argc, char* argv[]) {
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_mario;
     transform_component_mario.alloc();
-    transform_component_mario->Translate(mathmorra::Vector3(0.0f, 0.0f, 2.0f));
-    transform_component_mario->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+    transform_component_mario->Translate(mathmorra::Vector3(0.0f, -2.0f, 2.0f));
+    transform_component_mario->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(180.0f), 0.0f));
     transform_component_mario->Scale(mathmorra::Vector3(0.3f, 0.3f, 0.3f));
 
     Suffer::ref_ptr<Suffer::ScriptComponent> script;
@@ -544,10 +530,6 @@ int main(int argc, char* argv[]) {
     go_mario->AddComponent(transform_component_mario.get());
     go_mario->AddComponent(geometry_component_mario.get());
     go_mario->AddComponent(material_mario.get());
-    go_mario->AddComponent(script.get());
-
-    script->AttachScript("../../../src/lua/lua_test_update.lua");
-
 
     Suffer::ref_ptr<Suffer::ScriptComponent> script_rotator;
     script_rotator.alloc();
@@ -578,7 +560,6 @@ int main(int argc, char* argv[]) {
     scene->AddGameObject(go_point_light);
     scene->AddGameObject(go_directional_light);
     scene->AddGameObject(go_spot_light);
-    scene->AddGameObject(go_rock);
     scene->AddGameObject(go_mario);
     scene->SetSkybox(skybox);
 
