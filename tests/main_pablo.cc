@@ -127,6 +127,12 @@ int main(int argc, char* argv[]) {
     audio_3d_->Load("../../../resources/audio/tavern.ogg");
     audio_3d_->Play3D();
 
+    Suffer::ref_ptr<Suffer::Audio3D> audio_3d_jazz;
+    audio_3d_jazz.alloc();
+    audio_3d_jazz->Load("../../../resources/audio/simple_jazz.ogg");
+    audio_3d_jazz->Play3D();
+    audio_3d_jazz->SetGain(5.0f);
+
 
     // --------------------------- MATERIALS ------------------------------- //
 
@@ -429,6 +435,24 @@ int main(int argc, char* argv[]) {
 
 
 
+    // -- AudioSphere_2 --
+    Suffer::ref_ptr<Suffer::GameObject> audio_sphere_2;
+    audio_sphere_2.alloc();
+    audio_sphere_2->SetName("Jazz_Music_Sphere");
+    audio_sphere_2->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+    audio_sphere_2->RemoveComponent(Suffer::Component::ComponentKind::kComponentKind_Geometry);
+    audio_sphere_2->AddComponent(sphere_lines_geometry_.get());
+    audio_sphere_2->AddComponent(audio_3d_jazz.get());
+
+    Suffer::Transform* transform_audio_sphere_2 = static_cast<Suffer::Transform*>(audio_sphere_2->GetComponent(Suffer::Component::kComponentKind_Transform));
+    transform_audio_sphere_2->Translate(mathmorra::Vector3(-200.0f, 0.0f, -110.0f));
+    transform_audio_sphere_2->Scale(mathmorra::Vector3(110.0f, 110.0, 110.0f));
+
+    Suffer::MaterialComponent* material_audio_sphere_2 = static_cast<Suffer::MaterialComponent*>(audio_sphere_2->GetComponent(Suffer::Component::kComponentKind_Material));
+    material_audio_sphere_2->CurrentParams()->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+
+
+
     // -- Terrain --
     Suffer::ref_ptr<Suffer::GameObject> go_terrain;
     go_terrain.alloc();
@@ -590,6 +614,7 @@ int main(int argc, char* argv[]) {
     scene->AddGameObject(quad_2_nm);
     scene->AddGameObject(quad_nm);
     scene->AddGameObject(audio_sphere_);
+    scene->AddGameObject(audio_sphere_2);
     scene->AddGameObject(go_terrain);
     scene->AddGameObject(go_point_light);
     scene->AddGameObject(go_directional_light);

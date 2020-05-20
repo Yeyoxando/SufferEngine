@@ -293,18 +293,10 @@ namespace Suffer {
   }
 
   vec4 GetSpotLightTexture(int index, vec2 proj_coord){
-    if(index == 0){
-      return texture(u_spot_light_texture0, proj_coord.xy);
-    }
-    if(index == 1){
-      return texture(u_spot_light_texture1, proj_coord.xy);
-    }
-    if(index == 2){
-      return texture(u_spot_light_texture2, proj_coord.xy);
-    }
-    if(index == 3){
-      return texture(u_spot_light_texture3, proj_coord.xy);
-    }
+    if(index == 0){ return texture(u_spot_light_texture0, proj_coord.xy); }
+    if(index == 1){ return texture(u_spot_light_texture1, proj_coord.xy); }
+    if(index == 2){ return texture(u_spot_light_texture2, proj_coord.xy); }
+    if(index == 3){ return texture(u_spot_light_texture3, proj_coord.xy); }
   }
 
   float CalculateShadow(vec4 frag_pos_light_space, vec3 light_dir, int light_index){

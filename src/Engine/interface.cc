@@ -791,7 +791,7 @@ void  Suffer::Interface::Inspector(){
 
               // Attributes
 
-              if (ImGui::SliderFloat("Volume", &song_volume, 0.0f, 2.0f)) {
+              if (ImGui::SliderFloat("Volume", &song_volume, 0.0f, 10.0f)) {
                   sound->SetGain(song_volume);
               }
               if (paused) {
