@@ -5,6 +5,7 @@
 #include "common_definitions.h"
 #include "tiny_obj_loader.h"
 #include "component_material.h"
+#include "math_utils.h"
 
 // --------------------------------------------------- //
 
@@ -321,11 +322,13 @@ void Suffer::GeometryComponent::CreateGeometryWithOBJAndMTL(const char* obj_file
 void Suffer::GeometryComponent::CreateTerrainGeometry(float frequency, float elevation, float terrace_value, int rows /*= 200*/, int columns /*= 200*/) {
 
   Array<mathmorra::Vector3> normals_;
+  Array<mathmorra::Vector3> tangents_;
   Array<mathmorra::Vector3> positions_;
   Array<mathmorra::Vector2> uv_;
 
   positions_.alloc(rows * columns);
   normals_.alloc(rows * columns);
+  tangents_.alloc(rows * columns);
   uv_.alloc(rows * columns);
 
   // POSITIONS and UV
@@ -364,6 +367,14 @@ void Suffer::GeometryComponent::CreateTerrainGeometry(float frequency, float ele
       mathmorra::Vector3 down_right = mathmorra::Vector3::CrossProduct(down, right);
 
       normals_[x * columns + z] = (right_up + up_left + left_down + down_right).Normalized();
+      
+      mathmorra::Vector3 tangent_ = normals_[x * columns + z];
+      tangent_.x_ = tangent_.y_;
+      tangent_.y_ = 0.0f;
+      tangent_.Normalize();
+
+      tangents_[x * columns + z] = tangent_;
+
     }
   }
 
@@ -371,11 +382,11 @@ void Suffer::GeometryComponent::CreateTerrainGeometry(float frequency, float ele
   ref_ptr<ResourceManager::VertexBuffer> new_vertex_buffer;
   Array<ResourceManager::VertexBuffer::Vertex> vertexes;
   new_vertex_buffer.alloc();
-  new_vertex_buffer->SetVertexFormat(ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV);
+  new_vertex_buffer->SetVertexFormat(ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV_3T_3B);
   vertexes.alloc(columns * rows);
 
   for (u32 i = 0; i < vertexes.size(); ++i) {
-    vertexes[i] = ResourceManager::VertexBuffer::Vertex(positions_[i], normals_[i], uv_[i]);
+    vertexes[i] = ResourceManager::VertexBuffer::Vertex(positions_[i], normals_[i], uv_[i], tangents_[i], mathmorra::Vector3());
   }
   new_vertex_buffer->UploadVertexData(vertexes.get(), vertexes.size());
 

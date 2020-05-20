@@ -70,10 +70,12 @@ Suffer::MaterialComponent::BlinnPhongParams::BlinnPhongParams() {
   albedo_texture_id_ = 0;
   specular_texture_id_ = 0;
   reflection_texture_id_ = 1;
+  normal_map_texture_id_ = 1;
 
   use_albedo_texture_ = false;
   use_specular_texture_ = false;
   use_reflection_texture_ = false;
+  use_normal_map_texture_ = false;
 
 }
 
@@ -92,6 +94,15 @@ void Suffer::MaterialComponent::BlinnPhongParams::SetSpecularTexture(ResourceMan
 
   specular_texture_id_ = texture->id_;
   use_specular_texture_ = true;
+
+}
+
+// ------------------------------------------------------------------------- //
+
+void Suffer::MaterialComponent::BlinnPhongParams::SetNormalMap(ResourceManager::Texture * texture){
+
+  normal_map_texture_id_ = texture->id_;
+  use_normal_map_texture_ = true;
 
 }
 

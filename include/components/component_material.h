@@ -29,6 +29,7 @@ namespace Suffer {
       kParamsType_Invalid = -1,
       kParamsType_BlinnPhong = 0,
       kParamsType_RenderToTexture = 1,
+      kParamsType_BlinnPhongNM = 2,
     };
 
 
@@ -65,17 +66,20 @@ namespace Suffer {
 
       void SetAlbedoTexture(ResourceManager::Texture* texture);
       void SetSpecularTexture(ResourceManager::Texture* texture);
+      void SetNormalMap(ResourceManager::Texture* texture);
       void SetReflectionTexture(ResourceManager::Texture* texture, float reflection_strength);
 
     private:
       s32 albedo_texture_id_;
       s32 specular_texture_id_;
+      s32 normal_map_texture_id_;
       s32 reflection_texture_id_;
 
       float u_time_;
 
       bool use_albedo_texture_;
       bool use_specular_texture_;
+      bool use_normal_map_texture_;
       bool use_reflection_texture_;
 
     };

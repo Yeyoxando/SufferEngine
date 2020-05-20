@@ -737,6 +737,7 @@ void  Suffer::Interface::Inspector(){
               ImGui::InputFloat2("Tiling", &blinn_phong_params->tiling_.x_);
 
               ImGui::Checkbox("Albedo texture", &blinn_phong_params->use_albedo_texture_);
+              ImGui::Checkbox("NormalMap texture", &blinn_phong_params->use_normal_map_texture_);
               ImGui::Checkbox("Specular texture", &blinn_phong_params->use_specular_texture_);
               break;
             }

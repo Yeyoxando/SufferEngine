@@ -116,6 +116,8 @@ namespace Suffer {
         kVertexFormat_3P = 0,
         kVertexFormat_3P_3N = 1,
         kVertexFormat_3P_3N_2UV = 2,
+        kVertexFormat_3P_3N_2UV_3T = 3,
+        kVertexFormat_3P_3N_2UV_3T_3B = 4,
       };
 
       /**
@@ -134,14 +136,23 @@ namespace Suffer {
           float normal_x, float normal_y, float normal_z, 
           float uv_x, float uv_y);
 
+        Vertex(float vertex_x, float vertex_y, float vertex_z, 
+          float normal_x, float normal_y, float normal_z, 
+          float uv_x, float uv_y, float tangent_x, float tangent_y, float tangent_z);
+
         Vertex(mathmorra::Vector3 position, mathmorra::Vector3 normal, 
           mathmorra::Vector2 uv);
+
+        Vertex(mathmorra::Vector3 position, mathmorra::Vector3 normal,
+            mathmorra::Vector2 uv, mathmorra::Vector3 tangents, mathmorra::Vector3 bitangents);
 
         ~Vertex() {}
 
         mathmorra::Vector3 vertices_;
         mathmorra::Vector3 normals_;
         mathmorra::Vector2 uvs_;
+        mathmorra::Vector3 tangents_;
+        mathmorra::Vector3 bitangents_;
 
       };
 
