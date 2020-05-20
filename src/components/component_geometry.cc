@@ -242,7 +242,7 @@ void Suffer::GeometryComponent::CreateGeometryWithOBJAndMTL(const char* obj_file
     // Geometries buffers
     ref_ptr<ResourceManager::VertexBuffer> new_vertex_buffer;
     new_vertex_buffer.alloc();
-    new_vertex_buffer->SetVertexFormat(ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV);
+    new_vertex_buffer->SetVertexFormat(ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV_3T_3B);
     Array<ResourceManager::VertexBuffer::Vertex> vertexes;
     vertexes.alloc(v_positions.size());
     for (u32 i = 0; i < vertexes.size(); ++i) {
