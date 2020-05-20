@@ -1027,6 +1027,10 @@ void Suffer::ResourceManager::ResourceData::RefreshFrameBuffers() {
 Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(float vertex_x, float vertex_y, float vertex_z){
 
   vertices_ = mathmorra::Vector3(vertex_x, vertex_y, vertex_z);
+  normals_ = mathmorra::Vector3();
+  uvs_ = mathmorra::Vector2();
+  tangents_ = mathmorra::Vector3();
+  bitangents_ = mathmorra::Vector3();
 
 }
 
@@ -1050,6 +1054,7 @@ Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(float vertex_x, float vert
     normals_ = mathmorra::Vector3(normal_x, normal_y, normal_z);
     uvs_ = mathmorra::Vector2(uv_x, uv_y);
     tangents_ = mathmorra::Vector3(tangent_x, tangent_y, tangent_z);
+    bitangents_ = mathmorra::Vector3();
 
 }
 
@@ -1060,6 +1065,8 @@ Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(mathmorra::Vector3 positio
   vertices_ = position;
   normals_ = normal;
   uvs_ = uv;
+  tangents_ = mathmorra::Vector3();
+  bitangents_ = mathmorra::Vector3();
 
 }
 
@@ -1069,6 +1076,9 @@ Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(float vertex_x, float vert
 
   vertices_ = mathmorra::Vector3(vertex_x, vertex_y, vertex_z);
   normals_ = mathmorra::Vector3(normal_x, normal_y, normal_z);
+  uvs_ = mathmorra::Vector2();
+  tangents_ = mathmorra::Vector3();
+  bitangents_ = mathmorra::Vector3();
 
 }
 
@@ -1079,6 +1089,8 @@ Suffer::ResourceManager::VertexBuffer::Vertex::Vertex(float vertex_x, float vert
   vertices_ = mathmorra::Vector3(vertex_x, vertex_y, vertex_z);
   normals_ = mathmorra::Vector3(normal_x, normal_y, normal_z);
   uvs_ = mathmorra::Vector2(uv_x, uv_y);
+  tangents_ = mathmorra::Vector3();
+  bitangents_ = mathmorra::Vector3();
 
 }
 

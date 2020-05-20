@@ -36,6 +36,7 @@ namespace Suffer {
     out vec3 frag_pos;
     out vec2 uvs;
     out float time;
+    out vec3 tangents;
     out mat3 TBN; // Tangent-Bitangent-Normal Matrix
 
 // ......... MAIN ..........
@@ -54,6 +55,7 @@ namespace Suffer {
       vec3 N = normalize(normal_matrix * a_normal);  // NORMAL
       T = normalize(T - dot(T, N) * N);
       vec3 B = cross(N, T);                          // BITANGENT
+      tangents = a_tangent;
 
       TBN = transpose(mat3(T, B, N));  
 
@@ -177,6 +179,7 @@ namespace Suffer {
     in vec3 frag_pos;
     in vec2 uvs;
     in float time;
+    in vec3 tangents;
     in mat3 TBN; // Tangent-Bitangent-Normal Matrix
 
     out vec4 fragColor;
@@ -471,7 +474,6 @@ namespace Suffer {
     for(int i = 0; i < num_spots; ++i){
       spot += CalculateSpotLight(GetSpotLight(i), i, tangent_normal) * float(GetSpotLight(i).is_active);
     }
-
     fragColor = vec4((directionals + point + spot), 1.0f);
   }
 
