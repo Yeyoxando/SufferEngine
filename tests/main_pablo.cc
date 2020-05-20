@@ -94,6 +94,21 @@ int main(int argc, char* argv[]) {
 
 
 
+    // Box textures
+    Suffer::ref_ptr<Suffer::ResourceManager::Texture> box_texture;
+    box_texture.alloc();
+    box_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
+    box_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
+    box_texture->LoadTextureData("../../../resources/images/box/box_albedo.png");
+
+    Suffer::ref_ptr<Suffer::ResourceManager::Texture> box_normal_map_texture;
+    box_normal_map_texture.alloc();
+    box_normal_map_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
+    box_normal_map_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
+    box_normal_map_texture->LoadTextureData("../../../resources/images/box/box_normal_map_2.jpg");
+
+
+
 
     //Skybox textures
     Suffer::ref_ptr<Suffer::ResourceManager::Cubemap> skybox_cubemap;
@@ -114,6 +129,17 @@ int main(int argc, char* argv[]) {
 
 
     // --------------------------- MATERIALS ------------------------------- //
+
+    // Box
+    Suffer::ref_ptr<Suffer::MaterialComponent> material_box;
+    material_box.alloc();
+    Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_box;
+    material_params_box.alloc();
+    material_params_box->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+    material_params_box->tiling_ = mathmorra::Vector2(1.0f, 1.0f);
+    material_params_box->SetAlbedoTexture(box_texture.get());
+    material_params_box->SetNormalMap(box_normal_map_texture.get());
+    material_box->AddParams(material_params_box.get());
 
 
     // Wood floor
@@ -151,7 +177,7 @@ int main(int argc, char* argv[]) {
     material_params_grass->tiling_ = mathmorra::Vector2(30.0f, 30.0f);
     material_params_grass->SetAlbedoTexture(grass_texture.get());
     material_params_grass->SetSpecularTexture(grass_specular_texture.get());
-    material_params_grass->SetNormalMap(grass_normal_map_texture.get());
+    //material_params_grass->SetNormalMap(grass_normal_map_texture.get());
     material_grass->AddParams(material_params_grass.get());
 
     // White material
@@ -264,6 +290,20 @@ int main(int argc, char* argv[]) {
     spot_light_component->SetQuadratic(0.0f);
 
     // -------------------------- GAMEOBJECTS -------------------------------//
+
+    // Simple_Box
+    Suffer::ref_ptr<Suffer::GameObject> box_cube_;
+    box_cube_.alloc();
+    box_cube_->SetName("Point_Light_Walls");
+    box_cube_->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+    box_cube_->RemoveComponent(Suffer::Component::kComponentKind_Material);
+    box_cube_->AddComponent(material_box.get());
+
+    Suffer::Transform* box_transform_component = static_cast<Suffer::Transform*>(box_cube_->GetComponent(Suffer::Component::kComponentKind_Transform));
+    box_transform_component->Translate(mathmorra::Vector3(-200.0f, -25.0f, 150.0f));
+    box_transform_component->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-180.0f), 0.0f));
+    box_transform_component->Scale(mathmorra::Vector3(2.0f, 2.0f, 2.0f));
+
 
     // Sphere for PoingLightWalls
     Suffer::ref_ptr<Suffer::GameObject> sphere_point_light_;
@@ -518,6 +558,7 @@ int main(int argc, char* argv[]) {
 
 
     // Set gameobjects and scene things
+    scene->AddGameObject(box_cube_);
     scene->AddGameObject(sphere_point_light_);
     scene->AddGameObject(floor_1);
     scene->AddGameObject(quad_1_nm);

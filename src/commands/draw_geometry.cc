@@ -191,6 +191,7 @@ void Suffer::DrawGeometry::SetData(GameObject* go) {
         data_->u_material_data_[m][11] = phong_params_->specular_pow_;
         //u_data[3].xyzw
         data_->u_material_data_[m][12] = phong_params_->reflection_strength_;
+        data_->u_material_data_[m][13] = (float)phong_params_->use_normal_map_texture_;
 
         data_->texture_ids_[m].alloc(4);
         if (phong_params_->use_albedo_texture_) {

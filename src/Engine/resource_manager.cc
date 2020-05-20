@@ -450,10 +450,10 @@ void Suffer::ResourceManager::ResourceData::InitInternalBuffers() {
 
     float quad[] = {
         // Positions             Normals            UV's                    TANGENTS                                    BITANGENTS
-        -1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 1.0f,  0.0f, 1.0f,  tangent1.x_, tangent1.y_, tangent1.z_,   bitangent1.x_, bitangent1.y_, bitangent1.z_,
-        -1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 1.0f,  0.0f, 0.0f,  tangent1.x_, tangent1.y_, tangent1.z_,   bitangent1.x_, bitangent1.y_, bitangent1.z_,
-         1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 1.0f,  1.0f, 0.0f,  tangent1.x_, tangent1.y_, tangent1.z_,   bitangent1.x_, bitangent1.y_, bitangent1.z_,
-         1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 1.0f,  1.0f, 1.0f,  tangent2.x_, tangent2.y_, tangent2.z_,   bitangent2.x_, bitangent2.y_, bitangent2.z_
+        -1.0f,  1.0f,  0.0f,    0.0f, 0.0f, -1.0f,  0.0f, 1.0f,  tangent2.x_, tangent2.y_, tangent2.z_,   bitangent1.x_, bitangent1.y_, bitangent1.z_,
+        -1.0f, -1.0f,  0.0f,    0.0f, 0.0f, -1.0f,  0.0f, 0.0f,  tangent2.x_, tangent2.y_, tangent2.z_,   bitangent1.x_, bitangent1.y_, bitangent1.z_,
+         1.0f, -1.0f,  0.0f,    0.0f, 0.0f, -1.0f,  1.0f, 0.0f,  tangent2.x_, tangent2.y_, tangent2.z_,   bitangent1.x_, bitangent1.y_, bitangent1.z_,
+         1.0f,  1.0f,  0.0f,    0.0f, 0.0f, -1.0f,  1.0f, 1.0f,  tangent2.x_, tangent2.y_, tangent2.z_,   bitangent2.x_, bitangent2.y_, bitangent2.z_
     };
 
 

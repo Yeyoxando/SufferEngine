@@ -403,9 +403,9 @@ namespace Suffer {
     vec3 CalculateSpotLight(SpotLight light, int light_index, vec3 normal) {
       vec3 norm = normalize(normal);
       vec3 light_dir = normalize(light.position - frag_pos);
+      vec3 view_dir = normalize(camera_pos - frag_pos);
       float diff = max(dot(norm, light_dir), 0.0f);
 
-      vec3 view_dir = normalize(camera_pos - frag_pos);
       vec3 halfway_dir = normalize(light_dir + view_dir);  
       float spec = pow(max(dot(normal, halfway_dir), 0.0f), u_specular_pow);
 

@@ -67,11 +67,11 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::ResourceManager::Cubemap> skybox_cubemap;
   skybox_cubemap.alloc();
   skybox_cubemap->LoadCubemapTextureData("../../../resources/images/skybox/sky_right.jpg",
-                                          "../../../resources/images/skybox/sky_left.jpg", 
-                                          "../../../resources/images/skybox/sky_top.jpg", 
-                                          "../../../resources/images/skybox/sky_bottom.jpg", 
-                                          "../../../resources/images/skybox/sky_front.jpg", 
-                                          "../../../resources/images/skybox/sky_back.jpg");
+      "../../../resources/images/skybox/sky_left.jpg",
+      "../../../resources/images/skybox/sky_top.jpg",
+      "../../../resources/images/skybox/sky_bottom.jpg",
+      "../../../resources/images/skybox/sky_front.jpg",
+      "../../../resources/images/skybox/sky_back.jpg");
 
   // --------------------------- MATERIALS ------------------------------- //
 
@@ -132,10 +132,13 @@ int main(int argc, char* argv[]) {
   geometry_component_terrain->CreateTerrainGeometry(0.096f, 63.0f, 1.0f);
 
   // OBJ
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_mario;
+  material_mario.alloc();
   Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_obj;
   geometry_component_obj.alloc();
   geometry_component_obj->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
-  geometry_component_obj->CreateGeometryWithOBJ("../../../resources/models/SuperMairo64.obj");
+  geometry_component_obj->CreateGeometryWithOBJAndMTL("../../../resources/models/SuperMairo64.obj",
+      *material_mario.get(), "../../../resources/materials/", "../../../resources/images/Mario64/");
 
   // ----------------------------- LIGHTS -------------------------------- //
   // Directional
@@ -250,7 +253,7 @@ int main(int argc, char* argv[]) {
   script.alloc();
 
   go_box->AddComponent(transform_component_cube.get());
-  go_box->AddComponent(geometry_component_obj.get());
+  //go_box->AddComponent(geometry_component_obj.get());
   go_box->AddComponent(material_box.get());
   go_box->AddComponent(script.get());
 

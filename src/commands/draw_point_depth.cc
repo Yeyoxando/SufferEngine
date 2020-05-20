@@ -65,8 +65,8 @@ void Suffer::DrawPointDepth::SetData(GameObject* go, mathmorra::Vector3 light_po
 
   {
 
-    if (!go->HasComponent(Component::ComponentKind::kComponentKind_Geometry)/* ||
-      go->HasComponent(Component::ComponentKind::kComponentKind_Light)*/) {
+    if (!go->HasComponent(Component::ComponentKind::kComponentKind_Geometry) ||
+      go->HasComponent(Component::ComponentKind::kComponentKind_Light)) {
       data_->number_shapes_ = 0;
     }
     else {

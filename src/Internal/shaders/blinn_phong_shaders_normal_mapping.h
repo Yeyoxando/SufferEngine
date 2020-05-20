@@ -70,8 +70,6 @@ namespace Suffer {
   static const char* blinn_phong_nm_fragment_shader = R"FBPHONGSHADER(
     #version 330
 
-// ....... STRUCTS ........
-    // DIRECTIONAL LIGHT
     struct DirectionalLight{
       vec3 specular;
       vec3 diffuse;
@@ -86,7 +84,6 @@ namespace Suffer {
       mat4 view_projection_matrix;
     };
 
-    // POINT LIGHT
     struct PointLight{
       vec3 specular;
       vec3 diffuse;
@@ -105,7 +102,6 @@ namespace Suffer {
       mat4 view_projection_matrix[6];
     };
 
-    // SPOT LIGHT
     struct SpotLight{
       vec3 specular;
       vec3 diffuse;
@@ -161,6 +157,7 @@ namespace Suffer {
     #define u_specular_strength u_material_data[2].z
     #define u_specular_pow u_material_data[2].w
     #define u_reflection_strength u_material_data[3].x
+    #define use_normal_map u_material_data[3].y
 
     #define max_lights 4
     #define num_lights u_data[12].x
@@ -187,6 +184,7 @@ namespace Suffer {
     vec3 TangentLightPos;
     vec3 TangentViewPos;
     vec3 TangentFragPos;
+    bool def_normal_map;
 
 // ....... FUNCTIONS ........
   // DIRECTIONALS
@@ -319,12 +317,10 @@ namespace Suffer {
     proj_coords = proj_coords * 0.5f + 0.5f;
     // Get shadow map fragment
     float closest_depth = GetDirectionalLightTexture(light_index, proj_coords.xy).r;
-    // Current depth fragment from light perspective
     float current_depth = proj_coords.z;
     //Prevent mapping outside texture
     if(current_depth > 1.0f)
       return 0.0f;
-    // Compare current and closest to check if its in shadow or not
     //float bias = 0.002f;
     float bias = max(0.003f * (1.0f - dot(normal, light_dir)), 0.001f);
     float shadow = (current_depth - bias) > closest_depth ? 1.0f : 0.0f;
@@ -359,7 +355,6 @@ namespace Suffer {
     float closest_depth = GetPointLightTexture(light_index, frag_to_light).r;
     closest_depth *= 100.0f; //  == FAR PLANE -> LOOK system_light
     float current_depth = length(frag_to_light);
-    //Prevent mapping outside texture
     if(current_depth > 100.0f)
       return 0.0f;
     //float bias = 0.5f;
@@ -370,13 +365,18 @@ namespace Suffer {
   } 
 
   vec3 CalculatePointLight(PointLight light, int light_index, vec3 normal, vec3 view_dir) {
-    TangentLightPos = TBN * light.position;
-    TangentViewPos = TBN * camera_pos;
-    TangentFragPos = TBN * frag_pos;
-    vec3 light_dir = normalize(TangentLightPos - TangentFragPos);
+    vec3 light_dir, viewD;
+    if(def_normal_map){
+     TangentLightPos = TBN * light.position;
+     TangentViewPos = TBN * camera_pos;
+     TangentFragPos = TBN * frag_pos;
+     light_dir = normalize(TangentLightPos - TangentFragPos);
+     viewD = normalize(TangentViewPos - TangentFragPos);
+    }else{
+     light_dir = normalize(light.position - frag_pos);
+    }
 
     float diff = max(dot(light_dir, normal), 0.0f);
-    vec3 viewD = normalize(TangentViewPos - TangentFragPos);
     vec3 halfway_dir = normalize(light_dir + viewD);  
     float spec = pow(max(dot(normal, halfway_dir), 0.0f), u_specular_pow);
 
@@ -396,7 +396,7 @@ namespace Suffer {
     float shadow = CalculatePointShadows(frag_pos, light.position, light_dir, light_index);
 
     float inv_reflection = (1.0f - ref_value);
-    return (((ambient * inv_reflection) + reflection) + ((1.0f - shadow) * ((diffuse * inv_reflection) + specular))) * u_color.xyz;
+    return (((ambient * inv_reflection) + reflection) + ((1.0f - (shadow * 2.0)) * ((diffuse * inv_reflection) + specular))) * u_color.xyz;
   }
 
   float CalculateSpotShadow(vec4 frag_pos_light_space, vec3 light_dir, int light_index){
@@ -457,10 +457,13 @@ namespace Suffer {
 
   void main() {
     vec3 view_dir = normalize(camera_pos - frag_pos);
-
     vec3 normal_m = texture(u_normal_map, uvs * u_tiling).rgb;
     vec3 tangent_normal = normal_m * 2.0 - 1.0;
     tangent_normal = normalize(TBN * tangent_normal);
+    def_normal_map = bool(use_normal_map);
+    if(!def_normal_map){
+        tangent_normal = normal;
+    }
 
     vec3 directionals = vec3(0.0f, 0.0f, 0.0f);
     for(int i = 0; i < num_directionals; ++i){
