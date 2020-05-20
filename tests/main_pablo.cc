@@ -312,6 +312,11 @@ int main(int argc, char* argv[]) {
     sphere_point_light_->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
     sphere_point_light_->AddComponent(point_light_walls_component.get());
 
+    Suffer::ref_ptr<Suffer::ScriptComponent> rotate_light;
+    rotate_light.alloc();
+    sphere_point_light_->AddComponent(rotate_light.get());
+    rotate_light->AttachScript("../../../src/lua/lua_rotator_2.lua");
+
     Suffer::Transform* light_transform_component = static_cast<Suffer::Transform*>(sphere_point_light_->GetComponent(Suffer::Component::kComponentKind_Transform));
     light_transform_component->Translate(mathmorra::Vector3(-200.0f, 0.0f, 150.0f));
     light_transform_component->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-180.0f), 0.0f));
