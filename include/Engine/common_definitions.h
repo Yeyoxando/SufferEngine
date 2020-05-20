@@ -4,7 +4,7 @@
 #define MAX_LIGHTS 4
 #define MAX_BUFFERS 50
 #define MAX_CUBEMAPS 10
-#define MAX_TEXTURES 40
+#define MAX_TEXTURES 60
 #define MAX_FRAMEBUFFERS 20
 #define MAX_AUDIO_SOURCES 15
 

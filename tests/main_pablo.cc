@@ -36,20 +36,40 @@ int main(int argc, char* argv[]) {
     ground_texture.alloc();
     ground_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
     ground_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
-    ground_texture->LoadTextureData("../../../resources/images/texture_01.png");
+    ground_texture->LoadTextureData("../../../resources/images/brick_normal.jpg");
 
     Suffer::ref_ptr<Suffer::ResourceManager::Texture> ground_specular_texture;
     ground_specular_texture.alloc();
     ground_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
     ground_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
-    ground_specular_texture->LoadTextureData("../../../resources/images/texture_01_spec.png");
+    ground_specular_texture->LoadTextureData("../../../resources/images/wall_spec.jpg");
 
     Suffer::ref_ptr<Suffer::ResourceManager::Texture> ground_normal_map_texture;
     ground_normal_map_texture.alloc();
     ground_normal_map_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
     ground_normal_map_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
-    ground_normal_map_texture->LoadTextureData("../../../resources/images/brick_normal_map.png");
+    ground_normal_map_texture->LoadTextureData("../../../resources/images/brick_normal_map2.png");
 
+
+
+    // Wood floor texture
+    Suffer::ref_ptr<Suffer::ResourceManager::Texture> wood_floor_texture_;
+    wood_floor_texture_.alloc();
+    wood_floor_texture_->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
+    wood_floor_texture_->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
+    wood_floor_texture_->LoadTextureData("../../../resources/images/floor/wood_albedo.jpg");
+
+    Suffer::ref_ptr<Suffer::ResourceManager::Texture> wood_floor_specular_texture;
+    wood_floor_specular_texture.alloc();
+    wood_floor_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
+    wood_floor_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
+    wood_floor_specular_texture->LoadTextureData("../../../resources/images/floor/wood_specular.jpg");
+
+    Suffer::ref_ptr<Suffer::ResourceManager::Texture> wood_floor_normal_map_texture;
+    wood_floor_normal_map_texture.alloc();
+    wood_floor_normal_map_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
+    wood_floor_normal_map_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_Repeat, Suffer::ResourceManager::Texture::kTextureWrap_Repeat);
+    wood_floor_normal_map_texture->LoadTextureData("../../../resources/images/floor/wood_normal_map_2.jpg");
 
 
 
@@ -94,6 +114,19 @@ int main(int argc, char* argv[]) {
 
 
     // --------------------------- MATERIALS ------------------------------- //
+
+
+    // Wood floor
+    Suffer::ref_ptr<Suffer::MaterialComponent> material_wood_floor;
+    material_wood_floor.alloc();
+    Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_wood_floor;
+    material_params_wood_floor.alloc();
+    material_params_wood_floor->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+    material_params_wood_floor->tiling_ = mathmorra::Vector2(1.0f, 1.0f);
+    material_params_wood_floor->SetAlbedoTexture(wood_floor_texture_.get());
+    material_params_wood_floor->SetSpecularTexture(wood_floor_specular_texture.get());
+    material_params_wood_floor->SetNormalMap(wood_floor_normal_map_texture.get());
+    material_wood_floor->AddParams(material_params_wood_floor.get());
 
 
     // Ground material
@@ -202,6 +235,18 @@ int main(int argc, char* argv[]) {
     point_light_component->SetSpecular(1.0f, 1.0f, 1.0f);
     point_light_component->SetActive(true);
 
+    // Point_Walls
+    Suffer::ref_ptr<Suffer::LightComponent> point_light_walls_component;
+    point_light_walls_component.alloc();
+    point_light_walls_component->Init(Suffer::LightComponent::kLightKind_Point);
+    point_light_walls_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
+    point_light_walls_component->SetIntensity(8.0f);
+    point_light_walls_component->SetPosition(-150.0f, 0.0f, -100.0f);
+    point_light_walls_component->SetAmbient(0.5f, 0.5f, 0.5f);
+    point_light_walls_component->SetDiffuse(1.0f, 1.0f, 1.0f);
+    point_light_walls_component->SetSpecular(1.0f, 1.0f, 1.0f);
+    point_light_walls_component->SetActive(true);
+
     // Spot
     Suffer::ref_ptr<Suffer::LightComponent> spot_light_component;
     spot_light_component.alloc();
@@ -219,6 +264,88 @@ int main(int argc, char* argv[]) {
     spot_light_component->SetQuadratic(0.0f);
 
     // -------------------------- GAMEOBJECTS -------------------------------//
+
+    // Sphere for PoingLightWalls
+    Suffer::ref_ptr<Suffer::GameObject> sphere_point_light_;
+    sphere_point_light_.alloc();
+    sphere_point_light_->SetName("Point_Light_Walls");
+    sphere_point_light_->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+    sphere_point_light_->AddComponent(point_light_walls_component.get());
+
+    Suffer::Transform* light_transform_component = static_cast<Suffer::Transform*>(sphere_point_light_->GetComponent(Suffer::Component::kComponentKind_Transform));
+    light_transform_component->Translate(mathmorra::Vector3(-200.0f, 0.0f, 150.0f));
+    light_transform_component->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-180.0f), 0.0f));
+    light_transform_component->Scale(mathmorra::Vector3(2.0f, 2.0f, 2.0f));
+
+    Suffer::GeometryComponent* light_geometry_component = static_cast<Suffer::GeometryComponent*>(sphere_point_light_->GetComponent(Suffer::Component::kComponentKind_Geometry));
+    light_geometry_component->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Sphere);
+
+
+
+    // Floor_1
+    Suffer::ref_ptr<Suffer::GameObject> floor_1;
+    floor_1.alloc();
+    floor_1->SetName("Floor_1");
+    floor_1->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+    floor_1->RemoveComponent(Suffer::Component::ComponentKind::kComponentKind_Geometry);
+    floor_1->RemoveComponent(Suffer::Component::ComponentKind::kComponentKind_Material);
+    floor_1->AddComponent(geometry_component_quad.get());
+    floor_1->AddComponent(material_wood_floor.get());
+
+    Suffer::Transform* transform_floor_1_nm_ = static_cast<Suffer::Transform*>(floor_1->GetComponent(Suffer::Component::kComponentKind_Transform));
+    transform_floor_1_nm_->Translate(mathmorra::Vector3(-200.0f, -50.0f, 150));
+    transform_floor_1_nm_->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, 0.0f));
+    transform_floor_1_nm_->Scale(mathmorra::Vector3(50.0f, 50.0f, 30.0f));
+
+
+    // -- Quad1 --
+    Suffer::ref_ptr<Suffer::GameObject> quad_1_nm;
+    quad_1_nm.alloc();
+    quad_1_nm->SetName("Wall_1");
+    quad_1_nm->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+    quad_1_nm->RemoveComponent(Suffer::Component::ComponentKind::kComponentKind_Geometry);
+    quad_1_nm->RemoveComponent(Suffer::Component::ComponentKind::kComponentKind_Material);
+    quad_1_nm->AddComponent(geometry_component_quad.get());
+    quad_1_nm->AddComponent(material_ground.get());
+
+    Suffer::Transform* transform_quad_1_nm_ = static_cast<Suffer::Transform*>(quad_1_nm->GetComponent(Suffer::Component::kComponentKind_Transform));
+    transform_quad_1_nm_->Translate(mathmorra::Vector3(-200.0f, 0.0f, 200.0f));
+    transform_quad_1_nm_->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-180.0f), 0.0f));
+    transform_quad_1_nm_->Scale(mathmorra::Vector3(-50.0f, 50.0f, 30.0f));
+
+
+    // -- Quad2 --
+    Suffer::ref_ptr<Suffer::GameObject> quad_2_nm;
+    quad_2_nm.alloc();
+    quad_2_nm->SetName("Wall_2");
+    quad_2_nm->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+    quad_2_nm->RemoveComponent(Suffer::Component::ComponentKind::kComponentKind_Geometry);
+    quad_2_nm->RemoveComponent(Suffer::Component::ComponentKind::kComponentKind_Material);
+    quad_2_nm->AddComponent(geometry_component_quad.get());
+    quad_2_nm->AddComponent(material_ground.get());
+
+    Suffer::Transform* transform_quad_2_nm_ = static_cast<Suffer::Transform*>(quad_2_nm->GetComponent(Suffer::Component::kComponentKind_Transform));
+    transform_quad_2_nm_->Translate(mathmorra::Vector3(-150.0f, 0.0f, 150.0f));
+    transform_quad_2_nm_->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(90.0f), 0.0f));
+    transform_quad_2_nm_->Scale(mathmorra::Vector3(50.0f, -50.0f, 30.0f));
+
+
+
+    // -- Quad3 --
+    Suffer::ref_ptr<Suffer::GameObject> quad_nm;
+    quad_nm.alloc();
+    quad_nm->SetName("Wall_3");
+    quad_nm->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+    quad_nm->RemoveComponent(Suffer::Component::ComponentKind::kComponentKind_Geometry);
+    quad_nm->RemoveComponent(Suffer::Component::ComponentKind::kComponentKind_Material);
+    quad_nm->AddComponent(geometry_component_quad.get());
+    quad_nm->AddComponent(material_ground.get());
+
+    Suffer::Transform* transform_quad_nm_ = static_cast<Suffer::Transform*>(quad_nm->GetComponent(Suffer::Component::kComponentKind_Transform));
+    transform_quad_nm_->Translate(mathmorra::Vector3(-250.0f, 0.0f, 150.0f));
+    transform_quad_nm_->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(90.0f), 0.0f));
+    transform_quad_nm_->Scale(mathmorra::Vector3(-50.0f, -50.0f, 30.0f));
+
 
     // -- AudioSphere --
     Suffer::ref_ptr<Suffer::GameObject> audio_sphere_;
@@ -391,6 +518,11 @@ int main(int argc, char* argv[]) {
 
 
     // Set gameobjects and scene things
+    scene->AddGameObject(sphere_point_light_);
+    scene->AddGameObject(floor_1);
+    scene->AddGameObject(quad_1_nm);
+    scene->AddGameObject(quad_2_nm);
+    scene->AddGameObject(quad_nm);
     scene->AddGameObject(audio_sphere_);
     scene->AddGameObject(go_terrain);
     scene->AddGameObject(go_point_light);

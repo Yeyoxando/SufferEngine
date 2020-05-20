@@ -360,8 +360,8 @@ namespace Suffer {
     closest_depth *= 100.0f; //  == FAR PLANE -> LOOK system_light
     float current_depth = length(frag_to_light);
     //Prevent mapping outside texture
-    //if(current_depth > 50.0f)
-    //  return 0.0f;
+    if(current_depth > 100.0f)
+      return 0.0f;
     //float bias = 0.5f;
     float bias = max(0.5f * (1.0f - dot(normal, light_dir)), 0.4f);
     float shadow = current_depth - bias > closest_depth ? 1.0f : 0.0f;
@@ -458,7 +458,7 @@ namespace Suffer {
   void main() {
     vec3 view_dir = normalize(camera_pos - frag_pos);
 
-    vec3 normal_m = texture(u_normal_map, uvs).rgb;
+    vec3 normal_m = texture(u_normal_map, uvs * u_tiling).rgb;
     vec3 tangent_normal = normal_m * 2.0 - 1.0;
     tangent_normal = normalize(TBN * tangent_normal);
 

@@ -290,27 +290,51 @@ void Suffer::DrawDepth::Execute() const {
       auto type = suffer.resource_manager_.data_->internal_vertex_buffers_[data_->vertex_buffer_id_[s]].vertex_format_;
       switch (type) {
       case Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P:
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
-        break;
+          glEnableVertexAttribArray(0);
+          glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+          break;
       case Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N:
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (6 * sizeof(float)), (GLvoid*)0);
-        //glEnableVertexAttribArray(1);
-        //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (6 * sizeof(float)), (GLvoid*)(3 * sizeof(float)));
-        break;
+          glEnableVertexAttribArray(0);
+          glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (6 * sizeof(float)), (GLvoid*)0);
+          glEnableVertexAttribArray(1);
+          glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (6 * sizeof(float)), (GLvoid*)(3 * sizeof(float)));
+          break;
       case Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV:
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (GLvoid*)0);
-        //glEnableVertexAttribArray(1);
-        //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (GLvoid*)(3 * sizeof(float)));
-        //glEnableVertexAttribArray(2);
-        //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (GLvoid*)(6 * sizeof(float)));
+          glEnableVertexAttribArray(0);
+          glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (GLvoid*)0);
+          glEnableVertexAttribArray(1);
+          glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (GLvoid*)(3 * sizeof(float)));
+          glEnableVertexAttribArray(2);
+          glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (GLvoid*)(6 * sizeof(float)));
 
-        break;
+          break;
+      case Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV_3T:
+          glEnableVertexAttribArray(0);
+          glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(float)), (GLvoid*)0);
+          glEnableVertexAttribArray(1);
+          glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(float)), (GLvoid*)(3 * sizeof(float)));
+          glEnableVertexAttribArray(2);
+          glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(float)), (GLvoid*)(6 * sizeof(float)));
+          glEnableVertexAttribArray(3);
+          glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(float)), (GLvoid*)(8 * sizeof(float)));
+
+          break;
+      case Suffer::ResourceManager::VertexBuffer::kVertexFormat_3P_3N_2UV_3T_3B:
+          glEnableVertexAttribArray(0);
+          glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (14 * sizeof(float)), (GLvoid*)0);
+          glEnableVertexAttribArray(1);
+          glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (14 * sizeof(float)), (GLvoid*)(3 * sizeof(float)));
+          glEnableVertexAttribArray(2);
+          glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (14 * sizeof(float)), (GLvoid*)(6 * sizeof(float)));
+          glEnableVertexAttribArray(3);
+          glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, (14 * sizeof(float)), (GLvoid*)(8 * sizeof(float)));
+          glEnableVertexAttribArray(4);
+          glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, (14 * sizeof(float)), (GLvoid*)(11 * sizeof(float)));
+
+          break;
       default:
 
-        break;
+          break;
       }
 
     }

@@ -329,7 +329,7 @@ void Suffer::Camera::Update() {
   }
 
   if (suffer.input_manager_.IsKeyPressed(InputManager::k_Shift)) {
-    speed_ = 1.5f;
+    speed_ = 2.5f;
   }
   else {
     speed_ = 0.5f;

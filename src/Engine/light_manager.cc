@@ -321,8 +321,8 @@ void Suffer::LightManager::DirectionalLight::SetLightKind(LightKind new_kind){
 
 Suffer::LightManager::DirectionalLight::DirectionalLight(){
 
-  assert(suffer.light_manager_.current_lights_ < MAX_LIGHTS);
-  if (suffer.light_manager_.current_lights_ >= MAX_LIGHTS) return;
+  assert(suffer.light_manager_.current_lights_ <= MAX_LIGHTS);
+  if (suffer.light_manager_.current_lights_ > MAX_LIGHTS) return;
 
   // Attributes
   active_ = true;
@@ -349,8 +349,9 @@ Suffer::LightManager::DirectionalLight::~DirectionalLight(){
 
 Suffer::LightManager::PointLight::PointLight(){
 
-  assert(suffer.light_manager_.current_lights_ < MAX_LIGHTS);
-  if (suffer.light_manager_.current_lights_ >= MAX_LIGHTS) return;
+  auto test = suffer.light_manager_.current_lights_;
+  assert(suffer.light_manager_.current_lights_ <= MAX_LIGHTS);
+  if (suffer.light_manager_.current_lights_ > MAX_LIGHTS) return;
 
   // Attributes
   active_ = true;
@@ -423,8 +424,8 @@ float Suffer::LightManager::PointLight::Quadratic() {
 
 Suffer::LightManager::SpotLight::SpotLight(){
 
-  assert(suffer.light_manager_.current_lights_ < MAX_LIGHTS);
-  if (suffer.light_manager_.current_lights_ >= MAX_LIGHTS) return;
+  assert(suffer.light_manager_.current_lights_ <= MAX_LIGHTS);
+  if (suffer.light_manager_.current_lights_ > MAX_LIGHTS) return;
 
   // Attributes
   active_ = true;
