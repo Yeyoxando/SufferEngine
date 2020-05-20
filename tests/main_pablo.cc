@@ -161,7 +161,7 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_ground;
     material_params_ground.alloc();
     material_params_ground->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-    material_params_ground->tiling_ = mathmorra::Vector2(1.0f, 1.0f);
+    material_params_ground->tiling_ = mathmorra::Vector2(3.0f, 3.0f);
     material_params_ground->SetAlbedoTexture(ground_texture.get());
     material_params_ground->SetSpecularTexture(ground_specular_texture.get());
     material_params_ground->SetNormalMap(ground_normal_map_texture.get());
@@ -277,7 +277,7 @@ int main(int argc, char* argv[]) {
     Suffer::ref_ptr<Suffer::LightComponent> spot_light_component;
     spot_light_component.alloc();
     spot_light_component->Init(Suffer::LightComponent::kLightKind_Spot);
-    spot_light_component->SetDirection(mathmorra::Vector3(1.0f, -0.5f, 0.0f));
+    spot_light_component->SetDirection(mathmorra::Vector3(0.0f, -0.3f, -1.0f));
     spot_light_component->SetIntensity(10.0f);
     spot_light_component->SetAmbient(0.5f, 0.5f, 0.5f);
     spot_light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
@@ -300,9 +300,28 @@ int main(int argc, char* argv[]) {
     box_cube_->AddComponent(material_box.get());
 
     Suffer::Transform* box_transform_component = static_cast<Suffer::Transform*>(box_cube_->GetComponent(Suffer::Component::kComponentKind_Transform));
-    box_transform_component->Translate(mathmorra::Vector3(-200.0f, -25.0f, 150.0f));
+    box_transform_component->Translate(mathmorra::Vector3(-200.0f, -25.0f, -150.0f));
     box_transform_component->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-180.0f), 0.0f));
     box_transform_component->Scale(mathmorra::Vector3(2.0f, 2.0f, 2.0f));
+
+
+    // Mutiple_Boxes
+    Suffer::ref_ptr<Suffer::GameObject> multiple_boxes_;
+    multiple_boxes_.alloc();
+    multiple_boxes_->SetName("Boxes");
+    multiple_boxes_->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+    multiple_boxes_->RemoveComponent(Suffer::Component::kComponentKind_Material);
+    multiple_boxes_->AddComponent(material_box.get());
+
+    Suffer::Transform* boxes_transform_component = static_cast<Suffer::Transform*>(multiple_boxes_->GetComponent(Suffer::Component::kComponentKind_Transform));
+    boxes_transform_component->Translate(mathmorra::Vector3(-180.0f, -45.0f, -180.0f));
+    boxes_transform_component->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-180.0f), 0.0f));
+    boxes_transform_component->Scale(mathmorra::Vector3(5.0f, 5.0f, 5.0f));
+
+    Suffer::MaterialComponent* boxes_material_component = static_cast<Suffer::MaterialComponent*>(multiple_boxes_->GetComponent(Suffer::Component::kComponentKind_Material));
+    Suffer::MaterialComponent::BlinnPhongParams* blinn_ = reinterpret_cast<Suffer::MaterialComponent::BlinnPhongParams*>(boxes_material_component->CurrentParams());
+    blinn_->tiling_ = 2;
+
 
 
     // Sphere for PoingLightWalls
@@ -318,7 +337,7 @@ int main(int argc, char* argv[]) {
     rotate_light->AttachScript("../../../src/lua/lua_rotator_2.lua");
 
     Suffer::Transform* light_transform_component = static_cast<Suffer::Transform*>(sphere_point_light_->GetComponent(Suffer::Component::kComponentKind_Transform));
-    light_transform_component->Translate(mathmorra::Vector3(-200.0f, 0.0f, 150.0f));
+    light_transform_component->Translate(mathmorra::Vector3(-200.0f, 0.0f, -150.0f));
     light_transform_component->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-180.0f), 0.0f));
     light_transform_component->Scale(mathmorra::Vector3(2.0f, 2.0f, 2.0f));
 
@@ -338,7 +357,7 @@ int main(int argc, char* argv[]) {
     floor_1->AddComponent(material_wood_floor.get());
 
     Suffer::Transform* transform_floor_1_nm_ = static_cast<Suffer::Transform*>(floor_1->GetComponent(Suffer::Component::kComponentKind_Transform));
-    transform_floor_1_nm_->Translate(mathmorra::Vector3(-200.0f, -50.0f, 150));
+    transform_floor_1_nm_->Translate(mathmorra::Vector3(-200.0f, -50.0f, -150));
     transform_floor_1_nm_->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, 0.0f));
     transform_floor_1_nm_->Scale(mathmorra::Vector3(50.0f, 50.0f, 30.0f));
 
@@ -354,9 +373,9 @@ int main(int argc, char* argv[]) {
     quad_1_nm->AddComponent(material_ground.get());
 
     Suffer::Transform* transform_quad_1_nm_ = static_cast<Suffer::Transform*>(quad_1_nm->GetComponent(Suffer::Component::kComponentKind_Transform));
-    transform_quad_1_nm_->Translate(mathmorra::Vector3(-200.0f, 0.0f, 200.0f));
-    transform_quad_1_nm_->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-180.0f), 0.0f));
-    transform_quad_1_nm_->Scale(mathmorra::Vector3(-50.0f, 50.0f, 30.0f));
+    transform_quad_1_nm_->Translate(mathmorra::Vector3(-200.0f, 0.0f, -200.0f));
+    transform_quad_1_nm_->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(180), 0.0f));
+    transform_quad_1_nm_->Scale(mathmorra::Vector3(50.0f, 50.0f, 30.0f));
 
 
     // -- Quad2 --
@@ -370,9 +389,9 @@ int main(int argc, char* argv[]) {
     quad_2_nm->AddComponent(material_ground.get());
 
     Suffer::Transform* transform_quad_2_nm_ = static_cast<Suffer::Transform*>(quad_2_nm->GetComponent(Suffer::Component::kComponentKind_Transform));
-    transform_quad_2_nm_->Translate(mathmorra::Vector3(-150.0f, 0.0f, 150.0f));
-    transform_quad_2_nm_->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(90.0f), 0.0f));
-    transform_quad_2_nm_->Scale(mathmorra::Vector3(50.0f, -50.0f, 30.0f));
+    transform_quad_2_nm_->Translate(mathmorra::Vector3(-150.0f, 0.0f, -150.0f));
+    transform_quad_2_nm_->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-90.0f), 0.0f));
+    transform_quad_2_nm_->Scale(mathmorra::Vector3(-50.0f, -50.0f, 30.0f));
 
 
 
@@ -387,7 +406,7 @@ int main(int argc, char* argv[]) {
     quad_nm->AddComponent(material_ground.get());
 
     Suffer::Transform* transform_quad_nm_ = static_cast<Suffer::Transform*>(quad_nm->GetComponent(Suffer::Component::kComponentKind_Transform));
-    transform_quad_nm_->Translate(mathmorra::Vector3(-250.0f, 0.0f, 150.0f));
+    transform_quad_nm_->Translate(mathmorra::Vector3(-250.0f, 0.0f, -150.0f));
     transform_quad_nm_->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(90.0f), 0.0f));
     transform_quad_nm_->Scale(mathmorra::Vector3(-50.0f, -50.0f, 30.0f));
 
@@ -463,7 +482,7 @@ int main(int argc, char* argv[]) {
     geo_comp_spot->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Sphere);
 
     Suffer::Transform* transform_spot = static_cast<Suffer::Transform*>(go_spot_light->GetComponent(Suffer::Component::kComponentKind_Transform));
-    transform_spot->Translate(mathmorra::Vector3(-10.0f, 10.0f, 0.0f));
+    transform_spot->Translate(mathmorra::Vector3(-200.0f, 0.0f, -100.0f));
 
     go_spot_light->AddComponent(spot_light_component.get());
 
@@ -564,6 +583,7 @@ int main(int argc, char* argv[]) {
 
     // Set gameobjects and scene things
     scene->AddGameObject(box_cube_);
+    scene->AddGameObject(multiple_boxes_);
     scene->AddGameObject(sphere_point_light_);
     scene->AddGameObject(floor_1);
     scene->AddGameObject(quad_1_nm);

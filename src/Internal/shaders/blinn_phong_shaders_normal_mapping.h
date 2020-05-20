@@ -288,10 +288,7 @@ namespace Suffer {
     s_light.outerCutOff =    u_data[169 + 7 + offset].y; 
 
     // View-Projection Matrix
-    s_light.view_projection_matrix = mat4(u_data[169 + offset + 8], 
-                                          u_data[169 + offset + 9], 
-                                          u_data[169 + offset + 10], 
-                                          u_data[169 + offset + 11]);
+    s_light.view_projection_matrix = mat4(u_data[169 + offset + 8], u_data[169 + offset + 9], u_data[169 + offset + 10], u_data[169 + offset + 11]);
     return s_light;
   }
 
@@ -418,17 +415,22 @@ namespace Suffer {
   }
 
   vec3 CalculateSpotLight(SpotLight light, int light_index, vec3 normal) {
-    TangentLightPos = TBN * light.position;
-    TangentViewPos = TBN * camera_pos;
-    TangentFragPos = TBN * frag_pos;
-    vec3 light_dir = normalize(TangentLightPos - TangentFragPos);
+    vec3 light_dir, viewD;
+    float theta;
+    if(def_normal_map){
+     TangentLightPos = TBN * light.position;
+     TangentViewPos = TBN * camera_pos;
+     TangentFragPos = TBN * frag_pos;
+     light_dir = normalize(TangentLightPos - TangentFragPos);
+     viewD = normalize(TangentViewPos - TangentFragPos);
+     theta = dot(light_dir, normalize(-TBN * light.direction));
+    }else{
+     light_dir = normalize(light.position - frag_pos);
+     theta = dot(light_dir, normalize(-light.direction));
+    }
 
     vec3 norm = normalize(normal);
-    //vec3 light_dir = normalize(light.position - frag_pos);
     float diff = max(dot(norm, light_dir), 0.0f);
-
-    vec3 viewD = normalize(TangentViewPos - TangentFragPos);
-    vec3 view_dir = normalize(camera_pos - frag_pos);
     vec3 halfway_dir = normalize(light_dir + viewD);  
     float spec = pow(max(dot(normal, halfway_dir), 0.0f), u_specular_pow);
 
@@ -439,7 +441,7 @@ namespace Suffer {
     float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic
       * distance);
   
-    float theta = dot(light_dir, normalize(-light.direction));
+    
     float epsilon = light.cutOff - light.outerCutOff;
     float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0f, 1.0f);
 
