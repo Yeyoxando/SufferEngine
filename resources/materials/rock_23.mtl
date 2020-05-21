@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
 # File Created: 12.11.2011 23:10:12
 
-newmtl Rock03
+newmtl Rock23
 	Ns 10.000000000000
 	Ni 1.500000000000
 	d 1.000000000000
@@ -11,4 +11,4 @@ newmtl Rock03
 	Kd 1.000000000000 1.000000000000 1.000000000000 
 	Ks 0.000000000000 0.000000000000 0.000000000000
 	Ke 0.000000000000 0.000000000000 0.000000000000
-	map_Kd albedo_rock03.jpg
+	map_Kd albedo_rock23.jpg

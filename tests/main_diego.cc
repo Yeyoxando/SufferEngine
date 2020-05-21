@@ -31,32 +31,6 @@ int main(int argc, char* argv[]) {
 
   // --------------------------- TEXTURES ------------------------------- //
 
-  // Box textures
-  Suffer::ref_ptr<Suffer::ResourceManager::Texture> box_texture;
-  box_texture.alloc();
-  box_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-  box_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-  box_texture->LoadTextureData("../../../resources/images/box_2.png");
-
-  Suffer::ref_ptr<Suffer::ResourceManager::Texture> box_specular_texture;
-  box_specular_texture.alloc();
-  box_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-  box_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-  box_specular_texture->LoadTextureData("../../../resources/images/box_2_spec.png");
-
-  // Sword textures
-  Suffer::ref_ptr<Suffer::ResourceManager::Texture> sword_texture;
-  sword_texture.alloc();
-  sword_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-  sword_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-  sword_texture->LoadTextureData("../../../resources/images/sword/Sword_Base_Color.png");
-
-  Suffer::ref_ptr<Suffer::ResourceManager::Texture> sword_specular_texture;
-  sword_specular_texture.alloc();
-  sword_specular_texture->SetTextureFilter(Suffer::ResourceManager::Texture::kTextureFilter_Linear, Suffer::ResourceManager::Texture::kTextureFilter_Linear);
-  sword_specular_texture->SetTextureWrap(Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge, Suffer::ResourceManager::Texture::kTextureWrap_ClampToEdge);
-  sword_specular_texture->LoadTextureData("../../../resources/images/sword/Sword_Metallic.png");
-
   // Ground textures
   Suffer::ref_ptr<Suffer::ResourceManager::Texture> ground_texture;
   ground_texture.alloc();
@@ -81,17 +55,6 @@ int main(int argc, char* argv[]) {
       "../../../resources/images/skybox/sky_back.jpg");
 
   // --------------------------- MATERIALS ------------------------------- //
-
-  // Box material
-  Suffer::ref_ptr<Suffer::MaterialComponent> material_box;
-  material_box.alloc();
-  Suffer::ref_ptr<Suffer::MaterialComponent::BlinnPhongParams> material_params_box;
-  material_params_box.alloc();
-  material_params_box->color_ = mathmorra::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-  material_params_box->SetAlbedoTexture(box_texture.get());
-  material_params_box->SetSpecularTexture(box_specular_texture.get());
-  material_params_box->SetReflectionTexture(box_specular_texture.get(), 1.0f);
-  material_box->AddParams(material_params_box.get());
 
   // Ground material
   Suffer::ref_ptr<Suffer::MaterialComponent> material_ground;
@@ -119,12 +82,6 @@ int main(int argc, char* argv[]) {
   geometry_component_cube.alloc();
   geometry_component_cube->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
   geometry_component_cube->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Cube);
-
-  // Quad
-  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_quad;
-  geometry_component_quad.alloc();
-  geometry_component_quad->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
-  geometry_component_quad->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Quad);
 
   // Sphere
   Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_sphere;
@@ -165,6 +122,24 @@ int main(int argc, char* argv[]) {
   geometry_component_rock->CreateGeometryWithOBJAndMTL("../../../resources/models/rock_03.obj",
     *material_rock.get(), "../../../resources/materials/", "../../../resources/images/");
 
+  // Rock 2 OBJ And MTL
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_rock2;
+  material_rock2.alloc();
+  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_rock2;
+  geometry_component_rock2.alloc();
+  geometry_component_rock2->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+  geometry_component_rock2->CreateGeometryWithOBJAndMTL("../../../resources/models/rock_23.obj",
+    *material_rock2.get(), "../../../resources/materials/", "../../../resources/images/");
+
+  // Rock 3 OBJ And MTL
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_rock3;
+  material_rock3.alloc();
+  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_rock3;
+  geometry_component_rock3.alloc();
+  geometry_component_rock3->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+  geometry_component_rock3->CreateGeometryWithOBJAndMTL("../../../resources/models/rock_45.obj",
+    *material_rock3.get(), "../../../resources/materials/", "../../../resources/images/");
+
   // House OBJ And MTL
   Suffer::ref_ptr<Suffer::MaterialComponent> material_house;
   material_house.alloc();
@@ -199,7 +174,7 @@ int main(int argc, char* argv[]) {
   directional_light_component->Init(Suffer::LightComponent::kLightKind_Directional);
   directional_light_component->SetDirection(mathmorra::Vector3(0.0f, -1.0f, 0.0f));
   directional_light_component->SetIntensity(0.2f);
-  directional_light_component->SetAmbient(0.2f, 0.2f, 0.2f);
+  directional_light_component->SetAmbient(0.6f, 0.6f, 0.6f);
   directional_light_component->SetDiffuse(0.6f, 0.6f, 0.6f);
   directional_light_component->SetSpecular(1.0f, 1.0f, 1.0f);
   directional_light_component->SetActive(true);
@@ -209,7 +184,7 @@ int main(int argc, char* argv[]) {
   point_light_component.alloc();
   point_light_component->Init(Suffer::LightComponent::kLightKind_Point);
   point_light_component->SetDirection(mathmorra::Vector3(0.0f, 0.0f, 1.0f));
-  point_light_component->SetIntensity(8.0f);
+  point_light_component->SetIntensity(12.0f);
   point_light_component->SetAmbient(0.5f, 0.5f, 0.5f);
   point_light_component->SetDiffuse(1.0f, 1.0f, 1.0f);
   point_light_component->SetSpecular(1.0f, 1.0f, 1.0f);
@@ -227,9 +202,27 @@ int main(int argc, char* argv[]) {
   spot_light_component->SetActive(true);
   spot_light_component->SetCutOff(0.910f);
   spot_light_component->SetOuterCutOff(0.820f);
-  spot_light_component->SetConstant(0.0f);
-  spot_light_component->SetLinear(0.474f);
-  spot_light_component->SetQuadratic(0.0f);
+  spot_light_component->SetConstant(0.449f);
+  spot_light_component->SetLinear(0.083f);
+  spot_light_component->SetQuadratic(0.086f);
+  spot_light_component->SetAngle(90.0f);
+
+  // Spot 2
+  Suffer::ref_ptr<Suffer::LightComponent> spot_light_component2;
+  spot_light_component2.alloc();
+  spot_light_component2->Init(Suffer::LightComponent::kLightKind_Spot);
+  spot_light_component2->SetDirection(mathmorra::Vector3(-0.3f, -0.5f, -0.55f));
+  spot_light_component2->SetIntensity(10.0f);
+  spot_light_component2->SetAmbient(0.5f, 0.5f, 0.5f);
+  spot_light_component2->SetDiffuse(1.0f, 1.0f, 1.0f);
+  spot_light_component2->SetSpecular(1.0f, 1.0f, 1.0f);
+  spot_light_component2->SetActive(true);
+  spot_light_component2->SetCutOff(0.910f);
+  spot_light_component2->SetOuterCutOff(0.820f);
+  spot_light_component2->SetConstant(0.0f);
+  spot_light_component2->SetLinear(0.474f);
+  spot_light_component2->SetQuadratic(0.0f);
+  spot_light_component2->SetAngle(90.0f);
 
   // -------------------------- GAMEOBJECTS -------------------------------//
 
@@ -280,6 +273,20 @@ int main(int argc, char* argv[]) {
 
   go_spot_light->AddComponent(spot_light_component.get());
 
+  // -- Spot light 2 --
+  Suffer::ref_ptr<Suffer::GameObject> go_spot_light2;
+  go_spot_light2.alloc();
+  go_spot_light2->SetName("SpotLight2");
+  go_spot_light2->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+
+  Suffer::GeometryComponent* geo_comp_spot2 = static_cast<Suffer::GeometryComponent*>(go_spot_light2->GetComponent(Suffer::Component::kComponentKind_Geometry));
+  geo_comp_spot2->CreateGeometryWithShape(Suffer::GeometryComponent::kBasicShapes_Sphere);
+
+  Suffer::Transform* transform_spot2 = static_cast<Suffer::Transform*>(go_spot_light2->GetComponent(Suffer::Component::kComponentKind_Transform));
+  transform_spot2->Translate(mathmorra::Vector3(-10.0f, -15.0f, -130.0f));
+
+  go_spot_light2->AddComponent(spot_light_component2.get());
+
   // -- Mario --
   Suffer::ref_ptr<Suffer::GameObject> go_mario;
   go_mario.alloc();
@@ -287,9 +294,9 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::Transform> transform_component_mario;
   transform_component_mario.alloc();
-  transform_component_mario->Translate(mathmorra::Vector3(0.0f, 2.0f, 0.0f));
+  transform_component_mario->Translate(mathmorra::Vector3(-30.0f, -40.0f, -150.0f));
   transform_component_mario->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-125.0f), 0.0f));
-  transform_component_mario->Scale(mathmorra::Vector3(0.3f, 0.3f, 0.3f));
+  transform_component_mario->Scale(mathmorra::Vector3(0.5f, 0.5f, 0.5f));
 
   Suffer::ref_ptr<Suffer::ScriptComponent> script;
   script.alloc();
@@ -323,9 +330,9 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::Transform> transform_component_sword;
   transform_component_sword.alloc();
-  transform_component_sword->Translate(mathmorra::Vector3(122.0f, 20.0f, -2.0f));
-  transform_component_sword->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-10.0f), ThiefUtils::Math::Radians(-125.0f), ThiefUtils::Math::Radians(5.0f)));
-  transform_component_sword->Scale(mathmorra::Vector3(0.5f, 0.5f, 0.5f));
+  transform_component_sword->Translate(mathmorra::Vector3(0.0f, 2.0f, 0.0f));
+  transform_component_sword->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-5.0f), ThiefUtils::Math::Radians(-125.0f), ThiefUtils::Math::Radians(0.0f)));
+  transform_component_sword->Scale(mathmorra::Vector3(0.1f, 0.1f, 0.1f));
 
   go_sword->AddComponent(transform_component_sword.get());
   go_sword->AddComponent(geometry_component_sword.get());
@@ -345,6 +352,112 @@ int main(int argc, char* argv[]) {
   go_rock->AddComponent(transform_component_rock.get());
   go_rock->AddComponent(geometry_component_rock.get());
   go_rock->AddComponent(material_rock.get());
+  go_rock->AddChild(go_sword);
+
+  // -- Rock 2 --
+  Suffer::ref_ptr<Suffer::GameObject> go_rock2;
+  go_rock2.alloc();
+  go_rock2->SetName("Rock2");
+
+  Suffer::ref_ptr<Suffer::Transform> transform_component_rock2;
+  transform_component_rock2.alloc();
+  transform_component_rock2->Translate(mathmorra::Vector3(60.0f, -23.0f, 150.0f));
+  transform_component_rock2->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(5.0f), ThiefUtils::Math::Radians(50.0f), ThiefUtils::Math::Radians(-10.0f)));
+  transform_component_rock2->Scale(mathmorra::Vector3(5.0f, 5.0f, 5.0f));
+
+  go_rock2->AddComponent(transform_component_rock2.get());
+  go_rock2->AddComponent(geometry_component_rock2.get());
+  go_rock2->AddComponent(material_rock2.get());
+
+  // -- Rock 3 --
+  Suffer::ref_ptr<Suffer::GameObject> go_rock3;
+  go_rock3.alloc();
+  go_rock3->SetName("Rock3");
+
+  Suffer::ref_ptr<Suffer::Transform> transform_component_rock3;
+  transform_component_rock3.alloc();
+  transform_component_rock3->Translate(mathmorra::Vector3(-25.0f, -38.0f, 25.0f));
+  transform_component_rock3->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(15.0f), ThiefUtils::Math::Radians(50.0f), ThiefUtils::Math::Radians(-20.0f)));
+  transform_component_rock3->Scale(mathmorra::Vector3(4.0f, 4.0f, 4.0f));
+
+  go_rock3->AddComponent(transform_component_rock3.get());
+  go_rock3->AddComponent(geometry_component_rock3.get());
+  go_rock3->AddComponent(material_rock3.get());
+
+  // -- Rock 4 --
+  Suffer::ref_ptr<Suffer::GameObject> go_rock4;
+  go_rock4.alloc();
+  go_rock4->SetName("Rock4");
+
+  Suffer::ref_ptr<Suffer::Transform> transform_component_rock4;
+  transform_component_rock4.alloc();
+  transform_component_rock4->Translate(mathmorra::Vector3(-200.0f, -2.5f, 50.0f));
+  transform_component_rock4->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(10.0f), ThiefUtils::Math::Radians(200.0f), ThiefUtils::Math::Radians(10.0f)));
+  transform_component_rock4->Scale(mathmorra::Vector3(3.0f, 3.0f, 4.0f));
+
+  go_rock4->AddComponent(transform_component_rock4.get());
+  go_rock4->AddComponent(geometry_component_rock.get());
+  go_rock4->AddComponent(material_rock.get());
+
+  // -- Rock 5 --
+  Suffer::ref_ptr<Suffer::GameObject> go_rock5;
+  go_rock5.alloc();
+  go_rock5->SetName("Rock5");
+
+  Suffer::ref_ptr<Suffer::Transform> transform_component_rock5;
+  transform_component_rock5.alloc();
+  transform_component_rock5->Translate(mathmorra::Vector3(200.0f, 4.0f, -120.0f));
+  transform_component_rock5->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(5.0f), ThiefUtils::Math::Radians(50.0f), ThiefUtils::Math::Radians(-10.0f)));
+  transform_component_rock5->Scale(mathmorra::Vector3(2.0f, 4.0f, 4.0f));
+
+  go_rock5->AddComponent(transform_component_rock5.get());
+  go_rock5->AddComponent(geometry_component_rock2.get());
+  go_rock5->AddComponent(material_rock2.get());
+
+  // -- Rock 6 --
+  Suffer::ref_ptr<Suffer::GameObject> go_rock6;
+  go_rock6.alloc();
+  go_rock6->SetName("Rock6");
+
+  Suffer::ref_ptr<Suffer::Transform> transform_component_rock6;
+  transform_component_rock6.alloc();
+  transform_component_rock6->Translate(mathmorra::Vector3(50.0f, -27.0f, -210.0f));
+  transform_component_rock6->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(30.0f), ThiefUtils::Math::Radians(200.0f), ThiefUtils::Math::Radians(-100.0f)));
+  transform_component_rock6->Scale(mathmorra::Vector3(3.0f, 5.0f, 4.0f));
+
+  go_rock6->AddComponent(transform_component_rock6.get());
+  go_rock6->AddComponent(geometry_component_rock3.get());
+  go_rock6->AddComponent(material_rock3.get());
+
+  // -- Rock 7 --
+  Suffer::ref_ptr<Suffer::GameObject> go_rock7 ;
+  go_rock7.alloc();
+  go_rock7->SetName("Rock7");
+
+  Suffer::ref_ptr<Suffer::Transform> transform_component_rock7;
+  transform_component_rock7.alloc();
+  transform_component_rock7->Translate(mathmorra::Vector3(-125.0f, 30.0f, 205.0f));
+  transform_component_rock7->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(90.0f), ThiefUtils::Math::Radians(-20.0f), ThiefUtils::Math::Radians(96.0f)));
+  transform_component_rock7->Scale(mathmorra::Vector3(8.0f, 8.0f, 8.0f));
+
+  go_rock7->AddComponent(transform_component_rock7.get());
+  go_rock7->AddComponent(geometry_component_rock2.get());
+  go_rock7->AddComponent(material_rock2.get());
+
+  // -- Rock 8 --
+  Suffer::ref_ptr<Suffer::GameObject> go_rock8;
+  go_rock8.alloc();
+  go_rock8->SetName("Rock8");
+
+  Suffer::ref_ptr<Suffer::Transform> transform_component_rock8;
+  transform_component_rock8.alloc();
+  transform_component_rock8->Translate(mathmorra::Vector3(-260.0f, 8.0f, -120.0f));
+  transform_component_rock8->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(15.0f), ThiefUtils::Math::Radians(180.0f), ThiefUtils::Math::Radians(40.0f)));
+  transform_component_rock8->Scale(mathmorra::Vector3(6.0f, 5.0f, 6.0f));
+
+  go_rock8->AddComponent(transform_component_rock8.get());
+  go_rock8->AddComponent(geometry_component_rock3.get());
+  go_rock8->AddComponent(material_rock3.get());
 
   // -- House --
   Suffer::ref_ptr<Suffer::GameObject> go_house;
@@ -408,10 +521,18 @@ int main(int argc, char* argv[]) {
   scene->AddGameObject(go_point_light);
   scene->AddGameObject(go_directional_light);
   scene->AddGameObject(go_spot_light);
+  scene->AddGameObject(go_spot_light2);
   scene->AddGameObject(go_mario);
   scene->AddGameObject(go_chest);
   scene->AddGameObject(go_sword);
   scene->AddGameObject(go_rock);
+  scene->AddGameObject(go_rock2);
+  scene->AddGameObject(go_rock3);
+  scene->AddGameObject(go_rock4);
+  scene->AddGameObject(go_rock5);
+  scene->AddGameObject(go_rock6);
+  scene->AddGameObject(go_rock7);
+  scene->AddGameObject(go_rock8);
   scene->AddGameObject(go_house);
   scene->AddGameObject(go_torch);
   scene->AddGameObject(go_terrain);
