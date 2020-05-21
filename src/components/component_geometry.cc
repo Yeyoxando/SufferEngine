@@ -219,10 +219,15 @@ void Suffer::GeometryComponent::CreateGeometryWithOBJAndMTL(const char* obj_file
         tinyobj::real_t vy = attrib.vertices[3 * idx.vertex_index + 1];
         tinyobj::real_t vz = attrib.vertices[3 * idx.vertex_index + 2];
         v_positions.push_back(mathmorra::Vector3(vx, vy, vz));
-        tinyobj::real_t nx = attrib.normals[3 * idx.normal_index + 0];
-        tinyobj::real_t ny = attrib.normals[3 * idx.normal_index + 1];
-        tinyobj::real_t nz = attrib.normals[3 * idx.normal_index + 2];
-        v_normals.push_back(mathmorra::Vector3(nx, ny, nz));
+        if (attrib.normals.size() > 0) {
+          tinyobj::real_t nx = attrib.normals[3 * idx.normal_index + 0];
+          tinyobj::real_t ny = (attrib.normals[3 * idx.normal_index + 1] * -1.0f);
+          tinyobj::real_t nz = attrib.normals[3 * idx.normal_index + 2];
+          v_normals.push_back(mathmorra::Vector3(nx, ny, nz));
+        }
+        else {
+          v_normals.push_back(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+        }
         tinyobj::real_t tx = attrib.texcoords[2 * idx.texcoord_index + 0];
         tinyobj::real_t ty = (1.0f - attrib.texcoords[2 * idx.texcoord_index + 1]);
         v_tcoordinates.push_back(mathmorra::Vector2(tx, ty));

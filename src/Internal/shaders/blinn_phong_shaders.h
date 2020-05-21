@@ -303,6 +303,8 @@ namespace Suffer {
       float closest_depth = GetDirectionalLightTexture(light_index, proj_coords.xy).r;
       // Current depth fragment from light perspective
       float current_depth = proj_coords.z;
+      if(current_depth > 1.0f)
+        return 0.0f;
       // Compare current and closest to check if its in shadow or not
       //float bias = 0.002f;
       float bias = max(0.003f * (1.0f - dot(normal, light_dir)), 0.001f);
@@ -310,8 +312,6 @@ namespace Suffer {
 
       return shadow;
     }
-
-// --------------------------------------------------------------------- //
 
     vec3 CalculateDirectionalLight(DirectionalLight light, int light_index, vec3 normal, vec3 view_dir){
       vec3 light_dir = normalize(-light.direction);
@@ -348,8 +348,6 @@ namespace Suffer {
 
       return shadow;
     } 
-
-// --------------------------------------------------------------------- //
 
     vec3 CalculatePointLight(PointLight light, int light_index, vec3 normal, vec3 view_dir) {
       vec3 light_dir = normalize(light.position - frag_pos);
@@ -389,6 +387,8 @@ namespace Suffer {
       float closest_depth = GetSpotLightTexture(light_index, proj_coords.xy).r;
       // Current depth fragment from light perspective
       float current_depth = proj_coords.z;
+      if(current_depth > 1.0f)
+        return 0.0f;
       // Compare current and closest to check if its in shadow or not
       //float bias = 0.002f;
       float bias = max(0.002f * (1.0f - dot(normal, light_dir)), 0.001f);
@@ -397,8 +397,6 @@ namespace Suffer {
 
       return shadow;
     }
-
-// --------------------------------------------------------------------- //
 
     vec3 CalculateSpotLight(SpotLight light, int light_index, vec3 normal) {
       vec3 norm = normalize(normal);

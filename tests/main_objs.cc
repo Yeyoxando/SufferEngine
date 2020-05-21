@@ -124,8 +124,8 @@ int main(int argc, char* argv[]) {
   Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_rock;
   geometry_component_rock.alloc();
   geometry_component_rock->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
-  geometry_component_rock->CreateGeometryWithOBJAndMTL("../../../resources/models/rock_03.obj",
-    *material_rock.get(), "../../../resources/materials/", "../../../resources/images/");
+  geometry_component_rock->CreateGeometryWithOBJAndMTL("../../../resources/models/sword.obj",
+    *material_rock.get(), "../../../resources/materials/", "../../../resources/images/sword/");
 
   // ----------------------------- LIGHTS -------------------------------- //
   // Directional
@@ -175,9 +175,9 @@ int main(int argc, char* argv[]) {
   
   Suffer::ref_ptr<Suffer::Transform> transform_component_ground;
   transform_component_ground.alloc();
-  transform_component_ground->Scale(mathmorra::Vector3(50.0f, -50.0f, 50.0f));
+  transform_component_ground->Scale(mathmorra::Vector3(50.0f, 50.0f, 50.0f));
   transform_component_ground->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
-  transform_component_ground->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, ThiefUtils::Math::Radians(-180.0f)));
+  transform_component_ground->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(90.0f), 0.0f, ThiefUtils::Math::Radians(-180.0f)));
   
   go_ground->AddComponent(transform_component_ground.get());
   go_ground->AddComponent(geometry_component_quad.get());
