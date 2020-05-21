@@ -298,6 +298,42 @@ int main(int argc, char* argv[]) {
 
     // -------------------------- GAMEOBJECTS -------------------------------//
 
+    // Lights for hierarchy
+    Suffer::ref_ptr<Suffer::GameObject> lights_parent_;
+    lights_parent_.alloc();
+    lights_parent_->SetName("Lights");
+
+    Suffer::ref_ptr<Suffer::Transform> transform_lights_p;
+    transform_lights_p.alloc();
+    transform_lights_p->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+    lights_parent_->AddComponent(transform_lights_p.get());
+
+
+    // Room for hierarchy
+    Suffer::ref_ptr<Suffer::GameObject> room_parent;
+    room_parent.alloc();
+    room_parent->SetName("Little Room");
+
+    Suffer::ref_ptr<Suffer::Transform> transform_room_p;
+    transform_room_p.alloc();
+    transform_room_p->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+    room_parent->AddComponent(transform_room_p.get());
+    
+
+
+    // Audio for hierarchy
+    Suffer::ref_ptr<Suffer::GameObject> audio_parent;
+    audio_parent.alloc();
+    audio_parent->SetName("Audio spheres");
+
+    Suffer::ref_ptr<Suffer::Transform> transform_audio_p;
+    transform_audio_p.alloc();
+    transform_audio_p->Translate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+    audio_parent->AddComponent(transform_audio_p.get());
+
+
+
+
     // Simple_Box
     Suffer::ref_ptr<Suffer::GameObject> box_cube_;
     box_cube_.alloc();
@@ -334,7 +370,7 @@ int main(int argc, char* argv[]) {
     // Sphere for PoingLightWalls
     Suffer::ref_ptr<Suffer::GameObject> sphere_point_light_;
     sphere_point_light_.alloc();
-    sphere_point_light_->SetName("Point_Light_Walls");
+    sphere_point_light_->SetName("PointLight_Room");
     sphere_point_light_->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
     sphere_point_light_->AddComponent(point_light_walls_component.get());
 
@@ -421,7 +457,7 @@ int main(int argc, char* argv[]) {
     // -- AudioSphere --
     Suffer::ref_ptr<Suffer::GameObject> audio_sphere_;
     audio_sphere_.alloc();
-    audio_sphere_->SetName("Audio_Sphere");
+    audio_sphere_->SetName("Field music");
     audio_sphere_->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
     audio_sphere_->RemoveComponent(Suffer::Component::ComponentKind::kComponentKind_Geometry);
     audio_sphere_->AddComponent(sphere_lines_geometry_.get());
@@ -439,7 +475,7 @@ int main(int argc, char* argv[]) {
     // -- AudioSphere_2 --
     Suffer::ref_ptr<Suffer::GameObject> audio_sphere_2;
     audio_sphere_2.alloc();
-    audio_sphere_2->SetName("Jazz_Music_Sphere");
+    audio_sphere_2->SetName("Jazz music");
     audio_sphere_2->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
     audio_sphere_2->RemoveComponent(Suffer::Component::ComponentKind::kComponentKind_Geometry);
     audio_sphere_2->AddComponent(sphere_lines_geometry_.get());
@@ -472,7 +508,7 @@ int main(int argc, char* argv[]) {
     // -- Point Light --
     Suffer::ref_ptr<Suffer::GameObject> go_point_light;
     go_point_light.alloc();
-    go_point_light->SetName("PointLight");
+    go_point_light->SetName("PointLight_Mario");
 
     Suffer::ref_ptr<Suffer::Transform> transform_component_point_light;
     transform_component_point_light.alloc();
@@ -537,6 +573,57 @@ int main(int argc, char* argv[]) {
     script_rotator->AttachScript("../../../src/lua/lua_rotator.lua");
 
 
+    // Simple hierarchy example
+    Suffer::ref_ptr<Suffer::GameObject> hierarchy_example;
+    hierarchy_example.alloc();
+    hierarchy_example->SetName("Simple hierarchy example");
+
+    hierarchy_example->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+
+    Suffer::ref_ptr<Suffer::ScriptComponent> hierarchy_rotator_;
+    hierarchy_rotator_.alloc();
+    hierarchy_example->AddComponent(hierarchy_rotator_.get());
+    hierarchy_rotator_->AttachScript("../../../src/lua/lua_simple_rotation.lua");
+
+
+    Suffer::ref_ptr<Suffer::GameObject> empty_cube_01;
+    empty_cube_01.alloc();
+    empty_cube_01->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+
+    Suffer::ref_ptr<Suffer::GameObject> empty_cube_02;
+    empty_cube_02.alloc();
+    empty_cube_02->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+
+    Suffer::ref_ptr<Suffer::GameObject> empty_cube_03;
+    empty_cube_03.alloc();
+    empty_cube_03->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
+
+
+
+
+    lights_parent_->AddChild(sphere_point_light_);
+    lights_parent_->AddChild(go_point_light);
+    lights_parent_->AddChild(go_directional_light);
+    lights_parent_->AddChild(go_spot_light);
+
+
+    room_parent->AddChild(quad_1_nm);
+    room_parent->AddChild(quad_2_nm);
+    room_parent->AddChild(quad_nm);
+    room_parent->AddChild(floor_1);
+    room_parent->AddChild(box_cube_);
+    room_parent->AddChild(multiple_boxes_);
+
+
+    audio_parent->AddChild(audio_sphere_);
+    audio_parent->AddChild(audio_sphere_2);
+
+
+    hierarchy_example->AddChild(empty_cube_01);
+    hierarchy_example->AddChild(empty_cube_02);
+    empty_cube_02->AddChild(empty_cube_03);
+
+
     // -------------------------------------------------------------------------------------//
 
 
@@ -547,6 +634,9 @@ int main(int argc, char* argv[]) {
 
 
     // Set gameobjects and scene things
+    scene->AddGameObject(lights_parent_);
+    scene->AddGameObject(room_parent);
+    scene->AddGameObject(audio_parent);
     scene->AddGameObject(box_cube_);
     scene->AddGameObject(multiple_boxes_);
     scene->AddGameObject(sphere_point_light_);
@@ -561,6 +651,10 @@ int main(int argc, char* argv[]) {
     scene->AddGameObject(go_directional_light);
     scene->AddGameObject(go_spot_light);
     scene->AddGameObject(go_mario);
+    scene->AddGameObject(hierarchy_example);
+    scene->AddGameObject(empty_cube_01);
+    scene->AddGameObject(empty_cube_02);
+    scene->AddGameObject(empty_cube_03);
     scene->SetSkybox(skybox);
 
 

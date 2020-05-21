@@ -17,6 +17,13 @@
 Suffer::Scene::Scene(){
 
   main_camera_.alloc();
+
+
+  main_camera_->SetPosition(mathmorra::Vector3(96.31f, 16.55f, -211.0f));
+  main_camera_->SetTarget(mathmorra::Vector3(-0.74f, -0.0523f, 0.66f));
+  main_camera_->SetFOV(49.0f);
+
+
   current_gameobjects_ = std::vector<ref_ptr<GameObject>>(0);
   skybox_ = nullptr;
 

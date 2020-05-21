@@ -85,7 +85,7 @@ bool Suffer::SufferManager::Init(){
 
 	assert(data_ && "\n Data is null.");
 
-	data_->wind_.Open(800, 600);
+	data_->wind_.Open(1920, 1080);
 	data_->interface_.Init();
   data_->is_interface_active_ = true;
 	data_->window_should_close_ = false;

@@ -42,7 +42,7 @@ bool Suffer::Window::Open(int width, int height){
 
 	window_init = true;
 
-	data_->window_ = glfwCreateWindow(width, height, "Suffer Engine", NULL, NULL);
+	data_->window_ = glfwCreateWindow(width, height, "Suffer Engine", glfwGetPrimaryMonitor(), NULL);
 
   data_->width_ = width;
   data_->height_ = height;
