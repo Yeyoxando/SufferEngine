@@ -221,7 +221,7 @@ void Suffer::GeometryComponent::CreateGeometryWithOBJAndMTL(const char* obj_file
         v_positions.push_back(mathmorra::Vector3(vx, vy, vz));
         if (attrib.normals.size() > 0) {
           tinyobj::real_t nx = attrib.normals[3 * idx.normal_index + 0];
-          tinyobj::real_t ny = (attrib.normals[3 * idx.normal_index + 1] * -1.0f);
+          tinyobj::real_t ny = attrib.normals[3 * idx.normal_index + 1];
           tinyobj::real_t nz = attrib.normals[3 * idx.normal_index + 2];
           v_normals.push_back(mathmorra::Vector3(nx, ny, nz));
         }

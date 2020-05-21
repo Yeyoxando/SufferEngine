@@ -165,14 +165,32 @@ int main(int argc, char* argv[]) {
   geometry_component_rock->CreateGeometryWithOBJAndMTL("../../../resources/models/rock_03.obj",
     *material_rock.get(), "../../../resources/materials/", "../../../resources/images/");
 
-  // Yoshi OBJ And MTL
-  Suffer::ref_ptr<Suffer::MaterialComponent> material_yoshi;
-  material_yoshi.alloc();
-  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_yoshi;
-  geometry_component_yoshi.alloc();
-  geometry_component_yoshi->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
-  geometry_component_yoshi->CreateGeometryWithOBJAndMTL("../../../resources/models/yoshi.obj",
-    *material_yoshi.get(), "../../../resources/materials/", "../../../resources/images/Yoshi/");
+  // House OBJ And MTL
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_house;
+  material_house.alloc();
+  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_house;
+  geometry_component_house.alloc();
+  geometry_component_house->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+  geometry_component_house->CreateGeometryWithOBJAndMTL("../../../resources/models/house.obj",
+    *material_house.get(), "../../../resources/materials/", "../../../resources/images/");
+
+  // Chest OBJ And MTL
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_chest;
+  material_chest.alloc();
+  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_chest;
+  geometry_component_chest.alloc();
+  geometry_component_chest->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+  geometry_component_chest->CreateGeometryWithOBJAndMTL("../../../resources/models/chest.obj",
+    *material_chest.get(), "../../../resources/materials/", "../../../resources/images/chest/");
+
+  // Torch OBJ And MTL
+  Suffer::ref_ptr<Suffer::MaterialComponent> material_torch;
+  material_torch.alloc();
+  Suffer::ref_ptr<Suffer::GeometryComponent> geometry_component_torch;
+  geometry_component_torch.alloc();
+  geometry_component_torch->SetDrawMode(Suffer::GeometryComponent::kDrawMode_Triangles);
+  geometry_component_torch->CreateGeometryWithOBJAndMTL("../../../resources/models/torch.obj",
+    *material_torch.get(), "../../../resources/materials/", "../../../resources/images/torch/");
 
   // ----------------------------- LIGHTS -------------------------------- //
   // Directional
@@ -222,14 +240,19 @@ int main(int argc, char* argv[]) {
 
   Suffer::ref_ptr<Suffer::Transform> transform_component_point_light;
   transform_component_point_light.alloc();
-  transform_component_point_light->Scale(mathmorra::Vector3(1.0f, 1.0f, 1.0f));
-  transform_component_point_light->Translate(mathmorra::Vector3(5.0f, 0.0f, 5.0f));
-  transform_component_point_light->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, ThiefUtils::Math::Radians(180.0f)));
+  transform_component_point_light->Translate(mathmorra::Vector3(0.0f, 185.0f, 0.0f));
+  transform_component_point_light->Rotate(mathmorra::Vector3(0.0f, 0.0f, 0.0f));
+  transform_component_point_light->Scale(mathmorra::Vector3(10.0f, 10.0f, 10.0f));
+  Suffer::ref_ptr<Suffer::ScriptComponent> script_point;
+  script_point.alloc();
 
   go_point_light->AddComponent(transform_component_point_light.get());
   go_point_light->AddComponent(geometry_component_sphere.get());
   go_point_light->AddComponent(material_white.get());
   go_point_light->AddComponent(point_light_component.get());
+  go_point_light->AddComponent(script_point.get());
+
+  script_point->AttachScript("../../../src/lua/lua_point.lua");
 
   // -- Directional light --
   Suffer::ref_ptr<Suffer::GameObject> go_directional_light;
@@ -239,7 +262,7 @@ int main(int argc, char* argv[]) {
   go_directional_light->SetArchetype(Suffer::GameObject::kArchetype_Drawable);
 
   Suffer::Transform* transform = static_cast<Suffer::Transform*>(go_directional_light->GetComponent(Suffer::Component::kComponentKind_Transform));
-  transform->Translate(mathmorra::Vector3(-5.0f, 5.0f, -5.0f));
+  transform->Translate(mathmorra::Vector3(-5.0f, 200.0f, -5.0f));
 
   go_directional_light->AddComponent(directional_light_component.get());
 
@@ -276,25 +299,22 @@ int main(int argc, char* argv[]) {
   go_mario->AddComponent(material_mario.get());
   go_mario->AddComponent(script.get());
 
- //go_box->AddChild(go_point_light.get());
- //go_box->AddChild(go_directional_light.get());
-
   script->AttachScript("../../../src/lua/lua_test_update.lua");
 
-  // -- Box --
-  Suffer::ref_ptr<Suffer::GameObject> go_box;
-  go_box.alloc();
-  go_box->SetName("Box");
+  // -- Chest --
+  Suffer::ref_ptr<Suffer::GameObject> go_chest;
+  go_chest.alloc();
+  go_chest->SetName("Chest");
 
-  Suffer::ref_ptr<Suffer::Transform> transform_component_box;
-  transform_component_box.alloc();
-  transform_component_box->Scale(mathmorra::Vector3(1.0f, 1.0f, 1.0f));
-  transform_component_box->Translate(mathmorra::Vector3(5.0f, 0.0f, -5.0f));
-  transform_component_box->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-90.0f), 0.0f, ThiefUtils::Math::Radians(180.0f)));
+  Suffer::ref_ptr<Suffer::Transform> transform_component_chest;
+  transform_component_chest.alloc();
+  transform_component_chest->Translate(mathmorra::Vector3(-100.0f, -49.0f, -135.0f));
+  transform_component_chest->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(180.0f), ThiefUtils::Math::Radians(-30.0f), ThiefUtils::Math::Radians(182.0f)));
+  transform_component_chest->Scale(mathmorra::Vector3(20.0f, 20.0f, 20.0f));
 
-  go_box->AddComponent(transform_component_box.get());
-  go_box->AddComponent(geometry_component_cube.get());
-  go_box->AddComponent(material_box.get());
+  go_chest->AddComponent(transform_component_chest.get());
+  go_chest->AddComponent(geometry_component_chest.get());
+  go_chest->AddComponent(material_chest.get());
 
   // -- Sword --
   Suffer::ref_ptr<Suffer::GameObject> go_sword;
@@ -326,20 +346,37 @@ int main(int argc, char* argv[]) {
   go_rock->AddComponent(geometry_component_rock.get());
   go_rock->AddComponent(material_rock.get());
 
-  // -- Yoshi --
-  Suffer::ref_ptr<Suffer::GameObject> go_yoshi;
-  go_yoshi.alloc();
-  go_yoshi->SetName("Yoshi");
+  // -- House --
+  Suffer::ref_ptr<Suffer::GameObject> go_house;
+  go_house.alloc();
+  go_house->SetName("House");
 
-  Suffer::ref_ptr<Suffer::Transform> transform_component_yoshi;
-  transform_component_yoshi.alloc();
-  transform_component_yoshi->Translate(mathmorra::Vector3(5.0f, 2.0f, 0.0f));
-  transform_component_yoshi->Rotate(mathmorra::Vector3(0.0f, ThiefUtils::Math::Radians(-125.0f), 0.0f));
-  transform_component_yoshi->Scale(mathmorra::Vector3(7.0f, 7.0f, 7.0f));
+  Suffer::ref_ptr<Suffer::Transform> transform_component_house;
+  transform_component_house.alloc();
+  transform_component_house->Translate(mathmorra::Vector3(-120.0f, -42.0f, -240.0f));
+  transform_component_house->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(-2.0f), ThiefUtils::Math::Radians(50.0f), ThiefUtils::Math::Radians(3.0f)));
+  transform_component_house->Scale(mathmorra::Vector3(2.0f, 2.0f, 2.0f));
 
-  go_yoshi->AddComponent(transform_component_yoshi.get());
-  go_yoshi->AddComponent(geometry_component_yoshi.get());
-  go_yoshi->AddComponent(material_yoshi.get());
+  go_house->AddComponent(transform_component_house.get());
+  go_house->AddComponent(geometry_component_house.get());
+  go_house->AddComponent(material_house.get());
+
+  // -- Torch --
+  Suffer::ref_ptr<Suffer::GameObject> go_torch;
+  go_torch.alloc();
+  go_torch->SetName("Torch");
+
+  Suffer::ref_ptr<Suffer::Transform> transform_component_torch;
+  transform_component_torch.alloc();
+  transform_component_torch->Translate(mathmorra::Vector3(-120.0f, -35.5f, 25.0f));
+  transform_component_torch->Rotate(mathmorra::Vector3(ThiefUtils::Math::Radians(10.0f), ThiefUtils::Math::Radians(50.0f), ThiefUtils::Math::Radians(-3.0f)));
+  transform_component_torch->Scale(mathmorra::Vector3(0.2f, 0.2f, 0.2f));
+
+  go_torch->AddComponent(transform_component_torch.get());
+  go_torch->AddComponent(geometry_component_torch.get());
+  go_torch->AddComponent(material_torch.get());
+
+  go_torch->AddChild(go_point_light);
 
   // -------------------------------------------------------------------------------------//
 
@@ -372,10 +409,11 @@ int main(int argc, char* argv[]) {
   scene->AddGameObject(go_directional_light);
   scene->AddGameObject(go_spot_light);
   scene->AddGameObject(go_mario);
-  scene->AddGameObject(go_box);
+  scene->AddGameObject(go_chest);
   scene->AddGameObject(go_sword);
   scene->AddGameObject(go_rock);
-  scene->AddGameObject(go_yoshi);
+  scene->AddGameObject(go_house);
+  scene->AddGameObject(go_torch);
   scene->AddGameObject(go_terrain);
   scene->SetSkybox(skybox);
 

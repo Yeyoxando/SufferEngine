@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 21.05.2020 01:06:33
+# File Created: 21.05.2020 17:02:38
 
-newmtl 01___Default
+newmtl 02___Default
 	Ns 10.0000
 	Ni 1.5000
 	d 1.0000
@@ -11,8 +11,7 @@ newmtl 01___Default
 	Kd 0.5882 0.5882 0.5882
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Sword_Base_Color.png
-	map_Kd Sword_Base_Color.png
-  map_Ks Sword_Metallic.png
-  refl Sword_Metallic.png
-
+	map_Ka Base_Color_torch.png
+	map_Kd Base_Color_torch.png
+  map_Ks Torch_Specular.png
+  refl Torch_Metallness.png
