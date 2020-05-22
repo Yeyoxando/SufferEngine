@@ -16,7 +16,7 @@
 
 Suffer::Camera::Camera() {
 
-  speed_ = 0.5f;
+  speed_ = 100.0f;
   sensitivity_ = 0.05f;
   field_of_view_ = 49.5999985;
   yaw_ = -90.0f;
@@ -329,13 +329,13 @@ void Suffer::Camera::Update() {
   }
 
   if (suffer.input_manager_.IsKeyPressed(InputManager::k_Shift)) {
-    speed_ = 2.5f;
+    speed_ = 15.0f;
   }
   else {
-    speed_ = 0.5f;
+    speed_ = 5.0f;
   }
 
-  SetupPerspective(field_of_view_, (float)suffer.GetWindowSize().x_ / (float)suffer.GetWindowSize().y_, 0.001f, 450.0f);
+  SetupPerspective(field_of_view_, (float)suffer.GetWindowSize().x_ / (float)suffer.GetWindowSize().y_, 0.001f, 800.0f);
   view_matrix_ = mathmorra::Matrix4::LookAt(camera_position_, camera_position_ + camera_target_, camera_up_);
 
 }

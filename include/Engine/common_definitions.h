@@ -21,8 +21,8 @@
 
 
 // Demo execution
-//#define _MAIN_DIEGO_ 
-#define _MAIN_PABLO_ 
+#define _MAIN_DIEGO_ 
+//#define _MAIN_PABLO_ 
 //#define _MAIN_LIGHTS_ 
 //#define _MAIN_OBJS_ 
 //#define _MAIN_HIGHLEVEL_ 
